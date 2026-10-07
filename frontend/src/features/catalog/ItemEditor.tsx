@@ -5,6 +5,7 @@ import { errorMessage } from '../../lib/errors'
 import { useItem } from './api'
 import { ItemForm } from './ItemForm'
 import { PricesPanel } from './PricesPanel'
+import { RecipePanel } from './RecipePanel'
 
 export function ItemEditor({
   itemId,
@@ -42,6 +43,9 @@ export function ItemEditor({
           canEdit={canEdit}
           onSaved={onSaved}
         />
+      )}
+      {item.data && item.data.type !== 'ingredient' && (
+        <RecipePanel item={item.data} canEdit={canEdit} currency={currency} />
       )}
       {item.data && <PricesPanel itemId={item.data.id} canEdit={canEdit} currency={currency} />}
     </div>

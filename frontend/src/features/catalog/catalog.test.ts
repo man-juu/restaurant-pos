@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { CategoryOut, ItemOut } from '../../lib/api/types'
 import { problems, toBody, toDraft } from './itemDraft'
+import { fromBom, recipeProblems, toBomBody } from './recipeDraft'
 import { treeOrder } from './tree'
 
 const item: ItemOut = {
@@ -51,6 +52,25 @@ describe('item form (FR-CAT-001, 002, 009)', () => {
     const draft = { ...toDraft(item), conversions: [{ unit_id: 'box', factor: '2500,5' }] }
     expect(problems(draft)).toEqual([])
     expect(toBody(draft, item).conversions).toEqual([{ unit_id: 'box', factor_to_base: '2500.5' }])
+  })
+})
+
+describe('recipe form (FR-CAT-005)', () => {
+  const line = { component_item_id: 'rice', label: 'Rice', qty: '200', unit_id: 'g', waste: '0' }
+
+  it('needs lines, positive quantities, waste below 100 and a yield for semi-finished', () => {
+    const empty = fromBom()
+    expect(recipeProblems(empty, false)).toEqual(['lines'])
+    const bad = { ...empty, lines: [{ ...line, qty: '0', waste: '100' }] }
+    expect(recipeProblems(bad, true)).toEqual(['qty', 'waste', 'yield'])
+  })
+
+  it('sends exact decimals and a yield only when needed', () => {
+    const d = { lines: [{ ...line, qty: '1,5', waste: '' }], yield_qty: '0,5', yield_unit_id: 'kg' }
+    expect(toBomBody(d, false)).toEqual({
+      lines: [{ component_item_id: 'rice', qty: '1.5', unit_id: 'g', waste_pct: '0' }],
+    })
+    expect(toBomBody(d, true)).toMatchObject({ yield_qty: '0.5', yield_unit_id: 'kg' })
   })
 })
 

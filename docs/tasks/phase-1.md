@@ -8,6 +8,7 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 - [x] 1b part 1 Catalog backend: units, categories, items, translations, conversions (FR-CAT-001, 002, 008, 009)
 - [x] 1b part 2 Channels and channel list prices with start dates (FR-CAT-004)
 - [x] 1b part 5 Catalog screens: items (search, type filter, edit, conversions), categories, units, channels, prices per channel; EN/ID; phone/tablet/desktop e2e (FR-CAT-001, 002, 004, 009)
+- [x] 1c Recipes: versions (draft, active from a date), nesting with cycle check, expansion to ingredients, theoretical cost and margin per channel through a cost source that 1e will provide (FR-CAT-005 to 007). FR-CAT-012 (food-cost alert) is still open, see below.
 - [x] Legacy app reviewed, ideas kept (docs/existing-code-review.md), old branches deleted
 - [x] Complexity limits in lint: ruff C90 (max 10), PLR09xx, SIM/PERF; ESLint complexity 10, max-depth 3, max-params 4
 
@@ -17,7 +18,8 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 | --- | --- | --- | --- |
 | 2 | 1b part 3: upload engine (menu/ingredient photos, login background), optional by default | FR-CAT-001 photo, theme background | file type sniffing, size limit, re-encode images, no SVG |
 | 3 | 1b part 4: free AI images with usage counter, block at 85% of free limit plus per-tenant daily cap | FR-CAT-013, ADR-022 | off until platform configures the key |
-| 5 | 1c BOM versions, nesting with cycle check, theoretical cost and margin, food-cost alert | FR-CAT-005 to 007, 012 | cost hidden without catalog.cost.view |
+| 5 | 1c rest: food-cost alert | FR-CAT-012 | needs a target HPP % per item and tenant (not in docs/05: owner decision) and the notification center (1j); build with 1j |
+| 5a | 1e must register its moving average costs with `costing.set_cost_source` | FR-CAT-007 | until then costs show "not known yet" |
 | 6 | 1d Import/export CSV/XLSX, demo seed (fictional menu shaped like the legacy one) | FR-IMP-001 to 003 | XLSX library needs owner approval |
 | 7 | 1e Inventory ledger, batches, FEFO, moving average, balances, reversals | FR-INV-001 to 006, 014, FR-X-005 | append-only, same-transaction postings |
 | 8 | 1f Purchasing: vendors, PR, PO, receiving, quick purchase, PDF, invoice attachment | FR-PUR-001 to 006, 010, 011 | attachment optional, configurable mandatory |

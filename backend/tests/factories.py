@@ -139,6 +139,8 @@ def drop_tenant(tenant_id: uuid.UUID) -> None:
             "DELETE FROM approval_rules WHERE tenant_id = :t",
             "DELETE FROM alert_rules WHERE tenant_id = :t",
             "DELETE FROM numbering_counters WHERE tenant_id = :t",
+            "DELETE FROM bom_lines WHERE tenant_id = :t",
+            "DELETE FROM boms WHERE tenant_id = :t",
             "DELETE FROM item_prices WHERE tenant_id = :t",
             "DELETE FROM channels WHERE tenant_id = :t",
             "DELETE FROM item_unit_conversions WHERE tenant_id = :t",

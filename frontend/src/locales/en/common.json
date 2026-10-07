@@ -141,7 +141,15 @@
     "item_not_found": "This item no longer exists.",
     "channel_not_found": "This channel no longer exists.",
     "price_not_found": "This price no longer exists.",
-    "category_not_found": "This category no longer exists."
+    "category_not_found": "This category no longer exists.",
+    "bom_not_found": "This recipe version no longer exists.",
+    "bom_not_draft": "An active recipe cannot change. Start a new version instead.",
+    "bom_start_too_early": "The start date must be after the current version starts.",
+    "bom_cycle": "A recipe cannot contain itself, also not through another recipe.",
+    "bom_too_deep": "Recipes can be nested at most 10 levels.",
+    "ingredient_has_no_recipe": "Ingredients are bought, so they have no recipe.",
+    "component_not_stock_item": "Only ingredients and semi-finished items can go into a recipe.",
+    "yield_required": "Say how much one batch makes."
   },
   "appearance": {
     "open": "Appearance",
@@ -348,6 +356,36 @@
       "code": "Code",
       "kind": "Kind",
       "platform": "Platform code (e.g. grabfood)"
+    },
+    "recipe": {
+      "title": "Recipe",
+      "help": "What one unit is made of. Saved changes stay a draft until you activate them from a start date; sales and production keep the version they used.",
+      "none": "No active recipe today.",
+      "newVersion": "New recipe version",
+      "draft": "Draft v{{version}}",
+      "addComponent": "Add ingredient or semi-finished item",
+      "qty": "Quantity",
+      "waste": "Waste %",
+      "yield": "One batch makes",
+      "startDate": "Use from",
+      "activate": "Activate",
+      "discard": "Discard draft",
+      "since": "from {{from}}",
+      "range": "{{from}} to {{to}}",
+      "status": {
+        "draft": "Draft",
+        "active": "Active"
+      },
+      "cost": "Cost per unit (HPP): {{cost}}",
+      "costUnknown": "Cost not known yet: ingredient costs come from purchases and stock, which arrive in a later update.",
+      "margin": "Price without tax {{price}} Â· margin {{margin}} Â· HPP {{pct}} %",
+      "problems": {
+        "lines": "Add at least one ingredient.",
+        "qty": "Each line needs a quantity above 0 and a unit.",
+        "waste": "Waste is a percentage below 100.",
+        "yield": "Say how much one batch makes."
+      },
+      "saveFirst": "Save your changes before activating."
     }
   }
 }

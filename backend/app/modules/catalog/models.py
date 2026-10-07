@@ -1,4 +1,4 @@
-"""Catalog tables (docs/05 section 2.2, FR-CAT-001, 002, 004, 008, 009).
+"""Catalog tables (docs/05 section 2.2, FR-CAT-001, 002, 004 to 006, 008, 009).
 
 Units with tenant_id NULL are platform units (g, kg, ml, l, pcs) readable by every tenant.
 Translatable names live in item_translations; tenant tables carry tenant_id and composite
@@ -31,6 +31,7 @@ UNIT_DIMENSIONS = ("mass", "volume", "count")
 ITEM_TYPES = ("ingredient", "semi_finished", "menu")
 STORAGE_TYPES = ("frozen", "chilled", "dry")
 CHANNEL_KINDS = ("dine_in", "takeaway", "platform", "wholesale")
+BOM_STATUSES = ("draft", "active")
 
 
 class Unit(Base):
@@ -193,3 +194,62 @@ class ItemPrice(Base):
     valid_to: Mapped[date | None] = mapped_column(Date)
     created_at: Mapped[datetime] = _created_at()
     created_by: Mapped[uuid.UUID | None] = mapped_column()
+
+
+class Bom(Base):
+    """FR-CAT-005/006: one recipe version of an item.
+
+    A draft can be edited and deleted. Activating it fixes its lines (sales and production
+    record which version they used) and gives it a start date; the previous active version
+    then ends the day before. The recipe on a date is the active version whose range holds it.
+    Yield: how much of the item one batch makes (menu items: 1 base unit).
+    """
+
+    __tablename__ = "boms"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "item_id", "version"),
+        ForeignKeyConstraint(["tenant_id", "item_id"], ["items.tenant_id", "items.id"]),
+        _check_in("status", BOM_STATUSES),
+        CheckConstraint("yield_qty > 0", name="yield_positive"),
+        CheckConstraint("(status = 'active') = (valid_from IS NOT NULL)", name="active_dated"),
+        CheckConstraint("valid_to IS NULL OR valid_to >= valid_from", name="valid_range"),
+        Index(None, "tenant_id", "item_id", "status", "valid_from"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    item_id: Mapped[uuid.UUID] = mapped_column()
+    version: Mapped[int] = mapped_column()
+    yield_qty: Mapped[Decimal] = mapped_column(Numeric(18, 4))
+    yield_unit_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("units.id"))
+    valid_from: Mapped[date | None] = mapped_column(Date)
+    valid_to: Mapped[date | None] = mapped_column(Date)
+    status: Mapped[str] = mapped_column(Text, server_default="draft")
+    created_at: Mapped[datetime] = _created_at()
+    created_by: Mapped[uuid.UUID | None] = mapped_column()
+
+
+class BomLine(Base):
+    """One component: `qty` of `unit_id` goes into the dish (net). `waste_pct` is the share
+    lost in preparation, so the quantity taken from stock is qty / (1 - waste_pct / 100)."""
+
+    __tablename__ = "bom_lines"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "bom_id"], ["boms.tenant_id", "boms.id"], ondelete="CASCADE"
+        ),
+        ForeignKeyConstraint(["tenant_id", "component_item_id"], ["items.tenant_id", "items.id"]),
+        CheckConstraint("qty > 0", name="qty_positive"),
+        CheckConstraint("waste_pct >= 0 AND waste_pct < 100", name="waste_range"),
+        Index(None, "tenant_id", "bom_id"),
+        Index(None, "tenant_id", "component_item_id"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    bom_id: Mapped[uuid.UUID] = mapped_column()
+    component_item_id: Mapped[uuid.UUID] = mapped_column()
+    qty: Mapped[Decimal] = mapped_column(Numeric(18, 4))
+    unit_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("units.id"))
+    waste_pct: Mapped[Decimal] = mapped_column(Numeric(5, 2), server_default="0")

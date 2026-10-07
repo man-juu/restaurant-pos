@@ -310,6 +310,42 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/catalog/boms/{bom_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Bom */
+    get: operations['get_bom_api_v1_catalog_boms__bom_id__get']
+    /** Update Draft */
+    put: operations['update_draft_api_v1_catalog_boms__bom_id__put']
+    post?: never
+    /** Delete Draft */
+    delete: operations['delete_draft_api_v1_catalog_boms__bom_id__delete']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/boms/{bom_id}/activate': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Activate */
+    post: operations['activate_api_v1_catalog_boms__bom_id__activate_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/catalog/categories': {
     parameters: {
       query?: never
@@ -409,6 +445,41 @@ export interface paths {
     get: operations['get_item_api_v1_catalog_items__item_id__get']
     /** Update Item */
     put: operations['update_item_api_v1_catalog_items__item_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/items/{item_id}/boms': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Versions */
+    get: operations['list_versions_api_v1_catalog_items__item_id__boms_get']
+    put?: never
+    /** Create Draft */
+    post: operations['create_draft_api_v1_catalog_items__item_id__boms_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/items/{item_id}/costing': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Item Costing */
+    get: operations['item_costing_api_v1_catalog_items__item_id__costing_get']
+    put?: never
     post?: never
     delete?: never
     options?: never
@@ -764,6 +835,131 @@ export interface components {
       /** Outlet Id */
       outlet_id?: string | null
     }
+    /** BomActivate */
+    BomActivate: {
+      /**
+       * Valid From
+       * Format: date
+       */
+      valid_from: string
+    }
+    /**
+     * BomIn
+     * @description A draft. Yield defaults to 1 base unit of the item (what a menu item needs).
+     */
+    BomIn: {
+      /** Lines */
+      lines: components['schemas']['BomLineIn'][]
+      /** Yield Qty */
+      yield_qty?: number | string | null
+      /** Yield Unit Id */
+      yield_unit_id?: string | null
+    }
+    /** BomLineIn */
+    BomLineIn: {
+      /**
+       * Component Item Id
+       * Format: uuid
+       */
+      component_item_id: string
+      /** Qty */
+      qty: number | string
+      /**
+       * Unit Id
+       * Format: uuid
+       */
+      unit_id: string
+      /**
+       * Waste Pct
+       * @default 0
+       */
+      waste_pct: number | string
+    }
+    /** BomLineOut */
+    BomLineOut: {
+      /**
+       * Component Item Id
+       * Format: uuid
+       */
+      component_item_id: string
+      /** Component Name */
+      component_name: string
+      /** Component Sku */
+      component_sku: string
+      /** Qty */
+      qty: string
+      /**
+       * Unit Id
+       * Format: uuid
+       */
+      unit_id: string
+      /** Waste Pct */
+      waste_pct: string
+    }
+    /** BomOut */
+    BomOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Lines */
+      lines: components['schemas']['BomLineOut'][]
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'draft' | 'active'
+      /** Valid From */
+      valid_from: string | null
+      /** Valid To */
+      valid_to: string | null
+      /** Version */
+      version: number
+      /** Yield Qty */
+      yield_qty: string
+      /**
+       * Yield Unit Id
+       * Format: uuid
+       */
+      yield_unit_id: string
+    }
+    /** BomSummary */
+    BomSummary: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'draft' | 'active'
+      /** Valid From */
+      valid_from: string | null
+      /** Valid To */
+      valid_to: string | null
+      /** Version */
+      version: number
+      /** Yield Qty */
+      yield_qty: string
+      /**
+       * Yield Unit Id
+       * Format: uuid
+       */
+      yield_unit_id: string
+    }
     /** Capabilities */
     Capabilities: {
       /** All Outlets */
@@ -850,6 +1046,22 @@ export interface components {
        */
       sort_order: number
     }
+    /** ChannelMargin */
+    ChannelMargin: {
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /** Cost Pct */
+      cost_pct: string | null
+      /** Margin */
+      margin: string | null
+      /** Net Price */
+      net_price: number
+      /** Price */
+      price: number
+    }
     /** ChannelOut */
     ChannelOut: {
       /** Code */
@@ -903,6 +1115,54 @@ export interface components {
        * Format: uuid
        */
       unit_id: string
+    }
+    /**
+     * CostLine
+     * @description One ingredient after expanding nested recipes, per 1 base unit of the item.
+     */
+    CostLine: {
+      /** Base Qty */
+      base_qty: string
+      /** Cost */
+      cost: string | null
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Name */
+      name: string
+      /** Sku */
+      sku: string
+      /** Unit Code */
+      unit_code: string
+      /** Unit Cost */
+      unit_cost: string | null
+    }
+    /** Costing */
+    Costing: {
+      /** Bom Id */
+      bom_id: string | null
+      /** Cost */
+      cost: string | null
+      /** Cost Visible */
+      cost_visible: boolean
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Lines */
+      lines: components['schemas']['CostLine'][]
+      /** Margins */
+      margins: components['schemas']['ChannelMargin'][]
+      /** Missing Costs */
+      missing_costs: string[]
+      /**
+       * On
+       * Format: date
+       */
+      on: string
     }
     /** EffectivePrice */
     EffectivePrice: {
@@ -1975,6 +2235,140 @@ export interface operations {
       }
     }
   }
+  get_bom_api_v1_catalog_boms__bom_id__get: {
+    parameters: {
+      query?: {
+        lang?: string
+      }
+      header?: never
+      path: {
+        bom_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BomOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_draft_api_v1_catalog_boms__bom_id__put: {
+    parameters: {
+      query?: {
+        lang?: string
+      }
+      header?: never
+      path: {
+        bom_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BomIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BomOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  delete_draft_api_v1_catalog_boms__bom_id__delete: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        bom_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  activate_api_v1_catalog_boms__bom_id__activate_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        bom_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BomActivate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BomSummary']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   list_categories_api_v1_catalog_categories_get: {
     parameters: {
       query?: never
@@ -2294,6 +2688,108 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ItemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_versions_api_v1_catalog_items__item_id__boms_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BomSummary'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_draft_api_v1_catalog_items__item_id__boms_post: {
+    parameters: {
+      query?: {
+        lang?: string
+      }
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BomIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BomOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  item_costing_api_v1_catalog_items__item_id__costing_get: {
+    parameters: {
+      query?: {
+        on?: string | null
+        lang?: string
+      }
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Costing']
         }
       }
       /** @description Validation Error */

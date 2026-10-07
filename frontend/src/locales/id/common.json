@@ -141,7 +141,15 @@
     "item_not_found": "Item ini sudah tidak ada.",
     "channel_not_found": "Kanal ini sudah tidak ada.",
     "price_not_found": "Harga ini sudah tidak ada.",
-    "category_not_found": "Kategori ini sudah tidak ada."
+    "category_not_found": "Kategori ini sudah tidak ada.",
+    "bom_not_found": "Versi resep ini sudah tidak ada.",
+    "bom_not_draft": "Resep aktif tidak bisa diubah. Buat versi baru.",
+    "bom_start_too_early": "Tanggal mulai harus setelah versi saat ini mulai berlaku.",
+    "bom_cycle": "Resep tidak boleh memuat dirinya sendiri, termasuk lewat resep lain.",
+    "bom_too_deep": "Resep maksimal bertingkat 10 level.",
+    "ingredient_has_no_recipe": "Bahan baku dibeli, jadi tidak punya resep.",
+    "component_not_stock_item": "Hanya bahan baku dan barang setengah jadi yang bisa masuk resep.",
+    "yield_required": "Isi berapa hasil satu batch."
   },
   "appearance": {
     "open": "Tampilan",
@@ -348,6 +356,36 @@
       "code": "Kode",
       "kind": "Jenis",
       "platform": "Kode platform (mis. grabfood)"
+    },
+    "recipe": {
+      "title": "Resep",
+      "help": "Bahan untuk satu unit. Perubahan yang disimpan tetap draf sampai Anda aktifkan dari tanggal mulai; penjualan dan produksi tetap memakai versi yang digunakan saat itu.",
+      "none": "Tidak ada resep aktif hari ini.",
+      "newVersion": "Versi resep baru",
+      "draft": "Draf v{{version}}",
+      "addComponent": "Tambah bahan baku atau barang setengah jadi",
+      "qty": "Jumlah",
+      "waste": "Susut %",
+      "yield": "Satu batch menghasilkan",
+      "startDate": "Berlaku mulai",
+      "activate": "Aktifkan",
+      "discard": "Buang draf",
+      "since": "mulai {{from}}",
+      "range": "{{from}} s.d. {{to}}",
+      "status": {
+        "draft": "Draf",
+        "active": "Aktif"
+      },
+      "cost": "Biaya per unit (HPP): {{cost}}",
+      "costUnknown": "Biaya belum diketahui: biaya bahan berasal dari pembelian dan stok, yang hadir pada pembaruan berikutnya.",
+      "margin": "Harga tanpa pajak {{price}} Â· margin {{margin}} Â· HPP {{pct}} %",
+      "problems": {
+        "lines": "Tambahkan minimal satu bahan.",
+        "qty": "Setiap baris perlu jumlah di atas 0 dan satuan.",
+        "waste": "Susut berupa persentase di bawah 100.",
+        "yield": "Isi berapa hasil satu batch."
+      },
+      "saveFirst": "Simpan perubahan sebelum mengaktifkan."
     }
   }
 }

@@ -103,6 +103,15 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - `/me/capabilities` now exposes the tenant currency and language: not sensitive, and only to members of that tenant.
 - Performance: the catalog screen is a separate 6.4 KB gzip chunk loaded on demand; the entry bundle is unchanged (115.5 KB of 160 KB). The search box uses a deferred value, so typing does not send a request per key.
 
+## Slice 1c review (recipes)
+
+- `boms` and `bom_lines` have FORCED RLS and composite tenant foreign keys; components are looked up under RLS first, and a test proves tenant B cannot use A's ingredient, read A's recipe or see A's costing.
+- Integrity: the lines of an active recipe are fixed by the service and by a database trigger (tested), so sales and production always refer to the exact recipe they used.
+- Abuse limits: at most 100 lines per recipe, 10 nesting levels; the cycle walk is bounded, so a crafted recipe cannot make the server loop.
+- Costs and margins are returned only with `catalog.cost.view`; cashiers see quantities only (tested).
+- Every draft, change, activation and delete is audited.
+- Performance: costing runs a fixed number of queries per nesting level, whatever the number of lines (test compares a 1-line and a 20-line recipe); the recipe screen adds 2 KB gzip to the lazy catalog chunk.
+
 ## Dev tools added (2026-10-07)
 
 - complexipy 8.0.1 (MIT, PyPI release 2026-09-07) and eslint-plugin-sonarjs 4.2.2 (LGPL-3.0, SonarSource, dev only, not shipped in the bundle). Installed with the 7-day cooling-off; npm audit clean. Owner approved.

@@ -250,6 +250,313 @@
         "title": "ApprovalRuleOut",
         "type": "object"
       },
+      "BomActivate": {
+        "additionalProperties": false,
+        "properties": {
+          "valid_from": {
+            "format": "date",
+            "title": "Valid From",
+            "type": "string"
+          }
+        },
+        "required": [
+          "valid_from"
+        ],
+        "title": "BomActivate",
+        "type": "object"
+      },
+      "BomIn": {
+        "additionalProperties": false,
+        "description": "A draft. Yield defaults to 1 base unit of the item (what a menu item needs).",
+        "properties": {
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/BomLineIn"
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "title": "Lines",
+            "type": "array"
+          },
+          "yield_qty": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yield Qty"
+          },
+          "yield_unit_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yield Unit Id"
+          }
+        },
+        "required": [
+          "lines"
+        ],
+        "title": "BomIn",
+        "type": "object"
+      },
+      "BomLineIn": {
+        "additionalProperties": false,
+        "properties": {
+          "component_item_id": {
+            "format": "uuid",
+            "title": "Component Item Id",
+            "type": "string"
+          },
+          "qty": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Qty"
+          },
+          "unit_id": {
+            "format": "uuid",
+            "title": "Unit Id",
+            "type": "string"
+          },
+          "waste_pct": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,3}|(?=[\\d.]{1,6}0*$)\\d{0,3}\\.\\d{0,2}0*$)",
+                "type": "string"
+              }
+            ],
+            "default": "0",
+            "title": "Waste Pct"
+          }
+        },
+        "required": [
+          "component_item_id",
+          "qty",
+          "unit_id"
+        ],
+        "title": "BomLineIn",
+        "type": "object"
+      },
+      "BomLineOut": {
+        "properties": {
+          "component_item_id": {
+            "format": "uuid",
+            "title": "Component Item Id",
+            "type": "string"
+          },
+          "component_name": {
+            "title": "Component Name",
+            "type": "string"
+          },
+          "component_sku": {
+            "title": "Component Sku",
+            "type": "string"
+          },
+          "qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Qty",
+            "type": "string"
+          },
+          "unit_id": {
+            "format": "uuid",
+            "title": "Unit Id",
+            "type": "string"
+          },
+          "waste_pct": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Waste Pct",
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_item_id",
+          "component_sku",
+          "component_name",
+          "qty",
+          "unit_id",
+          "waste_pct"
+        ],
+        "title": "BomLineOut",
+        "type": "object"
+      },
+      "BomOut": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/BomLineOut"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "draft",
+              "active"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "valid_from": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid From"
+          },
+          "valid_to": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid To"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          },
+          "yield_qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Yield Qty",
+            "type": "string"
+          },
+          "yield_unit_id": {
+            "format": "uuid",
+            "title": "Yield Unit Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "item_id",
+          "version",
+          "status",
+          "valid_from",
+          "valid_to",
+          "yield_qty",
+          "yield_unit_id",
+          "lines"
+        ],
+        "title": "BomOut",
+        "type": "object"
+      },
+      "BomSummary": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "draft",
+              "active"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "valid_from": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid From"
+          },
+          "valid_to": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid To"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          },
+          "yield_qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Yield Qty",
+            "type": "string"
+          },
+          "yield_unit_id": {
+            "format": "uuid",
+            "title": "Yield Unit Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "item_id",
+          "version",
+          "status",
+          "valid_from",
+          "valid_to",
+          "yield_qty",
+          "yield_unit_id"
+        ],
+        "title": "BomSummary",
+        "type": "object"
+      },
       "Capabilities": {
         "properties": {
           "all_outlets": {
@@ -459,6 +766,56 @@
         "title": "ChannelIn",
         "type": "object"
       },
+      "ChannelMargin": {
+        "properties": {
+          "channel_id": {
+            "format": "uuid",
+            "title": "Channel Id",
+            "type": "string"
+          },
+          "cost_pct": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Pct"
+          },
+          "margin": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Margin"
+          },
+          "net_price": {
+            "title": "Net Price",
+            "type": "integer"
+          },
+          "price": {
+            "title": "Price",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "channel_id",
+          "price",
+          "net_price",
+          "margin",
+          "cost_pct"
+        ],
+        "title": "ChannelMargin",
+        "type": "object"
+      },
       "ChannelOut": {
         "additionalProperties": false,
         "properties": {
@@ -584,6 +941,144 @@
           "factor_to_base"
         ],
         "title": "ConversionOut",
+        "type": "object"
+      },
+      "CostLine": {
+        "description": "One ingredient after expanding nested recipes, per 1 base unit of the item.",
+        "properties": {
+          "base_qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Base Qty",
+            "type": "string"
+          },
+          "cost": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "sku": {
+            "title": "Sku",
+            "type": "string"
+          },
+          "unit_code": {
+            "title": "Unit Code",
+            "type": "string"
+          },
+          "unit_cost": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Cost"
+          }
+        },
+        "required": [
+          "item_id",
+          "sku",
+          "name",
+          "base_qty",
+          "unit_code",
+          "unit_cost",
+          "cost"
+        ],
+        "title": "CostLine",
+        "type": "object"
+      },
+      "Costing": {
+        "properties": {
+          "bom_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bom Id"
+          },
+          "cost": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost"
+          },
+          "cost_visible": {
+            "title": "Cost Visible",
+            "type": "boolean"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/CostLine"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "margins": {
+            "items": {
+              "$ref": "#/components/schemas/ChannelMargin"
+            },
+            "title": "Margins",
+            "type": "array"
+          },
+          "missing_costs": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Missing Costs",
+            "type": "array"
+          },
+          "on": {
+            "format": "date",
+            "title": "On",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "on",
+          "bom_id",
+          "lines",
+          "cost",
+          "missing_costs",
+          "cost_visible",
+          "margins"
+        ],
+        "title": "Costing",
         "type": "object"
       },
       "EffectivePrice": {
@@ -2586,6 +3081,209 @@
         ]
       }
     },
+    "/api/v1/catalog/boms/{bom_id}": {
+      "delete": {
+        "operationId": "delete_draft_api_v1_catalog_boms__bom_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bom_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Bom Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Draft",
+        "tags": [
+          "catalog"
+        ]
+      },
+      "get": {
+        "operationId": "get_bom_api_v1_catalog_boms__bom_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bom_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Bom Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BomOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Bom",
+        "tags": [
+          "catalog"
+        ]
+      },
+      "put": {
+        "operationId": "update_draft_api_v1_catalog_boms__bom_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bom_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Bom Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BomIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BomOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Draft",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/boms/{bom_id}/activate": {
+      "post": {
+        "operationId": "activate_api_v1_catalog_boms__bom_id__activate_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bom_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Bom Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BomActivate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BomSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Activate",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
     "/api/v1/catalog/categories": {
       "get": {
         "operationId": "list_categories_api_v1_catalog_categories_get",
@@ -3176,6 +3874,186 @@
           }
         },
         "summary": "Update Item",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/items/{item_id}/boms": {
+      "get": {
+        "operationId": "list_versions_api_v1_catalog_items__item_id__boms_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BomSummary"
+                  },
+                  "title": "Response List Versions Api V1 Catalog Items  Item Id  Boms Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Versions",
+        "tags": [
+          "catalog"
+        ]
+      },
+      "post": {
+        "operationId": "create_draft_api_v1_catalog_items__item_id__boms_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BomIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BomOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Draft",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/items/{item_id}/costing": {
+      "get": {
+        "operationId": "item_costing_api_v1_catalog_items__item_id__costing_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "on",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "On"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Costing"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Item Costing",
         "tags": [
           "catalog"
         ]

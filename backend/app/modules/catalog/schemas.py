@@ -167,3 +167,90 @@ class EffectivePrice(BaseModel):
     item_id: uuid.UUID
     valid_from: date
     price: int
+
+
+# ─── Recipes (FR-CAT-005 to 007) ──────────────────────────────────────────
+
+Qty = Annotated[Decimal, Field(gt=0, max_digits=18, decimal_places=4)]
+MAX_BOM_LINES = 100
+
+
+class BomLineIn(Strict):
+    component_item_id: uuid.UUID
+    qty: Qty
+    unit_id: uuid.UUID
+    waste_pct: Decimal = Field(default=Decimal(0), ge=0, lt=100, max_digits=5, decimal_places=2)
+
+
+class BomIn(Strict):
+    """A draft. Yield defaults to 1 base unit of the item (what a menu item needs)."""
+
+    yield_qty: Qty | None = None
+    yield_unit_id: uuid.UUID | None = None
+    lines: list[BomLineIn] = Field(min_length=1, max_length=MAX_BOM_LINES)
+
+    @field_validator("lines")
+    @classmethod
+    def _one_line_per_component(cls, v: list[BomLineIn]) -> list[BomLineIn]:
+        if len({line.component_item_id for line in v}) != len(v):
+            raise ValueError("one line per component")
+        return v
+
+
+class BomActivate(Strict):
+    valid_from: date
+
+
+class BomLineOut(BaseModel):
+    component_item_id: uuid.UUID
+    component_sku: str
+    component_name: str
+    qty: Decimal
+    unit_id: uuid.UUID
+    waste_pct: Decimal
+
+
+class BomSummary(BaseModel):
+    id: uuid.UUID
+    item_id: uuid.UUID
+    version: int
+    status: Literal["draft", "active"]
+    valid_from: date | None
+    valid_to: date | None
+    yield_qty: Decimal
+    yield_unit_id: uuid.UUID
+
+
+class BomOut(BomSummary):
+    lines: list[BomLineOut]
+
+
+class CostLine(BaseModel):
+    """One ingredient after expanding nested recipes, per 1 base unit of the item."""
+
+    item_id: uuid.UUID
+    sku: str
+    name: str
+    base_qty: Decimal
+    unit_code: str  # the ingredient's base unit
+    unit_cost: Decimal | None  # per base unit; None: unknown yet or hidden
+    cost: Decimal | None
+
+
+class ChannelMargin(BaseModel):
+    channel_id: uuid.UUID
+    price: int  # list price, minor units
+    net_price: int  # without included taxes
+    margin: Decimal | None
+    cost_pct: Decimal | None  # food cost (HPP) as % of the net price
+
+
+class Costing(BaseModel):
+    item_id: uuid.UUID
+    on: date
+    bom_id: uuid.UUID | None  # None: the item has no active recipe on that date
+    lines: list[CostLine]
+    cost: Decimal | None  # per 1 base unit; None when any ingredient cost is unknown
+    missing_costs: list[uuid.UUID]
+    cost_visible: bool
+    margins: list[ChannelMargin]
