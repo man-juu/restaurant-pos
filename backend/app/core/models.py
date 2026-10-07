@@ -235,3 +235,39 @@ class IdempotencyKey(Base):
     response_status: Mapped[int | None] = mapped_column()
     response_body: Mapped[Any | None] = mapped_column(JSONB)
     created_at: Mapped[datetime] = _created_at()
+
+
+class UserSession(Base):
+    """Server-side session (docs/06 section 3). The cookie holds a random 256-bit token; only
+    its SHA-256 hash is stored, so a database leak does not hand out live sessions.
+
+    Not tenant-scoped: a session belongs to a user and points at the tenant currently in use
+    (`active_tenant_id`), which can switch without a new sign-in (FR-IDN-005). Only the
+    identity service reads this table."""
+
+    __tablename__ = "sessions"
+    __table_args__ = (Index(None, "user_id", "revoked_at"),)
+
+    id: Mapped[uuid.UUID] = _id()
+    token_hash: Mapped[bytes] = mapped_column(unique=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    active_tenant_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("tenants.id"))
+    csrf_token: Mapped[str] = mapped_column(String(64))
+    created_at: Mapped[datetime] = _created_at()
+    last_seen_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    expires_at: Mapped[datetime] = mapped_column()  # absolute timeout
+    revoked_at: Mapped[datetime | None] = mapped_column()
+    ip: Mapped[str | None] = mapped_column(INET)
+    user_agent: Mapped[str | None] = mapped_column(String(256))
+
+
+class AuthThrottle(Base):
+    """Failed sign-in counters per account and per IP (FR-IDN-003). Keys are hashed so the
+    table holds no email addresses or IPs in clear."""
+
+    __tablename__ = "auth_throttle"
+
+    key: Mapped[str] = mapped_column(String(80), primary_key=True)
+    failures: Mapped[int] = mapped_column(server_default="0")
+    locked_until: Mapped[datetime | None] = mapped_column()
+    updated_at: Mapped[datetime] = mapped_column(server_default=func.now())

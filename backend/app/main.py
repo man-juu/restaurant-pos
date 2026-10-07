@@ -8,6 +8,7 @@ from app.core import health
 from app.core.config import Settings, get_settings
 from app.core.db import create_engine, create_sessionmaker
 from app.core.errors import register_error_handlers
+from app.core.identity import router as identity
 from app.core.logging import configure_logging
 from app.core.middleware import RequestContextMiddleware
 from app.core.modules import discover, mount
@@ -39,5 +40,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     register_error_handlers(api)
     api.add_middleware(RequestContextMiddleware)
     api.include_router(health.router)
+    api.include_router(identity.router)
     mount(api, api.state.modules)
     return api

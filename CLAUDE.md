@@ -27,7 +27,7 @@ Check the approval table in `docs/README.md`. If any document is still **Draft**
 
 ## Stack (decided)
 
-- Backend: Python 3.12+, FastAPI, Pydantic v2, SQLAlchemy 2 (async, asyncpg), Alembic, PostgreSQL. Jobs: Postgres-backed queue (no Redis at launch, ADR-005).
+- Backend: Python 3.12+, FastAPI, Pydantic v2, SQLAlchemy 2 (async, asyncpg), Alembic, PostgreSQL, argon2-cffi, cryptography. Jobs: Postgres-backed queue (no Redis at launch, ADR-005).
 - Frontend: React + TypeScript + Vite, Tailwind + Radix/shadcn-style components, TanStack Query, React Hook Form + Zod, i18next, PWA. API client generated from OpenAPI.
 - Run: Docker Compose; Caddy serves the built PWA and proxies the API. One small VPS, Cloudflare in front.
 - Quality: ruff, mypy, import-linter, pytest (+ Hypothesis), ESLint, `tsc`, Vitest, Playwright, k6.
@@ -66,7 +66,7 @@ npm run dev | lint | typecheck | test | build | format:check
 
 CI (`.github/workflows/ci.yml`) runs all of these plus a gitleaks scan of the full Git history.
 
-Database roles: migrations run as the owner; the API connects as `pos_app` (no superuser, no table ownership, no BYPASSRLS); `pos_readonly` for reports. New tenant tables must call `enable_tenant_rls` and `grant` from `migrations/helpers.py`; `tests/test_schema_security.py` fails otherwise.
+Database roles: migrations run as the owner; the API connects as `pos_app` (no superuser, no table ownership, no BYPASSRLS); `pos_readonly` for reports; NOLOGIN `pos_auth` (BYPASSRLS) only owns the sign-in lookup function `auth_user_memberships()`. New tenant tables must call `enable_tenant_rls` and `grant` from `migrations/helpers.py`; `tests/test_schema_security.py` fails otherwise.
 
 ## Non-negotiable rules
 

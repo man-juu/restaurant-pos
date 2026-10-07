@@ -17,6 +17,13 @@ class Settings(BaseModel):
     db_pool_size: int = Field(default=5, ge=1, le=50)  # small VPS: keep connections few
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
 
+    # Sessions (docs/06 section 3). Platform limits; per-tenant idle override comes with
+    # tenant settings (FR-IDN-009).
+    session_idle_minutes: int = Field(default=60, ge=5, le=24 * 60)
+    session_absolute_hours: int = Field(default=12, ge=1, le=24 * 30)
+    # Lockout: after this many failures, delays grow exponentially (30 s, 60 s, ... max 15 min).
+    login_max_failures: int = Field(default=5, ge=1, le=50)
+
     @property
     def migration_url(self) -> PostgresDsn:
         return self.migration_database_url or self.database_url

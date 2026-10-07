@@ -5,6 +5,9 @@ from alembic import op
 
 APP_ROLE = "pos_app"  # what the API connects as: not superuser, not table owner
 READONLY_ROLE = "pos_readonly"  # reporting and support queries
+# Owns the few SECURITY DEFINER functions that must look across tenants (sign-in needs "which
+# tenants does this user belong to" before any tenant is chosen). NOLOGIN: nobody connects as it.
+AUTH_ROLE = "pos_auth"
 
 _CURRENT_TENANT = "nullif(current_setting('app.tenant_id', true), '')::uuid"
 
