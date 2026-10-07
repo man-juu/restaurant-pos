@@ -14,8 +14,8 @@ Status: ✅ done and tested, 🔜 planned (slice), 👤 owner action.
 | **Broken access inside a tenant** (A01) | Cashier approves own refund, staff sees other outlets | Permission + outlet scope on every route, deny by default, route-list test | 🔜 0.5 |
 | **Injection** (A05) | SQL injection through search or sort fields | Parameterised queries only, sort columns whitelisted, ruff security rules (`S`) in CI | ✅ 0.2 |
 | **Account takeover** (A07) | Password guessing, stolen password, session theft | Argon2id, lockout per account and IP, hashed session tokens, HttpOnly Secure `__Host-` cookie, idle and absolute timeouts, instant revocation, disabled users cut off at once | ✅ 0.4a |
-| | | TOTP 2FA required for owners and co-owners, recovery codes, breached-password check | 🔜 0.4b |
-| **Phishing** | Fake login page steals an owner's password | 2FA for privileged roles limits the damage of a stolen password; in-app session list shows unknown devices; email only from our verified domain with SPF, DKIM, DMARC | 🔜 0.4b, 0.8 |
+| | | TOTP 2FA required for owners and co-owners (code replay blocked, attempts rate-limited), recovery codes, common-password check, reset signs out everywhere | ✅ 0.4b |
+| **Phishing** | Fake login page steals an owner's password | 2FA for privileged roles limits the damage of a stolen password (✅ 0.4b); in-app session list shows unknown devices (✅); email only from our verified domain with SPF, DKIM, DMARC (🔜 0.8). TOTP can still be phished in real time; passkeys (WebAuthn) are the stronger future option | ✅ partly |
 | | | Train staff: only sign in at the real domain; never share codes | 👤 |
 | **CSRF / clickjacking** | Another site makes your browser submit actions | SameSite=Lax cookie, per-session CSRF token, JSON-only login, `frame-ancestors 'none'` header | ✅ 0.4a (headers 🔜 0.8) |
 | **XSS** | Script injected via an item name | React escapes output, no `dangerouslySetInnerHTML`, strict Content-Security-Policy, session cookie unreadable by scripts | 🔜 0.7, 0.8 |

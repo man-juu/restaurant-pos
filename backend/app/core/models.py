@@ -11,6 +11,7 @@ from datetime import datetime, time
 from typing import Any, ClassVar
 
 from sqlalchemy import (
+    BigInteger,
     CheckConstraint,
     DateTime,
     ForeignKey,
@@ -119,7 +120,9 @@ class User(Base):
     email: Mapped[str] = mapped_column(CITEXT, unique=True)  # case-insensitive uniqueness
     name: Mapped[str] = mapped_column(String(200))
     password_hash: Mapped[str | None] = mapped_column(Text)  # Argon2id, slice 0.4
-    totp_secret_encrypted: Mapped[bytes | None] = mapped_column()  # slice 0.4
+    totp_secret_encrypted: Mapped[bytes | None] = mapped_column()  # AES-GCM, app/core/crypto
+    totp_enabled_at: Mapped[datetime | None] = mapped_column()  # NULL: set up but not confirmed
+    totp_last_step: Mapped[int | None] = mapped_column(BigInteger)  # replay protection
     locale: Mapped[str] = mapped_column(String(10), server_default="id")
     status: Mapped[str] = mapped_column(Text, server_default="active")
     created_at: Mapped[datetime] = _created_at()
@@ -139,6 +142,8 @@ class Role(Base):
     tenant_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("tenants.id"))
     name: Mapped[str] = mapped_column(String(100))
     is_template: Mapped[bool] = mapped_column(server_default="false")
+    # Members with this role must use TOTP (FR-IDN-002: owner and co-owner templates).
+    requires_mfa: Mapped[bool] = mapped_column(server_default="false")
     created_at: Mapped[datetime] = _created_at()
 
 
@@ -246,13 +251,19 @@ class UserSession(Base):
     identity service reads this table."""
 
     __tablename__ = "sessions"
-    __table_args__ = (Index(None, "user_id", "revoked_at"),)
+    __table_args__ = (
+        Index(None, "user_id", "revoked_at"),
+        _check_in("mfa_state", ("ok", "verify", "enroll")),
+    )
 
     id: Mapped[uuid.UUID] = _id()
     token_hash: Mapped[bytes] = mapped_column(unique=True)
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
     active_tenant_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("tenants.id"))
     csrf_token: Mapped[str] = mapped_column(String(64))
+    # "ok": full access; "verify": password checked, TOTP code still needed; "enroll": the
+    # user's role requires TOTP and none is set up yet. Only auth endpoints accept the latter two.
+    mfa_state: Mapped[str] = mapped_column(Text, server_default="ok")
     created_at: Mapped[datetime] = _created_at()
     last_seen_at: Mapped[datetime] = mapped_column(server_default=func.now())
     expires_at: Mapped[datetime] = mapped_column()  # absolute timeout
@@ -271,3 +282,52 @@ class AuthThrottle(Base):
     failures: Mapped[int] = mapped_column(server_default="0")
     locked_until: Mapped[datetime | None] = mapped_column()
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+
+class RecoveryCode(Base):
+    """One-time 2FA recovery codes (docs/06 section 3), stored as SHA-256: the codes are long
+    random strings, so a fast hash is enough (no password-style stretching needed)."""
+
+    __tablename__ = "recovery_codes"
+    __table_args__ = (Index(None, "user_id"),)
+
+    id: Mapped[uuid.UUID] = _id()
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    code_hash: Mapped[bytes] = mapped_column(unique=True)
+    used_at: Mapped[datetime | None] = mapped_column()
+    created_at: Mapped[datetime] = _created_at()
+
+
+class PasswordReset(Base):
+    """FR-IDN-008. Single-use, short-lived; only the token hash is stored."""
+
+    __tablename__ = "password_resets"
+    __table_args__ = (Index(None, "user_id"),)
+
+    id: Mapped[uuid.UUID] = _id()
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    token_hash: Mapped[bytes] = mapped_column(unique=True)
+    expires_at: Mapped[datetime] = mapped_column()
+    used_at: Mapped[datetime | None] = mapped_column()
+    created_at: Mapped[datetime] = _created_at()
+
+
+class Invitation(Base):
+    """FR-IDN-006. Tenant-owned (RLS). Accepting happens before the invitee has a tenant
+    context, so lookup by token goes through the auth_invitation_by_token() function."""
+
+    __tablename__ = "invitations"
+    __table_args__ = (
+        ForeignKeyConstraint(["tenant_id", "role_id"], ["roles.tenant_id", "roles.id"]),
+        Index(None, "tenant_id", "email"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    email: Mapped[str] = mapped_column(CITEXT)
+    role_id: Mapped[uuid.UUID] = mapped_column()
+    invited_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    token_hash: Mapped[bytes] = mapped_column(unique=True)
+    expires_at: Mapped[datetime] = mapped_column()
+    used_at: Mapped[datetime | None] = mapped_column()
+    created_at: Mapped[datetime] = _created_at()

@@ -96,6 +96,7 @@ async def create_session(
     ip: str | None,
     user_agent: str | None,
     settings: Settings,
+    mfa_state: str = "ok",
 ) -> tuple[str, UserSession]:
     token = secrets.token_urlsafe(TOKEN_BYTES)
     row = UserSession(
@@ -103,6 +104,7 @@ async def create_session(
         user_id=user_id,
         active_tenant_id=tenant_id,
         csrf_token=secrets.token_urlsafe(32),
+        mfa_state=mfa_state,
         expires_at=datetime.now().astimezone() + timedelta(hours=settings.session_absolute_hours),
         ip=ip,
         user_agent=(user_agent or "")[:256] or None,
@@ -167,3 +169,17 @@ async def list_sessions(session: AsyncSession, user_id: uuid.UUID) -> list[UserS
         .order_by(UserSession.last_seen_at.desc())
     )
     return list(result.scalars())
+
+
+async def requires_mfa(session: AsyncSession, user_id: uuid.UUID) -> bool:
+    """True if any active membership has a role that requires TOTP (owner, co-owner)."""
+    result = await session.execute(text("SELECT auth_user_requires_mfa(:uid)"), {"uid": user_id})
+    return bool(result.scalar_one())
+
+
+async def revoke_all(session: AsyncSession, user_id: uuid.UUID) -> None:
+    await session.execute(
+        update(UserSession)
+        .where(UserSession.user_id == user_id, UserSession.revoked_at.is_(None))
+        .values(revoked_at=func.now())
+    )
