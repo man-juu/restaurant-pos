@@ -45,4 +45,4 @@ Libraries already in the plan or worth evaluating (each needs owner approval bef
 | Shelf-life label printing with prep date and use-by | Grocy, kitchen systems | FR-PRD-006 | Low | 2 |
 | Offline POS queue with idempotent sync | Odoo POS | FR-SAL-013 (our idempotency keys already prepare this) | High | 4 |
 
-Adopted 2026-10-07: the food-cost alert (FR-CAT-012), "can I make this?" (FR-INV-020), shelf-life labels and the prep list (FR-PRD-007, FR-PRD-008). Declined: the sold-out list. Others stay ideas until approved.
+Adopted 2026-10-07: the food-cost alert (FR-CAT-012), the supplier invoice attachment (FR-PUR-011, optional by default), "can I make this?" (FR-INV-020), shelf-life labels and the prep list (FR-PRD-007, FR-PRD-008). Declined: the sold-out list. Others stay ideas until approved.

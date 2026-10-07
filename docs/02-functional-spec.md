@@ -156,6 +156,7 @@ Core modules cannot be switched off. Other modules can be switched on or off per
 | FR-PUR-008 | Vendor returns and credit notes. | 2 |
 | FR-PUR-009 | Vendor bills with due dates, three-way match (PO, receipt, bill) and payment recording. | 2 |
 | FR-PUR-010 | PO printable as PDF and shareable as a link or file. | 1 |
+| FR-PUR-011 | Supplier invoice attachment: a goods receipt or quick purchase can carry photos or a PDF of the supplier invoice or delivery note. Optional by default; a tenant setting (per outlet or document type) can make it mandatory later. | 1 |
 
 ## PRD. Production (central kitchen)
 
