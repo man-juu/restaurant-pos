@@ -7,15 +7,32 @@ For slice 0.8. **Do not buy anything before then**: until deployment, everything
 | # | Item | Pick | Approx. cost | Pay with | Needed for |
 | --- | --- | --- | --- | --- | --- |
 | 1 | Domain | See section 2 | Rp15.000 to Rp200.000 per year | Registrar: VA, e-wallet, QRIS **(verify)** | Staging and production URLs, email |
-| 2 | VPS | Biznet Gio NEO Lite MS 4.2 (2 cores, 4 GB, 60 GB) | ~Rp138.750 per month incl. tax | Prepaid balance **(verify top-up methods)** | Running the app |
-| 3 | Backup storage | IDCloudHost Object Storage (S3-compatible) | ~Rp500 per GB per month; a few GB at launch | VA, retail outlets, QRIS | Off-site encrypted backups (Q-004) |
+| 2 | VPS | Any 4 GB plan from section 1a | ~Rp140.000 to Rp160.000 per month | See section 1a | Running the app |
+| 3 | Backup storage | S3-compatible object storage at a different provider from the VPS (section 1a) | ~Rp500 to Rp1.000 per GB per month; a few GB at launch | VA, QRIS **(verify)** | Off-site encrypted backups (Q-004) |
 | 4 | Cloudflare | Free plan | Rp0 | none | DNS, TLS, DDoS protection, hiding the server IP |
 | 5 | Transactional email | A free tier that needs no card **(verify)** | Rp0 | none | Invitations, password reset |
 | 6 | Uptime and error tracking | Free tiers **(verify no card needed)** | Rp0 | none | Alerts |
 
 Expected total: about **Rp140.000 to Rp150.000 per month**, plus the domain once a year. That's inside the Rp250.000 target.
 
-**Why the backups go to a different provider from the VPS:** if the VPS account is lost, suspended or hacked, the backups must survive. IDCloudHost for storage and Biznet Gio for the VPS keeps them apart. Biznet Gio's own NEO Object Storage (~Rp1.000 per GB) is the fallback, but then a single account holds both the server and its backups.
+**Why the backups go to a different provider from the VPS:** if the VPS account is lost, suspended or hacked, the backups must survive (see the rule in section 1a).
+
+## 1a. VPS options (4 GB RAM minimum, see `docs/07` section 3)
+
+Any provider works if it gives a KVM VPS with full root access, Docker support, Ubuntu LTS, a data centre in Indonesia or Singapore, and payment without a card.
+
+| Provider | Plan | Spec | Price (approx., verify) | Payment without card | Notes |
+| --- | --- | --- | --- | --- | --- |
+| IDCloudHost | Rocket VPS 2 | 4 cores, 4 GB, 80 GB | ~Rp145.000 per month | VA, retail outlets, QRIS | Jakarta; good price for the spec |
+| Biznet Gio | NEO Lite MS 4.2 | 2 cores, 4 GB, 60 GB | ~Rp138.750 incl. 11% tax | Prepaid balance; methods to confirm | Jakarta; own network backbone |
+| Jagoan Hosting | VPS Galaxy | 4 cores, 4 GB | ~Rp200.000 per month | Local methods (verify QRIS) | Indonesia |
+| Dewaweb | Cloud VPS (dedicated CPU) | 2 dedicated CPU, 4 GB, 50 GB NVMe | ~Rp270.000 per month | Local methods (verify) | Dedicated CPU; pricier |
+| Hostinger | KVM 2 | 2 vCPU, 8 GB, 100 GB NVMe | ~USD 9 promo, ~USD 15 renewal | VA, OVO, QRIS | More RAM; choose a Singapore or Asia location; watch the renewal price |
+| DomaiNesia, Niagahoster | VPS lines | various | not yet compared | Local methods | Worth a look if the others disappoint |
+
+**How to choose:** compare the **renewal** price, not the promo. Check that the Docker install isn't blocked, that snapshots are available, and how many hours support takes to reply. A Jakarta data centre gives the lowest latency for outlets in Indonesia.
+
+**Rule for backups:** the backup storage must be at a **different provider** from the VPS. If the VPS is at IDCloudHost, use Biznet Gio NEO Object Storage (~Rp1.000 per GB) for backups. If it's anywhere else, use IDCloudHost Object Storage (~Rp500 per GB).
 
 ## 2. Domain options (fewest documents first)
 
@@ -40,8 +57,8 @@ Buying `.com` through Cloudflare Registrar is at cost, but Cloudflare only takes
 
 1. **Domain:** create a registrar account with two-factor login → buy → set the nameservers to the two Cloudflare gives you.
 2. **Cloudflare:** free account with two-factor login → add the domain → SSL mode "Full (strict)" → turn on "Always Use HTTPS".
-3. **VPS:** Biznet Gio account → top up the balance (check whether QRIS or transfer works for you) → create NEO Lite MS 4.2 with Ubuntu LTS in a Jakarta zone → add **your SSH public key** (no password login).
-4. **Backup storage:** IDCloudHost account → create a private bucket → create an access key used only for backups. If the provider supports a write-only key, use one.
+3. **VPS:** account at the chosen provider → pay (check that QRIS or transfer works for you) → create the 4 GB plan with Ubuntu LTS in a Jakarta (or Singapore) zone → add **your SSH public key** (no password login).
+4. **Backup storage:** account at the other provider → create a private bucket → create an access key used only for backups. If the provider supports a write-only key, use one.
 5. **Email, uptime, errors:** sign up for the free tiers. Record all accounts in a password manager, never in the repository.
 6. **Send me nothing secret.** Give me the domain name and the server's public IP; secrets go straight into the server's protected environment file (slice 0.8 runbook).
 
