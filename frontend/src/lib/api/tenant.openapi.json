@@ -256,6 +256,14 @@
             "title": "All Outlets",
             "type": "boolean"
           },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "language": {
+            "title": "Language",
+            "type": "string"
+          },
           "modules": {
             "items": {
               "type": "string"
@@ -301,7 +309,9 @@
           "outlet_ids",
           "modules",
           "subscription",
-          "nav"
+          "nav",
+          "currency",
+          "language"
         ],
         "title": "Capabilities",
         "type": "object"

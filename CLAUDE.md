@@ -70,6 +70,13 @@ npm run api:generate                # after backend: python -m app.openapi ../fr
 # adding a package: npm install --before=<7 days ago> <pkg>   (cooling-off; scripts are off via .npmrc)
 ```
 
+Without a local Python 3.12 or browsers (for example on Windows), run the same checks in containers (the stack must be up):
+
+```
+docker compose run --rm --no-deps -v "$PWD/backend:/app" migrate sh -c 'OWNER_DATABASE_URL=$MIGRATION_DATABASE_URL pytest -q'
+docker run --rm --ipc=host -v "$PWD/frontend:/app" -v pw-node-modules:/app/node_modules -w /app mcr.microsoft.com/playwright:v1.63.0-noble sh -c "npm ci && npx playwright test"
+```
+
 CI (`.github/workflows/ci.yml`) runs all of these plus a gitleaks scan and production image builds.
 Release: tag `vX.Y.Z` on `main` → `release.yml` (images, staging, ZAP); production: run `deploy-prod.yml` by hand. Runbooks: `docs/runbooks/`.
 

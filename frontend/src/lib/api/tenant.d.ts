@@ -768,6 +768,10 @@ export interface components {
     Capabilities: {
       /** All Outlets */
       all_outlets: boolean
+      /** Currency */
+      currency: string
+      /** Language */
+      language: string
       /** Modules */
       modules: string[]
       /** Nav */

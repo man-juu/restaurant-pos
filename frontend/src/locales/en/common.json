@@ -48,7 +48,8 @@
     "reports": "Reports",
     "users": "Users and roles",
     "main": "Main",
-    "settings": "Settings"
+    "settings": "Settings",
+    "catalog": "Catalog"
   },
   "shell": {
     "business": "Business",
@@ -121,7 +122,26 @@
     "generic": "Something went wrong. Please try again.",
     "invalid_setting": "Some values are not valid. Check the highlighted fields.",
     "service_charge_not_allowed": "Cloud kitchens cannot charge a service charge.",
-    "invalid_reference": "Something you selected no longer exists. Reload and try again."
+    "invalid_reference": "Something you selected no longer exists. Reload and try again.",
+    "not_found": "Not found. It may have been removed; reload the page.",
+    "validation_error": "Some values are not valid. Check the highlighted fields.",
+    "unit_code_taken": "A unit with this code already exists.",
+    "category_name_taken": "A category with this name already exists here.",
+    "category_cycle": "A category cannot be inside itself.",
+    "category_too_deep": "Categories can be nested at most 20 levels.",
+    "sku_taken": "Another item already uses this SKU.",
+    "stale_version": "Someone else saved this item first. Reload to see their change.",
+    "base_unit_locked": "The base unit cannot change after the item is created.",
+    "conversion_to_base_unit": "A conversion cannot use the base unit itself.",
+    "no_unit_conversion": "This unit has no conversion for the item.",
+    "channel_code_taken": "A channel with this code already exists.",
+    "channel_code_locked": "A channel code cannot change after it is created.",
+    "price_conflict": "Someone saved a price for the same date. Reload and try again.",
+    "price_already_started": "This price has already started; add a new start date instead.",
+    "item_not_found": "This item no longer exists.",
+    "channel_not_found": "This channel no longer exists.",
+    "price_not_found": "This price no longer exists.",
+    "category_not_found": "This category no longer exists."
   },
   "appearance": {
     "open": "Appearance",
@@ -223,6 +243,111 @@
         "discount": "Discount",
         "journal": "Journal"
       }
+    }
+  },
+  "catalog": {
+    "title": "Catalog",
+    "readOnly": "You can view the catalog. Ask a manager to change items or prices.",
+    "back": "Back",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "archived": "Archived",
+    "tabs": {
+      "items": "Items",
+      "categories": "Categories",
+      "units": "Units",
+      "channels": "Sales channels"
+    },
+    "types": {
+      "menu": "Menu item",
+      "semi_finished": "Semi-finished",
+      "ingredient": "Ingredient"
+    },
+    "storage": {
+      "frozen": "Frozen",
+      "chilled": "Chilled",
+      "dry": "Dry"
+    },
+    "dimensions": {
+      "mass": "Weight",
+      "volume": "Volume",
+      "count": "Count"
+    },
+    "kinds": {
+      "dine_in": "Dine-in",
+      "takeaway": "Takeaway",
+      "platform": "Delivery platform",
+      "wholesale": "Wholesale"
+    },
+    "items": {
+      "search": "Search by name or SKU",
+      "type": "Type",
+      "allTypes": "All types",
+      "new": "New item",
+      "empty": "No items yet. Add your first menu item or ingredient.",
+      "noMatch": "No items match. Try another word or type.",
+      "more": "Show more"
+    },
+    "item": {
+      "nameEn": "Name (English)",
+      "nameId": "Name (Indonesian)",
+      "sku": "SKU",
+      "category": "Category",
+      "noCategory": "No category",
+      "baseUnit": "Base unit",
+      "chooseUnit": "Choose a unit",
+      "storage": "Storage",
+      "noStorage": "Not set",
+      "shelfLife": "Shelf life (days)",
+      "allergens": "Allergens (comma separated)",
+      "stocked": "Track stock",
+      "active": "Active",
+      "problems": {
+        "sku": "SKU: letters, digits and . _ / - only, up to 64.",
+        "name": "Enter a name in at least one language.",
+        "unit": "Choose a base unit.",
+        "shelfLife": "Shelf life is a whole number of days.",
+        "conversion": "Each conversion needs a different unit and a number above 0."
+      }
+    },
+    "conversions": {
+      "title": "Unit conversions",
+      "help": "For example 1 box = 2500 (base units). Kilograms and grams, litres and millilitres convert automatically.",
+      "unit": "Unit",
+      "factor": "Base units in 1 of this unit",
+      "add": "Add conversion"
+    },
+    "prices": {
+      "title": "Prices per channel",
+      "help": "A price applies from its start date until a newer one starts. Promotions are discounts on the sale, not prices.",
+      "noChannels": "Add a sales channel first (Catalog, Sales channels).",
+      "empty": "No prices yet.",
+      "from": "from {{date}}",
+      "channel": "Channel",
+      "startDate": "Start date",
+      "amount": "Price ({{currency}})"
+    },
+    "categories": {
+      "empty": "No categories yet.",
+      "new": "New category",
+      "name": "Name",
+      "parent": "Inside",
+      "top": "Top level"
+    },
+    "units": {
+      "platform": "Standard",
+      "code": "Code",
+      "name": "Name",
+      "dimension": "Measures"
+    },
+    "channels": {
+      "help": "Where you sell: dine-in, takeaway, each delivery app, wholesale. Each can have its own prices.",
+      "empty": "No sales channels yet.",
+      "new": "New channel",
+      "name": "Name",
+      "code": "Code",
+      "kind": "Kind",
+      "platform": "Platform code (e.g. grabfood)"
     }
   }
 }

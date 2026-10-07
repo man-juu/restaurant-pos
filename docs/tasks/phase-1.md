@@ -7,6 +7,7 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 - [x] 1a Tenant settings: tax, service charge, payment methods, numbering, approval and alert rules (FR-TEN-004 to 009)
 - [x] 1b part 1 Catalog backend: units, categories, items, translations, conversions (FR-CAT-001, 002, 008, 009)
 - [x] 1b part 2 Channels and channel list prices with start dates (FR-CAT-004)
+- [x] 1b part 5 Catalog screens: items (search, type filter, edit, conversions), categories, units, channels, prices per channel; EN/ID; phone/tablet/desktop e2e (FR-CAT-001, 002, 004, 009)
 - [x] Legacy app reviewed, ideas kept (docs/existing-code-review.md), old branches deleted
 - [x] Complexity limits in lint: ruff C90 (max 10), PLR09xx, SIM/PERF; ESLint complexity 10, max-depth 3, max-params 4
 
@@ -16,7 +17,6 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 | --- | --- | --- | --- |
 | 2 | 1b part 3: upload engine (menu/ingredient photos, login background), optional by default | FR-CAT-001 photo, theme background | file type sniffing, size limit, re-encode images, no SVG |
 | 3 | 1b part 4: free AI images with usage counter, block at 85% of free limit plus per-tenant daily cap | FR-CAT-013, ADR-022 | off until platform configures the key |
-| 4 | 1b part 5: catalog screens (list, search, edit form, units, categories) EN/ID, phone/tablet/desktop | FR-CAT-001 to 004 | ux-review checklist |
 | 5 | 1c BOM versions, nesting with cycle check, theoretical cost and margin, food-cost alert | FR-CAT-005 to 007, 012 | cost hidden without catalog.cost.view |
 | 6 | 1d Import/export CSV/XLSX, demo seed (fictional menu shaped like the legacy one) | FR-IMP-001 to 003 | XLSX library needs owner approval |
 | 7 | 1e Inventory ledger, batches, FEFO, moving average, balances, reversals | FR-INV-001 to 006, 014, FR-X-005 | append-only, same-transaction postings |

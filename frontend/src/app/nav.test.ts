@@ -11,6 +11,8 @@ const caps = (over: Partial<Capabilities>): Capabilities => ({
   modules: [],
   subscription: { state: 'active', days_left: null },
   nav: [],
+  currency: 'IDR',
+  language: 'id',
   ...over,
 })
 

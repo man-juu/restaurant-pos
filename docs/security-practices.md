@@ -94,6 +94,15 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - Performance: the price list of 30 items runs in a constant number of queries (guard: 8); one DISTINCT ON query served by the `(tenant_id, channel_id, item_id, valid_from)` index.
 - Dev setup fixes found on a Windows checkout: `.gitattributes` keeps container scripts LF (the database init script failed with CRLF), and the dev frontend image now copies `.npmrc`, so `ignore-scripts` (supply-chain guard) also applies inside Docker.
 
+## Slice 1b part 5 review (catalog screens)
+
+- No new dependencies. No `dangerouslySetInnerHTML`; all names render as text, so a menu name cannot inject script.
+- Edit controls are hidden without `catalog.item.update`/`create`, but the server still decides (tests in `test_catalog*.py`); the e2e test checks the read-only view.
+- Forms send only writable fields: the strict API (`extra="forbid"`) would refuse extras such as `id`, and that was caught in review before shipping.
+- New items carry an `Idempotency-Key`, so a retried request on a weak connection cannot create a duplicate.
+- `/me/capabilities` now exposes the tenant currency and language: not sensitive, and only to members of that tenant.
+- Performance: the catalog screen is a separate 6.4 KB gzip chunk loaded on demand; the entry bundle is unchanged (115.5 KB of 160 KB). The search box uses a deferred value, so typing does not send a request per key.
+
 ## Dev tools added (2026-10-07)
 
 - complexipy 8.0.1 (MIT, PyPI release 2026-09-07) and eslint-plugin-sonarjs 4.2.2 (LGPL-3.0, SonarSource, dev only, not shipped in the bundle). Installed with the 7-day cooling-off; npm audit clean. Owner approved.

@@ -5,8 +5,10 @@
 
 const MINOR_DIGITS: Record<string, number> = { IDR: 0, JPY: 0 }
 
+export const minorDigits = (currency: string): number => MINOR_DIGITS[currency] ?? 2
+
 export function formatMoney(minor: number, currency: string, locale: string): string {
-  const digits = MINOR_DIGITS[currency] ?? 2
+  const digits = minorDigits(currency)
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
@@ -25,6 +27,13 @@ export function formatDateTime(iso: string, locale: string, timeZone: string): s
     timeStyle: 'short',
     timeZone,
   }).format(new Date(iso))
+}
+
+/** A calendar date from the API (YYYY-MM-DD, no time zone) in the user's locale. */
+export function formatDate(isoDate: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeZone: 'UTC' }).format(
+    new Date(`${isoDate}T00:00:00Z`),
+  )
 }
 
 /** i18next language code -> Intl locale. */

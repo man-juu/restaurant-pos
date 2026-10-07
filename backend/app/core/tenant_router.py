@@ -12,7 +12,7 @@ from app.core.access.permissions import Registry
 from app.core.access.policy import Principal, require, require_member
 from app.core.access.subscription import days_left
 from app.core.errors import NotFoundError
-from app.core.models import Outlet, Role
+from app.core.models import Outlet, Role, Tenant
 from app.core.tenancy import tenant_session
 
 router = APIRouter(prefix="/api/v1", tags=["tenant"])
@@ -39,6 +39,10 @@ class Capabilities(BaseModel):
     modules: list[str]
     subscription: SubscriptionBanner
     nav: list[str]
+    # Formatting defaults for the UI (FR-X-002): money in this currency's minor units, and
+    # names fall back to the tenant's default language.
+    currency: str
+    language: str
 
 
 @router.get("/outlets", response_model=list[OutletOut])
@@ -100,7 +104,15 @@ async def capabilities(
     ]
     owners = p.can("tenant.subscription.view")
     show_days = owners and p.subscription is not None and p.subscription.reminders_enabled
+    async with tenant_session(request.app.state.sessionmaker, p.tenant_id, p.user_id) as db:
+        tenant = (
+            await db.execute(
+                select(Tenant.currency, Tenant.language).where(Tenant.id == p.tenant_id)
+            )
+        ).one()
     return Capabilities(
+        currency=tenant.currency,
+        language=tenant.language,
         tenant_id=p.tenant_id,
         permissions=sorted(p.permissions & registry.permissions),
         all_outlets=p.all_outlets,

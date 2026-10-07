@@ -48,7 +48,8 @@
     "reports": "Laporan",
     "users": "Pengguna dan peran",
     "main": "Utama",
-    "settings": "Pengaturan"
+    "settings": "Pengaturan",
+    "catalog": "Katalog"
   },
   "shell": {
     "business": "Usaha",
@@ -121,7 +122,26 @@
     "generic": "Terjadi kesalahan. Silakan coba lagi.",
     "invalid_setting": "Beberapa nilai tidak valid. Periksa kolom yang ditandai.",
     "service_charge_not_allowed": "Cloud kitchen tidak dapat mengenakan biaya layanan.",
-    "invalid_reference": "Pilihan Anda sudah tidak ada. Muat ulang lalu coba lagi."
+    "invalid_reference": "Pilihan Anda sudah tidak ada. Muat ulang lalu coba lagi.",
+    "not_found": "Tidak ditemukan. Mungkin sudah dihapus; muat ulang halaman.",
+    "validation_error": "Beberapa nilai tidak valid. Periksa kolom yang ditandai.",
+    "unit_code_taken": "Satuan dengan kode ini sudah ada.",
+    "category_name_taken": "Kategori dengan nama ini sudah ada di sini.",
+    "category_cycle": "Kategori tidak boleh berada di dalam dirinya sendiri.",
+    "category_too_deep": "Kategori maksimal bertingkat 20 level.",
+    "sku_taken": "SKU ini sudah dipakai item lain.",
+    "stale_version": "Orang lain sudah menyimpan item ini lebih dulu. Muat ulang untuk melihat perubahannya.",
+    "base_unit_locked": "Satuan dasar tidak bisa diubah setelah item dibuat.",
+    "conversion_to_base_unit": "Konversi tidak boleh memakai satuan dasar itu sendiri.",
+    "no_unit_conversion": "Satuan ini belum punya konversi untuk item tersebut.",
+    "channel_code_taken": "Kanal dengan kode ini sudah ada.",
+    "channel_code_locked": "Kode kanal tidak bisa diubah setelah dibuat.",
+    "price_conflict": "Orang lain menyimpan harga untuk tanggal yang sama. Muat ulang dan coba lagi.",
+    "price_already_started": "Harga ini sudah berlaku; tambahkan tanggal mulai baru.",
+    "item_not_found": "Item ini sudah tidak ada.",
+    "channel_not_found": "Kanal ini sudah tidak ada.",
+    "price_not_found": "Harga ini sudah tidak ada.",
+    "category_not_found": "Kategori ini sudah tidak ada."
   },
   "appearance": {
     "open": "Tampilan",
@@ -223,6 +243,111 @@
         "discount": "Diskon",
         "journal": "Jurnal"
       }
+    }
+  },
+  "catalog": {
+    "title": "Katalog",
+    "readOnly": "Anda dapat melihat katalog. Minta manajer untuk mengubah item atau harga.",
+    "back": "Kembali",
+    "edit": "Ubah",
+    "cancel": "Batal",
+    "archived": "Diarsipkan",
+    "tabs": {
+      "items": "Item",
+      "categories": "Kategori",
+      "units": "Satuan",
+      "channels": "Kanal penjualan"
+    },
+    "types": {
+      "menu": "Menu",
+      "semi_finished": "Setengah jadi",
+      "ingredient": "Bahan baku"
+    },
+    "storage": {
+      "frozen": "Beku",
+      "chilled": "Dingin",
+      "dry": "Kering"
+    },
+    "dimensions": {
+      "mass": "Berat",
+      "volume": "Volume",
+      "count": "Jumlah"
+    },
+    "kinds": {
+      "dine_in": "Makan di tempat",
+      "takeaway": "Bawa pulang",
+      "platform": "Aplikasi pesan antar",
+      "wholesale": "Grosir"
+    },
+    "items": {
+      "search": "Cari nama atau SKU",
+      "type": "Jenis",
+      "allTypes": "Semua jenis",
+      "new": "Item baru",
+      "empty": "Belum ada item. Tambahkan menu atau bahan baku pertama Anda.",
+      "noMatch": "Tidak ada item yang cocok. Coba kata atau jenis lain.",
+      "more": "Tampilkan lagi"
+    },
+    "item": {
+      "nameEn": "Nama (Inggris)",
+      "nameId": "Nama (Indonesia)",
+      "sku": "SKU",
+      "category": "Kategori",
+      "noCategory": "Tanpa kategori",
+      "baseUnit": "Satuan dasar",
+      "chooseUnit": "Pilih satuan",
+      "storage": "Penyimpanan",
+      "noStorage": "Belum diatur",
+      "shelfLife": "Masa simpan (hari)",
+      "allergens": "Alergen (pisahkan dengan koma)",
+      "stocked": "Lacak stok",
+      "active": "Aktif",
+      "problems": {
+        "sku": "SKU: hanya huruf, angka dan . _ / -, maksimal 64.",
+        "name": "Isi nama dalam minimal satu bahasa.",
+        "unit": "Pilih satuan dasar.",
+        "shelfLife": "Masa simpan berupa jumlah hari (bilangan bulat).",
+        "conversion": "Setiap konversi perlu satuan berbeda dan angka di atas 0."
+      }
+    },
+    "conversions": {
+      "title": "Konversi satuan",
+      "help": "Misalnya 1 dus = 2500 (satuan dasar). Kilogram dan gram, liter dan mililiter dikonversi otomatis.",
+      "unit": "Satuan",
+      "factor": "Satuan dasar dalam 1 satuan ini",
+      "add": "Tambah konversi"
+    },
+    "prices": {
+      "title": "Harga per kanal",
+      "help": "Harga berlaku mulai tanggal mulainya sampai harga yang lebih baru berlaku. Promo dicatat sebagai diskon pada penjualan, bukan harga.",
+      "noChannels": "Tambahkan kanal penjualan terlebih dahulu (Katalog, Kanal penjualan).",
+      "empty": "Belum ada harga.",
+      "from": "mulai {{date}}",
+      "channel": "Kanal",
+      "startDate": "Tanggal mulai",
+      "amount": "Harga ({{currency}})"
+    },
+    "categories": {
+      "empty": "Belum ada kategori.",
+      "new": "Kategori baru",
+      "name": "Nama",
+      "parent": "Di dalam",
+      "top": "Tingkat teratas"
+    },
+    "units": {
+      "platform": "Standar",
+      "code": "Kode",
+      "name": "Nama",
+      "dimension": "Mengukur"
+    },
+    "channels": {
+      "help": "Tempat Anda menjual: makan di tempat, bawa pulang, setiap aplikasi pesan antar, grosir. Masing-masing bisa punya harga sendiri.",
+      "empty": "Belum ada kanal penjualan.",
+      "new": "Kanal baru",
+      "name": "Nama",
+      "code": "Kode",
+      "kind": "Jenis",
+      "platform": "Kode platform (mis. grabfood)"
     }
   }
 }

@@ -25,8 +25,13 @@ export function setCsrfToken(token: string | null): void {
 
 const SAFE = new Set(['GET', 'HEAD', 'OPTIONS'])
 
-export async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
-  const headers: Record<string, string> = { Accept: 'application/json' }
+export async function request<T>(
+  method: string,
+  path: string,
+  body?: unknown,
+  extraHeaders: Record<string, string> = {},
+): Promise<T> {
+  const headers: Record<string, string> = { ...extraHeaders, Accept: 'application/json' }
   if (body !== undefined) headers['Content-Type'] = 'application/json'
   if (!SAFE.has(method) && csrfToken) headers['X-CSRF-Token'] = csrfToken
   const response = await fetch(path, {
