@@ -48,20 +48,25 @@ Each backend module has `models.py, schemas.py, service.py, router.py, events.py
 Run from the repository root unless noted.
 
 ```
-docker compose up --build           # local stack: db :5432, api :8000, web :5173 (bound to localhost)
+docker compose up --build           # local stack: db :5432, migrate (one-shot), api :8000, web :5173
+docker compose down -v              # reset the local database (destroys local data only)
 pre-commit install                  # once: ruff, Prettier, gitleaks on every commit
 
 # backend/ (first: python -m venv .venv && .venv/bin/pip install -e ".[dev]")
 ruff check . && ruff format --check .
 mypy
 lint-imports                        # layer contract (per-module rules: tests/test_module_registry.py)
-pytest                              # needs PostgreSQL: docker compose up -d db
+pytest                              # needs PostgreSQL: docker compose up -d db (creates pos_test)
+alembic revision --autogenerate -m "..."  # then review by hand; add RLS via migrations/helpers.py
+alembic upgrade head                # uses MIGRATION_DATABASE_URL (owner role)
 
 # frontend/ (first: npm ci)
 npm run dev | lint | typecheck | test | build | format:check
 ```
 
 CI (`.github/workflows/ci.yml`) runs all of these plus a gitleaks scan of the full Git history.
+
+Database roles: migrations run as the owner; the API connects as `pos_app` (no superuser, no table ownership, no BYPASSRLS); `pos_readonly` for reports. New tenant tables must call `enable_tenant_rls` and `grant` from `migrations/helpers.py`; `tests/test_schema_security.py` fails otherwise.
 
 ## Non-negotiable rules
 

@@ -23,14 +23,14 @@ jobs:
       postgres:
         image: postgres:17-alpine
         env:
-          POSTGRES_DB: pos_test
+          POSTGRES_DB: pos
           POSTGRES_USER: pos_owner
           POSTGRES_PASSWORD: ci-only-password
         ports: ["5432:5432"]
         options: >-
           --health-cmd "pg_isready -U pos_owner" --health-interval 5s --health-retries 10
     env:
-      DATABASE_URL: postgresql+asyncpg://pos_owner:ci-only-password@localhost:5432/pos_test
+      OWNER_DATABASE_URL: postgresql+asyncpg://pos_owner:ci-only-password@localhost:5432/pos
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6

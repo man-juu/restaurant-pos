@@ -8,21 +8,35 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-pos}
       POSTGRES_USER: ${POSTGRES_USER:-pos_owner}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dev-only-password}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:-dev-only-app-password}
+      READONLY_DB_PASSWORD: ${READONLY_DB_PASSWORD:-dev-only-readonly-password}
     ports: ["127.0.0.1:5432:5432"] # bound to localhost only
-    volumes: [db-data:/var/lib/postgresql/data]
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       retries: 10
 
+  # One-shot: applies migrations as the owner role, then exits. The API waits for it.
+  migrate:
+    build: ../backend
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      MIGRATION_DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-pos_owner}:${POSTGRES_PASSWORD:-dev-only-password}@db:5432/${POSTGRES_DB:-pos}
+    depends_on:
+      db: { condition: service_healthy }
+
   api:
     build: ../backend
     environment:
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-pos_owner}:${POSTGRES_PASSWORD:-dev-only-password}@db:5432/${POSTGRES_DB:-pos}
+      # The API connects as the restricted role so row-level security always applies.
+      DATABASE_URL: postgresql+asyncpg://pos_app:${APP_DB_PASSWORD:-dev-only-app-password}@db:5432/${POSTGRES_DB:-pos}
     ports: ["127.0.0.1:8000:8000"]
     volumes: [../backend/app:/app/app]
     depends_on:
-      db: { condition: service_healthy }
+      migrate: { condition: service_completed_successfully }
 
   web:
     build: ../frontend

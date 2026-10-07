@@ -4,6 +4,8 @@ Required by `docs/06` (personal data protection). List every place that stores p
 
 | Data | Category | Where stored | Purpose | Retention | Who can access | Added in slice |
 | --- | --- | --- | --- | --- | --- | --- |
-| _none yet_ | | | | | | 0.1 |
+| User email and name | Personal | `users` | Sign-in, invitations | While the account exists | Identity service; tenant owners see their members | 0.3 |
+| Password hash, TOTP secret (encrypted) | Credential | `users` | Authentication | While the account exists | Identity service only; never logged | 0.3 (columns), 0.4 (use) |
+| Audit entries with user ID, IP and request ID | Personal (IP) | `audit_log` | Security and financial accountability | Same as ledgers (`docs/05` section 7) | Owner, co-owner, users with permission | 0.3 |
 
-Planned entries (fill in when built): user email and name (0.3/0.4), password hashes and TOTP secrets (0.4), session and device records with IP and user agent (0.4), audit log (0.3), customer name and phone (Phase 3).
+Planned entries (fill in when built): session and device records with IP and user agent (0.4), customer name and phone (Phase 3).
