@@ -47,6 +47,11 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'local/no-literal-text': 'error',
+      // Keep functions small and readable (cyclomatic complexity, nesting, parameters).
+      complexity: ['error', 10],
+      'max-depth': ['error', 3],
+      'max-params': ['error', 4],
+      'max-nested-callbacks': ['error', 3],
     },
   },
   { files: ['**/*.test.{ts,tsx}', 'e2e/**'], rules: { 'local/no-literal-text': 'off' } },

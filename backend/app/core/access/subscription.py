@@ -27,8 +27,14 @@ def effective_state(sub: SubscriptionInfo | None, now: datetime) -> str:
         return "read_only"  # fail closed: a tenant without a subscription row cannot write
     if sub.suspended:
         return "suspended"
-    if sub.plan_type == "free" or sub.ends_at is None:
-        return "free" if sub.plan_type == "free" else "active"
+    if sub.plan_type == "free":
+        return "free"
+    return _paid_state(sub, now)
+
+
+def _paid_state(sub: SubscriptionInfo, now: datetime) -> str:
+    if sub.ends_at is None:
+        return "active"
     if now >= sub.ends_at + timedelta(days=sub.grace_days):
         return "read_only"
     if now >= sub.ends_at:

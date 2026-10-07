@@ -124,7 +124,7 @@ async def load_principal(request: Request, auth: AuthContext) -> Principal:
         membership_id=row.membership_id,
         role_id=row.role_id,
         permissions=frozenset(code for code, _ in grants),
-        limits={code: limit for code, limit in grants},
+        limits=dict(grants),
         all_outlets=row.scope == "all",
         outlet_ids=frozenset(row.outlet_ids or ()),
         enabled_modules=frozenset(row.modules or ()) | CORE_MODULES,

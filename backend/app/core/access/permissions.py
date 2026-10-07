@@ -99,9 +99,8 @@ class Registry:
         return permission in self.permissions
 
 
-def build_registry(manifests: Iterable[ModuleManifest]) -> Registry:
-    manifests = list(manifests)
-    codes = set(CORE_PERMISSIONS)
+def _module_permissions(manifests: list[ModuleManifest]) -> set[str]:
+    codes: set[str] = set()
     for m in manifests:
         for code in m.permissions:
             if code.split(".", 1)[0] != m.name or code.count(".") != 2:
@@ -109,6 +108,12 @@ def build_registry(manifests: Iterable[ModuleManifest]) -> Registry:
                     f"{m.name}: permission {code!r} must be '{m.name}.resource.action'"
                 )
             codes.add(code)
+    return codes
+
+
+def build_registry(manifests: Iterable[ModuleManifest]) -> Registry:
+    manifests = list(manifests)
+    codes = set(CORE_PERMISSIONS) | _module_permissions(manifests)
     info = {t.key: t for t in _CORE_TEMPLATES}
     templates: dict[str, frozenset[str]] = {}
     for t in _CORE_TEMPLATES:

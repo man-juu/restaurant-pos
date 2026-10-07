@@ -15,7 +15,8 @@ import urllib.request
 
 
 def main(path: str) -> int:
-    pins = [line.strip().split("==") for line in open(path) if "==" in line]
+    with open(path) as lines:
+        pins = [line.strip().split("==") for line in lines if "==" in line]
     findings = 0
     for name, version in pins:
         url = f"https://pypi.org/pypi/{name}/{version}/json"

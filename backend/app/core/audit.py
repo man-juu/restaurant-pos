@@ -15,7 +15,7 @@ from app.core.logging import request_id_var
 from app.core.models import AuditLog
 
 
-async def record(
+async def record(  # noqa: PLR0913 - keyword-only audit fields
     session: AsyncSession,
     *,
     tenant_id: uuid.UUID,

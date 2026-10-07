@@ -37,7 +37,18 @@ line-length = 100
 target-version = "py312"
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "B", "UP", "S", "ASYNC", "RUF"]
+# C90: cyclomatic complexity; PLR09xx: too many branches/returns/statements/arguments;
+# SIM/PERF/C4: simpler and faster idioms.
+select = ["E", "F", "W", "I", "B", "UP", "S", "ASYNC", "RUF", "C90", "PLR09", "SIM", "PERF", "C4"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pylint]
+max-args = 8  # keyword-only service arguments (db, tenant_id, user_id, data...) are common
+max-branches = 12
+max-returns = 6
+max-statements = 50
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "S608"]  # S608: SQL built from fixed table names in tests

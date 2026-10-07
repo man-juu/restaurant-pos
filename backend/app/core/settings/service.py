@@ -42,7 +42,7 @@ async def get_setting(db: AsyncSession, tenant_id: uuid.UUID, key: str) -> Stric
 async def get_all_settings(db: AsyncSession, tenant_id: uuid.UUID) -> dict[str, Strict]:
     """Every setting in two queries (stored rows, then the tenant's country for defaults)."""
     result = await db.execute(select(TenantSetting.key, TenantSetting.value))
-    rows: dict[str, Any] = {key: value for key, value in result.all()}
+    rows: dict[str, Any] = dict(result.all())
     country = None if set(SETTINGS) <= rows.keys() else (await _tenant(db, tenant_id)).country
     return {
         key: model.model_validate(rows[key] if key in rows else default_for(country or "", key))
@@ -66,10 +66,13 @@ async def put_setting(
     except ValidationError as exc:
         details = [{"loc": list(e["loc"]), "msg": e["msg"]} for e in exc.errors()]
         raise InvalidSetting(details=details) from None
-    if key == "service_charge" and getattr(parsed, "enabled", False):
-        # FR-TEN-005: service charge is always off for the cloud kitchen profile.
-        if (await _tenant(db, tenant_id)).profile == "cloud_kitchen":
-            raise InvalidSetting("service_charge_not_allowed")
+    # FR-TEN-005: service charge is always off for the cloud kitchen profile.
+    if (
+        key == "service_charge"
+        and getattr(parsed, "enabled", False)
+        and (await _tenant(db, tenant_id)).profile == "cloud_kitchen"
+    ):
+        raise InvalidSetting("service_charge_not_allowed")
     before = await get_setting(db, tenant_id, key)
     stored = parsed.model_dump(mode="json")
     stmt = insert(TenantSetting).values(
