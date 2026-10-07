@@ -1,43 +1,41 @@
-# Existing code review (Q-001, Step 0)
+# Existing code review (Q-001)
 
-Reviewed 2026-10-07 at commit `564b870` ("Initial FastAPI setup"). Read-only: no code changed.
+Reviewed: branch `legacy-review` (Korean POS, React 19 + sql.js + Electron/Tauri), 2026-10-07.
 
-## 1. What exists
+## Verdict
 
-| Item | Finding |
-| --- | --- |
-| Structure | `app/main.py`, `requirements.txt`, `.gitignore`. One commit. |
-| Language and framework | Python, FastAPI 0.134, Pydantic 2.12, SQLAlchemy 2.0.47 (installed, not used). |
-| Database, models, migrations | None. No database driver (`asyncpg` is missing), no Alembic. |
-| Tests, lint, CI, Docker | None. |
-| How it runs | Presumably `uvicorn app.main:app`, which serves `GET /` → `{"message": "Restaurant POS Running 🚀"}`. |
+**Rewrite, keep as reference.** The legacy app is a single-device offline app (SQLite in the browser's IndexedDB, no server, no sign-in). The approved design (docs/04, ADRs) is a multi-tenant server with PostgreSQL, RLS, roles and audit. The two cannot be merged; porting code would cost more than rebuilding. Its domain knowledge and screens are valuable and are reused below.
 
-## 2. Quality assessment
+## Keep (reuse as input)
 
-- `app/main.py` is a hello-world: a sync handler, no settings, no app factory, and no `/health`.
-- `requirements.txt` is `pip freeze` output saved as **UTF-16 LE with CRLF line endings** (from Windows PowerShell `>` redirection). Many tools and Linux Docker builds can't read it. It also pins `colorama`, which is Windows-only, and mixes direct and transitive dependencies.
-- `.gitignore` is reasonable but incomplete for the planned monorepo.
+| What | Where | Reuse in |
+| --- | --- | --- |
+| 54 menus, 45 ingredients, full BOM | `src/data/seed-data.js` | demo tenant seed and an import sample (slices 1b-1d) |
+| Reorder logic: lead time, min days-of-inventory, daily average usage | `src/services/index.js`, `ingredients.lead_time/min_doi` | reorder suggestions (FR-INV / FR-PUR) |
+| Batch stock with expiry | `stock_batches` | already in spec as FEFO lots |
+| Trash / restore for deleted master data | `src/services/trash.js` | archive instead of delete (spec) |
+| Tables screen, category tabs, POS layout ideas | `src/pages/*`, screenshots | Phase 2 POS screens |
+| EN/ID/KO strings | `src/i18n.js` | wording reference |
 
-## 3. Comparison with docs/04 and docs/05
+## Problems found (why not port)
 
-Nothing overlaps yet. The planned `backend/`, `frontend/`, `infra/` layout, the module structure, RLS tenancy, ledgers and audit log don't exist. Because there is no data model, there is no float-money or tenant-isolation debt to undo.
+High
+1. **Checkout is not atomic.** The sale is saved first, then each item, then stock is checked and deducted one item at a time, saving to disk after each step. "Insufficient stock" on item 2 leaves a saved sale with item 1 deducted and item 2 not. Stock check is per item, so two items using the same ingredient can both pass and drive stock negative. (New design: one database transaction per document.)
+2. **Auto-update points at a GitHub repo you don't own** (`koreanpos/koreanpos`) and the app is unsigned. Whoever controls that repo name could ship an "update" that runs on every till. If any copy is installed somewhere, disable auto-update or uninstall it.
+3. **No sign-in or roles.** Anyone at the till can delete sales, edit stock or wipe data.
+4. **Ledger can be erased.** Permanent delete removes stock transactions; `total_qty` can be edited directly and drift from batches.
 
-## 4. Keep or rewrite
+Medium
+5. Quantities are floating point (`REAL`); rounding errors accumulate. (New: `numeric(18,4)`.)
+6. Data lives in browser storage on one PC: clearing site data or a disk failure loses everything; backups are manual.
+7. Electron 28 is end-of-life; `sandbox: false`; any link opens via `shell.openExternal` without an https allow-list.
+8. Two desktop shells (Electron and Tauri) maintained side by side.
 
-| File | Recommendation |
-| --- | --- |
-| `app/main.py` | **Rewrite** as `backend/app/main.py` in slice 0.2. |
-| `requirements.txt` | **Replace** with `backend/pyproject.toml` (UTF-8, direct deps only, with a lock file) in slice 0.1. |
-| `.gitignore` | **Keep and extend** in slice 0.1 (`.env.*` with `!.env.example`, `node_modules/`, `dist/`, tool caches, coverage). |
+Low
+9. Repo hygiene: part of `node_modules`, many screenshots, and debug scripts (`check_regex*.cjs`, `test-*.cjs`) are committed; several near-duplicate pages (`Menu2`, `MenuTest*`).
+10. No automated tests.
 
-In short, treat it as a throwaway prototype and start clean (this matches the Q-001 default).
+## Next
 
-## 5. Risks
-
-- Secrets in history: none. Both commits contain only the files above, and `.env` was never tracked.
-- Encoding: the UTF-16 file would break a Linux build. Removing it fixes that.
-- No other risks found.
-
-## 6. Questions for the owner
-
-See the summary in chat. Recorded answers go into the `docs/09` changelog.
+- Nothing from this branch is merged. Keep `legacy-review` as an archive (or delete it later; owner decides).
+- Seed data and reorder rules are pulled into Phase 1 slices with tests.
