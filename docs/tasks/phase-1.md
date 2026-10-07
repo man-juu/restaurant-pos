@@ -13,7 +13,7 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 
 | # | Slice | Requirements | Notes |
 | --- | --- | --- | --- |
-| 1 | 1b part 2: modifiers, channels, channel prices with dates, per-outlet availability and price | FR-CAT-003, 004, FR-TEN-011 | FR-TEN-011 was listed under 1a but not built yet |
+| 1 | 1b part 2: channels and channel list prices with start dates | FR-CAT-004 | modifiers (FR-CAT-003) and per-outlet overrides (FR-TEN-011) moved to Phase 2 (docs/09 0.20) |
 | 2 | 1b part 3: upload engine (menu/ingredient photos, login background), optional by default | FR-CAT-001 photo, theme background | file type sniffing, size limit, re-encode images, no SVG |
 | 3 | 1b part 4: free AI images with usage counter, block at 85% of free limit plus per-tenant daily cap | FR-CAT-013, ADR-022 | off until platform configures the key |
 | 4 | 1b part 5: catalog screens (list, search, edit form, units, categories) EN/ID, phone/tablet/desktop | FR-CAT-001 to 004 | ux-review checklist |
