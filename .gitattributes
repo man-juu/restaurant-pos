@@ -1,0 +1,6 @@
+# Files that run inside Linux containers must keep LF endings, even on a Windows checkout
+# (core.autocrlf=true turns them into CRLF and the shebang fails: "/bin/sh^M: bad interpreter").
+* text=auto
+*.sh text eol=lf
+Dockerfile* text eol=lf
+Caddyfile text eol=lf
