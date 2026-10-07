@@ -107,7 +107,7 @@ Core modules cannot be switched off. Other modules can be switched on or off per
 | FR-CAT-010 | Menu item to delivery-platform item code mapping per platform, so imported or entered platform sales map to recipes. | 1 |
 | FR-CAT-011 | Combos and bundles composed of menu items with a bundle price. | 2 |
 | FR-CAT-012 | Food-cost alert: each menu item may have a target HPP % (default per tenant). When a receipt or price change raises its theoretical HPP above the target, the owner and users with permission get an in-app alert showing the cause (which ingredient, old and new price). | 1 |
-| FR-CAT-013 | Optional AI image generation for menu and ingredient photos: the user types a prompt and gets an image to accept or discard. Uses a free tier only (Cloudflare Workers AI, ADR-009); only the typed prompt is sent. A usage counter shows images used and left today; generation is blocked before the free limit with a safety buffer, so it can never incur cost. Off unless the platform has configured the provider. | 1 |
+| FR-CAT-013 | Optional AI image generation for menu and ingredient photos: the user types a prompt and gets an image to accept or discard. Uses a free tier only (Cloudflare Workers AI, ADR-022); only the typed prompt is sent. A usage counter shows images used and left today; generation is blocked before the free limit with a safety buffer, so it can never incur cost. Off unless the platform has configured the provider. | 1 |
 
 ## IMP. Import and export
 
