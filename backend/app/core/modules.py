@@ -2,12 +2,13 @@
 
 Each module under `app.modules.<name>` exposes `MANIFEST` in its `module.py`. The registry
 discovers them, checks that declared dependencies exist and have no cycles, and mounts the
-routers under /api/v1. Per-tenant enable/disable (`tenant_modules`) is enforced in slice 0.5.
+routers under /api/v1. Per-tenant enable/disable (`tenant_modules`) is enforced by
+app.core.access.policy on every request.
 """
 
 import importlib
 import pkgutil
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from types import ModuleType
 
@@ -20,7 +21,10 @@ class ModuleManifest:
     depends_on: tuple[str, ...] = ()
     core: bool = False  # core modules cannot be switched off (docs/02)
     routers: tuple[APIRouter, ...] = ()
-    permissions: tuple[str, ...] = ()  # "module.resource.action", filled from slice 0.5
+    permissions: tuple[str, ...] = ()  # "module.resource.action" codes this module defines
+    # Default grants per role template key (docs/03 section 4), e.g. {"manager": ("x.y.view",)}.
+    # Owner and co-owner get every permission automatically.
+    role_templates: dict[str, tuple[str, ...]] = field(default_factory=dict)
     nav: tuple[str, ...] = ()  # navigation entry keys for /me/capabilities
     settings_schema: type | None = None
     extra: dict[str, object] = field(default_factory=dict)
@@ -69,7 +73,12 @@ def sort_by_dependency(manifests: Iterable[ModuleManifest]) -> list[ModuleManife
     return ordered
 
 
-def mount(app: FastAPI, manifests: Iterable[ModuleManifest], prefix: str = "/api/v1") -> None:
+def mount(
+    app: FastAPI,
+    manifests: Iterable[ModuleManifest],
+    include: Callable[[FastAPI, APIRouter], None],
+) -> None:
+    """Module routers declare their full paths (/api/v1/<module>/...)."""
     for manifest in manifests:
         for router in manifest.routers:
-            app.include_router(router, prefix=prefix)
+            include(app, router)

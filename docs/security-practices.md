@@ -11,7 +11,7 @@ Status: ✅ done and tested, 🔜 planned (slice), 👤 owner action.
 | Threat | What it looks like for us | Controls | Status |
 | --- | --- | --- | --- |
 | **Tenant data leak** (Top 10 A01) | One business sees another's sales or recipes | RLS forced on every tenant table, restricted DB role, per-transaction tenant, schema test fails on any unprotected table, cross-tenant tests | ✅ 0.3 |
-| **Broken access inside a tenant** (A01) | Cashier approves own refund, staff sees other outlets | Permission + outlet scope on every route, deny by default, route-list test | 🔜 0.5 |
+| **Broken access inside a tenant** (A01) | Cashier approves own refund, staff sees other outlets | Permission + outlet scope on every route, app refuses to start with an unprotected route, generated 403 test over all routes, self-approval blocked, owner role protected | ✅ 0.5 |
 | **Injection** (A05) | SQL injection through search or sort fields | Parameterised queries only, sort columns whitelisted, ruff security rules (`S`) in CI | ✅ 0.2 |
 | **Account takeover** (A07) | Password guessing, stolen password, session theft | Argon2id, lockout per account and IP, hashed session tokens, HttpOnly Secure `__Host-` cookie, idle and absolute timeouts, instant revocation, disabled users cut off at once | ✅ 0.4a |
 | | | TOTP 2FA required for owners and co-owners (code replay blocked, attempts rate-limited), recovery codes, common-password check, reset signs out everywhere | ✅ 0.4b |

@@ -1,6 +1,5 @@
 """Slice 0.4b: TOTP 2FA (FR-IDN-002), password reset (FR-IDN-008), invitations (FR-IDN-006)."""
 
-import asyncio
 import base64
 import uuid
 from collections.abc import Iterator
@@ -10,18 +9,14 @@ from typing import Any
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from sqlalchemy import insert, text
-from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.core.config import Settings
 from app.core.crypto import SecretBox
 from app.core.identity import totp
 from app.core.identity.deps import COOKIE_NAME
 from app.core.identity.passwords import WeakPassword, _hasher, validate_new_password
-from app.core.ids import uuid7
-from app.core.models import Membership, Role, Tenant, User
 from app.main import create_app
-from tests.conftest import TEST_OWNER_URL
+from tests.factories import add_member, drop_tenant, seed_tenant
 from tests.test_auth import new_client, owner
 
 PASSWORD = "a long and unusual owner passphrase"  # noqa: S105 - test fixture
@@ -39,52 +34,11 @@ class World:
 
 @pytest.fixture
 def world() -> Iterator[World]:
-    tenant, owner_id, staff_id, owner_role, staff_role = (uuid7() for _ in range(5))
-    owner_email, staff_email = f"own-{owner_id}@example.test", f"staff-{staff_id}@example.test"
-    owner(
-        insert(Tenant).values(
-            id=tenant,
-            name="Kitchen",
-            legal_name="Kitchen",
-            country="ID",
-            currency="IDR",
-            language="id",
-            timezone="Asia/Jakarta",
-            profile="cloud_kitchen",
-        )
-    )
-    owner(insert(Role).values(id=owner_role, tenant_id=tenant, name="Owner", requires_mfa=True))
-    owner(insert(Role).values(id=staff_role, tenant_id=tenant, name="Cashier"))
-    for uid, email, pw, role in (
-        (owner_id, owner_email, PASSWORD, owner_role),
-        (staff_id, staff_email, STAFF_PASSWORD, staff_role),
-    ):
-        owner(insert(User).values(id=uid, email=email, name="U", password_hash=_hasher.hash(pw)))
-        owner(insert(Membership).values(tenant_id=tenant, user_id=uid, role_id=role))
-    yield World(tenant, owner_email, owner_id, staff_email, staff_role)
-    asyncio.run(_cleanup(tenant))
-
-
-async def _cleanup(tenant: uuid.UUID) -> None:
-    engine = create_async_engine(TEST_OWNER_URL)
-    async with engine.begin() as conn:
-        await conn.execute(text("SET LOCAL session_replication_role = replica"))
-        users = "SELECT user_id FROM memberships WHERE tenant_id = :t"
-        for sql in (
-            f"DELETE FROM sessions WHERE user_id IN ({users})",
-            f"DELETE FROM recovery_codes WHERE user_id IN ({users})",
-            f"DELETE FROM password_resets WHERE user_id IN ({users})",
-            "DELETE FROM auth_throttle",
-            "DELETE FROM audit_log WHERE tenant_id = :t",
-            "DELETE FROM invitations WHERE tenant_id = :t",
-            "CREATE TEMP TABLE gone AS " + users,
-            "DELETE FROM memberships WHERE tenant_id = :t",
-            "DELETE FROM users WHERE id IN (SELECT user_id FROM gone)",
-            "DELETE FROM roles WHERE tenant_id = :t",
-            "DELETE FROM tenants WHERE id = :t",
-        ):
-            await conn.execute(text(sql), {"t": tenant})
-    await engine.dispose()
+    tenant, roles = seed_tenant()
+    owner_id, owner_email = add_member(tenant, roles["owner"], _hasher.hash(PASSWORD))
+    _, staff_email = add_member(tenant, roles["cashier"], _hasher.hash(STAFF_PASSWORD))
+    yield World(tenant, owner_email, owner_id, staff_email, roles["cashier"])
+    drop_tenant(tenant)
 
 
 @pytest.fixture
@@ -106,8 +60,13 @@ def login(client: TestClient, email: str, password: str) -> dict[str, Any]:
 
 
 def enroll(client: TestClient, world: World) -> tuple[str, list[str], str]:
-    """Sign in as the owner and complete 2FA setup; returns (secret, recovery codes, csrf)."""
-    csrf = login(client, world.owner_email, PASSWORD)["csrf_token"]
+    return enroll_as(client, world.owner_email, PASSWORD)
+
+
+def enroll_as(client: TestClient, email: str, password: str) -> tuple[str, list[str], str]:
+    """Sign in and complete 2FA setup; returns (secret, recovery codes, csrf)."""
+    client.cookies.clear()
+    csrf = login(client, email, password)["csrf_token"]
     secret = client.post("/api/v1/auth/mfa/setup", headers={"X-CSRF-Token": csrf}).json()["secret"]
     response = client.post(
         "/api/v1/auth/mfa/confirm",

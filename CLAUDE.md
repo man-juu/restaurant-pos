@@ -68,6 +68,8 @@ CI (`.github/workflows/ci.yml`) runs all of these plus a gitleaks scan of the fu
 
 Database roles: migrations run as the owner; the API connects as `pos_app` (no superuser, no table ownership, no BYPASSRLS); `pos_readonly` for reports; NOLOGIN `pos_auth` (BYPASSRLS) only owns the sign-in lookup function `auth_user_memberships()`. New tenant tables must call `enable_tenant_rls` and `grant` from `migrations/helpers.py`; `tests/test_schema_security.py` fails otherwise.
 
+Every route needs `Depends(require("module.resource.action"))` (or `public()` for sign-in style routes); include routers with `app.core.access.policy.include`. The app refuses to start otherwise. Module permissions and default role grants go in the module's `ModuleManifest`.
+
 ## Non-negotiable rules
 
 1. **Tenant isolation.** Every tenant table has `tenant_id`, RLS enabled and FORCED, and a leading `tenant_id` index. Set the tenant per transaction with `set_config('app.tenant_id', :id, true)`; never session-level. The app role is not a superuser or table owner. A test must fail if any tenant table lacks the policy.

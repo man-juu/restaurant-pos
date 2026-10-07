@@ -17,13 +17,14 @@ from sqlalchemy import (
     ForeignKey,
     ForeignKeyConstraint,
     Index,
+    Integer,
     MetaData,
     String,
     Text,
     UniqueConstraint,
     func,
 )
-from sqlalchemy.dialects.postgresql import CITEXT, INET, JSONB
+from sqlalchemy.dialects.postgresql import ARRAY, CITEXT, INET, JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from app.core.ids import uuid7
@@ -144,6 +145,9 @@ class Role(Base):
     is_template: Mapped[bool] = mapped_column(server_default="false")
     # Members with this role must use TOTP (FR-IDN-002: owner and co-owner templates).
     requires_mfa: Mapped[bool] = mapped_column(server_default="false")
+    # Which code template the role was copied from ("owner", "manager", ...); NULL for custom
+    # roles. Lets the server protect the owner role (docs/03 section 6 rules 2 and 3).
+    template_key: Mapped[str | None] = mapped_column(String(40))
     created_at: Mapped[datetime] = _created_at()
 
 
@@ -331,3 +335,31 @@ class Invitation(Base):
     expires_at: Mapped[datetime] = mapped_column()
     used_at: Mapped[datetime | None] = mapped_column()
     created_at: Mapped[datetime] = _created_at()
+
+
+class TenantModule(Base):
+    """FR-TEN-003. Source of truth for which optional modules a tenant uses."""
+
+    __tablename__ = "tenant_modules"
+
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"), primary_key=True)
+    module: Mapped[str] = mapped_column(String(40), primary_key=True)
+    enabled: Mapped[bool] = mapped_column(server_default="true")
+    enabled_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+
+class Subscription(Base):
+    """FR-SUB-001 to 005. Billing happens outside the app; the admin records the dates.
+    The effective state is computed from them (app/core/access/subscription.py)."""
+
+    __tablename__ = "subscriptions"
+    __table_args__ = (_check_in("plan_type", ("free", "paid")),)
+
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"), primary_key=True)
+    plan_type: Mapped[str] = mapped_column(Text, server_default="free")
+    starts_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    ends_at: Mapped[datetime | None] = mapped_column()  # NULL for free plans
+    grace_days: Mapped[int] = mapped_column(server_default="7")
+    reminders_enabled: Mapped[bool] = mapped_column(server_default="true")
+    reminder_days: Mapped[list[int]] = mapped_column(ARRAY(Integer), server_default="{14,7,3,1}")
+    suspended: Mapped[bool] = mapped_column(server_default="false")

@@ -4,7 +4,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 import app.modules
-from app.core import health
+from app.core import health, tenant_router
+from app.core.access.permissions import build_registry
+from app.core.access.policy import assert_all_routes_declared, include
 from app.core.config import Settings, get_settings
 from app.core.crypto import SecretBox
 from app.core.db import create_engine, create_sessionmaker
@@ -13,10 +15,12 @@ from app.core.identity import router as identity
 from app.core.logging import configure_logging
 from app.core.mailer import MemoryMailer
 from app.core.middleware import RequestContextMiddleware
-from app.core.modules import discover, mount
+from app.core.modules import ModuleManifest, discover, mount
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
+def create_app(
+    settings: Settings | None = None, manifests: list[ModuleManifest] | None = None
+) -> FastAPI:
     """App factory: tests build an app with their own settings; no import-time side effects."""
     settings = settings or get_settings()
     configure_logging(settings.log_level)
@@ -41,11 +45,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         redoc_url=None,
     )
     api.state.settings = settings
-    api.state.modules = discover(app.modules)
+    api.state.modules = manifests if manifests is not None else discover(app.modules)
+    api.state.permission_registry = build_registry(api.state.modules)
     register_error_handlers(api)
     api.add_middleware(RequestContextMiddleware)
-    api.include_router(health.router)
-    api.include_router(identity.router)
-    api.include_router(identity.invitations_router)
-    mount(api, api.state.modules)
+    for router in (
+        health.router,
+        identity.router,
+        identity.invitations_router,
+        tenant_router.router,
+    ):
+        include(api, router)
+    mount(api, api.state.modules, include)
+    # Deny by default: refuse to start if any route lacks require(...) or public().
+    assert_all_routes_declared(api, api.state.permission_registry)
     return api

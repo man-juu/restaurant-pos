@@ -4,14 +4,16 @@ import ipaddress
 import secrets
 import uuid
 from datetime import UTC, datetime, timedelta
+from typing import Annotated
 
-from fastapi import APIRouter, Request, Response
+from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy import func, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import audit
+from app.core.access.policy import PermissionDenied, Principal, public, require
 from app.core.config import Settings
-from app.core.errors import AppError, ConflictError, ForbiddenError, NotFoundError
+from app.core.errors import AppError, ConflictError, NotFoundError
 from app.core.identity import mfa, service
 from app.core.identity.deps import (
     COOKIE_NAME,
@@ -46,7 +48,8 @@ from app.core.mailer import Email
 from app.core.models import Invitation, Membership, PasswordReset, Role, User, UserSession
 from app.core.tenancy import tenant_session
 
-router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
+# Sign-in endpoints are public by necessity; each one performs its own session checks.
+router = APIRouter(prefix="/api/v1/auth", tags=["auth"], dependencies=[Depends(public())])
 
 IP_FAILURE_FACTOR = 4  # outlets share one IP; don't let one typo-prone device lock everyone
 
@@ -453,33 +456,17 @@ async def confirm_password_reset(body: PasswordResetConfirm, request: Request) -
 invitations_router = APIRouter(prefix="/api/v1/invitations", tags=["invitations"])
 
 
-class NoActiveTenant(AppError):
-    status_code, code = 409, "no_active_tenant"
-
-
 @invitations_router.post("", status_code=201, response_model=InvitationOut)
 async def create_invitation(
-    body: InvitationCreate, auth: CurrentAuth, request: Request
+    body: InvitationCreate,
+    request: Request,
+    p: Annotated[Principal, Depends(require("tenant.user.manage"))],
 ) -> InvitationOut:
-    """Owners and co-owners invite staff by email (single use, expiring link).
-
-    Interim check until the permission framework (slice 0.5): the inviter's role in this
-    tenant must be one that requires 2FA, i.e. owner or co-owner."""
-    if auth.tenant_id is None:
-        raise NoActiveTenant()
+    """FR-IDN-006: invite a person by email (single use, expiring link)."""
     settings: Settings = request.app.state.settings
     token = secrets.token_urlsafe(32)
     sessions = request.app.state.sessionmaker
-    async with tenant_session(sessions, auth.tenant_id, auth.user_id) as db:
-        inviter_is_owner = (
-            await db.execute(
-                select(Role.requires_mfa)
-                .join(Membership, Membership.role_id == Role.id)
-                .where(Membership.user_id == auth.user_id, Membership.status == "active")
-            )
-        ).scalar_one_or_none()
-        if not inviter_is_owner:
-            raise ForbiddenError()
+    async with tenant_session(sessions, p.tenant_id, p.user_id) as db:
         role = (
             await db.execute(
                 select(Role).where(Role.id == body.role_id, Role.tenant_id.is_not(None))
@@ -487,11 +474,14 @@ async def create_invitation(
         ).scalar_one_or_none()
         if role is None:  # RLS already hides other tenants' roles
             raise NotFoundError()
+        # docs/03 rules 2 and 3: only the owner may hand out the owner role.
+        if role.template_key == "owner" and not p.can("tenant.ownership.transfer"):
+            raise PermissionDenied(details={"permission": "tenant.ownership.transfer"})
         invitation = Invitation(
-            tenant_id=auth.tenant_id,
+            tenant_id=p.tenant_id,
             email=body.email.strip(),
             role_id=role.id,
-            invited_by=auth.user_id,
+            invited_by=p.user_id,
             token_hash=service.hash_token(token),
             expires_at=datetime.now(UTC) + timedelta(hours=settings.invitation_ttl_hours),
         )
@@ -499,9 +489,9 @@ async def create_invitation(
         await db.flush()
         await audit.record(
             db,
-            tenant_id=auth.tenant_id,
+            tenant_id=p.tenant_id,
             action="user.invited",
-            user_id=auth.user_id,
+            user_id=p.user_id,
             target_type="invitation",
             target_id=invitation.id,
             summary={"role_id": str(role.id)},
