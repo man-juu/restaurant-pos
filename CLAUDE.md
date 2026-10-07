@@ -56,6 +56,7 @@ pre-commit install                  # once: ruff, Prettier, gitleaks on every co
 ruff check . && ruff format --check .
 mypy
 lint-imports                        # layer contract (per-module rules: tests/test_module_registry.py)
+complexipy app scripts --max-complexity-allowed 15   # cognitive complexity
 pytest                              # needs PostgreSQL: docker compose up -d db (creates pos_test)
 alembic revision --autogenerate -m "..."  # then review by hand; add RLS via migrations/helpers.py
 alembic upgrade head                # uses MIGRATION_DATABASE_URL (owner role)
@@ -103,6 +104,7 @@ Redis (until measured need), marketplace scraping, native mobile apps, payroll o
 - **Every change, however small, gets a security check and a performance check before it is pushed** (owner rule):
   - Security: think through abuse of the change (injection, auth/tenant bypass, data exposure, unsafe input), run the security tests, and run `/security-review` for larger changes; record notable results in `docs/security-practices.md`.
   - Performance: backend `tests/test_performance.py` (p95 and query-count guards) and the frontend bundle budget (`npm run build` runs `scripts/check-bundle.mjs`). Never raise a budget without saying why.
+- Code shape (enforced in lint and tests): cyclomatic complexity <= 10, cognitive complexity <= 15, nesting <= 3; backend files <= 400 lines (`tests/test_structure.py`), frontend files <= 250 lines and components <= 120 lines; each module keeps the standard file set. Split by responsibility rather than raising a limit.
 - UI work follows `docs/ux-review.md` (Shneiderman's 8 Golden Rules, Nielsen's 10 heuristics) and its per-screen checklist.
 - Update this file when commands, layout or rules change.
 

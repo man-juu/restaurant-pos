@@ -8,6 +8,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
 
 import app.admin.models
+import app.core.settings.models
 import app.modules.catalog.models  # noqa: F401 - module tables
 from app.core.config import get_settings
 from app.core.models import Base

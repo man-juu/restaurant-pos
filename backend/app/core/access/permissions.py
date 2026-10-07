@@ -111,24 +111,30 @@ def _module_permissions(manifests: list[ModuleManifest]) -> set[str]:
     return codes
 
 
+def _check_template_keys(manifests: list[ModuleManifest], info: dict[str, RoleTemplate]) -> None:
+    for m in manifests:
+        for key in m.role_templates:
+            if key not in info:
+                raise PermissionError_(f"{m.name}: unknown role template {key!r}")
+
+
+def _template_grants(
+    t: RoleTemplate, manifests: list[ModuleManifest], codes: set[str]
+) -> frozenset[str]:
+    if t.all_permissions:
+        return frozenset(codes - t.exclude)
+    granted = set(t.grants)
+    for m in manifests:
+        granted.update(m.role_templates.get(t.key, ()))
+    if unknown := granted - codes:
+        raise PermissionError_(f"template {t.key}: unknown permissions {sorted(unknown)}")
+    return frozenset(granted)
+
+
 def build_registry(manifests: Iterable[ModuleManifest]) -> Registry:
     manifests = list(manifests)
     codes = set(CORE_PERMISSIONS) | _module_permissions(manifests)
     info = {t.key: t for t in _CORE_TEMPLATES}
-    templates: dict[str, frozenset[str]] = {}
-    for t in _CORE_TEMPLATES:
-        if t.all_permissions:
-            templates[t.key] = frozenset(codes - t.exclude)
-            continue
-        granted = set(t.grants)
-        for m in manifests:
-            for key, perms in m.role_templates.items():
-                if key not in info:
-                    raise PermissionError_(f"{m.name}: unknown role template {key!r}")
-                if key == t.key:
-                    granted.update(perms)
-        unknown = granted - codes
-        if unknown:
-            raise PermissionError_(f"template {t.key}: unknown permissions {sorted(unknown)}")
-        templates[t.key] = frozenset(granted)
+    _check_template_keys(manifests, info)
+    templates = {t.key: _template_grants(t, manifests, codes) for t in _CORE_TEMPLATES}
     return Registry(frozenset(codes), templates, info)

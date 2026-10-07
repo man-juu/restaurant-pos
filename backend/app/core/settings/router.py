@@ -11,8 +11,8 @@ from sqlalchemy import delete, select
 from app.core import audit
 from app.core.access.policy import Principal, require
 from app.core.errors import NotFoundError
-from app.core.models import ALERT_TYPES, APPROVAL_DOCUMENTS, AlertRule, ApprovalRule
 from app.core.settings import service
+from app.core.settings.models import ALERT_TYPES, APPROVAL_DOCUMENTS, AlertRule, ApprovalRule
 from app.core.settings.schemas import AllSettings
 from app.core.tenancy import tenant_session
 

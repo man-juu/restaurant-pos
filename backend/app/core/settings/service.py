@@ -11,8 +11,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import audit
 from app.core.errors import AppError, NotFoundError
-from app.core.models import ApprovalRule, Tenant, TenantSetting
+from app.core.models import Tenant
 from app.core.settings.defaults import default_for
+from app.core.settings.models import ApprovalRule, TenantSetting
 from app.core.settings.schemas import SETTINGS, NumberingFormat, NumberingSettings, Strict
 
 NIL_OUTLET = uuid.UUID(int=0)

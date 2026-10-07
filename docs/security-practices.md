@@ -83,3 +83,7 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - Database integrity errors now map to 409/422 with a generic code (no SQL text leaks); previously a bad role ID returned 500.
 - Numbering uses one atomic upsert; 20 concurrent allocations gave 20 unique numbers, and a rolled-back document does not burn a number.
 - Performance: the settings screen loads in 2 queries (guard: 8).
+
+## Dev tools added (2026-10-07)
+
+- complexipy 8.0.1 (MIT, PyPI release 2026-09-07) and eslint-plugin-sonarjs 4.2.2 (LGPL-3.0, SonarSource, dev only, not shipped in the bundle). Installed with the 7-day cooling-off; npm audit clean. Owner approved.

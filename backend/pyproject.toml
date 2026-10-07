@@ -23,6 +23,7 @@ dev = [
     "hypothesis==6.168.5",
     "import-linter==2.15",
     "pre-commit==4.6.2",
+    "complexipy==8.0.1",
 ]
 
 [build-system]

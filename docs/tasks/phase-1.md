@@ -36,7 +36,7 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 - Local dev database: document the non-Docker setup (roles, grants) in the README, or always use `docker compose`.
 - Pin base images and GitHub Actions by digest; Dependabot (from docs/security-practices.md open items).
 - Dedicated backup database role instead of the owner role.
-- Cognitive-complexity check: needs a new dev dependency (complexipy for Python, eslint-plugin-sonarjs for TypeScript); waiting for owner approval.
+- [x] Cognitive complexity (complexipy, eslint-plugin-sonarjs) and file-size limits added with owner approval.
 - Settings screen in the screen previews artifact.
 
 ## Code-quality rules applied to every slice

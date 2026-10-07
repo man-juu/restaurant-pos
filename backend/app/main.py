@@ -11,6 +11,7 @@ from app.core.config import Settings, get_settings
 from app.core.crypto import SecretBox
 from app.core.db import create_engine, create_sessionmaker
 from app.core.errors import register_error_handlers
+from app.core.identity import account_router, mfa_router
 from app.core.identity import router as identity
 from app.core.logging import configure_logging
 from app.core.mailer import MemoryMailer
@@ -53,7 +54,9 @@ def create_app(
     for router in (
         health.router,
         identity.router,
-        identity.invitations_router,
+        mfa_router.router,
+        account_router.router,
+        account_router.invitations_router,
         tenant_router.router,
         settings_router.router,
     ):

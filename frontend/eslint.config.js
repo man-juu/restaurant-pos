@@ -2,6 +2,7 @@ import js from '@eslint/js'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import globals from 'globals'
+import sonarjs from 'eslint-plugin-sonarjs'
 import tseslint from 'typescript-eslint'
 
 /**
@@ -42,6 +43,7 @@ export default tseslint.config(
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       local: { rules: { 'no-literal-text': noLiteralText } },
+      sonarjs,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -52,6 +54,10 @@ export default tseslint.config(
       'max-depth': ['error', 3],
       'max-params': ['error', 4],
       'max-nested-callbacks': ['error', 3],
+      // Readability and file structure: split big components into focused files.
+      'sonarjs/cognitive-complexity': ['error', 15],
+      'max-lines': ['error', { max: 250, skipBlankLines: true, skipComments: true }],
+      'max-lines-per-function': ['error', { max: 120, skipBlankLines: true, skipComments: true }],
     },
   },
   { files: ['**/*.test.{ts,tsx}', 'e2e/**'], rules: { 'local/no-literal-text': 'off' } },

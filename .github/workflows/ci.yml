@@ -45,6 +45,7 @@ jobs:
       - run: ruff format --check .
       - run: mypy
       - run: lint-imports
+      - run: complexipy app scripts --max-complexity-allowed 15 --quiet  # cognitive complexity
       - run: pytest
       # The frontend's API types are generated from these schemas; fail if they are stale.
       - run: python -m app.openapi ../frontend/src/lib/api && git diff --exit-code -- ../frontend/src/lib/api
