@@ -1,0 +1,64 @@
+"""Starting values per country (FR-TEN-004: defaults are data, never hard-coded logic).
+
+Indonesian rates must be verified with a tax advisor before launch (docs/README: "verify").
+Every tenant can change them; regional PBJT rates differ by city.
+"""
+
+from typing import Any
+
+DEFAULTS: dict[str, dict[str, Any]] = {
+    "ID": {
+        "tax": {
+            "rules": [
+                {
+                    "id": "pbjt",
+                    "name": "PBJT",
+                    "rate_bp": 1000,
+                    "applies_to_service_charge": True,
+                    "price_includes_tax": False,
+                    "order": 0,
+                    "active": True,
+                }
+            ]
+        },
+        "service_charge": {"enabled": False, "rate_bp": 0, "channels": [], "before_tax": True},
+        "payment_methods": {
+            "methods": [
+                {"code": "cash", "name": "Tunai", "kind": "cash"},
+                {"code": "qris", "name": "QRIS", "kind": "qris_static"},
+                {"code": "transfer", "name": "Transfer bank", "kind": "bank_transfer"},
+                {"code": "card", "name": "Kartu debit/kredit", "kind": "card_terminal"},
+                {
+                    "code": "platform",
+                    "name": "Penyelesaian platform",
+                    "kind": "platform_settlement",
+                },
+            ]
+        },
+        "numbering": {
+            "formats": {
+                "purchase_order": {"prefix": "PO", "padding": 5, "reset": "yearly"},
+                "goods_receipt": {"prefix": "GR", "padding": 5, "reset": "yearly"},
+                "transfer": {"prefix": "TRF", "padding": 5, "reset": "yearly"},
+                "production": {"prefix": "PRD", "padding": 5, "reset": "yearly"},
+                "stock_count": {"prefix": "CNT", "padding": 5, "reset": "yearly"},
+                "adjustment": {"prefix": "ADJ", "padding": 5, "reset": "yearly"},
+                "sales_day": {"prefix": "SD", "padding": 5, "reset": "yearly"},
+            }
+        },
+        "session": {"idle_minutes": 60},
+    }
+}
+
+# Countries without their own defaults start empty and configure everything themselves.
+FALLBACK: dict[str, Any] = {
+    "tax": {"rules": []},
+    "service_charge": {"enabled": False, "rate_bp": 0, "channels": [], "before_tax": True},
+    "payment_methods": {"methods": [{"code": "cash", "name": "Cash", "kind": "cash"}]},
+    "numbering": {"formats": {}},
+    "session": {"idle_minutes": 60},
+}
+
+
+def default_for(country: str, key: str) -> Any:
+    return DEFAULTS.get(country, FALLBACK).get(key, FALLBACK[key])

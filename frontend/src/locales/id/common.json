@@ -47,7 +47,8 @@
     "transfers": "Transfer",
     "reports": "Laporan",
     "users": "Pengguna dan peran",
-    "main": "Utama"
+    "main": "Utama",
+    "settings": "Pengaturan"
   },
   "shell": {
     "business": "Usaha",
@@ -117,7 +118,10 @@
     "subscription_read_only": "Langganan Anda dalam mode hanya baca.",
     "tenant_suspended": "Usaha ini ditangguhkan.",
     "network_error": "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
-    "generic": "Terjadi kesalahan. Silakan coba lagi."
+    "generic": "Terjadi kesalahan. Silakan coba lagi.",
+    "invalid_setting": "Beberapa nilai tidak valid. Periksa kolom yang ditandai.",
+    "service_charge_not_allowed": "Cloud kitchen tidak dapat mengenakan biaya layanan.",
+    "invalid_reference": "Pilihan Anda sudah tidak ada. Muat ulang lalu coba lagi."
   },
   "appearance": {
     "open": "Tampilan",
@@ -145,5 +149,80 @@
       "leaf": "Daun"
     },
     "done": "Selesai"
+  },
+  "settings": {
+    "title": "Pengaturan",
+    "readOnly": "Anda dapat melihat pengaturan ini. Hanya pemilik dan wakil pemilik yang dapat mengubahnya.",
+    "save": "Simpan",
+    "saved": "Tersimpan",
+    "add": "Tambah",
+    "remove": "Hapus",
+    "tabs": {
+      "tax": "Pajak",
+      "service": "Biaya layanan",
+      "payments": "Metode pembayaran",
+      "numbering": "Penomoran",
+      "approvals": "Persetujuan"
+    },
+    "tax": {
+      "help": "Tarif diatur per usaha; periksa tarif daerah dengan konsultan pajak Anda.",
+      "name": "Nama",
+      "rate": "Tarif (%)",
+      "included": "Termasuk dalam harga",
+      "onService": "Juga atas biaya layanan",
+      "active": "Aktif",
+      "invalidRate": "Masukkan persentase 0 sampai 100, paling banyak 2 desimal."
+    },
+    "service": {
+      "enabled": "Kenakan biaya layanan",
+      "rate": "Tarif (%)",
+      "cloudKitchen": "Cloud kitchen tidak pernah mengenakan biaya layanan."
+    },
+    "payments": {
+      "name": "Nama",
+      "kind": "Jenis",
+      "active": "Aktif",
+      "kinds": {
+        "cash": "Tunai",
+        "qris_static": "QRIS (statis)",
+        "bank_transfer": "Transfer bank",
+        "card_terminal": "Mesin kartu",
+        "ewallet": "Dompet digital",
+        "platform_settlement": "Penyelesaian platform",
+        "voucher": "Voucher",
+        "house_account": "Akun langganan"
+      }
+    },
+    "numbering": {
+      "document": "Dokumen",
+      "prefix": "Awalan",
+      "example": "Contoh",
+      "docs": {
+        "purchase_order": "Pesanan pembelian",
+        "goods_receipt": "Penerimaan barang",
+        "transfer": "Transfer",
+        "production": "Produksi",
+        "stock_count": "Stok opname",
+        "adjustment": "Penyesuaian",
+        "sales_day": "Hari penjualan"
+      }
+    },
+    "approvals": {
+      "help": "Dokumen dengan nilai sama atau di atas jumlah ini perlu disetujui peran tersebut.",
+      "document": "Dokumen",
+      "minAmount": "Mulai jumlah (Rp)",
+      "role": "Peran penyetuju",
+      "empty": "Belum ada aturan persetujuan.",
+      "docs": {
+        "purchase_order": "Pesanan pembelian",
+        "transfer": "Transfer",
+        "adjustment": "Penyesuaian stok",
+        "count": "Stok opname",
+        "void": "Pembatalan",
+        "refund": "Pengembalian dana",
+        "discount": "Diskon",
+        "journal": "Jurnal"
+      }
+    }
   }
 }

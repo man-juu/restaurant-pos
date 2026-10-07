@@ -12,7 +12,7 @@ from app.core.access.permissions import Registry
 from app.core.access.policy import Principal, require, require_member
 from app.core.access.subscription import days_left
 from app.core.errors import NotFoundError
-from app.core.models import Outlet
+from app.core.models import Outlet, Role
 from app.core.tenancy import tenant_session
 
 router = APIRouter(prefix="/api/v1", tags=["tenant"])
@@ -66,6 +66,24 @@ async def get_outlet(
     if row is None:
         raise NotFoundError()
     return OutletOut.model_validate(row, from_attributes=True)
+
+
+class RoleOut(BaseModel):
+    id: uuid.UUID
+    name: str
+    template_key: str | None
+
+
+@router.get("/roles", response_model=list[RoleOut])
+async def list_roles(
+    request: Request, p: Annotated[Principal, Depends(require("tenant.settings.view"))]
+) -> list[RoleOut]:
+    """The tenant's own roles (templates with tenant_id NULL are excluded)."""
+    async with tenant_session(request.app.state.sessionmaker, p.tenant_id, p.user_id) as db:
+        rows = (
+            await db.execute(select(Role).where(Role.tenant_id.is_not(None)).order_by(Role.name))
+        ).scalars()
+        return [RoleOut.model_validate(r, from_attributes=True) for r in rows]
 
 
 @router.get("/me/capabilities", response_model=Capabilities)

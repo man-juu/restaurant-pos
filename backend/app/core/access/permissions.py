@@ -17,6 +17,7 @@ CORE_MODULES = frozenset({"tenant", "audit", "identity", "subscription", "catalo
 CORE_PERMISSIONS: dict[str, str] = {
     "tenant.user.manage": "Invite, edit and deactivate users; assign roles",
     "tenant.settings.configure": "Outlets, tax, payment methods and other settings",
+    "tenant.settings.view": "See tax, service charge, payment methods and numbering",
     "tenant.module.configure": "Switch modules on or off within the plan",
     "tenant.subscription.view": "See subscription and billing information",
     "tenant.ownership.transfer": "Transfer ownership, assign the owner role, delete the tenant",
@@ -53,9 +54,16 @@ _CORE_TEMPLATES = (
         "manager",
         "Manager",
         "outlets",
-        grants=frozenset({"tenant.outlet.view", "audit.log.view", "tenant.data.export"}),
+        grants=frozenset(
+            {"tenant.outlet.view", "tenant.settings.view", "audit.log.view", "tenant.data.export"}
+        ),
     ),
-    RoleTemplate("cashier", "Cashier", "outlets", grants=frozenset({"tenant.outlet.view"})),
+    RoleTemplate(
+        "cashier",
+        "Cashier",
+        "outlets",
+        grants=frozenset({"tenant.outlet.view", "tenant.settings.view"}),
+    ),
     RoleTemplate("waiter", "Waiter", "outlets", grants=frozenset({"tenant.outlet.view"})),
     RoleTemplate("kitchen", "Kitchen", "outlets", grants=frozenset({"tenant.outlet.view"})),
     RoleTemplate("warehouse", "Warehouse", "outlets", grants=frozenset({"tenant.outlet.view"})),
@@ -64,7 +72,9 @@ _CORE_TEMPLATES = (
         "accountant",
         "Accountant",
         "all",
-        grants=frozenset({"tenant.outlet.view", "audit.log.view", "tenant.data.export"}),
+        grants=frozenset(
+            {"tenant.outlet.view", "tenant.settings.view", "audit.log.view", "tenant.data.export"}
+        ),
     ),
     RoleTemplate(
         "viewer", "Viewer", "all", grants=frozenset({"tenant.outlet.view", "audit.log.view"})

@@ -47,7 +47,8 @@
     "transfers": "Transfers",
     "reports": "Reports",
     "users": "Users and roles",
-    "main": "Main"
+    "main": "Main",
+    "settings": "Settings"
   },
   "shell": {
     "business": "Business",
@@ -117,7 +118,10 @@
     "subscription_read_only": "Your subscription is read-only.",
     "tenant_suspended": "This business is suspended.",
     "network_error": "Cannot reach the server. Check your connection.",
-    "generic": "Something went wrong. Please try again."
+    "generic": "Something went wrong. Please try again.",
+    "invalid_setting": "Some values are not valid. Check the highlighted fields.",
+    "service_charge_not_allowed": "Cloud kitchens cannot charge a service charge.",
+    "invalid_reference": "Something you selected no longer exists. Reload and try again."
   },
   "appearance": {
     "open": "Appearance",
@@ -145,5 +149,80 @@
       "leaf": "Leaf"
     },
     "done": "Done"
+  },
+  "settings": {
+    "title": "Settings",
+    "readOnly": "You can view these settings. Only owners and co-owners can change them.",
+    "save": "Save",
+    "saved": "Saved",
+    "add": "Add",
+    "remove": "Remove",
+    "tabs": {
+      "tax": "Taxes",
+      "service": "Service charge",
+      "payments": "Payment methods",
+      "numbering": "Numbering",
+      "approvals": "Approvals"
+    },
+    "tax": {
+      "help": "Rates are set per business; check regional rates with your tax advisor.",
+      "name": "Name",
+      "rate": "Rate (%)",
+      "included": "Included in prices",
+      "onService": "Also on service charge",
+      "active": "Active",
+      "invalidRate": "Enter a percentage from 0 to 100, at most 2 decimals."
+    },
+    "service": {
+      "enabled": "Charge a service charge",
+      "rate": "Rate (%)",
+      "cloudKitchen": "Cloud kitchens never charge a service charge."
+    },
+    "payments": {
+      "name": "Name",
+      "kind": "Type",
+      "active": "Active",
+      "kinds": {
+        "cash": "Cash",
+        "qris_static": "QRIS (static)",
+        "bank_transfer": "Bank transfer",
+        "card_terminal": "Card terminal",
+        "ewallet": "E-wallet",
+        "platform_settlement": "Platform settlement",
+        "voucher": "Voucher",
+        "house_account": "House account"
+      }
+    },
+    "numbering": {
+      "document": "Document",
+      "prefix": "Prefix",
+      "example": "Example",
+      "docs": {
+        "purchase_order": "Purchase order",
+        "goods_receipt": "Goods receipt",
+        "transfer": "Transfer",
+        "production": "Production",
+        "stock_count": "Stock count",
+        "adjustment": "Adjustment",
+        "sales_day": "Sales day"
+      }
+    },
+    "approvals": {
+      "help": "Documents at or above the amount need approval from this role.",
+      "document": "Document",
+      "minAmount": "From amount (Rp)",
+      "role": "Approver role",
+      "empty": "No approval rules yet.",
+      "docs": {
+        "purchase_order": "Purchase order",
+        "transfer": "Transfer",
+        "adjustment": "Stock adjustment",
+        "count": "Stock count",
+        "void": "Void",
+        "refund": "Refund",
+        "discount": "Discount",
+        "journal": "Journal"
+      }
+    }
   }
 }

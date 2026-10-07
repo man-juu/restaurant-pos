@@ -74,3 +74,12 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - **Medium: the production approval could be bypassed** with the shared deploy key or a tag on an unmerged commit. Now: one server user and key per environment with forced commands and narrowed sudo, environment-scoped secrets, releases only from commits on `main`, tag protection in the runbook.
 - **Low:** strict tag validation in `deploy.sh`; S3 credentials passed to curl via stdin (not visible in the process list); `packages: write` limited to the image job; web container read-only.
 - **Open (low):** base images and actions are pinned by version, not digest (Dependabot in a later slice); the backup job uses the owner role (a dedicated backup role later).
+
+## Slice 1a review (tenant settings)
+
+- Settings payloads use strict schemas (`extra="forbid"`, bounded rates 0..10000 bp, bounded padding); unknown keys return 422.
+- Reads need `tenant.settings.view`, writes need `tenant.settings.configure`; every write, approval rule and alert rule change is audited with before/after.
+- All four new tables have FORCED RLS; a test confirms one tenant cannot read another's settings.
+- Database integrity errors now map to 409/422 with a generic code (no SQL text leaks); previously a bad role ID returned 500.
+- Numbering uses one atomic upsert; 20 concurrent allocations gave 20 unique numbers, and a rolled-back document does not burn a number.
+- Performance: the settings screen loads in 2 queries (guard: 8).

@@ -12,6 +12,9 @@ const AdminPage = lazy(() =>
 const LoginPage = lazy(() =>
   import('../features/auth/LoginPage').then((m) => ({ default: m.LoginPage })),
 )
+const SettingsPage = lazy(() =>
+  import('../features/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })),
+)
 const OutletsPage = lazy(() =>
   import('../features/outlets/OutletsPage').then((m) => ({ default: m.OutletsPage })),
 )
@@ -27,6 +30,7 @@ export const routes = [
     children: [
       { index: true, element: <DashboardPage /> },
       { path: 'outlets', element: page(<OutletsPage />) },
+      { path: 'settings', element: page(<SettingsPage />) },
       // Module pages arrive with their modules (Phase 1); nav entries come from capabilities.
       { path: '*', element: <DashboardPage /> },
     ],

@@ -22,7 +22,12 @@ from tests.test_auth import new_client
 
 PW = "performance test passphrase"
 P95_LIMIT_MS = 300
-MAX_QUERIES = {"/api/v1/auth/session": 6, "/api/v1/me/capabilities": 6, "/api/v1/outlets": 7}
+MAX_QUERIES = {
+    "/api/v1/auth/session": 6,
+    "/api/v1/me/capabilities": 6,
+    "/api/v1/outlets": 7,
+    "/api/v1/settings": 8,
+}
 
 
 @pytest.fixture
@@ -35,7 +40,7 @@ def client(app: FastAPI) -> Iterator[TestClient]:
     tenant, roles = seed_tenant("Perf")
     for i in range(30):  # enough rows that a per-row query would show up
         add_outlet(tenant, f"Outlet {i:02d}")
-    _, email = add_member(tenant, roles["viewer"], _hasher.hash(PW))
+    _, email = add_member(tenant, roles["accountant"], _hasher.hash(PW))
     with new_client(app) as c:
         assert (
             c.post("/api/v1/auth/login", json={"email": email, "password": PW}).status_code == 200
@@ -65,7 +70,9 @@ def test_query_count_does_not_grow_with_data(app: FastAPI, client: TestClient, p
     assert _count_queries(app, client, path) <= MAX_QUERIES[path]
 
 
-@pytest.mark.parametrize("path", ["/health", "/api/v1/me/capabilities", "/api/v1/outlets"])
+@pytest.mark.parametrize(
+    "path", ["/health", "/api/v1/me/capabilities", "/api/v1/outlets", "/api/v1/settings"]
+)
 def test_nfr_001_p95_latency(client: TestClient, path: str) -> None:
     client.get(path)  # warm up connections
     timings = []

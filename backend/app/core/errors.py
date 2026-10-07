@@ -11,6 +11,7 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from sqlalchemy.exc import IntegrityError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.core.logging import request_id_var
@@ -86,7 +87,24 @@ def internal_error_response() -> JSONResponse:
     return _response(500, "internal_error")
 
 
+# PostgreSQL error codes for constraint violations the client caused (bad input, not a bug).
+_CONSTRAINT_ERRORS = {
+    "23503": (422, "invalid_reference"),  # foreign key: e.g. a role or outlet of another tenant
+    "23505": (409, "conflict"),  # unique violation
+    "23514": (422, "validation_error"),  # check constraint
+}
+
+
+async def _integrity_error(_: Request, exc: Exception) -> JSONResponse:
+    orig = getattr(exc, "orig", None)
+    code = getattr(orig, "sqlstate", None) or getattr(orig, "pgcode", None)
+    status, error = _CONSTRAINT_ERRORS.get(str(code), (409, "conflict"))
+    # No constraint names or SQL in the response: they reveal the schema.
+    return _response(status, error)
+
+
 def register_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(AppError, _app_error)
     app.add_exception_handler(StarletteHTTPException, _http_error)
     app.add_exception_handler(RequestValidationError, _validation_error)
+    app.add_exception_handler(IntegrityError, _integrity_error)

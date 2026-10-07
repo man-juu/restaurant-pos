@@ -12,5 +12,7 @@ export function navItems(caps: Capabilities | undefined): NavItem[] {
   if (caps.permissions.includes('tenant.outlet.view'))
     items.push({ key: 'outlets', to: '/outlets' })
   for (const key of caps.nav) items.push({ key, to: `/${key}` })
+  if (caps.permissions.includes('tenant.settings.view'))
+    items.push({ key: 'settings', to: '/settings' })
   return items
 }

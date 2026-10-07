@@ -41,6 +41,7 @@ select = ["E", "F", "W", "I", "B", "UP", "S", "ASYNC", "RUF"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "S608"]  # S608: SQL built from fixed table names in tests
+"migrations/versions/*" = ["E501"]  # generated constraint SQL
 
 [tool.mypy]
 python_version = "3.12"

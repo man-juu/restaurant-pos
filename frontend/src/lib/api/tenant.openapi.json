@@ -1,6 +1,255 @@
 {
   "components": {
     "schemas": {
+      "AlertRuleIn": {
+        "properties": {
+          "alert_type": {
+            "enum": [
+              "below_reorder_point",
+              "low_days_of_inventory",
+              "batch_near_expiry",
+              "expired_stock",
+              "negative_stock",
+              "count_variance",
+              "food_cost_above_target",
+              "approval_requested"
+            ],
+            "title": "Alert Type",
+            "type": "string"
+          },
+          "channel": {
+            "default": "in_app",
+            "enum": [
+              "in_app",
+              "email"
+            ],
+            "title": "Channel",
+            "type": "string"
+          },
+          "recipient_role_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recipient Role Id"
+          },
+          "recipient_user_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recipient User Id"
+          }
+        },
+        "required": [
+          "alert_type"
+        ],
+        "title": "AlertRuleIn",
+        "type": "object"
+      },
+      "AlertRuleOut": {
+        "properties": {
+          "alert_type": {
+            "enum": [
+              "below_reorder_point",
+              "low_days_of_inventory",
+              "batch_near_expiry",
+              "expired_stock",
+              "negative_stock",
+              "count_variance",
+              "food_cost_above_target",
+              "approval_requested"
+            ],
+            "title": "Alert Type",
+            "type": "string"
+          },
+          "channel": {
+            "default": "in_app",
+            "enum": [
+              "in_app",
+              "email"
+            ],
+            "title": "Channel",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "recipient_role_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recipient Role Id"
+          },
+          "recipient_user_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recipient User Id"
+          }
+        },
+        "required": [
+          "alert_type",
+          "id"
+        ],
+        "title": "AlertRuleOut",
+        "type": "object"
+      },
+      "AllSettings": {
+        "description": "Response of GET /settings, typed so the generated frontend client knows every field.",
+        "properties": {
+          "numbering": {
+            "$ref": "#/components/schemas/NumberingSettings"
+          },
+          "payment_methods": {
+            "$ref": "#/components/schemas/PaymentMethodSettings"
+          },
+          "service_charge": {
+            "$ref": "#/components/schemas/ServiceChargeSettings"
+          },
+          "session": {
+            "$ref": "#/components/schemas/SessionSettings"
+          },
+          "tax": {
+            "$ref": "#/components/schemas/TaxSettings"
+          }
+        },
+        "required": [
+          "tax",
+          "service_charge",
+          "payment_methods",
+          "numbering",
+          "session"
+        ],
+        "title": "AllSettings",
+        "type": "object"
+      },
+      "ApprovalRuleIn": {
+        "properties": {
+          "approver_role_id": {
+            "format": "uuid",
+            "title": "Approver Role Id",
+            "type": "string"
+          },
+          "document_type": {
+            "enum": [
+              "purchase_order",
+              "transfer",
+              "adjustment",
+              "count",
+              "void",
+              "refund",
+              "discount",
+              "journal"
+            ],
+            "title": "Document Type",
+            "type": "string"
+          },
+          "min_amount": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Min Amount",
+            "type": "integer"
+          },
+          "outlet_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outlet Id"
+          }
+        },
+        "required": [
+          "document_type",
+          "min_amount",
+          "approver_role_id"
+        ],
+        "title": "ApprovalRuleIn",
+        "type": "object"
+      },
+      "ApprovalRuleOut": {
+        "properties": {
+          "approver_role_id": {
+            "format": "uuid",
+            "title": "Approver Role Id",
+            "type": "string"
+          },
+          "document_type": {
+            "enum": [
+              "purchase_order",
+              "transfer",
+              "adjustment",
+              "count",
+              "void",
+              "refund",
+              "discount",
+              "journal"
+            ],
+            "title": "Document Type",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "min_amount": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Min Amount",
+            "type": "integer"
+          },
+          "outlet_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outlet Id"
+          }
+        },
+        "required": [
+          "document_type",
+          "min_amount",
+          "approver_role_id",
+          "id"
+        ],
+        "title": "ApprovalRuleOut",
+        "type": "object"
+      },
       "Capabilities": {
         "properties": {
           "all_outlets": {
@@ -208,6 +457,55 @@
         "title": "MfaSetupOut",
         "type": "object"
       },
+      "NumberingFormat": {
+        "additionalProperties": false,
+        "properties": {
+          "padding": {
+            "default": 5,
+            "maximum": 8.0,
+            "minimum": 3.0,
+            "title": "Padding",
+            "type": "integer"
+          },
+          "prefix": {
+            "pattern": "^[A-Z0-9-]{1,10}$",
+            "title": "Prefix",
+            "type": "string"
+          },
+          "reset": {
+            "default": "yearly",
+            "enum": [
+              "yearly",
+              "never"
+            ],
+            "title": "Reset",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prefix"
+        ],
+        "title": "NumberingFormat",
+        "type": "object"
+      },
+      "NumberingSettings": {
+        "additionalProperties": false,
+        "description": "FR-TEN-009: per document type; numbers are allocated per outlet and year.",
+        "properties": {
+          "formats": {
+            "maxProperties": 40,
+            "patternProperties": {
+              "^[a-z0-9_]{1,40}$": {
+                "$ref": "#/components/schemas/NumberingFormat"
+              }
+            },
+            "title": "Formats",
+            "type": "object"
+          }
+        },
+        "title": "NumberingSettings",
+        "type": "object"
+      },
       "OutletOut": {
         "properties": {
           "id": {
@@ -280,6 +578,63 @@
         "title": "PasswordResetRequest",
         "type": "object"
       },
+      "PaymentMethod": {
+        "additionalProperties": false,
+        "properties": {
+          "active": {
+            "default": true,
+            "title": "Active",
+            "type": "boolean"
+          },
+          "code": {
+            "pattern": "^[a-z0-9_]{1,40}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "cash",
+              "qris_static",
+              "bank_transfer",
+              "card_terminal",
+              "ewallet",
+              "platform_settlement",
+              "voucher",
+              "house_account"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "kind"
+        ],
+        "title": "PaymentMethod",
+        "type": "object"
+      },
+      "PaymentMethodSettings": {
+        "additionalProperties": false,
+        "properties": {
+          "methods": {
+            "items": {
+              "$ref": "#/components/schemas/PaymentMethod"
+            },
+            "maxItems": 40,
+            "title": "Methods",
+            "type": "array"
+          }
+        },
+        "title": "PaymentMethodSettings",
+        "type": "object"
+      },
       "RecoveryCodesOut": {
         "properties": {
           "recovery_codes": {
@@ -294,6 +649,70 @@
           "recovery_codes"
         ],
         "title": "RecoveryCodesOut",
+        "type": "object"
+      },
+      "RoleOut": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "template_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Template Key"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "template_key"
+        ],
+        "title": "RoleOut",
+        "type": "object"
+      },
+      "ServiceChargeSettings": {
+        "additionalProperties": false,
+        "properties": {
+          "before_tax": {
+            "default": true,
+            "title": "Before Tax",
+            "type": "boolean"
+          },
+          "channels": {
+            "items": {
+              "pattern": "^[a-z0-9_]{1,40}$",
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Channels",
+            "type": "array"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "rate_bp": {
+            "default": 0,
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Rate Bp",
+            "type": "integer"
+          }
+        },
+        "title": "ServiceChargeSettings",
         "type": "object"
       },
       "SessionInfo": {
@@ -394,6 +813,21 @@
         "title": "SessionOut",
         "type": "object"
       },
+      "SessionSettings": {
+        "additionalProperties": false,
+        "description": "FR-IDN-009: tenant idle timeout within the platform limit.",
+        "properties": {
+          "idle_minutes": {
+            "default": 60,
+            "maximum": 1440.0,
+            "minimum": 5.0,
+            "title": "Idle Minutes",
+            "type": "integer"
+          }
+        },
+        "title": "SessionSettings",
+        "type": "object"
+      },
       "SubscriptionBanner": {
         "properties": {
           "days_left": {
@@ -431,6 +865,87 @@
           "tenant_id"
         ],
         "title": "SwitchTenantRequest",
+        "type": "object"
+      },
+      "TaxRule": {
+        "additionalProperties": false,
+        "properties": {
+          "active": {
+            "default": true,
+            "title": "Active",
+            "type": "boolean"
+          },
+          "applies_to_service_charge": {
+            "default": true,
+            "title": "Applies To Service Charge",
+            "type": "boolean"
+          },
+          "id": {
+            "pattern": "^[a-z0-9_]{1,40}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "order": {
+            "default": 0,
+            "maximum": 99.0,
+            "minimum": 0.0,
+            "title": "Order",
+            "type": "integer"
+          },
+          "outlet_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outlet Ids"
+          },
+          "price_includes_tax": {
+            "default": false,
+            "title": "Price Includes Tax",
+            "type": "boolean"
+          },
+          "rate_bp": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Rate Bp",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "rate_bp"
+        ],
+        "title": "TaxRule",
+        "type": "object"
+      },
+      "TaxSettings": {
+        "additionalProperties": false,
+        "properties": {
+          "rules": {
+            "items": {
+              "$ref": "#/components/schemas/TaxRule"
+            },
+            "maxItems": 20,
+            "title": "Rules",
+            "type": "array"
+          }
+        },
+        "title": "TaxSettings",
         "type": "object"
       },
       "TenantOption": {
@@ -529,6 +1044,206 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/alert-rules": {
+      "get": {
+        "operationId": "list_alert_rules_api_v1_alert_rules_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AlertRuleOut"
+                  },
+                  "title": "Response List Alert Rules Api V1 Alert Rules Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Alert Rules",
+        "tags": [
+          "settings"
+        ]
+      },
+      "post": {
+        "operationId": "create_alert_rule_api_v1_alert_rules_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlertRuleIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertRuleOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Alert Rule",
+        "tags": [
+          "settings"
+        ]
+      }
+    },
+    "/api/v1/alert-rules/{rule_id}": {
+      "delete": {
+        "operationId": "delete_alert_rule_api_v1_alert_rules__rule_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "rule_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Rule Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Alert Rule",
+        "tags": [
+          "settings"
+        ]
+      }
+    },
+    "/api/v1/approval-rules": {
+      "get": {
+        "operationId": "list_approval_rules_api_v1_approval_rules_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ApprovalRuleOut"
+                  },
+                  "title": "Response List Approval Rules Api V1 Approval Rules Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Approval Rules",
+        "tags": [
+          "settings"
+        ]
+      },
+      "post": {
+        "operationId": "create_approval_rule_api_v1_approval_rules_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalRuleIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalRuleOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Approval Rule",
+        "tags": [
+          "settings"
+        ]
+      }
+    },
+    "/api/v1/approval-rules/{rule_id}": {
+      "delete": {
+        "operationId": "delete_approval_rule_api_v1_approval_rules__rule_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "rule_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Rule Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Approval Rule",
+        "tags": [
+          "settings"
+        ]
+      }
+    },
     "/api/v1/auth/invitations/accept": {
       "post": {
         "description": "New email: creates the account with the given password. Existing account: the\npassword must match it (proves the invitee owns that account). Then sign in normally.",
@@ -1056,6 +1771,109 @@
         "summary": "Get Outlet",
         "tags": [
           "tenant"
+        ]
+      }
+    },
+    "/api/v1/roles": {
+      "get": {
+        "description": "The tenant's own roles (templates with tenant_id NULL are excluded).",
+        "operationId": "list_roles_api_v1_roles_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RoleOut"
+                  },
+                  "title": "Response List Roles Api V1 Roles Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Roles",
+        "tags": [
+          "tenant"
+        ]
+      }
+    },
+    "/api/v1/settings": {
+      "get": {
+        "operationId": "all_settings_api_v1_settings_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllSettings"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "All Settings",
+        "tags": [
+          "settings"
+        ]
+      }
+    },
+    "/api/v1/settings/{key}": {
+      "put": {
+        "operationId": "put_setting_api_v1_settings__key__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "title": "Body",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Put Setting Api V1 Settings  Key  Put",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Put Setting",
+        "tags": [
+          "settings"
         ]
       }
     },

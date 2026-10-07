@@ -4,6 +4,76 @@
  */
 
 export interface paths {
+  '/api/v1/alert-rules': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Alert Rules */
+    get: operations['list_alert_rules_api_v1_alert_rules_get']
+    put?: never
+    /** Create Alert Rule */
+    post: operations['create_alert_rule_api_v1_alert_rules_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/alert-rules/{rule_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Delete Alert Rule */
+    delete: operations['delete_alert_rule_api_v1_alert_rules__rule_id__delete']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/approval-rules': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Approval Rules */
+    get: operations['list_approval_rules_api_v1_approval_rules_get']
+    put?: never
+    /** Create Approval Rule */
+    post: operations['create_approval_rule_api_v1_approval_rules_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/approval-rules/{rule_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Delete Approval Rule */
+    delete: operations['delete_approval_rule_api_v1_approval_rules__rule_id__delete']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/auth/invitations/accept': {
     parameters: {
       query?: never
@@ -317,6 +387,60 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/roles': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List Roles
+     * @description The tenant's own roles (templates with tenant_id NULL are excluded).
+     */
+    get: operations['list_roles_api_v1_roles_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/settings': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** All Settings */
+    get: operations['all_settings_api_v1_settings_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/settings/{key}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Put Setting */
+    put: operations['put_setting_api_v1_settings__key__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/health': {
     parameters: {
       query?: never
@@ -341,6 +465,129 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    /** AlertRuleIn */
+    AlertRuleIn: {
+      /**
+       * Alert Type
+       * @enum {string}
+       */
+      alert_type:
+        | 'below_reorder_point'
+        | 'low_days_of_inventory'
+        | 'batch_near_expiry'
+        | 'expired_stock'
+        | 'negative_stock'
+        | 'count_variance'
+        | 'food_cost_above_target'
+        | 'approval_requested'
+      /**
+       * Channel
+       * @default in_app
+       * @enum {string}
+       */
+      channel: 'in_app' | 'email'
+      /** Recipient Role Id */
+      recipient_role_id?: string | null
+      /** Recipient User Id */
+      recipient_user_id?: string | null
+    }
+    /** AlertRuleOut */
+    AlertRuleOut: {
+      /**
+       * Alert Type
+       * @enum {string}
+       */
+      alert_type:
+        | 'below_reorder_point'
+        | 'low_days_of_inventory'
+        | 'batch_near_expiry'
+        | 'expired_stock'
+        | 'negative_stock'
+        | 'count_variance'
+        | 'food_cost_above_target'
+        | 'approval_requested'
+      /**
+       * Channel
+       * @default in_app
+       * @enum {string}
+       */
+      channel: 'in_app' | 'email'
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Recipient Role Id */
+      recipient_role_id?: string | null
+      /** Recipient User Id */
+      recipient_user_id?: string | null
+    }
+    /**
+     * AllSettings
+     * @description Response of GET /settings, typed so the generated frontend client knows every field.
+     */
+    AllSettings: {
+      numbering: components['schemas']['NumberingSettings']
+      payment_methods: components['schemas']['PaymentMethodSettings']
+      service_charge: components['schemas']['ServiceChargeSettings']
+      session: components['schemas']['SessionSettings']
+      tax: components['schemas']['TaxSettings']
+    }
+    /** ApprovalRuleIn */
+    ApprovalRuleIn: {
+      /**
+       * Approver Role Id
+       * Format: uuid
+       */
+      approver_role_id: string
+      /**
+       * Document Type
+       * @enum {string}
+       */
+      document_type:
+        | 'purchase_order'
+        | 'transfer'
+        | 'adjustment'
+        | 'count'
+        | 'void'
+        | 'refund'
+        | 'discount'
+        | 'journal'
+      /** Min Amount */
+      min_amount: number
+      /** Outlet Id */
+      outlet_id?: string | null
+    }
+    /** ApprovalRuleOut */
+    ApprovalRuleOut: {
+      /**
+       * Approver Role Id
+       * Format: uuid
+       */
+      approver_role_id: string
+      /**
+       * Document Type
+       * @enum {string}
+       */
+      document_type:
+        | 'purchase_order'
+        | 'transfer'
+        | 'adjustment'
+        | 'count'
+        | 'void'
+        | 'refund'
+        | 'discount'
+        | 'journal'
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Min Amount */
+      min_amount: number
+      /** Outlet Id */
+      outlet_id?: string | null
+    }
     /** Capabilities */
     Capabilities: {
       /** All Outlets */
@@ -418,6 +665,32 @@ export interface components {
       /** Secret */
       secret: string
     }
+    /** NumberingFormat */
+    NumberingFormat: {
+      /**
+       * Padding
+       * @default 5
+       */
+      padding: number
+      /** Prefix */
+      prefix: string
+      /**
+       * Reset
+       * @default yearly
+       * @enum {string}
+       */
+      reset: 'yearly' | 'never'
+    }
+    /**
+     * NumberingSettings
+     * @description FR-TEN-009: per document type; numbers are allocated per outlet and year.
+     */
+    NumberingSettings: {
+      /** Formats */
+      formats?: {
+        [key: string]: components['schemas']['NumberingFormat']
+      }
+    }
     /** OutletOut */
     OutletOut: {
       /**
@@ -446,10 +719,72 @@ export interface components {
       /** Email */
       email: string
     }
+    /** PaymentMethod */
+    PaymentMethod: {
+      /**
+       * Active
+       * @default true
+       */
+      active: boolean
+      /** Code */
+      code: string
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind:
+        | 'cash'
+        | 'qris_static'
+        | 'bank_transfer'
+        | 'card_terminal'
+        | 'ewallet'
+        | 'platform_settlement'
+        | 'voucher'
+        | 'house_account'
+      /** Name */
+      name: string
+    }
+    /** PaymentMethodSettings */
+    PaymentMethodSettings: {
+      /** Methods */
+      methods?: components['schemas']['PaymentMethod'][]
+    }
     /** RecoveryCodesOut */
     RecoveryCodesOut: {
       /** Recovery Codes */
       recovery_codes: string[]
+    }
+    /** RoleOut */
+    RoleOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Name */
+      name: string
+      /** Template Key */
+      template_key: string | null
+    }
+    /** ServiceChargeSettings */
+    ServiceChargeSettings: {
+      /**
+       * Before Tax
+       * @default true
+       */
+      before_tax: boolean
+      /** Channels */
+      channels?: string[]
+      /**
+       * Enabled
+       * @default false
+       */
+      enabled: boolean
+      /**
+       * Rate Bp
+       * @default 0
+       */
+      rate_bp: number
     }
     /** SessionInfo */
     SessionInfo: {
@@ -487,6 +822,17 @@ export interface components {
       /** User Agent */
       user_agent: string | null
     }
+    /**
+     * SessionSettings
+     * @description FR-IDN-009: tenant idle timeout within the platform limit.
+     */
+    SessionSettings: {
+      /**
+       * Idle Minutes
+       * @default 60
+       */
+      idle_minutes: number
+    }
     /** SubscriptionBanner */
     SubscriptionBanner: {
       /** Days Left */
@@ -501,6 +847,42 @@ export interface components {
        * Format: uuid
        */
       tenant_id: string
+    }
+    /** TaxRule */
+    TaxRule: {
+      /**
+       * Active
+       * @default true
+       */
+      active: boolean
+      /**
+       * Applies To Service Charge
+       * @default true
+       */
+      applies_to_service_charge: boolean
+      /** Id */
+      id: string
+      /** Name */
+      name: string
+      /**
+       * Order
+       * @default 0
+       */
+      order: number
+      /** Outlet Ids */
+      outlet_ids?: string[] | null
+      /**
+       * Price Includes Tax
+       * @default false
+       */
+      price_includes_tax: boolean
+      /** Rate Bp */
+      rate_bp: number
+    }
+    /** TaxSettings */
+    TaxSettings: {
+      /** Rules */
+      rules?: components['schemas']['TaxRule'][]
     }
     /** TenantOption */
     TenantOption: {
@@ -548,6 +930,170 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+  list_alert_rules_api_v1_alert_rules_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AlertRuleOut'][]
+        }
+      }
+    }
+  }
+  create_alert_rule_api_v1_alert_rules_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AlertRuleIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AlertRuleOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  delete_alert_rule_api_v1_alert_rules__rule_id__delete: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        rule_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_approval_rules_api_v1_approval_rules_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ApprovalRuleOut'][]
+        }
+      }
+    }
+  }
+  create_approval_rule_api_v1_approval_rules_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ApprovalRuleIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ApprovalRuleOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  delete_approval_rule_api_v1_approval_rules__rule_id__delete: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        rule_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   accept_invitation_api_v1_auth_invitations_accept_post: {
     parameters: {
       query?: never
@@ -973,6 +1519,85 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['OutletOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_roles_api_v1_roles_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RoleOut'][]
+        }
+      }
+    }
+  }
+  all_settings_api_v1_settings_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AllSettings']
+        }
+      }
+    }
+  }
+  put_setting_api_v1_settings__key__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        key: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: unknown
+        }
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            [key: string]: unknown
+          }
         }
       }
       /** @description Validation Error */
