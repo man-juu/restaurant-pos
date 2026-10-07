@@ -48,12 +48,12 @@ packages = ["app", "tests"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
-# Module boundary contracts (rule 4). Module-specific contracts are added in slice 0.2.
+# Layer contracts (CLAUDE.md rule 4). Per-module rules come from each module.py manifest and
+# are checked by tests/test_module_boundaries.py, so they cannot drift from the manifests.
 [tool.importlinter]
 root_package = "app"
 
 [[tool.importlinter.contracts]]
-name = "core does not import modules or admin"
-type = "forbidden"
-source_modules = ["app.core"]
-forbidden_modules = ["app.modules", "app.admin"]
+name = "Layers: main > admin > modules > core"
+type = "layers"
+layers = ["app.main", "app.admin", "app.modules", "app.core"]

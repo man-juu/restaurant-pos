@@ -54,8 +54,8 @@ pre-commit install                  # once: ruff, Prettier, gitleaks on every co
 # backend/ (first: python -m venv .venv && .venv/bin/pip install -e ".[dev]")
 ruff check . && ruff format --check .
 mypy
-lint-imports                        # module boundary contracts
-pytest
+lint-imports                        # layer contract (per-module rules: tests/test_module_registry.py)
+pytest                              # needs PostgreSQL: docker compose up -d db
 
 # frontend/ (first: npm ci)
 npm run dev | lint | typecheck | test | build | format:check
