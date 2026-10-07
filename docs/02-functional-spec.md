@@ -106,6 +106,7 @@ Core modules cannot be switched off. Other modules can be switched on or off per
 | FR-CAT-009 | Names and descriptions are stored per language; missing translations fall back to the tenant default language. | 1 |
 | FR-CAT-010 | Menu item to delivery-platform item code mapping per platform, so imported or entered platform sales map to recipes. | 1 |
 | FR-CAT-011 | Combos and bundles composed of menu items with a bundle price. | 2 |
+| FR-CAT-012 | Food-cost alert: each menu item may have a target HPP % (default per tenant). When a receipt or price change raises its theoretical HPP above the target, the owner and users with permission get an in-app alert showing the cause (which ingredient, old and new price). | 1 |
 
 ## IMP. Import and export
 
@@ -139,6 +140,7 @@ Core modules cannot be switched off. Other modules can be switched on or off per
 | FR-INV-017 | Storage locations inside an outlet (walk-in freezer, dry store) with counts per location. | 3 |
 | FR-INV-018 | EOQ and demand forecasting: EOQ capped by shelf life, forecast by day-of-week averages with trend, once enough history exists; suggested order quantity alongside reorder point. | 3 |
 | FR-INV-019 | Barcode or QR labels for batches and scanning on receive, transfer and count. | 3 |
+| FR-INV-020 | Producible quantity: for each menu and semi-finished item, how many units current stock at an outlet can make from its BOM, with the limiting ingredient. Shown on the stock screen and, from Phase 2, as a "low or unavailable" marker in the POS. | 2 |
 
 ## PUR. Purchasing
 
@@ -165,6 +167,8 @@ Core modules cannot be switched off. Other modules can be switched on or off per
 | FR-PRD-004 | Output batch cost equals the cost of consumed components divided by actual output. | 1 |
 | FR-PRD-005 | Production plan suggestion from open transfer requests and stock targets. | 3 |
 | FR-PRD-006 | Prep sheets and production labels as PDF. | 2 |
+| FR-PRD-007 | Shelf-life labels: printable labels for production output and opened or prepared items, with item name, batch, prep date and time, use-by date from shelf-life, storage type and allergens. | 2 |
+| FR-PRD-008 | Daily prep list per outlet: items below their target (par) level for the day, with suggested quantities from par minus stock on hand, printable and checkable on a phone. Precursor to the planned suggestion in FR-PRD-005. | 2 |
 
 ## TRF. Transfers and delivery notes
 
