@@ -22,7 +22,7 @@ services:
 
   # One-shot: applies migrations as the owner role, then exits. The API waits for it.
   migrate:
-    build: ../backend
+    build: { context: ../backend, dockerfile: Dockerfile.dev }
     command: ["alembic", "upgrade", "head"]
     environment:
       MIGRATION_DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-pos_owner}:${POSTGRES_PASSWORD:-dev-only-password}@db:5432/${POSTGRES_DB:-pos}
@@ -30,7 +30,7 @@ services:
       db: { condition: service_healthy }
 
   api:
-    build: ../backend
+    build: { context: ../backend, dockerfile: Dockerfile.dev }
     environment:
       # The API connects as the restricted role so row-level security always applies.
       DATABASE_URL: postgresql+asyncpg://pos_app:${APP_DB_PASSWORD:-dev-only-app-password}@db:5432/${POSTGRES_DB:-pos}
@@ -41,7 +41,7 @@ services:
 
   # Platform admin API: separate app, port and database role (pos_admin).
   admin:
-    build: ../backend
+    build: { context: ../backend, dockerfile: Dockerfile.dev }
     command: ["uvicorn", "app.admin.main:create_admin_app", "--factory", "--host", "0.0.0.0", "--port", "8001", "--reload"]
     environment:
       ADMIN_DATABASE_URL: postgresql+asyncpg://pos_admin:${ADMIN_DB_PASSWORD:-dev-only-admin-password}@db:5432/${POSTGRES_DB:-pos}

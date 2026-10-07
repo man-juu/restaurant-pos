@@ -20,9 +20,9 @@ Status: ✅ done and tested, 🔜 planned (slice), 👤 owner action.
 | **CSRF / clickjacking** | Another site makes your browser submit actions | SameSite=Lax cookie, per-session CSRF token, JSON-only login, `frame-ancestors 'none'` header | ✅ 0.4a (headers 🔜 0.8) |
 | **XSS** | Script injected via an item name | React escapes output, no `dangerouslySetInnerHTML`, strict Content-Security-Policy, session cookie unreadable by scripts | 🔜 0.7, 0.8 |
 | **Data leak through errors and logs** (A10) | Stack traces or passwords in responses or logs | One error format, never echoes input, no query strings in logs, no secrets in audit | ✅ 0.2 |
-| **Ransomware / data destruction** | Server compromised and database encrypted or wiped | Encrypted nightly backups at a **different provider** with credentials the server cannot use to delete (write-only key or object lock), monthly restore drill, append-only ledgers and audit log, fast rebuild runbook | 🔜 0.8 |
+| **Ransomware / data destruction** | Server compromised and database encrypted or wiped | Nightly backups encrypted with the owner's public key, uploaded to a **different provider** with a write-only key and required bucket versioning, monthly restore drill (rehearsed 2026-10-07), append-only ledgers and audit log, rebuild runbook | ✅ 0.8 |
 | **Backdoor / supply chain** (A03) | Compromised package, malicious dependency or CI action | Exact version pins (`save-exact`), owner approval for every new dependency, new versions installed only after a 7-day cooling-off (`npm install --before`), npm install scripts disabled (`ignore-scripts`), CI fails on high npm advisories and on vulnerable, yanked or removed PyPI releases (`scripts/check_dependencies.py`), gitleaks on every commit; Dependabot alerts and pinned action SHAs in 0.8 | ✅ mostly; 🔜 0.8 |
-| **Server compromise** (A02) | Weak SSH, exposed database, unpatched OS | SSH keys only, firewall (Cloudflare IPs only on 80/443), database never public, non-root containers, automatic security updates | 🔜 0.8 |
+| **Server compromise** (A02) | Weak SSH, exposed database, unpatched OS | SSH keys only, provider firewall (Cloudflare IPs only on 80/443), database never published, non-root read-only containers with all capabilities dropped, automatic security updates, per-environment deploy users with forced commands | ✅ 0.8 (runbook steps 👤) |
 | **Insider misuse** | Platform support reads tenant data | Separate admin app, DB role and accounts with mandatory 2FA; support role cannot change tenants; impersonation is a read-only DB transaction with reason and expiry, logged in the tenant audit log | ✅ 0.6 |
 | **Secrets leak** | Password in Git or logs | `.env` ignored, gitleaks, secrets only in a root-owned server file, never logged | ✅ |
 | **Repudiation** | "I never voided that" | Append-only audit log (revoked privileges + trigger) with user, time, IP, request ID | ✅ 0.3 |
@@ -64,3 +64,13 @@ Open: trusted proxy headers for real client IPs (0.8).
 - Theme preferences from browser storage are accepted only from fixed allow-lists (mode, accent, background), so a tampered value cannot inject CSS or URLs; no HTML is built from strings.
 - The single-query permission loader keeps tenant scoping in the database: every subquery runs under row-level security in the caller's tenant transaction. All cross-tenant, permission and subscription tests pass (113 backend tests).
 - Session activity is written at most once a minute instead of on every request; revocation and timeouts are still checked on every request.
+
+### 2026-10-07: slice 0.8 (deployment) review
+
+Security review of the production images, Caddy, compose, backup and deploy pipeline. Fixed before pushing:
+
+- **High: client IP spoofing.** uvicorn trusted proxy headers from any address, so a forged `X-Forwarded-For` could dodge the per-IP lockout and poison audit IPs. Now Caddy overwrites the header with the IP it resolved from Cloudflare, and the API trusts proxy headers only from the web container's fixed address. Verified: 4 sign-in attempts with 4 forged IPs counted against one real IP.
+- **Medium: admin allow-list failed open** when unset. Now required: the stack refuses to start without it.
+- **Medium: the production approval could be bypassed** with the shared deploy key or a tag on an unmerged commit. Now: one server user and key per environment with forced commands and narrowed sudo, environment-scoped secrets, releases only from commits on `main`, tag protection in the runbook.
+- **Low:** strict tag validation in `deploy.sh`; S3 credentials passed to curl via stdin (not visible in the process list); `packages: write` limited to the image job; web container read-only.
+- **Open (low):** base images and actions are pinned by version, not digest (Dependabot in a later slice); the backup job uses the owner role (a dedicated backup role later).

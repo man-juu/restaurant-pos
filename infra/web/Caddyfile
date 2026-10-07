@@ -1,0 +1,88 @@
+# Production and staging web server (docs/07 sections 2 and 6).
+# Environment: APP_DOMAIN, ADMIN_DOMAIN, ADMIN_ALLOWED_IPS (space separated CIDRs), ACME_EMAIL.
+
+{
+	email {$ACME_EMAIL:admin@example.com}
+	servers {
+		# Real client IPs from Cloudflare (published ranges; review yearly), used by logs and
+		# the app's per-IP lockout. Requests not from Cloudflare are refused at the firewall.
+		trusted_proxies static 173.245.48.0/20 103.21.244.0/22 103.22.200.0/22 103.31.4.0/22 141.101.64.0/18 108.162.192.0/18 190.93.240.0/20 188.114.96.0/20 197.234.240.0/22 198.41.128.0/17 162.158.0.0/15 104.16.0.0/13 104.24.0.0/14 172.64.0.0/13 131.0.72.0/22 2400:cb00::/32 2606:4700::/32 2803:f800::/32 2405:b500::/32 2405:8100::/32 2a06:98c0::/29 2c0f:f248::/32
+		client_ip_headers CF-Connecting-IP X-Forwarded-For
+	}
+}
+
+(security_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(self), microphone=(), geolocation=(), payment=()"
+		Cross-Origin-Opener-Policy "same-origin"
+		# Scripts only from this origin; styles and fonts also from Google Fonts until fonts are
+		# self-hosted; no inline scripts; no framing.
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'"
+		-Server
+	}
+}
+
+{$APP_DOMAIN:localhost} {
+	import security_headers
+	encode zstd gzip
+
+	handle /api/* {
+		reverse_proxy api:8000 {
+			# Overwrite, never append: the API sees exactly the client IP Caddy resolved from
+			# Cloudflare, so nobody can fake their IP to dodge lockouts or poison the audit log.
+			header_up X-Forwarded-For {client_ip}
+		}
+	}
+	handle /health {
+		reverse_proxy api:8000
+	}
+	# The admin API is never served on the tenant domain.
+	handle /admin-api/* {
+		respond 404
+	}
+
+	handle {
+		root * /srv
+		# Hashed assets can be cached forever; the app shell and service worker must not be.
+		@immutable path /assets/*
+		header @immutable Cache-Control "public, max-age=31536000, immutable"
+		@shell path / /index.html /sw.js /manifest.webmanifest /registerSW.js
+		header @shell Cache-Control "no-cache"
+		try_files {path} /index.html
+		file_server
+	}
+
+	log {
+		output stdout
+		format json
+	}
+}
+
+{$ADMIN_DOMAIN:admin.localhost} {
+	import security_headers
+	encode zstd gzip
+
+	# Required allow-list for the platform admin console (your own IPs); fails closed.
+	@blocked not client_ip {$ADMIN_ALLOWED_IPS}
+	respond @blocked 404
+
+	handle /admin-api/* {
+		reverse_proxy admin:8001 {
+			header_up X-Forwarded-For {client_ip}
+		}
+	}
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+
+	log {
+		output stdout
+		format json
+	}
+}
