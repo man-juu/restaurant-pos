@@ -39,3 +39,23 @@ Low
 
 - Nothing from this branch is merged. Keep `legacy-review` as an archive (or delete it later; owner decides).
 - Seed data and reorder rules are pulled into Phase 1 slices with tests.
+
+## Ideas carried forward (before deleting the legacy branches)
+
+Screens and notes reviewed: POS screens (light/dark, tablet, phone), stock, analytics, settings, the reference POS screenshots the owner collected, and the legacy ADR, design-token and tech-debt notes.
+
+POS screen (Phase 2, docs/ux-review.md applies):
+- Photo grid of menu items with price on the card, category tabs across the top, search box; cart fixed on the right (bottom sheet on phone).
+- Cart lines with +/− and remove; subtotal, discount, tax, total; big Pay button; Hold order and Return order as secondary actions.
+- Table number on the order header; "online/offline" indicator.
+- Fix seen in legacy screens: long names were cut to "2 Spic..."; show two lines and a placeholder icon when there is no photo; never put a date picker on the cart (business date comes from the outlet).
+
+Back office:
+- Type-to-confirm for destructive actions and a Trash with restore (we archive instead of delete).
+- Stock list with status badges (OK, low, out) and days of inventory; reorder hints from lead time and minimum days of inventory.
+- Analytics: daily sales line chart, top items, average order value.
+
+Data:
+- Real sample menu (Korean restaurant: sets, rice bowls, ala carte, soups, add-ons; about 54 menus, 45 ingredients with recipes) stays with the owner; it is business data, so it is not committed. A fictional demo seed with the same shape is created in slice 1d.
+
+Not carried forward: client-side SQLite, Electron/Tauri shells, glassmorphism and 3D toggles (hurt contrast and speed on cheap tablets).
