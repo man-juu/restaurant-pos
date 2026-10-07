@@ -22,15 +22,21 @@ export function Button({
 
 export function Field({
   label,
+  trailing,
   ...props
-}: InputHTMLAttributes<HTMLInputElement> & { label: string }) {
+}: InputHTMLAttributes<HTMLInputElement> & { label: string; trailing?: ReactNode }) {
   return (
     <label className="flex flex-col gap-2 text-sm font-semibold text-ink-soft">
       {label}
-      <input
-        {...props}
-        className="min-h-12 rounded-xl border border-line-strong bg-ground px-3.5 text-base font-medium text-ink"
-      />
+      <span className="relative flex">
+        <input
+          {...props}
+          className="min-h-12 w-full rounded-xl border border-line-strong bg-ground px-3.5 text-base font-medium text-ink"
+        />
+        {trailing && (
+          <span className="absolute inset-y-0 right-1 flex items-center">{trailing}</span>
+        )}
+      </span>
     </label>
   )
 }

@@ -12,6 +12,7 @@ import { errorMessage } from '../../lib/errors'
 import { useAppearance } from '../../lib/theme'
 import {
   useLogin,
+  useLogout,
   useMfaConfirm,
   useMfaSetup,
   useReloadSession,
@@ -87,6 +88,7 @@ export function LoginPage() {
 function PasswordStep() {
   const { t } = useTranslation()
   const login = useLogin()
+  const [showPassword, setShowPassword] = useState(false)
   const form = useForm<Credentials>({ resolver: zodResolver(credentials) })
   return (
     <form
@@ -103,12 +105,27 @@ function PasswordStep() {
       />
       <Field
         label={t('auth.password')}
-        type="password"
+        type={showPassword ? 'text' : 'password'}
         autoComplete="current-password"
         {...form.register('password')}
+        trailing={
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-pressed={showPassword}
+            className="min-h-10 rounded-lg px-3 text-sm font-bold text-accent"
+          >
+            {showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
+          </button>
+        }
       />
-      <Button type="submit" disabled={login.isPending} className="min-h-13 text-base">
-        {t('auth.continue')}
+      <Button
+        type="submit"
+        disabled={login.isPending}
+        aria-busy={login.isPending}
+        className="min-h-13 text-base"
+      >
+        {login.isPending ? t('auth.working') : t('auth.continue')}
       </Button>
     </form>
   )
@@ -130,6 +147,7 @@ function CodeForm({
   const { t } = useTranslation()
   const [recovery, setRecovery] = useState(false)
   const [code, setCode] = useState('')
+  const logout = useLogout()
   return (
     <Card className="flex flex-col gap-4">
       <div>
@@ -151,19 +169,27 @@ function CodeForm({
           value={code}
           onChange={(e) => setCode(e.target.value)}
         />
-        <Button type="submit" disabled={pending}>
-          {t('auth.verify')}
+        <Button type="submit" disabled={pending} aria-busy={pending}>
+          {pending ? t('auth.working') : t('auth.verify')}
         </Button>
       </form>
       {!recovery && (
         <button
           type="button"
-          className="text-left text-sm text-accent"
+          className="min-h-11 text-left text-sm text-accent"
           onClick={() => setRecovery(true)}
         >
           {t('auth.useRecovery')}
         </button>
       )}
+      {/* User control and freedom: a way back out of the 2FA step. */}
+      <button
+        type="button"
+        className="min-h-11 text-left text-sm text-ink-soft underline"
+        onClick={() => logout.mutate()}
+      >
+        {t('auth.otherAccount')}
+      </button>
     </Card>
   )
 }

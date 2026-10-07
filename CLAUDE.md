@@ -99,6 +99,10 @@ Redis (until measured need), marketplace scraping, native mobile apps, payroll o
 - Before coding a slice: restate the requirement IDs, the acceptance criteria and the plan; then implement with tests.
 - Every slice must meet the Definition of Done in `docs/08` section 10: tests (unit, integration with real PostgreSQL, tenant isolation, permissions), audit, EN/ID strings, security checklist, docs and ADR updates.
 - Trace work to requirement IDs in commit messages and test names.
+- **Every change, however small, gets a security check and a performance check before it is pushed** (owner rule):
+  - Security: think through abuse of the change (injection, auth/tenant bypass, data exposure, unsafe input), run the security tests, and run `/security-review` for larger changes; record notable results in `docs/security-practices.md`.
+  - Performance: backend `tests/test_performance.py` (p95 and query-count guards) and the frontend bundle budget (`npm run build` runs `scripts/check-bundle.mjs`). Never raise a budget without saying why.
+- UI work follows `docs/ux-review.md` (Shneiderman's 8 Golden Rules, Nielsen's 10 heuristics) and its per-screen checklist.
 - Update this file when commands, layout or rules change.
 
 ## Ask the owner before

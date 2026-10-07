@@ -8,7 +8,7 @@ import hashlib
 import secrets
 import uuid
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import delete, func, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -131,14 +131,10 @@ async def resolve_session(
             )
         )
     ).scalar_one_or_none()
-    if row is not None:
+    # Write last_seen_at at most once a minute: skips a write on almost every request.
+    if row is not None and row.last_seen_at < datetime.now(UTC) - TOUCH_INTERVAL:
         await session.execute(
-            update(UserSession)
-            .where(
-                UserSession.id == row.id,
-                UserSession.last_seen_at < func.now() - TOUCH_INTERVAL,
-            )
-            .values(last_seen_at=func.now())
+            update(UserSession).where(UserSession.id == row.id).values(last_seen_at=func.now())
         )
     return row
 

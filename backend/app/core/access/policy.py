@@ -20,13 +20,12 @@ from typing import Any
 
 from fastapi import APIRouter, FastAPI, Request
 from fastapi.routing import APIRoute
-from sqlalchemy import select
+from sqlalchemy import text
 
 from app.core.access.permissions import CORE_MODULES, Registry
 from app.core.access.subscription import WRITE_BLOCKED, SubscriptionInfo, effective_state
 from app.core.errors import AppError, ForbiddenError, NotFoundError
 from app.core.identity.deps import SAFE_METHODS, AuthContext, require_session
-from app.core.models import Membership, MembershipOutlet, RolePermission, Subscription, TenantModule
 from app.core.tenancy import tenant_session
 
 
@@ -79,38 +78,34 @@ class Principal:
             raise NotFoundError()
 
 
+_PRINCIPAL_SQL = text("""
+    SELECT m.id AS membership_id, m.role_id, m.scope,
+           ARRAY(SELECT rp.permission_code FROM role_permissions rp
+                 WHERE rp.role_id = m.role_id ORDER BY rp.permission_code) AS permission_codes,
+           ARRAY(SELECT rp.limit_value FROM role_permissions rp
+                 WHERE rp.role_id = m.role_id ORDER BY rp.permission_code) AS limit_values,
+           ARRAY(SELECT mo.outlet_id FROM membership_outlets mo
+                 WHERE mo.membership_id = m.id) AS outlet_ids,
+           ARRAY(SELECT tm.module FROM tenant_modules tm WHERE tm.enabled) AS modules,
+           s.plan_type, s.ends_at, s.grace_days, s.reminders_enabled, s.reminder_days, s.suspended
+    FROM memberships m
+    LEFT JOIN subscriptions s ON s.tenant_id = m.tenant_id
+    WHERE m.user_id = :user_id AND m.status = 'active'
+""")
+
+
 async def load_principal(request: Request, auth: AuthContext) -> Principal:
     if auth.tenant_id is None:
         raise NoActiveTenant()
     sessions = request.app.state.sessionmaker
     async with tenant_session(sessions, auth.tenant_id, auth.user_id) as db:
-        membership = (
-            await db.execute(
-                select(Membership).where(
-                    Membership.user_id == auth.user_id, Membership.status == "active"
-                )
-            )
-        ).scalar_one_or_none()
-        if membership is None:
-            raise NoActiveTenant()
-        grants = (
-            await db.execute(
-                select(RolePermission.permission_code, RolePermission.limit_value).where(
-                    RolePermission.role_id == membership.role_id
-                )
-            )
-        ).all()
-        outlets = (
-            await db.execute(
-                select(MembershipOutlet.outlet_id).where(
-                    MembershipOutlet.membership_id == membership.id
-                )
-            )
-        ).scalars()
-        modules = (
-            await db.execute(select(TenantModule.module).where(TenantModule.enabled))
-        ).scalars()
-        sub_row = (await db.execute(select(Subscription))).scalar_one_or_none()
+        # One round trip for the whole access picture (runs on every protected request).
+        # RLS still scopes every subquery to the current tenant.
+        row = (await db.execute(_PRINCIPAL_SQL, {"user_id": auth.user_id})).one_or_none()
+    if row is None:
+        raise NoActiveTenant()
+    grants = list(zip(row.permission_codes or [], row.limit_values or [], strict=True))
+    sub_row = row if row.plan_type is not None else None
     sub = (
         SubscriptionInfo(
             plan_type=sub_row.plan_type,
@@ -126,13 +121,13 @@ async def load_principal(request: Request, auth: AuthContext) -> Principal:
     return Principal(
         auth=auth,
         tenant_id=auth.tenant_id,
-        membership_id=membership.id,
-        role_id=membership.role_id,
+        membership_id=row.membership_id,
+        role_id=row.role_id,
         permissions=frozenset(code for code, _ in grants),
         limits={code: limit for code, limit in grants},
-        all_outlets=membership.scope == "all",
-        outlet_ids=frozenset(outlets),
-        enabled_modules=frozenset(modules) | CORE_MODULES,
+        all_outlets=row.scope == "all",
+        outlet_ids=frozenset(row.outlet_ids or ()),
+        enabled_modules=frozenset(row.modules or ()) | CORE_MODULES,
         subscription_state=effective_state(sub, datetime.now(UTC)),
         subscription=sub,
     )

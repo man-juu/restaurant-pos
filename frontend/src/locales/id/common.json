@@ -31,7 +31,11 @@
     "startEnroll": "Tampilkan kunci",
     "recoveryTitle": "Simpan kode pemulihan Anda",
     "recoveryHelp": "Setiap kode hanya berlaku sekali jika ponsel Anda hilang. Kode hanya ditampilkan sekarang.",
-    "recoverySaved": "Sudah saya simpan"
+    "recoverySaved": "Sudah saya simpan",
+    "working": "Mohon tunggu…",
+    "showPassword": "Tampilkan kata sandi",
+    "hidePassword": "Sembunyikan kata sandi",
+    "otherAccount": "Gunakan akun lain"
   },
   "nav": {
     "dashboard": "Dasbor",

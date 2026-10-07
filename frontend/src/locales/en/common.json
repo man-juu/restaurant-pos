@@ -31,7 +31,11 @@
     "startEnroll": "Show setup key",
     "recoveryTitle": "Save your recovery codes",
     "recoveryHelp": "Each code works once if you lose your phone. They are shown only now.",
-    "recoverySaved": "I saved them"
+    "recoverySaved": "I saved them",
+    "working": "Please wait…",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "otherAccount": "Use a different account"
   },
   "nav": {
     "dashboard": "Dashboard",

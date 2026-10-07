@@ -1,18 +1,32 @@
-import { AdminPage } from '../features/admin/AdminPage'
-import { LoginPage } from '../features/auth/LoginPage'
+/* eslint-disable react-refresh/only-export-components -- route table, not a component module */
+import { lazy, Suspense, type ReactNode } from 'react'
+
 import { DashboardPage } from '../features/dashboard/DashboardPage'
-import { OutletsPage } from '../features/outlets/OutletsPage'
 import { Shell } from './Shell'
 
+// Rarely used or entry-only screens load on demand, so the main bundle stays small on
+// mobile connections (performance budget: scripts/check-bundle.mjs).
+const AdminPage = lazy(() =>
+  import('../features/admin/AdminPage').then((m) => ({ default: m.AdminPage })),
+)
+const LoginPage = lazy(() =>
+  import('../features/auth/LoginPage').then((m) => ({ default: m.LoginPage })),
+)
+const OutletsPage = lazy(() =>
+  import('../features/outlets/OutletsPage').then((m) => ({ default: m.OutletsPage })),
+)
+
+const page = (element: ReactNode) => <Suspense fallback={null}>{element}</Suspense>
+
 export const routes = [
-  { path: '/login', element: <LoginPage /> },
-  { path: '/admin', element: <AdminPage /> },
+  { path: '/login', element: page(<LoginPage />) },
+  { path: '/admin', element: page(<AdminPage />) },
   {
     path: '/',
     element: <Shell />,
     children: [
       { index: true, element: <DashboardPage /> },
-      { path: 'outlets', element: <OutletsPage /> },
+      { path: 'outlets', element: page(<OutletsPage />) },
       // Module pages arrive with their modules (Phase 1); nav entries come from capabilities.
       { path: '*', element: <DashboardPage /> },
     ],

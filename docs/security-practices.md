@@ -58,3 +58,9 @@ Open: trusted proxy headers for real client IPs (0.8).
 - **Frontend, 646 npm packages** (incl. transitive): `npm audit` (GitHub Advisory Database, which includes malware advisories) found **0** issues. Only one package has an install script (`fsevents`, macOS file watching used by Vite), and install scripts are disabled anyway. All new packages were installed at versions published at least 7 days earlier.
 - **Backend, 61 PyPI packages**: none has a known vulnerability, and none is yanked or removed from PyPI.
 - Not possible from the build sandbox: the OSV API and npm registry signature checks (blocked by network policy). CI repeats the npm and PyPI checks on every change.
+
+### 2026-10-07: theme, palette and performance changes
+
+- Theme preferences from browser storage are accepted only from fixed allow-lists (mode, accent, background), so a tampered value cannot inject CSS or URLs; no HTML is built from strings.
+- The single-query permission loader keeps tenant scoping in the database: every subquery runs under row-level security in the caller's tenant transaction. All cross-tenant, permission and subscription tests pass (113 backend tests).
+- Session activity is written at most once a minute instead of on every request; revocation and timeouts are still checked on every request.
