@@ -25,6 +25,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column
 
+import app.core.uploads.models  # noqa: F401 - uploads table for the photo foreign key
 from app.core.models import Base, _check_in, _created_at, _id
 
 UNIT_DIMENSIONS = ("mass", "volume", "count")
@@ -80,6 +81,7 @@ class Item(Base):
         ForeignKeyConstraint(
             ["tenant_id", "category_id"], ["item_categories.tenant_id", "item_categories.id"]
         ),
+        ForeignKeyConstraint(["tenant_id", "photo_upload_id"], ["uploads.tenant_id", "uploads.id"]),
         Index(None, "tenant_id", "type", "is_active"),
     )
 
@@ -93,6 +95,7 @@ class Item(Base):
     shelf_life_days: Mapped[int | None] = mapped_column()
     storage_type: Mapped[str | None] = mapped_column(Text)
     allergens: Mapped[list[str]] = mapped_column(ARRAY(String(40)), server_default="{}")
+    photo_upload_id: Mapped[uuid.UUID | None] = mapped_column()  # optional (FR-CAT-001)
     is_active: Mapped[bool] = mapped_column(server_default="true")
     version: Mapped[int] = mapped_column(server_default="1")
     created_at: Mapped[datetime] = _created_at()

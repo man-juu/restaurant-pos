@@ -37,6 +37,10 @@ class Settings(BaseModel):
     invitation_ttl_hours: int = Field(default=72, ge=1, le=24 * 14)
     password_reset_ttl_minutes: int = Field(default=60, ge=10, le=24 * 60)
 
+    # Uploaded files live on a disk volume that the backup job includes (docs/05 2.2a).
+    upload_dir: str = "/var/lib/pos/uploads"
+    upload_max_bytes: int = Field(default=8 * 1024 * 1024, ge=1024, le=50 * 1024 * 1024)
+
     @property
     def encryption_key(self) -> str:
         if self.secret_encryption_key:

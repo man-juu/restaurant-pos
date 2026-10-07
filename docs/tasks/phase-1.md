@@ -18,7 +18,7 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 
 | # | Slice | Requirements | Notes |
 | --- | --- | --- | --- |
-| 2 | 1b part 3: upload engine (menu/ingredient photos, login background), optional by default | FR-CAT-001 photo, theme background | file type sniffing, size limit, re-encode images, no SVG |
+| 2 | ~~1b part 3: upload engine~~ done 2026-10-08 (item photos; background and attachments reuse it) | FR-CAT-001 photo | |
 | 3 | 1b part 4: free AI images with usage counter, block at 85% of free limit plus per-tenant daily cap | FR-CAT-013, ADR-022 | off until platform configures the key |
 | 5 | 1c rest: food-cost alert | FR-CAT-012 | needs a target HPP % per item and tenant (not in docs/05: owner decision) and the notification center (1j); build with 1j |
 | 6 | 1d Import/export CSV/XLSX, demo seed (fictional menu shaped like the legacy one) | FR-IMP-001 to 003 | XLSX library needs owner approval |

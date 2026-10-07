@@ -134,3 +134,12 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 ## Dev tools added (2026-10-07)
 
 - complexipy 8.0.1 (MIT, PyPI release 2026-09-07) and eslint-plugin-sonarjs 4.2.2 (LGPL-3.0, SonarSource, dev only, not shipped in the bundle). Installed with the 7-day cooling-off; npm audit clean. Owner approved.
+
+## Slice 1b part 3: upload engine (2026-10-08)
+
+- Pillow 12.3.0 (released 2026-07-01, no advisories at install). Allow-list JPEG, PNG, WebP; never SVG (can carry script). `Image.verify()` before decoding; 40-megapixel limit plus Pillow's own bomb guard; 8 MB body limit enforced while streaming (413 before the whole body is read).
+- Every image is re-encoded to WebP and resized to 1600 px: EXIF (GPS), ICC and any appended payload are dropped. Tested: GPS EXIF removed, SVG/PDF/GIF/truncated files rejected, a 144-megapixel PNG bomb rejected.
+- Stored under a random key (`<tenant>/<uuid>.webp`), never the client file name (no path traversal). Served only to signed-in members of the owning tenant (RLS; another tenant gets 404) with `Content-Type: image/webp`, `nosniff`, `Content-Security-Policy: default-src 'none'; sandbox`.
+- Uploading a photo needs `catalog.item.update`; store and link happen in one transaction; every upload and photo change is audited. Identical files are de-duplicated by SHA-256 per tenant and purpose.
+- Backups now include the uploads volume, encrypted with the same public key.
+- Known gap (low): if a transaction rolls back after the file is written, the file stays unreferenced on disk. Harmless (not served without a row); a sweep job can be added later.

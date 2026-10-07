@@ -163,7 +163,9 @@
     "approver_role_required": "Peran Anda tidak bisa menyetujui ini; aturan persetujuan menyebut peran lain.",
     "cannot_approve_own_request": "Anda tidak bisa menyetujui permintaan sendiri.",
     "count_incomplete": "Isi jumlah terhitung untuk setiap baris dulu.",
-    "items_required": "Pilih minimal satu item untuk dihitung."
+    "items_required": "Pilih minimal satu item untuk dihitung.",
+    "invalid_image": "File ini bukan gambar yang didukung. Gunakan JPEG, PNG atau WebP.",
+    "upload_too_large": "File terlalu besar. Batasnya 8 MB."
   },
   "appearance": {
     "open": "Tampilan",
@@ -415,6 +417,17 @@
         "yield": "Isi berapa hasil satu batch."
       },
       "saveFirst": "Simpan perubahan sebelum mengaktifkan."
+    },
+    "photo": {
+      "title": "Foto",
+      "optional": "Opsional. JPEG, PNG atau WebP, maksimal 8 MB.",
+      "none": "Belum ada foto",
+      "choose": "Pilih foto",
+      "replace": "Ganti foto",
+      "remove": "Hapus foto",
+      "uploading": "Mengunggah…",
+      "alt": "Foto {{name}}",
+      "tooBig": "File ini lebih dari 8 MB."
     }
   },
   "inventory": {

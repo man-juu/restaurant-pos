@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next'
 
 import { Alert, Button } from '../../components/ui'
+import type { ItemOut } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
 import { useItem } from './api'
 import { ItemForm } from './ItemForm'
+import { PhotoPanel } from './PhotoPanel'
 import { PricesPanel } from './PricesPanel'
 import { RecipePanel } from './RecipePanel'
 
@@ -44,10 +46,28 @@ export function ItemEditor({
           onSaved={onSaved}
         />
       )}
-      {item.data && item.data.type !== 'ingredient' && (
-        <RecipePanel item={item.data} canEdit={canEdit} currency={currency} />
-      )}
-      {item.data && <PricesPanel itemId={item.data.id} canEdit={canEdit} currency={currency} />}
+      {item.data && <ItemPanels item={item.data} canEdit={canEdit} currency={currency} />}
     </div>
+  )
+}
+
+/** Panels that need a saved item: photo, recipe (not for ingredients) and prices. */
+function ItemPanels({
+  item,
+  canEdit,
+  currency,
+}: {
+  item: ItemOut
+  canEdit: boolean
+  currency: string
+}) {
+  return (
+    <>
+      <PhotoPanel item={item} canEdit={canEdit} />
+      {item.type !== 'ingredient' && (
+        <RecipePanel item={item} canEdit={canEdit} currency={currency} />
+      )}
+      <PricesPanel itemId={item.id} canEdit={canEdit} currency={currency} />
+    </>
   )
 }

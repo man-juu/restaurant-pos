@@ -47,12 +47,27 @@ const ROUTES: Record<string, (fake: Fake, body: Body) => unknown> = {
   'POST /api/v1/catalog/items': newItem,
   'GET /api/v1/catalog/items/i1': (f) => f.items[0],
   'GET /api/v1/catalog/items/i1/prices': (f) => f.prices,
+  'PUT /api/v1/catalog/items/i1/photo': (f) => {
+    f.items[0].photo_upload_id = 'up1'
+    return { id: 'up1', content_type: 'image/webp', width: 1, height: 1, byte_size: 68 }
+  },
   'PUT /api/v1/catalog/items/i1/prices': (f, b) =>
     add(f.prices, { id: `p${f.prices.length}`, item_id: 'i1', ...b }),
 }
 
 function catalogRoute(fake: Fake, path: string, method: string, body: Body) {
   return ROUTES[`${method} ${path}`]?.(fake, body)
+}
+
+// 1x1 transparent PNG.
+const PNG = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=',
+  'base64',
+)
+
+function parseBody(raw: string | null, type = ''): Body {
+  if (!raw || !type.includes('json')) return {}
+  return JSON.parse(raw) as Body
 }
 
 async function mock(page: Page, permissions: string[]) {
@@ -81,7 +96,9 @@ async function mock(page: Page, permissions: string[]) {
         currency: 'IDR',
         language: 'id',
       })
-    const body = (req.postDataJSON() ?? {}) as Record<string, unknown>
+    if (path.startsWith('/api/v1/uploads/'))
+      return route.fulfill({ status: 200, contentType: 'image/png', body: PNG })
+    const body = parseBody(req.postData(), req.headers()['content-type'])
     if (req.method() !== 'GET') fake.posts.push({ path, body })
     const data = catalogRoute(fake, path, req.method(), body)
     return data === undefined ? json({ code: 'not_found' }, 404) : json(data)
@@ -124,6 +141,15 @@ test('manager adds a channel, an item and its dine-in price (FR-CAT-001, 004)', 
     path: '/api/v1/catalog/items/i1/prices',
     body: { channel_id: 'c0', valid_from: '2026-01-01', price: 25000 },
   })
+
+  // Optional photo: choose a file, the item now shows it.
+  await page.getByLabel('Choose photo').setInputFiles({
+    name: 'rice.png',
+    mimeType: 'image/png',
+    buffer: PNG,
+  })
+  await expect(page.getByRole('img', { name: 'Photo of Fried rice' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Replace photo' })).toBeVisible()
 })
 
 test('staff without edit rights see the catalog read-only', async ({ page }) => {

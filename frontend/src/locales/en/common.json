@@ -163,7 +163,9 @@
     "approver_role_required": "Your role cannot approve this; the approval rule names another role.",
     "cannot_approve_own_request": "You cannot approve your own request.",
     "count_incomplete": "Enter a counted quantity for every line first.",
-    "items_required": "Choose at least one item to count."
+    "items_required": "Choose at least one item to count.",
+    "invalid_image": "This file is not a supported image. Use JPEG, PNG or WebP.",
+    "upload_too_large": "This file is too large. The limit is 8 MB."
   },
   "appearance": {
     "open": "Appearance",
@@ -415,6 +417,17 @@
         "yield": "Say how much one batch makes."
       },
       "saveFirst": "Save your changes before activating."
+    },
+    "photo": {
+      "title": "Photo",
+      "optional": "Optional. JPEG, PNG or WebP, up to 8 MB.",
+      "none": "No photo yet",
+      "choose": "Choose photo",
+      "replace": "Replace photo",
+      "remove": "Remove photo",
+      "uploading": "Uploading…",
+      "alt": "Photo of {{name}}",
+      "tooBig": "This file is larger than 8 MB."
     }
   },
   "inventory": {

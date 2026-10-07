@@ -26,3 +26,13 @@ The procedure was rehearsed during slice 0.8 (2026-10-07): encrypted dump, no re
 3. Copy the newest backup and your private key to a **temporary** recovery location, run `restore.sh <file> pos`, then delete the private key from that machine.
 4. Deploy the last good tag (`deploy.md`), check sign-in, then switch DNS if the IP changed.
 5. Target: back online within 4 hours, losing at most the last 24 hours of data (until WAL archiving in Phase 2).
+
+## Uploaded files (photos, attachments)
+
+Each backup run also writes `pos-<prefix>-<stamp>.uploads.tar.gpg`: an encrypted tar of the `uploads` volume, uploaded next to the database dump. Restore after the database:
+
+```
+gpg --batch --decrypt pos-prod-<stamp>.uploads.tar.gpg | docker run --rm -i -v restaurant-pos_uploads:/u alpine tar -C /u -xf -
+```
+
+Photos are referenced by id from the database, so restore the dump and the uploads tar from the same night.

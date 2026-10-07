@@ -487,6 +487,28 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/catalog/items/{item_id}/photo': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Put Photo
+     * @description Body: the raw image bytes (JPEG, PNG or WebP). One transaction: stored and linked, or
+     *     neither.
+     */
+    put: operations['put_photo_api_v1_catalog_items__item_id__photo_put']
+    post?: never
+    /** Delete Photo */
+    delete: operations['delete_photo_api_v1_catalog_items__item_id__photo_delete']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/catalog/items/{item_id}/prices': {
     parameters: {
       query?: never
@@ -987,6 +1009,23 @@ export interface paths {
     get?: never
     /** Put Setting */
     put: operations['put_setting_api_v1_settings__key__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/uploads/{upload_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Upload */
+    get: operations['get_upload_api_v1_uploads__upload_id__get']
+    put?: never
     post?: never
     delete?: never
     options?: never
@@ -1707,6 +1746,8 @@ export interface components {
       is_stocked: boolean
       /** Name */
       name: string
+      /** Photo Upload Id */
+      photo_upload_id?: string | null
       /** Shelf Life Days */
       shelf_life_days: number | null
       /** Sku */
@@ -1741,6 +1782,8 @@ export interface components {
       is_active: boolean
       /** Name */
       name: string
+      /** Photo Upload Id */
+      photo_upload_id?: string | null
       /** Sku */
       sku: string
       /**
@@ -2032,6 +2075,22 @@ export interface components {
     PaymentMethodSettings: {
       /** Methods */
       methods?: components['schemas']['PaymentMethod'][]
+    }
+    /** PhotoOut */
+    PhotoOut: {
+      /** Byte Size */
+      byte_size: number
+      /** Content Type */
+      content_type: string
+      /** Height */
+      height: number | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Width */
+      width: number | null
     }
     /** PostedDocument */
     PostedDocument: {
@@ -3507,6 +3566,66 @@ export interface operations {
       }
     }
   }
+  put_photo_api_v1_catalog_items__item_id__photo_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PhotoOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  delete_photo_api_v1_catalog_items__item_id__photo_delete: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   price_history_api_v1_catalog_items__item_id__prices_get: {
     parameters: {
       query?: never
@@ -4461,6 +4580,35 @@ export interface operations {
             [key: string]: unknown
           }
         }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_upload_api_v1_uploads__upload_id__get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        upload_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Validation Error */
       422: {

@@ -1695,6 +1695,18 @@
             "title": "Name",
             "type": "string"
           },
+          "photo_upload_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Photo Upload Id"
+          },
           "shelf_life_days": {
             "anyOf": [
               {
@@ -1792,6 +1804,18 @@
           "name": {
             "title": "Name",
             "type": "string"
+          },
+          "photo_upload_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Photo Upload Id"
           },
           "sku": {
             "title": "Sku",
@@ -2550,6 +2574,54 @@
           }
         },
         "title": "PaymentMethodSettings",
+        "type": "object"
+      },
+      "PhotoOut": {
+        "properties": {
+          "byte_size": {
+            "title": "Byte Size",
+            "type": "integer"
+          },
+          "content_type": {
+            "title": "Content Type",
+            "type": "string"
+          },
+          "height": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Height"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Width"
+          }
+        },
+        "required": [
+          "id",
+          "content_type",
+          "width",
+          "height",
+          "byte_size"
+        ],
+        "title": "PhotoOut",
         "type": "object"
       },
       "PostedDocument": {
@@ -5075,6 +5147,84 @@
         ]
       }
     },
+    "/api/v1/catalog/items/{item_id}/photo": {
+      "delete": {
+        "operationId": "delete_photo_api_v1_catalog_items__item_id__photo_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Photo",
+        "tags": [
+          "catalog"
+        ]
+      },
+      "put": {
+        "description": "Body: the raw image bytes (JPEG, PNG or WebP). One transaction: stored and linked, or\nneither.",
+        "operationId": "put_photo_api_v1_catalog_items__item_id__photo_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhotoOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Put Photo",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
     "/api/v1/catalog/items/{item_id}/prices": {
       "get": {
         "operationId": "price_history_api_v1_catalog_items__item_id__prices_get",
@@ -6711,6 +6861,42 @@
         "summary": "Put Setting",
         "tags": [
           "settings"
+        ]
+      }
+    },
+    "/api/v1/uploads/{upload_id}": {
+      "get": {
+        "operationId": "get_upload_api_v1_uploads__upload_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "upload_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Upload Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Upload",
+        "tags": [
+          "uploads"
         ]
       }
     },

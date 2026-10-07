@@ -25,26 +25,36 @@ export function setCsrfToken(token: string | null): void {
 
 const SAFE = new Set(['GET', 'HEAD', 'OPTIONS'])
 
+/** JSON for data, raw bytes for files (photos), nothing for bodiless requests. */
+function encodeBody(body: unknown): { body?: BodyInit; type?: string } {
+  if (body === undefined) return {}
+  if (body instanceof Blob) return { body, type: 'application/octet-stream' }
+  return { body: JSON.stringify(body), type: 'application/json' }
+}
+
+async function failure(response: Response): Promise<ApiError> {
+  const data: unknown = await response.json().catch(() => null)
+  const err = (data ?? {}) as { code?: string; details?: unknown }
+  return new ApiError(response.status, err.code ?? 'network_error', err.details)
+}
+
 export async function request<T>(
   method: string,
   path: string,
   body?: unknown,
   extraHeaders: Record<string, string> = {},
 ): Promise<T> {
+  const encoded = encodeBody(body)
   const headers: Record<string, string> = { ...extraHeaders, Accept: 'application/json' }
-  if (body !== undefined) headers['Content-Type'] = 'application/json'
+  if (encoded.type) headers['Content-Type'] = encoded.type
   if (!SAFE.has(method) && csrfToken) headers['X-CSRF-Token'] = csrfToken
   const response = await fetch(path, {
     method,
     headers,
     credentials: 'same-origin',
-    body: body === undefined ? undefined : JSON.stringify(body),
+    body: encoded.body,
   })
+  if (!response.ok) throw await failure(response)
   if (response.status === 204) return undefined as T
-  const data: unknown = await response.json().catch(() => null)
-  if (!response.ok) {
-    const err = (data ?? {}) as { code?: string; details?: unknown }
-    throw new ApiError(response.status, err.code ?? 'network_error', err.details)
-  }
-  return data as T
+  return (await response.json().catch(() => null)) as T
 }

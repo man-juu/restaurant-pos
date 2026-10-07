@@ -18,6 +18,7 @@ from app.core.mailer import MemoryMailer
 from app.core.middleware import RequestContextMiddleware
 from app.core.modules import ModuleManifest, discover, mount
 from app.core.settings import router as settings_router
+from app.core.uploads import router as uploads_router
 
 
 def create_app(
@@ -59,6 +60,7 @@ def create_app(
         account_router.invitations_router,
         tenant_router.router,
         settings_router.router,
+        uploads_router.router,
     ):
         include(api, router)
     mount(api, api.state.modules, include)

@@ -55,6 +55,7 @@ services:
   api:
     <<: *app
     environment: *api-env
+    volumes: [uploads:/var/lib/pos/uploads]  # photos and attachments (backed up below)
     depends_on:
       migrate: { condition: service_completed_successfully }
     healthcheck:
@@ -125,6 +126,7 @@ services:
       # The owner's PUBLIC backup key only; the private key never lives on the server.
       - /etc/restaurant-pos/backup-public-key.asc:/keys/public-key.asc:ro
       - backup-local:/var/backups/pos
+      - uploads:/var/lib/pos/uploads:ro
     networks: [internal]
     depends_on:
       db: { condition: service_healthy }
@@ -141,3 +143,4 @@ volumes:
   caddy-data: {}
   caddy-config: {}
   backup-local: {}
+  uploads: {}

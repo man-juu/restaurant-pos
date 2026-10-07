@@ -55,7 +55,7 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | --- | --- | --- |
 | `units` | tenant_id, code, name, dimension (mass, volume, count) | Platform seeds g, kg, ml, l, pcs; tenants add more |
 | `item_categories` | tenant_id, parent_id, name | |
-| `items` | tenant_id, sku, type, category_id, base_unit_id, is_stocked, shelf_life_days, storage_type, allergens, is_active | `type`: ingredient, semi_finished, menu |
+| `items` | tenant_id, sku, type, category_id, base_unit_id, is_stocked, tracking_mode, standard_cost, shelf_life_days, storage_type, allergens, photo_upload_id, is_active | `type`: ingredient, semi_finished, menu. `tracking_mode`: exact, estimated, untracked (estimated never blocks a sale or raises negative-stock alerts). `standard_cost` numeric(18,6) per base unit, used only when no moving average exists |
 | `item_unit_conversions` | tenant_id, item_id, unit_id, factor_to_base | Exact decimals |
 | `modifier_groups`, `modifiers` | tenant_id, item scope, price_delta, ingredient_delta (via BOM line) | |
 | `channels` | tenant_id, code, name, kind, platform | kind: dine_in, takeaway, platform, wholesale |
@@ -65,6 +65,13 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `platform_item_map` | tenant_id, channel_id, platform_code, item_id | FR-CAT-010 |
 | `outlet_item_overrides` | tenant_id, outlet_id, item_id, is_available, note | FR-TEN-011; price overrides live in `item_prices` |
 | `item_translations` | item_id, language, name, description | |
+
+### 2.2a Files and imports (core)
+
+| Table | Key columns | Notes |
+| --- | --- | --- |
+| `uploads` | tenant_id, purpose, content_type, byte_size, width, height, sha256, storage_key, created_by, created_at | Images re-encoded to WebP; stored on disk under a random key, never the client file name; unique (tenant_id, sha256, purpose) |
+| `import_batches` | tenant_id, kind, file_sha256, file_name, status, row_count, created_ids, created_by, created_at, reverted_at | Unique (tenant_id, kind, file_sha256); `status`: committed, reverted |
 
 ### 2.3 Inventory
 

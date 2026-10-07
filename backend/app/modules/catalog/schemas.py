@@ -109,6 +109,7 @@ class ItemSummary(BaseModel):
     category_id: uuid.UUID | None
     base_unit_id: uuid.UUID
     is_active: bool
+    photo_upload_id: uuid.UUID | None = None
 
 
 class ItemOut(ItemSummary):

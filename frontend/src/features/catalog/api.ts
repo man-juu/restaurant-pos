@@ -14,6 +14,7 @@ import type {
   PriceOut,
   UnitIn,
   UnitOut,
+  UploadRef,
 } from '../../lib/api/types'
 
 const BASE = '/api/v1/catalog'
@@ -120,3 +121,23 @@ export const useDeletePrice = (itemId: string) =>
   useSave(['prices', itemId], (priceId: string) =>
     request<void>('DELETE', `${BASE}/prices/${priceId}`),
   )
+
+export const MAX_PHOTO_BYTES = 8 * 1024 * 1024 // matches the server limit (upload_max_bytes)
+
+export function usePhoto(itemId: string, lang: string) {
+  const client = useQueryClient()
+  const refresh = () =>
+    Promise.all([
+      client.invalidateQueries({ queryKey: ['item', itemId, lang] }),
+      client.invalidateQueries({ queryKey: ['items'] }),
+    ])
+  const upload = useMutation({
+    mutationFn: (file: File) => request<UploadRef>('PUT', `${BASE}/items/${itemId}/photo`, file),
+    onSuccess: refresh,
+  })
+  const remove = useMutation({
+    mutationFn: () => request<void>('DELETE', `${BASE}/items/${itemId}/photo`),
+    onSuccess: refresh,
+  })
+  return { upload, remove }
+}

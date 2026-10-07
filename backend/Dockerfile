@@ -18,6 +18,8 @@ RUN pip install --no-index --find-links=/wheels /wheels/*.whl && rm -rf /wheels
 COPY alembic.ini ./
 COPY migrations ./migrations
 COPY app ./app
+# Named volumes copy this owner on first mount, so the app user can write uploads.
+RUN mkdir -p /var/lib/pos/uploads && chown app:app /var/lib/pos/uploads
 USER app
 EXPOSE 8000
 # Two workers fit the 4 GB VPS budget (docs/07 section 3). Proxy headers are trusted only
