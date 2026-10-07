@@ -39,6 +39,8 @@ jobs:
           cache: pip
           cache-dependency-path: backend/pyproject.toml
       - run: pip install -e ".[dev]"
+      # Known vulnerabilities, yanked or removed releases (docs/security-practices.md).
+      - run: pip freeze --exclude-editable > /tmp/req.txt && python scripts/check_dependencies.py /tmp/req.txt
       - run: ruff check .
       - run: ruff format --check .
       - run: mypy
@@ -58,6 +60,7 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
+      - run: npm run audit:deps
       - run: npm run format:check
       - run: npm run lint
       - run: npm run typecheck

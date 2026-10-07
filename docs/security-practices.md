@@ -21,7 +21,7 @@ Status: ✅ done and tested, 🔜 planned (slice), 👤 owner action.
 | **XSS** | Script injected via an item name | React escapes output, no `dangerouslySetInnerHTML`, strict Content-Security-Policy, session cookie unreadable by scripts | 🔜 0.7, 0.8 |
 | **Data leak through errors and logs** (A10) | Stack traces or passwords in responses or logs | One error format, never echoes input, no query strings in logs, no secrets in audit | ✅ 0.2 |
 | **Ransomware / data destruction** | Server compromised and database encrypted or wiped | Encrypted nightly backups at a **different provider** with credentials the server cannot use to delete (write-only key or object lock), monthly restore drill, append-only ledgers and audit log, fast rebuild runbook | 🔜 0.8 |
-| **Backdoor / supply chain** (A03) | Compromised package, malicious dependency or CI action | Exact version pins, owner approval for every new dependency, gitleaks on every commit and full history, CI with read-only token on `pull_request` only; add `pip-audit` and `npm audit`, Dependabot alerts, pinned action SHAs | ✅ partly; 🔜 0.8 |
+| **Backdoor / supply chain** (A03) | Compromised package, malicious dependency or CI action | Exact version pins (`save-exact`), owner approval for every new dependency, new versions installed only after a 7-day cooling-off (`npm install --before`), npm install scripts disabled (`ignore-scripts`), CI fails on high npm advisories and on vulnerable, yanked or removed PyPI releases (`scripts/check_dependencies.py`), gitleaks on every commit; Dependabot alerts and pinned action SHAs in 0.8 | ✅ mostly; 🔜 0.8 |
 | **Server compromise** (A02) | Weak SSH, exposed database, unpatched OS | SSH keys only, firewall (Cloudflare IPs only on 80/443), database never public, non-root containers, automatic security updates | 🔜 0.8 |
 | **Insider misuse** | Platform support reads tenant data | Separate admin app, DB role and accounts with mandatory 2FA; support role cannot change tenants; impersonation is a read-only DB transaction with reason and expiry, logged in the tenant audit log | ✅ 0.6 |
 | **Secrets leak** | Password in Git or logs | `.env` ignored, gitleaks, secrets only in a root-owned server file, never logged | ✅ |
@@ -52,3 +52,9 @@ Automated security review of the whole branch. **No exploitable vulnerability fo
 - Dev proxy fixed to forward `/api` paths unchanged (functional bug, not security).
 
 Open: trusted proxy headers for real client IPs (0.8).
+
+### 2026-10-07: dependency malware and vulnerability check (before slice 0.7)
+
+- **Frontend, 646 npm packages** (incl. transitive): `npm audit` (GitHub Advisory Database, which includes malware advisories) found **0** issues. Only one package has an install script (`fsevents`, macOS file watching used by Vite), and install scripts are disabled anyway. All new packages were installed at versions published at least 7 days earlier.
+- **Backend, 61 PyPI packages**: none has a known vulnerability, and none is yanked or removed from PyPI.
+- Not possible from the build sandbox: the OSV API and npm registry signature checks (blocked by network policy). CI repeats the npm and PyPI checks on every change.

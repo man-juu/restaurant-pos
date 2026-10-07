@@ -28,7 +28,7 @@ Check the approval table in `docs/README.md`. If any document is still **Draft**
 ## Stack (decided)
 
 - Backend: Python 3.12+, FastAPI, Pydantic v2, SQLAlchemy 2 (async, asyncpg), Alembic, PostgreSQL, argon2-cffi, cryptography. Jobs: Postgres-backed queue (no Redis at launch, ADR-005).
-- Frontend: React + TypeScript + Vite, Tailwind + Radix/shadcn-style components, TanStack Query, React Hook Form + Zod, i18next, PWA. API client generated from OpenAPI.
+- Frontend: React + TypeScript + Vite, React Router, Tailwind + Radix/shadcn-style components, TanStack Query, React Hook Form + Zod, i18next, PWA. API client generated from OpenAPI.
 - Run: Docker Compose; Caddy serves the built PWA and proxies the API. One small VPS, Cloudflare in front.
 - Quality: ruff, mypy, import-linter, pytest (+ Hypothesis), ESLint, `tsc`, Vitest, Playwright, k6.
 
@@ -63,7 +63,8 @@ python -m app.admin.cli create-admin you@example.com "Name" super_admin   # firs
 python -m app.admin.cli subscription-job                                  # daily job (cron in 0.8)
 
 # frontend/ (first: npm ci)
-npm run dev | lint | typecheck | test | build | format:check
+npm run dev | lint | typecheck | test | build | format:check | audit:deps
+# adding a package: npm install --before=<7 days ago> <pkg>   (cooling-off; scripts are off via .npmrc)
 ```
 
 CI (`.github/workflows/ci.yml`) runs all of these plus a gitleaks scan of the full Git history.
