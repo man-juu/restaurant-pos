@@ -92,7 +92,7 @@ Every route needs `Depends(require("module.resource.action"))` (or `public()` fo
 
 ## Out of scope (do not build or add)
 
-Redis (until measured need), marketplace scraping, native mobile apps, payroll or attendance, direct GrabFood/GoFood/ShopeeFood APIs (Phase 4, partner only), AI features that receive tenant or customer data, payment gateway (Phase 4).
+Redis (until measured need), marketplace scraping, native mobile apps, payroll or attendance, direct GrabFood/GoFood/ShopeeFood APIs (Phase 4, partner only), AI features that receive tenant or customer data (sole exception: ADR-009, free image generation from a user-typed prompt), payment gateway (Phase 4).
 
 ## Workflow
 
