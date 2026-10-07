@@ -1,6 +1,6 @@
 # Restaurant POS / ERP: Documentation
 
-**Status:** v0.2 draft for review. **Date:** 2026-10-07. **Owner:** Michael Julian.
+**Status:** v0.2 approved 2026-10-07. **Date:** 2026-10-07. **Owner:** Michael Julian.
 
 Working name: *Restaurant POS*. A multi-tenant, modular POS and back-office ERP for restaurants, cloud kitchens and central-kitchen groups, Indonesia first.
 
@@ -29,15 +29,15 @@ Working name: *Restaurant POS*. A multi-tenant, modular POS and back-office ERP 
 
 | Document | Version | Status |
 | --- | --- | --- |
-| 01 Product spec | 0.2 | Draft |
-| 02 Functional spec | 0.2 | Draft |
-| 03 Roles and permissions | 0.1 | Draft |
-| 04 Architecture | 0.1 | Draft |
-| 05 Data model | 0.1 | Draft |
-| 06 Security and compliance | 0.1 | Draft |
-| 07 Infrastructure and cost | 0.1 | Draft |
-| 08 Roadmap and engineering | 0.2 | Draft |
-| 09 Decisions and open questions | 0.2 | Draft |
+| 01 Product spec | 0.2 | Approved |
+| 02 Functional spec | 0.2 | Approved |
+| 03 Roles and permissions | 0.1 | Approved |
+| 04 Architecture | 0.1 | Approved |
+| 05 Data model | 0.1 | Approved |
+| 06 Security and compliance | 0.1 | Approved |
+| 07 Infrastructure and cost | 0.1 | Approved |
+| 08 Roadmap and engineering | 0.2 | Approved |
+| 09 Decisions and open questions | 0.2 | Approved |
 
 ## Conventions used in all documents
 

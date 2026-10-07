@@ -94,3 +94,4 @@ Items not verifiable from my environment: your existing GitHub repository (acces
 | --- | --- | --- |
 | 0.1 | 2026-10-07 | First complete draft of all documents |
 | 0.2 | 2026-10-07 | Q-002 and Q-003 answered; ADR-008 accepted; service charge off for cloud kitchens; added FR-RPT-011 and FR-RPT-012 (sales summaries per outlet and per staff); Q-006 left open with default |
+| 0.3 | 2026-10-07 | Step 1 approval gate: the owner approved all documents and accepted the defaults for every open question ("ok i approve"). Q-011: not estimated. The owner approved gitleaks as the secret scanner. Any default can be revisited through a new ADR. |

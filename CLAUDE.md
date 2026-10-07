@@ -45,15 +45,23 @@ Each backend module has `models.py, schemas.py, service.py, router.py, events.py
 
 ## Commands
 
-Fill this section with the real commands as soon as they exist, and keep it current.
+Run from the repository root unless noted.
 
 ```
-# planned, verify they exist before relying on them
-docker compose up            # local stack
-make test | pytest           # backend tests
-ruff check . && mypy .       # lint and types
-npm run test / lint / build  # frontend
+docker compose up --build           # local stack: db :5432, api :8000, web :5173 (bound to localhost)
+pre-commit install                  # once: ruff, Prettier, gitleaks on every commit
+
+# backend/ (first: python -m venv .venv && .venv/bin/pip install -e ".[dev]")
+ruff check . && ruff format --check .
+mypy
+lint-imports                        # module boundary contracts
+pytest
+
+# frontend/ (first: npm ci)
+npm run dev | lint | typecheck | test | build | format:check
 ```
+
+CI (`.github/workflows/ci.yml`) runs all of these plus a gitleaks scan of the full Git history.
 
 ## Non-negotiable rules
 
