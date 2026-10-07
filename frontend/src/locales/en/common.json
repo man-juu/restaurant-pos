@@ -1,1 +1,114 @@
-{ "app": { "title": "Restaurant POS", "tagline": "Setting up the foundation." } }
+{
+  "app": {
+    "title": "Restaurant POS",
+    "tagline": "Run every outlet",
+    "taglineAccent": "from one screen.",
+    "pitch": "Sales, stock, recipes, purchasing and central kitchen in one place. On desktop, tablet and phone.",
+    "badge": "Kitchen to cashier, one system"
+  },
+  "lang": { "label": "Language", "en": "EN", "id": "ID" },
+  "auth": {
+    "signIn": "Sign in",
+    "email": "Email",
+    "password": "Password",
+    "continue": "Continue",
+    "forgot": "Forgot password?",
+    "signOut": "Sign out",
+    "codeTitle": "Authenticator code",
+    "codeHelp": "Enter the 6-digit code from your authenticator app.",
+    "code": "Code",
+    "verify": "Verify",
+    "useRecovery": "Use a recovery code instead",
+    "recoveryCode": "Recovery code",
+    "enrollTitle": "Set up two-factor sign-in",
+    "enrollHelp": "Your role requires an authenticator app (for example Google Authenticator). Add this key, then enter the code it shows.",
+    "secretLabel": "Setup key",
+    "openApp": "Open in authenticator app",
+    "startEnroll": "Show setup key",
+    "recoveryTitle": "Save your recovery codes",
+    "recoveryHelp": "Each code works once if you lose your phone. They are shown only now.",
+    "recoverySaved": "I saved them"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "outlets": "Outlets",
+    "sales": "Daily sales",
+    "inventory": "Inventory",
+    "purchasing": "Purchasing",
+    "production": "Production",
+    "transfers": "Transfers",
+    "reports": "Reports",
+    "users": "Users and roles",
+    "main": "Main"
+  },
+  "shell": {
+    "business": "Business",
+    "switchBusiness": "Switch business",
+    "noBusiness": "You are not a member of any active business yet."
+  },
+  "subscription": {
+    "expiring": "Your subscription ends in {{count}} days. Transfer and message the admin to extend.",
+    "grace": "Your subscription has ended. You have a short grace period: please renew.",
+    "read_only": "Your subscription has ended. You can view and export, but not make changes.",
+    "dismiss": "Dismiss"
+  },
+  "dashboard": {
+    "greeting": "Welcome, {{name}}",
+    "empty": "Your figures appear here once daily sales and stock are recorded (Phase 1).",
+    "netSales": "Net sales today",
+    "orders": "Orders",
+    "foodCost": "Food cost (HPP)",
+    "stockValue": "Stock value",
+    "noData": "No data yet"
+  },
+  "outlets": {
+    "title": "Outlets",
+    "empty": "No outlets yet.",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "install": {
+    "title": "Install the app",
+    "body": "Open it from your home screen or desktop, in its own window.",
+    "action": "Install"
+  },
+  "admin": {
+    "title": "Platform admin",
+    "businesses": "Businesses",
+    "name": "Business",
+    "profile": "Profile",
+    "subscription": "Subscription",
+    "modules": "Modules",
+    "status": "Status",
+    "none": "No businesses yet."
+  },
+  "states": {
+    "free": "Free",
+    "active": "Active",
+    "expiring": "Expiring",
+    "grace": "Grace",
+    "read_only": "Read-only",
+    "suspended": "Suspended",
+    "unknown": "Not checked yet"
+  },
+  "profiles": {
+    "restaurant": "Restaurant",
+    "cloud_kitchen": "Cloud kitchen",
+    "central_kitchen_group": "Central kitchen group",
+    "hybrid": "Hybrid"
+  },
+  "errors": {
+    "invalid_credentials": "Email or password is wrong.",
+    "too_many_attempts": "Too many attempts. Please wait and try again.",
+    "invalid_code": "That code is not valid. Try the newest code.",
+    "not_authenticated": "Please sign in.",
+    "session_expired": "Your session ended. Please sign in again.",
+    "mfa_required": "Finish two-factor sign-in first.",
+    "permission_denied": "You do not have permission for this.",
+    "module_disabled": "This module is switched off for your business.",
+    "subscription_read_only": "Your subscription is read-only.",
+    "tenant_suspended": "This business is suspended.",
+    "network_error": "Cannot reach the server. Check your connection.",
+    "generic": "Something went wrong. Please try again."
+  }
+}

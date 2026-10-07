@@ -1,11 +1,17 @@
-import { useTranslation } from 'react-i18next'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { createBrowserRouter, RouterProvider } from 'react-router'
+
+import { routes } from './routes'
+
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
+})
+const router = createBrowserRouter(routes)
 
 export function App() {
-  const { t } = useTranslation()
   return (
-    <main>
-      <h1>{t('app.title')}</h1>
-      <p>{t('app.tagline')}</p>
-    </main>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   )
 }

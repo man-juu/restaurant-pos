@@ -1,1 +1,114 @@
-{ "app": { "title": "Restaurant POS", "tagline": "Sedang menyiapkan fondasi." } }
+{
+  "app": {
+    "title": "Restaurant POS",
+    "tagline": "Kelola semua outlet",
+    "taglineAccent": "dari satu layar.",
+    "pitch": "Penjualan, stok, resep, pembelian, dan central kitchen di satu tempat. Di desktop, tablet, dan ponsel.",
+    "badge": "Dari dapur ke kasir, satu sistem"
+  },
+  "lang": { "label": "Bahasa", "en": "EN", "id": "ID" },
+  "auth": {
+    "signIn": "Masuk",
+    "email": "Email",
+    "password": "Kata sandi",
+    "continue": "Lanjut",
+    "forgot": "Lupa kata sandi?",
+    "signOut": "Keluar",
+    "codeTitle": "Kode autentikator",
+    "codeHelp": "Masukkan kode 6 digit dari aplikasi autentikator Anda.",
+    "code": "Kode",
+    "verify": "Verifikasi",
+    "useRecovery": "Gunakan kode pemulihan",
+    "recoveryCode": "Kode pemulihan",
+    "enrollTitle": "Aktifkan verifikasi dua langkah",
+    "enrollHelp": "Peran Anda wajib memakai aplikasi autentikator (misalnya Google Authenticator). Tambahkan kunci ini, lalu masukkan kode yang muncul.",
+    "secretLabel": "Kunci pengaturan",
+    "openApp": "Buka di aplikasi autentikator",
+    "startEnroll": "Tampilkan kunci",
+    "recoveryTitle": "Simpan kode pemulihan Anda",
+    "recoveryHelp": "Setiap kode hanya berlaku sekali jika ponsel Anda hilang. Kode hanya ditampilkan sekarang.",
+    "recoverySaved": "Sudah saya simpan"
+  },
+  "nav": {
+    "dashboard": "Dasbor",
+    "outlets": "Outlet",
+    "sales": "Penjualan harian",
+    "inventory": "Persediaan",
+    "purchasing": "Pembelian",
+    "production": "Produksi",
+    "transfers": "Transfer",
+    "reports": "Laporan",
+    "users": "Pengguna dan peran",
+    "main": "Utama"
+  },
+  "shell": {
+    "business": "Usaha",
+    "switchBusiness": "Ganti usaha",
+    "noBusiness": "Anda belum menjadi anggota usaha yang aktif."
+  },
+  "subscription": {
+    "expiring": "Langganan Anda berakhir dalam {{count}} hari. Silakan transfer dan hubungi admin untuk memperpanjang.",
+    "grace": "Langganan Anda telah berakhir. Masa tenggang singkat berlaku: segera perpanjang.",
+    "read_only": "Langganan Anda telah berakhir. Anda masih bisa melihat dan mengekspor data, tetapi tidak bisa mengubahnya.",
+    "dismiss": "Tutup"
+  },
+  "dashboard": {
+    "greeting": "Selamat datang, {{name}}",
+    "empty": "Angka Anda akan muncul di sini setelah penjualan harian dan stok dicatat (Fase 1).",
+    "netSales": "Penjualan bersih hari ini",
+    "orders": "Pesanan",
+    "foodCost": "Biaya bahan (HPP)",
+    "stockValue": "Nilai stok",
+    "noData": "Belum ada data"
+  },
+  "outlets": {
+    "title": "Outlet",
+    "empty": "Belum ada outlet.",
+    "active": "Aktif",
+    "inactive": "Nonaktif"
+  },
+  "install": {
+    "title": "Pasang aplikasi",
+    "body": "Buka dari layar utama atau desktop, di jendelanya sendiri.",
+    "action": "Pasang"
+  },
+  "admin": {
+    "title": "Admin platform",
+    "businesses": "Daftar usaha",
+    "name": "Usaha",
+    "profile": "Profil",
+    "subscription": "Langganan",
+    "modules": "Modul",
+    "status": "Status",
+    "none": "Belum ada usaha."
+  },
+  "states": {
+    "free": "Gratis",
+    "active": "Aktif",
+    "expiring": "Segera berakhir",
+    "grace": "Masa tenggang",
+    "read_only": "Hanya baca",
+    "suspended": "Ditangguhkan",
+    "unknown": "Belum diperiksa"
+  },
+  "profiles": {
+    "restaurant": "Restoran",
+    "cloud_kitchen": "Cloud kitchen",
+    "central_kitchen_group": "Grup central kitchen",
+    "hybrid": "Campuran"
+  },
+  "errors": {
+    "invalid_credentials": "Email atau kata sandi salah.",
+    "too_many_attempts": "Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.",
+    "invalid_code": "Kode tidak valid. Gunakan kode terbaru.",
+    "not_authenticated": "Silakan masuk.",
+    "session_expired": "Sesi Anda berakhir. Silakan masuk lagi.",
+    "mfa_required": "Selesaikan verifikasi dua langkah terlebih dahulu.",
+    "permission_denied": "Anda tidak memiliki izin untuk ini.",
+    "module_disabled": "Modul ini dinonaktifkan untuk usaha Anda.",
+    "subscription_read_only": "Langganan Anda dalam mode hanya baca.",
+    "tenant_suspended": "Usaha ini ditangguhkan.",
+    "network_error": "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
+    "generic": "Terjadi kesalahan. Silakan coba lagi."
+  }
+}

@@ -54,9 +54,10 @@ services:
     build: ../frontend
     environment:
       API_URL: http://api:8000
+      ADMIN_API_URL: http://admin:8001
     ports: ["127.0.0.1:5173:5173"]
     volumes: [../frontend/src:/app/src]
-    depends_on: [api]
+    depends_on: [api, admin]
 
 volumes:
   db-data:

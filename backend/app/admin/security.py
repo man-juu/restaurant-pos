@@ -246,6 +246,19 @@ async def _complete(
     return await _new_session(request, response, admin, "ok")  # rotated, full privileges
 
 
+@router.get("/session", response_model=AdminSessionOut)
+async def current_session(request: Request) -> AdminSessionOut:
+    """Lets the admin UI restore its CSRF token after a page reload."""
+    ctx = await _resolve(request)
+    async with request.app.state.sessionmaker() as db:
+        csrf = (
+            await db.execute(
+                select(AdminSession.csrf_token).where(AdminSession.id == ctx.session_id)
+            )
+        ).scalar_one()
+    return AdminSessionOut(email=ctx.email, role=ctx.role, mfa_state=ctx.mfa_state, csrf_token=csrf)
+
+
 @router.post("/logout", status_code=204)
 async def logout(request: Request, response: Response) -> None:
     ctx = await _resolve(request)

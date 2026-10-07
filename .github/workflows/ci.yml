@@ -46,6 +46,8 @@ jobs:
       - run: mypy
       - run: lint-imports
       - run: pytest
+      # The frontend's API types are generated from these schemas; fail if they are stale.
+      - run: python -m app.openapi ../frontend/src/lib/api && git diff --exit-code -- ../frontend/src/lib/api
 
   frontend:
     runs-on: ubuntu-latest
@@ -65,7 +67,25 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      - run: npm run api:generate && git diff --exit-code -- src/lib/api
       - run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      # Sign-in, language switch, module-hidden navigation at phone, tablet and desktop sizes.
+      - run: npm run e2e
 
   secrets:
     runs-on: ubuntu-latest

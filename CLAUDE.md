@@ -64,6 +64,8 @@ python -m app.admin.cli subscription-job                                  # dail
 
 # frontend/ (first: npm ci)
 npm run dev | lint | typecheck | test | build | format:check | audit:deps
+npm run e2e                         # Playwright, phone/tablet/desktop, API mocked
+npm run api:generate                # after backend: python -m app.openapi ../frontend/src/lib/api
 # adding a package: npm install --before=<7 days ago> <pkg>   (cooling-off; scripts are off via .npmrc)
 ```
 
@@ -82,7 +84,7 @@ Every route needs `Depends(require("module.resource.action"))` (or `public()` fo
 5. **Money and quantities.** Money is integer minor units (IDR scale 0). Quantities `numeric(18,4)` in base unit; unit costs `numeric(18,6)`. Never floats. Follow the rounding policy in `docs/05`.
 6. **Configuration, not constants.** Tax rates, service charge, payment methods, approval thresholds and numbering are tenant settings. Never hard-code Indonesian rates.
 7. **Audit.** Security-relevant and financial actions write to the append-only audit log.
-8. **i18n.** No hard-coded user-facing strings; add EN and ID keys.
+8. **i18n.** No hard-coded user-facing strings; add EN and ID keys. ESLint rule `local/no-literal-text` enforces it.
 9. **Idempotency.** Create endpoints that clients may retry accept an idempotency key.
 10. **Secrets.** Never commit secrets, real data or `.env` files. Use `.env.example`. Do not log passwords, tokens or personal data.
 11. **Migrations.** Alembic only; expand-then-contract for risky changes; test upgrade from an empty database.
