@@ -269,3 +269,9 @@ async def test_password_hashing_and_policy() -> None:
     for password, privileged in (("a" * 11, True), ("a" * 9, False), ("a" * 257, False)):
         with pytest.raises(WeakPassword):
             validate_new_password(password, privileged=privileged)
+
+
+def test_disabled_user_loses_sessions_immediately(client: TestClient, world: World) -> None:
+    login(client, world.email)
+    owner("UPDATE users SET status = 'disabled' WHERE id = :u", {"u": world.user_id})
+    assert client.get("/api/v1/auth/session").status_code == 401

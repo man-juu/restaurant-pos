@@ -6,11 +6,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: true,
-    // The dev server proxies API calls so the browser sees one origin (same as Caddy in production).
+    // Proxies /api/* unchanged to the API, so the browser sees one origin (as with Caddy in prod).
     proxy: {
       '/api': {
         target: process.env.API_URL ?? 'http://localhost:8000',
-        rewrite: (p) => p.replace(/^\/api/, ''),
       },
     },
   },

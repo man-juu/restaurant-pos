@@ -1,0 +1,54 @@
+# Security practices and review log
+
+Companion to `docs/06-security-compliance.md`. Its job: map common real-world attacks to the controls in this project, record what is done and what is planned, and define how we test (including penetration tests). Review it at every phase gate.
+
+References (all free): [OWASP ASVS 5.0](https://owasp.org/projects/asvs) (our checklist, Level 2, NFR-009), [OWASP Top 10:2025](https://owasp.org/Top10/2025/), [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/), [NIST SP 800-63B](https://pages.nist.gov/800-63-4/sp800-63b.html) (passwords and MFA), PostgreSQL docs on [row security](https://www.postgresql.org/docs/current/ddl-rowsecurity.html) and [SECURITY DEFINER](https://www.postgresql.org/docs/current/sql-createfunction.html#SQL-CREATEFUNCTION-SECURITY), CIS Benchmarks for Ubuntu and Docker (server hardening, slice 0.8). Suggested reading: *Web Application Security* by Andrew Hoffman (O'Reilly), *Alice and Bob Learn Application Security* by Tanya Janca, and *The Web Application Hacker's Handbook* (older but still the classic for testing).
+
+## 1. Threats and our controls
+
+Status: ✅ done and tested, 🔜 planned (slice), 👤 owner action.
+
+| Threat | What it looks like for us | Controls | Status |
+| --- | --- | --- | --- |
+| **Tenant data leak** (Top 10 A01) | One business sees another's sales or recipes | RLS forced on every tenant table, restricted DB role, per-transaction tenant, schema test fails on any unprotected table, cross-tenant tests | ✅ 0.3 |
+| **Broken access inside a tenant** (A01) | Cashier approves own refund, staff sees other outlets | Permission + outlet scope on every route, deny by default, route-list test | 🔜 0.5 |
+| **Injection** (A05) | SQL injection through search or sort fields | Parameterised queries only, sort columns whitelisted, ruff security rules (`S`) in CI | ✅ 0.2 |
+| **Account takeover** (A07) | Password guessing, stolen password, session theft | Argon2id, lockout per account and IP, hashed session tokens, HttpOnly Secure `__Host-` cookie, idle and absolute timeouts, instant revocation, disabled users cut off at once | ✅ 0.4a |
+| | | TOTP 2FA required for owners and co-owners, recovery codes, breached-password check | 🔜 0.4b |
+| **Phishing** | Fake login page steals an owner's password | 2FA for privileged roles limits the damage of a stolen password; in-app session list shows unknown devices; email only from our verified domain with SPF, DKIM, DMARC | 🔜 0.4b, 0.8 |
+| | | Train staff: only sign in at the real domain; never share codes | 👤 |
+| **CSRF / clickjacking** | Another site makes your browser submit actions | SameSite=Lax cookie, per-session CSRF token, JSON-only login, `frame-ancestors 'none'` header | ✅ 0.4a (headers 🔜 0.8) |
+| **XSS** | Script injected via an item name | React escapes output, no `dangerouslySetInnerHTML`, strict Content-Security-Policy, session cookie unreadable by scripts | 🔜 0.7, 0.8 |
+| **Data leak through errors and logs** (A10) | Stack traces or passwords in responses or logs | One error format, never echoes input, no query strings in logs, no secrets in audit | ✅ 0.2 |
+| **Ransomware / data destruction** | Server compromised and database encrypted or wiped | Encrypted nightly backups at a **different provider** with credentials the server cannot use to delete (write-only key or object lock), monthly restore drill, append-only ledgers and audit log, fast rebuild runbook | 🔜 0.8 |
+| **Backdoor / supply chain** (A03) | Compromised package, malicious dependency or CI action | Exact version pins, owner approval for every new dependency, gitleaks on every commit and full history, CI with read-only token on `pull_request` only; add `pip-audit` and `npm audit`, Dependabot alerts, pinned action SHAs | ✅ partly; 🔜 0.8 |
+| **Server compromise** (A02) | Weak SSH, exposed database, unpatched OS | SSH keys only, firewall (Cloudflare IPs only on 80/443), database never public, non-root containers, automatic security updates | 🔜 0.8 |
+| **Insider misuse** | Platform support reads tenant data | Separate admin accounts with 2FA, read-only time-limited impersonation with reason, visible to the tenant owner | 🔜 0.6 |
+| **Secrets leak** | Password in Git or logs | `.env` ignored, gitleaks, secrets only in a root-owned server file, never logged | ✅ |
+| **Repudiation** | "I never voided that" | Append-only audit log (revoked privileges + trigger) with user, time, IP, request ID | ✅ 0.3 |
+
+## 2. Testing, including penetration tests
+
+| Layer | Tool (free) | When | Status |
+| --- | --- | --- | --- |
+| Static checks | ruff `S` rules (Bandit), mypy strict, ESLint | Every commit (CI) | ✅ |
+| Secret scanning | gitleaks | Every commit and full history | ✅ |
+| Security unit and integration tests | pytest against real PostgreSQL | Every commit | ✅ (59 tests) |
+| Dependency vulnerabilities | `pip-audit`, `npm audit`, GitHub Dependabot | CI and weekly | 🔜 0.8 (needs owner approval for `pip-audit`) |
+| Dynamic scan (automated pentest) | OWASP ZAP baseline against staging | Every staging deploy | 🔜 0.8 (in `docs/07`) |
+| Manual penetration test | ASVS Level 2 checklist, OWASP Web Security Testing Guide; focus on tenant isolation, auth, permissions | Before the first paying tenant, then yearly | 🔜 Phase 1 exit |
+| Review per slice | `/security-review` on the branch | Each slice | ✅ (first run below) |
+
+Never run scans against production or third-party systems without permission. Pentests run against staging with test data only.
+
+## 3. Review log
+
+### 2026-10-07: slices 0.1 to 0.4a
+
+Automated security review of the whole branch. **No exploitable vulnerability found.** Hardening applied straight away:
+
+- Disabled users now lose every session immediately (was: at session expiry). Test added.
+- `REVOKE CREATE ON SCHEMA public FROM PUBLIC` made explicit, so the sign-in lookup function cannot be hijacked even on older PostgreSQL.
+- Dev proxy fixed to forward `/api` paths unchanged (functional bug, not security).
+
+Open: trusted proxy headers for real client IPs (0.8).

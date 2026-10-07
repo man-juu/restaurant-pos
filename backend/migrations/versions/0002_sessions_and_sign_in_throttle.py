@@ -72,6 +72,10 @@ def upgrade() -> None:
     grant("sessions", "SELECT, INSERT, UPDATE")  # revocation sets revoked_at, never deletes
     grant("auth_throttle", "SELECT, INSERT, UPDATE, DELETE")
 
+    # Nobody but the owner may create objects in public, so a SECURITY DEFINER function's
+    # search_path cannot be hijacked (already the default on PostgreSQL 15+; explicit here).
+    op.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC")
+
     # Narrow cross-tenant read for sign-in and tenant switching (FR-IDN-005). Runs as
     # pos_auth (BYPASSRLS) but can only return the memberships of the user it is asked about.
     op.execute(

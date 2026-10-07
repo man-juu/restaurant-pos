@@ -124,6 +124,8 @@ async def resolve_session(
                 UserSession.revoked_at.is_(None),
                 UserSession.expires_at > func.now(),
                 UserSession.last_seen_at > func.now() - idle,
+                # A disabled user loses every session at once, not when it expires.
+                UserSession.user_id.in_(select(User.id).where(User.status == "active")),
             )
         )
     ).scalar_one_or_none()
