@@ -112,6 +112,16 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - Every draft, change, activation and delete is audited.
 - Performance: costing runs a fixed number of queries per nesting level, whatever the number of lines (test compares a 1-line and a 20-line recipe); the recipe screen adds 2 KB gzip to the lazy catalog chunk.
 
+## Slice 1e review (inventory ledger)
+
+- Ledger integrity: `stock_movements` has INSERT/SELECT grants only plus an append-only trigger (tested: an UPDATE by the app role fails). Corrections are reversals with `reverses_id`, unique, so a movement can be reversed once.
+- Invariants checked in tests after every scenario: balances equal the sum of movements (I-1), average cost never negative (I-2).
+- Concurrency: the cost row and batch balances are locked (`FOR UPDATE`) in item order, so parallel postings queue instead of double-spending a batch.
+- Tenant and outlet scope: all four tables have FORCED RLS and composite tenant foreign keys; items and outlets are looked up under RLS before posting; every route checks the caller's outlet scope (tested with a storekeeper limited to one outlet, a cashier without the permission, and a second tenant using foreign ids).
+- Costs and values need `catalog.cost.view`; the valuation report refuses without it.
+- Opening stock carries an idempotency key, so a retried request cannot post twice.
+- Performance: stock and valuation lists are keyset-paginated aggregates on `(tenant_id, outlet_id, item_id, ...)` indexes; names come in one extra query per page. The inventory screen is a 3 KB gzip lazy chunk.
+
 ## Dev tools added (2026-10-07)
 
 - complexipy 8.0.1 (MIT, PyPI release 2026-09-07) and eslint-plugin-sonarjs 4.2.2 (LGPL-3.0, SonarSource, dev only, not shipped in the bundle). Installed with the 7-day cooling-off; npm audit clean. Owner approved.

@@ -207,6 +207,7 @@ async def test_fr_cat_007_cost_and_margin_from_cost_source(
     async def source(_db: object, ids: set[uuid.UUID]) -> dict[uuid.UUID, Decimal]:
         return {i: unit_costs[i] for i in ids if i in unit_costs}
 
+    registered = costing._cost_source  # the inventory module's, restored afterwards
     costing.set_cost_source(source)
     try:
         async with tenant_session(async_sessionmaker(engine), world["a"]) as db:
@@ -219,7 +220,7 @@ async def test_fr_cat_007_cost_and_margin_from_cost_source(
                 show_cost=True,
             )
     finally:
-        costing.set_cost_source(costing._no_costs)
+        costing.set_cost_source(registered)
     # 200*15 + 1*2500 + 30*60 + 6*20 = 3000 + 2500 + 1800 + 120
     assert result.cost == Decimal("7420.00") and result.missing_costs == []
     [m] = result.margins

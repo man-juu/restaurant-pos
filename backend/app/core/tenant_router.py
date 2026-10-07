@@ -102,6 +102,13 @@ async def capabilities(
         if m.name in p.enabled_modules and any(p.can(c) for c in m.permissions)
         for key in m.nav
     ]
+    # A switched-off module's permissions stay in the role but are not offered in the UI.
+    switched_off = {
+        c
+        for m in request.app.state.modules
+        if m.name not in p.enabled_modules
+        for c in m.permissions
+    }
     owners = p.can("tenant.subscription.view")
     show_days = owners and p.subscription is not None and p.subscription.reminders_enabled
     async with tenant_session(request.app.state.sessionmaker, p.tenant_id, p.user_id) as db:
@@ -114,7 +121,7 @@ async def capabilities(
         currency=tenant.currency,
         language=tenant.language,
         tenant_id=p.tenant_id,
-        permissions=sorted(p.permissions & registry.permissions),
+        permissions=sorted((p.permissions & registry.permissions) - switched_off),
         all_outlets=p.all_outlets,
         outlet_ids=sorted(p.outlet_ids),
         modules=sorted(p.enabled_modules),

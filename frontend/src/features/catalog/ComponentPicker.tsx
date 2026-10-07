@@ -8,26 +8,30 @@ import { useItems } from './api'
 
 const MAX_RESULTS = 8
 
-/** Search ingredients and semi-finished items to add to a recipe. */
+/** Search items to add to a recipe (ingredients and semi-finished) or another list. */
 export function ComponentPicker({
   exclude,
   onPick,
+  label,
+  types = ['ingredient', 'semi_finished'],
 }: {
   exclude: Set<string>
   onPick: (item: ItemSummary) => void
+  label?: string
+  types?: readonly string[]
 }) {
   const { t, i18n } = useTranslation()
   const [q, setQ] = useState('')
   const search = useDeferredValue(q)
   const items = useItems({ q: search, type: '', lang: i18n.language })
   const results = (items.data?.pages[0]?.items ?? [])
-    .filter((i) => i.is_active && i.type !== 'menu' && !exclude.has(i.id))
+    .filter((i) => i.is_active && types.includes(i.type) && !exclude.has(i.id))
     .slice(0, MAX_RESULTS)
 
   return (
     <div className="flex flex-col gap-2">
       <TextInput
-        label={t('catalog.recipe.addComponent')}
+        label={label ?? t('catalog.recipe.addComponent')}
         type="search"
         maxLength={100}
         value={q}

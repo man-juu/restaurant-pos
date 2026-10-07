@@ -149,7 +149,16 @@
     "bom_too_deep": "Resep maksimal bertingkat 10 level.",
     "ingredient_has_no_recipe": "Bahan baku dibeli, jadi tidak punya resep.",
     "component_not_stock_item": "Hanya bahan baku dan barang setengah jadi yang bisa masuk resep.",
-    "yield_required": "Isi berapa hasil satu batch."
+    "yield_required": "Isi berapa hasil satu batch.",
+    "insufficient_stock": "Stok tidak cukup untuk ini.",
+    "batch_insufficient": "Batch tersebut tidak cukup.",
+    "expiry_required": "Item ini mudah rusak: isi tanggal kedaluwarsa.",
+    "item_not_stocked": "Item ini tidak dilacak stoknya.",
+    "opening_after_movements": "Item ini sudah punya pergerakan stok di sini; stok awal harus lebih dulu.",
+    "nothing_to_reverse": "Ini sudah dibatalkan.",
+    "batch_already_used": "Sebagian stok ini sudah terpakai, jadi tidak bisa dibatalkan.",
+    "outlet_not_found": "Outlet ini tidak ada atau tidak aktif.",
+    "document_not_found": "Dokumen ini sudah tidak ada."
   },
   "appearance": {
     "open": "Tampilan",
@@ -190,7 +199,8 @@
       "service": "Biaya layanan",
       "payments": "Metode pembayaran",
       "numbering": "Penomoran",
-      "approvals": "Persetujuan"
+      "approvals": "Persetujuan",
+      "stock": "Stok"
     },
     "tax": {
       "help": "Tarif diatur per usaha; periksa tarif daerah dengan konsultan pajak Anda.",
@@ -250,6 +260,20 @@
         "refund": "Pengembalian dana",
         "discount": "Diskon",
         "journal": "Jurnal"
+      }
+    },
+    "stock": {
+      "help": "Apa yang terjadi bila pemakaian melebihi stok yang tercatat.",
+      "kinds": {
+        "sale": "Penjualan",
+        "production": "Produksi",
+        "transfer": "Transfer",
+        "other": "Barang terbuang dan lainnya"
+      },
+      "policies": {
+        "allow": "Izinkan dan tandai untuk ditinjau",
+        "warn": "Minta konfirmasi",
+        "block": "Tolak"
       }
     }
   },
@@ -386,6 +410,51 @@
         "yield": "Isi berapa hasil satu batch."
       },
       "saveFirst": "Simpan perubahan sebelum mengaktifkan."
+    }
+  },
+  "inventory": {
+    "title": "Persediaan",
+    "outlet": "Outlet",
+    "tabs": {
+      "stock": "Stok tersedia",
+      "opening": "Stok awal",
+      "valuation": "Nilai stok"
+    },
+    "empty": "Belum ada stok tercatat di outlet ini.",
+    "negative": "Di bawah nol: pemakaian melebihi stok yang tercatat masuk",
+    "batches": "Batch",
+    "fefo": "Dipakai dengan urutan ini: kedaluwarsa paling awal lebih dulu.",
+    "noLot": "Tanpa kode lot",
+    "expires": "kedaluwarsa {{date}}",
+    "noExpiry": "tanpa tanggal kedaluwarsa",
+    "history": "Pergerakan terakhir",
+    "reversal": "pembatalan",
+    "types": {
+      "purchase_receipt": "Penerimaan pembelian",
+      "production_output": "Hasil produksi",
+      "transfer_in": "Transfer masuk",
+      "opening_balance": "Stok awal",
+      "sale_consumption": "Terpakai penjualan",
+      "production_consumption": "Terpakai produksi",
+      "transfer_out": "Transfer keluar",
+      "waste": "Terbuang",
+      "vendor_return": "Retur ke pemasok",
+      "adjustment": "Penyesuaian",
+      "count_correction": "Koreksi stok opname"
+    },
+    "valuationDate": "Nilai pada akhir tanggal",
+    "total": "Total: {{value}}",
+    "opening": {
+      "help": "Isi stok yang dimiliki outlet ini saat mulai. Setiap item hanya sekali mendapat stok awal; untuk memperbaiki kesalahan, batalkan lalu posting ulang.",
+      "date": "Tanggal stok",
+      "add": "Tambah item",
+      "cost": "Biaya per satuan ({{currency}})",
+      "lot": "Kode lot",
+      "expiry": "Tanggal kedaluwarsa",
+      "post": "Posting stok awal",
+      "posted": "Terposting ({{count}} baris).",
+      "undo": "Batalkan",
+      "undone": "Dibatalkan. Pembatalan tetap tersimpan di riwayat."
     }
   }
 }

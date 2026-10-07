@@ -95,12 +95,30 @@ class SessionSettings(Strict):
     idle_minutes: int = Field(default=60, ge=5, le=24 * 60)
 
 
+ShortagePolicy = Literal["allow", "warn", "block"]
+
+
+class NegativeStockPolicy(Strict):
+    """FR-INV-006: what happens when more is used than is on hand. "warn": the user must
+    confirm; "allow": posted and flagged for review; "block": refused."""
+
+    sale: ShortagePolicy = "allow"
+    production: ShortagePolicy = "warn"
+    transfer: ShortagePolicy = "warn"
+    other: ShortagePolicy = "block"  # waste and similar
+
+
+class StockSettings(Strict):
+    negative_stock: NegativeStockPolicy = Field(default_factory=NegativeStockPolicy)
+
+
 SETTINGS: dict[str, type[Strict]] = {
     "tax": TaxSettings,
     "service_charge": ServiceChargeSettings,
     "payment_methods": PaymentMethodSettings,
     "numbering": NumberingSettings,
     "session": SessionSettings,
+    "stock": StockSettings,
 }
 
 
@@ -112,3 +130,4 @@ class AllSettings(BaseModel):
     payment_methods: PaymentMethodSettings
     numbering: NumberingSettings
     session: SessionSettings
+    stock: StockSettings

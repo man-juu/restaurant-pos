@@ -1,17 +1,29 @@
-import { clsx } from 'clsx'
-import { useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useOutletContext } from 'react-router'
+import { Tabs } from '../../components/form'
 import { Alert } from '../../components/ui'
-import type { Capabilities } from '../../lib/api/types'
+import type { AllSettings, Capabilities } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
 import { useSettings } from './api'
 import { ApprovalsSection } from './ApprovalsSection'
 import { NumberingSection, PaymentsSection, ServiceSection } from './ChargesSections'
+import { StockSection } from './StockSection'
 import { TaxSection } from './TaxSection'
 
-const TABS = ['tax', 'service', 'payments', 'numbering', 'approvals'] as const
-type Tab = (typeof TABS)[number]
+type Props = { data: AllSettings; canEdit: boolean }
+
+/** One entry per tab: a lookup table instead of a chain of conditions. */
+const SECTIONS = {
+  tax: (p: Props) => <TaxSection {...p} />,
+  service: (p: Props) => <ServiceSection {...p} />,
+  payments: (p: Props) => <PaymentsSection {...p} />,
+  numbering: (p: Props) => <NumberingSection data={p.data} />,
+  approvals: (p: Props) => <ApprovalsSection canEdit={p.canEdit} />,
+  stock: (p: Props) => <StockSection {...p} />,
+} satisfies Record<string, (p: Props) => ReactNode>
+type Tab = keyof typeof SECTIONS
+const TABS = Object.keys(SECTIONS) as Tab[]
 
 export function SettingsPage() {
   const { t } = useTranslation()
@@ -24,32 +36,10 @@ export function SettingsPage() {
     <div className="flex flex-col gap-5">
       <h1 className="font-display text-3xl font-extrabold">{t('settings.title')}</h1>
       {!canEdit && <p className="text-sm text-ink-soft">{t('settings.readOnly')}</p>}
-      <div role="tablist" className="flex flex-wrap gap-2">
-        {TABS.map((key) => (
-          <button
-            key={key}
-            role="tab"
-            type="button"
-            aria-selected={tab === key}
-            onClick={() => setTab(key)}
-            className={clsx(
-              'min-h-11 rounded-xl border px-4 text-sm font-bold',
-              tab === key ? 'border-accent bg-raised text-ink' : 'border-line-strong text-ink-soft',
-            )}
-          >
-            {t(`settings.tabs.${key}`)}
-          </button>
-        ))}
-      </div>
+      <Tabs tabs={TABS} value={tab} onChange={setTab} label={(k) => t(`settings.tabs.${k}`)} />
       {settings.error && <Alert>{errorMessage(settings.error, t)}</Alert>}
       {settings.data && (
-        <div role="tabpanel">
-          {tab === 'tax' && <TaxSection data={settings.data} canEdit={canEdit} />}
-          {tab === 'service' && <ServiceSection data={settings.data} canEdit={canEdit} />}
-          {tab === 'payments' && <PaymentsSection data={settings.data} canEdit={canEdit} />}
-          {tab === 'numbering' && <NumberingSection data={settings.data} />}
-          {tab === 'approvals' && <ApprovalsSection canEdit={canEdit} />}
-        </div>
+        <div role="tabpanel">{SECTIONS[tab]({ data: settings.data, canEdit })}</div>
       )}
     </div>
   )

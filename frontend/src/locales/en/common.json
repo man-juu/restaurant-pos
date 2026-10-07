@@ -149,7 +149,16 @@
     "bom_too_deep": "Recipes can be nested at most 10 levels.",
     "ingredient_has_no_recipe": "Ingredients are bought, so they have no recipe.",
     "component_not_stock_item": "Only ingredients and semi-finished items can go into a recipe.",
-    "yield_required": "Say how much one batch makes."
+    "yield_required": "Say how much one batch makes.",
+    "insufficient_stock": "Not enough stock for this.",
+    "batch_insufficient": "That batch does not hold enough.",
+    "expiry_required": "This item spoils: enter an expiry date.",
+    "item_not_stocked": "This item is not tracked in stock.",
+    "opening_after_movements": "This item already has stock movements here; opening stock must come first.",
+    "nothing_to_reverse": "This was already undone.",
+    "batch_already_used": "Part of this stock is already used, so it cannot be undone.",
+    "outlet_not_found": "This outlet does not exist or is inactive.",
+    "document_not_found": "This document no longer exists."
   },
   "appearance": {
     "open": "Appearance",
@@ -190,7 +199,8 @@
       "service": "Service charge",
       "payments": "Payment methods",
       "numbering": "Numbering",
-      "approvals": "Approvals"
+      "approvals": "Approvals",
+      "stock": "Stock"
     },
     "tax": {
       "help": "Rates are set per business; check regional rates with your tax advisor.",
@@ -250,6 +260,20 @@
         "refund": "Refund",
         "discount": "Discount",
         "journal": "Journal"
+      }
+    },
+    "stock": {
+      "help": "What happens when more is used than the system shows on hand.",
+      "kinds": {
+        "sale": "Sales",
+        "production": "Production",
+        "transfer": "Transfers",
+        "other": "Waste and others"
+      },
+      "policies": {
+        "allow": "Allow and flag for review",
+        "warn": "Ask to confirm",
+        "block": "Refuse"
       }
     }
   },
@@ -386,6 +410,51 @@
         "yield": "Say how much one batch makes."
       },
       "saveFirst": "Save your changes before activating."
+    }
+  },
+  "inventory": {
+    "title": "Inventory",
+    "outlet": "Outlet",
+    "tabs": {
+      "stock": "On hand",
+      "opening": "Opening stock",
+      "valuation": "Valuation"
+    },
+    "empty": "No stock recorded at this outlet yet.",
+    "negative": "Below zero: more was used than was recorded in",
+    "batches": "Batches",
+    "fefo": "Used in this order: earliest expiry first.",
+    "noLot": "No lot code",
+    "expires": "expires {{date}}",
+    "noExpiry": "no expiry date",
+    "history": "Latest movements",
+    "reversal": "reversal",
+    "types": {
+      "purchase_receipt": "Purchase received",
+      "production_output": "Produced",
+      "transfer_in": "Transfer in",
+      "opening_balance": "Opening stock",
+      "sale_consumption": "Used by sales",
+      "production_consumption": "Used in production",
+      "transfer_out": "Transfer out",
+      "waste": "Waste",
+      "vendor_return": "Returned to supplier",
+      "adjustment": "Adjustment",
+      "count_correction": "Count correction"
+    },
+    "valuationDate": "Value at the end of",
+    "total": "Total: {{value}}",
+    "opening": {
+      "help": "Enter what this outlet holds when it starts. Each item can get an opening stock once; to fix a mistake, undo it and post again.",
+      "date": "Stock date",
+      "add": "Add item",
+      "cost": "Cost per unit ({{currency}})",
+      "lot": "Lot code",
+      "expiry": "Expiry date",
+      "post": "Post opening stock",
+      "posted": "Posted ({{count}} lines).",
+      "undo": "Undo",
+      "undone": "Undone. The reversal is kept in the history."
     }
   }
 }

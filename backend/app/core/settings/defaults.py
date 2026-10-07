@@ -6,6 +6,11 @@ Every tenant can change them; regional PBJT rates differ by city.
 
 from typing import Any
 
+# FR-INV-006: sales may go negative (flagged), production and transfers ask first.
+STOCK: dict[str, Any] = {
+    "negative_stock": {"sale": "allow", "production": "warn", "transfer": "warn", "other": "block"}
+}
+
 DEFAULTS: dict[str, dict[str, Any]] = {
     "ID": {
         "tax": {
@@ -47,6 +52,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
             }
         },
         "session": {"idle_minutes": 60},
+        "stock": STOCK,
     }
 }
 
@@ -57,6 +63,7 @@ FALLBACK: dict[str, Any] = {
     "payment_methods": {"methods": [{"code": "cash", "name": "Cash", "kind": "cash"}]},
     "numbering": {"formats": {}},
     "session": {"idle_minutes": 60},
+    "stock": STOCK,
 }
 
 

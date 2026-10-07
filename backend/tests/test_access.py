@@ -111,6 +111,12 @@ def test_fr_idn_010_role_without_permission_gets_403_on_every_protected_route(
         "INSERT INTO roles (id, tenant_id, name) VALUES (:r, :t, 'Nothing')",
         {"r": empty_role, "t": tenants.a},
     )
+    for m in client.app.state.modules:  # type: ignore[attr-defined]
+        if not m.core:  # switched on, so the permission check is what refuses
+            owner(
+                "INSERT INTO tenant_modules (tenant_id, module) VALUES (:t, :m)",
+                {"t": tenants.a, "m": m.name},
+            )
     _, email = add_member(tenants.a, empty_role, HASH)
     csrf = signin(client, email)
     checked = 0

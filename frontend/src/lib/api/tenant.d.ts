@@ -557,6 +557,108 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/inventory/movements': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Movement History */
+    get: operations['movement_history_api_v1_inventory_movements_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/opening': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Post Opening */
+    post: operations['post_opening_api_v1_inventory_opening_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/opening/{doc_id}/reverse': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reverse Opening */
+    post: operations['reverse_opening_api_v1_inventory_opening__doc_id__reverse_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/stock': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Stock */
+    get: operations['stock_api_v1_inventory_stock_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/stock/{item_id}/batches': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Item Batches */
+    get: operations['item_batches_api_v1_inventory_stock__item_id__batches_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/valuation': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Stock Valuation */
+    get: operations['stock_valuation_api_v1_inventory_valuation_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/invitations': {
     parameters: {
       query?: never
@@ -778,6 +880,7 @@ export interface components {
       payment_methods: components['schemas']['PaymentMethodSettings']
       service_charge: components['schemas']['ServiceChargeSettings']
       session: components['schemas']['SessionSettings']
+      stock: components['schemas']['StockSettings']
       tax: components['schemas']['TaxSettings']
     }
     /** ApprovalRuleIn */
@@ -834,6 +937,25 @@ export interface components {
       min_amount: number
       /** Outlet Id */
       outlet_id?: string | null
+    }
+    /** BatchOut */
+    BatchOut: {
+      /** Expiry Date */
+      expiry_date: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Lot Code */
+      lot_code: string | null
+      /** Qty */
+      qty: string
+      /**
+       * Received At
+       * Format: date-time
+       */
+      received_at: string
     }
     /** BomActivate */
     BomActivate: {
@@ -1369,6 +1491,79 @@ export interface components {
       /** Secret */
       secret: string
     }
+    /** MovementOut */
+    MovementOut: {
+      /** Batch Id */
+      batch_id: string | null
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /**
+       * Doc Id
+       * Format: uuid
+       */
+      doc_id: string
+      /** Doc Type */
+      doc_type: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Movement Type */
+      movement_type: string
+      /**
+       * Posted At
+       * Format: date-time
+       */
+      posted_at: string
+      /** Qty */
+      qty: string
+      /** Reverses Id */
+      reverses_id: string | null
+      /** Unit Cost */
+      unit_cost: string | null
+      /** Value */
+      value: number | null
+    }
+    /**
+     * NegativeStockPolicy
+     * @description FR-INV-006: what happens when more is used than is on hand. "warn": the user must
+     *     confirm; "allow": posted and flagged for review; "block": refused.
+     */
+    NegativeStockPolicy: {
+      /**
+       * Other
+       * @default block
+       * @enum {string}
+       */
+      other: 'allow' | 'warn' | 'block'
+      /**
+       * Production
+       * @default warn
+       * @enum {string}
+       */
+      production: 'allow' | 'warn' | 'block'
+      /**
+       * Sale
+       * @default allow
+       * @enum {string}
+       */
+      sale: 'allow' | 'warn' | 'block'
+      /**
+       * Transfer
+       * @default warn
+       * @enum {string}
+       */
+      transfer: 'allow' | 'warn' | 'block'
+    }
     /** NumberingFormat */
     NumberingFormat: {
       /**
@@ -1394,6 +1589,45 @@ export interface components {
       formats?: {
         [key: string]: components['schemas']['NumberingFormat']
       }
+    }
+    /** OpeningIn */
+    OpeningIn: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /** Lines */
+      lines: components['schemas']['OpeningLine'][]
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
+    /**
+     * OpeningLine
+     * @description Stock counted when starting with the system. Quantity and cost per `unit_id`.
+     */
+    OpeningLine: {
+      /** Expiry Date */
+      expiry_date?: string | null
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Lot Code */
+      lot_code?: string | null
+      /** Qty */
+      qty: number | string
+      /** Unit Cost */
+      unit_cost: number | string
+      /**
+       * Unit Id
+       * Format: uuid
+       */
+      unit_id: string
     }
     /** OutletOut */
     OutletOut: {
@@ -1422,6 +1656,27 @@ export interface components {
     Page_ItemSummary_: {
       /** Items */
       items: components['schemas']['ItemSummary'][]
+      /** Next Cursor */
+      next_cursor: string | null
+    }
+    /** Page[MovementOut] */
+    Page_MovementOut_: {
+      /** Items */
+      items: components['schemas']['MovementOut'][]
+      /** Next Cursor */
+      next_cursor: string | null
+    }
+    /** Page[StockRow] */
+    Page_StockRow_: {
+      /** Items */
+      items: components['schemas']['StockRow'][]
+      /** Next Cursor */
+      next_cursor: string | null
+    }
+    /** Page[ValuationRow] */
+    Page_ValuationRow_: {
+      /** Items */
+      items: components['schemas']['ValuationRow'][]
       /** Next Cursor */
       next_cursor: string | null
     }
@@ -1466,6 +1721,18 @@ export interface components {
     PaymentMethodSettings: {
       /** Methods */
       methods?: components['schemas']['PaymentMethod'][]
+    }
+    /** PostedDocument */
+    PostedDocument: {
+      /**
+       * Doc Id
+       * Format: uuid
+       */
+      doc_id: string
+      /** Doc Type */
+      doc_type: string
+      /** Movements */
+      movements: number
     }
     /** PriceIn */
     PriceIn: {
@@ -1590,6 +1857,30 @@ export interface components {
        * @default 60
        */
       idle_minutes: number
+    }
+    /** StockRow */
+    StockRow: {
+      /** Avg Cost */
+      avg_cost: string | null
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Name */
+      name: string
+      /** Qty */
+      qty: string
+      /** Sku */
+      sku: string
+      /** Unit Code */
+      unit_code: string
+      /** Value */
+      value: number | null
+    }
+    /** StockSettings */
+    StockSettings: {
+      negative_stock?: components['schemas']['NegativeStockPolicy']
     }
     /** SubscriptionBanner */
     SubscriptionBanner: {
@@ -1727,6 +2018,24 @@ export interface components {
       msg: string
       /** Error Type */
       type: string
+    }
+    /** ValuationRow */
+    ValuationRow: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Name */
+      name: string
+      /** Qty */
+      qty: string
+      /** Sku */
+      sku: string
+      /** Unit Code */
+      unit_code: string
+      /** Value */
+      value: number
     }
   }
   responses: never
@@ -2973,6 +3282,211 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['UnitOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  movement_history_api_v1_inventory_movements_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        item_id?: string | null
+        limit?: number
+        cursor?: string | null
+        sort?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Page_MovementOut_']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  post_opening_api_v1_inventory_opening_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OpeningIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PostedDocument']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reverse_opening_api_v1_inventory_opening__doc_id__reverse_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        doc_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PostedDocument']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  stock_api_v1_inventory_stock_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        lang?: string
+        limit?: number
+        cursor?: string | null
+        sort?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Page_StockRow_']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  item_batches_api_v1_inventory_stock__item_id__batches_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+      }
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BatchOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  stock_valuation_api_v1_inventory_valuation_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        on?: string | null
+        lang?: string
+        limit?: number
+        cursor?: string | null
+        sort?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Page_ValuationRow_']
         }
       }
       /** @description Validation Error */

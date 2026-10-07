@@ -18,6 +18,9 @@ const SettingsPage = lazy(() =>
 const CatalogPage = lazy(() =>
   import('../features/catalog/CatalogPage').then((m) => ({ default: m.CatalogPage })),
 )
+const InventoryPage = lazy(() =>
+  import('../features/inventory/InventoryPage').then((m) => ({ default: m.InventoryPage })),
+)
 const OutletsPage = lazy(() =>
   import('../features/outlets/OutletsPage').then((m) => ({ default: m.OutletsPage })),
 )
@@ -35,6 +38,7 @@ export const routes = [
       { path: 'outlets', element: page(<OutletsPage />) },
       { path: 'settings', element: page(<SettingsPage />) },
       { path: 'catalog', element: page(<CatalogPage />) },
+      { path: 'inventory', element: page(<InventoryPage />) },
       // Module pages arrive with their modules (Phase 1); nav entries come from capabilities.
       { path: '*', element: <DashboardPage /> },
     ],
