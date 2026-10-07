@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AppearanceMenu } from '../../components/AppearanceMenu'
 import { LanguageSwitch } from '../../components/LanguageSwitch'
 import { Alert, Button, Card, Field, Logo, StateBadge } from '../../components/ui'
 import { ApiError, request, setCsrfToken } from '../../lib/api/client'
@@ -36,10 +37,13 @@ export function AdminPage() {
     <div className="min-h-screen bg-ground px-4 py-6 sm:px-8">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <Logo color="bg-info" />
+          <Logo />
           <span className="font-display text-lg font-bold">{t('admin.title')}</span>
         </div>
-        <LanguageSwitch />
+        <div className="flex items-center gap-3">
+          <LanguageSwitch />
+          <AppearanceMenu />
+        </div>
       </header>
       {session.isPending ? null : ready ? (
         <Tenants />

@@ -1,23 +1,127 @@
 @import 'tailwindcss';
 
-/* Design tokens from the approved preview (night-service dark theme). */
-@theme {
+/*
+ * Calm, cool palette (blue-grey grounds, soft teal accent). Chosen to be easy on the eyes for
+ * long shifts: no pure black or pure white, moderate contrast for large surfaces, and text
+ * that still meets WCAG 2.1 AA (4.5:1). Themes are switched with data-theme and
+ * data-accent on <html> (src/lib/theme.ts); components only use these tokens.
+ */
+@theme inline {
   --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif;
   --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
-  --color-ground: #0b0e14;
-  --color-panel: #0f131c;
-  --color-card: #141925;
-  --color-raised: #1a2030;
-  --color-line: #222939;
-  --color-line-strong: #2b3242;
-  --color-ink: #e8ecf4;
-  --color-ink-soft: #c4cbda;
-  --color-muted: #8c95a8;
-  --color-accent: #ff8a3d;
-  --color-accent-soft: #ffb37d;
-  --color-good: #3ddc97;
-  --color-info: #7c9cff;
-  --color-warn: #ffd23d;
+  --color-ground: var(--ground);
+  --color-panel: var(--panel);
+  --color-card: var(--card);
+  --color-raised: var(--raised);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-notice: var(--notice);
+  --color-notice-line: var(--notice-line);
+  --color-good: var(--good);
+  --color-good-surface: var(--good-surface);
+  --color-warn: var(--warn);
+  --color-warn-surface: var(--warn-surface);
+  --color-alert: var(--alert);
+  --color-alert-surface: var(--alert-surface);
+  --color-danger: var(--danger);
+  --color-danger-surface: var(--danger-surface);
+}
+
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+  --ground: #0f151c;
+  --panel: #121a22;
+  --card: #17212b;
+  --raised: #1e2a36;
+  --line: #253340;
+  --line-strong: #2f3f4e;
+  --ink: #dde6ee;
+  --ink-soft: #b5c2ce;
+  --muted: #8a9aaa;
+  --notice: #1a2a33;
+  --notice-line: #2c4553;
+  --good: #7fcfa8;
+  --good-surface: #173028;
+  --warn: #e3c97a;
+  --warn-surface: #2f2b18;
+  --alert: #e9a97f;
+  --alert-surface: #33241b;
+  --danger: #ef9aa3;
+  --danger-surface: #36191d;
+  --on-accent: #0f151c;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --ground: #eef2f5;
+  --panel: #f6f8fa;
+  --card: #fbfcfd;
+  --raised: #e7edf2;
+  --line: #d5dee6;
+  --line-strong: #c3cfda;
+  --ink: #1d2833;
+  --ink-soft: #3d4b58;
+  --muted: #5c6b79;
+  --notice: #e3eef2;
+  --notice-line: #bcd3dc;
+  --good: #2f6b4f;
+  --good-surface: #dcefe5;
+  --warn: #6e5714;
+  --warn-surface: #f4ecd2;
+  --alert: #8a4a20;
+  --alert-surface: #f6e4d8;
+  --danger: #9b2f3b;
+  --danger-surface: #f7dfe2;
+  --on-accent: #ffffff;
+}
+
+/* Accent swatches: a lighter shade on dark grounds, a deeper one on light grounds. */
+[data-accent='teal'] {
+  --accent: #6cc5b6;
+  --accent-soft: #94d8cc;
+}
+[data-accent='sage'] {
+  --accent: #9cc59a;
+  --accent-soft: #bad8b8;
+}
+[data-accent='lavender'] {
+  --accent: #aaa6ea;
+  --accent-soft: #c6c3f2;
+}
+[data-accent='sky'] {
+  --accent: #80b7e8;
+  --accent-soft: #a6ccf0;
+}
+[data-accent='sand'] {
+  --accent: #e2c08d;
+  --accent-soft: #ecd4ae;
+}
+[data-theme='light'][data-accent='teal'] {
+  --accent: #2e7f74;
+  --accent-soft: #3a9488;
+}
+[data-theme='light'][data-accent='sage'] {
+  --accent: #4a7a47;
+  --accent-soft: #5b8f58;
+}
+[data-theme='light'][data-accent='lavender'] {
+  --accent: #5b55b5;
+  --accent-soft: #6c66c7;
+}
+[data-theme='light'][data-accent='sky'] {
+  --accent: #2f6ea8;
+  --accent-soft: #3b80bf;
+}
+[data-theme='light'][data-accent='sand'] {
+  --accent: #85601f;
+  --accent-soft: #9a7228;
 }
 
 html,
@@ -28,13 +132,19 @@ body,
 
 body {
   margin: 0;
-  background: var(--color-ground);
-  color: var(--color-ink);
+  background: var(--ground);
+  color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
 }

@@ -12,7 +12,7 @@ export function Button({
       className={clsx(
         'inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 font-display text-sm font-extrabold transition disabled:opacity-50',
         variant === 'primary'
-          ? 'bg-accent text-ground hover:bg-accent-soft'
+          ? 'bg-accent text-on-accent hover:bg-accent-soft'
           : 'border border-line-strong bg-card text-ink hover:bg-raised',
         className,
       )}
@@ -45,19 +45,22 @@ export function Card({ children, className }: { children: ReactNode; className?:
 
 export function Alert({ children }: { children: ReactNode }) {
   return (
-    <p role="alert" className="rounded-xl border border-[#4a2e1d] bg-[#2a1a12] px-4 py-3 text-sm">
+    <p
+      role="alert"
+      className="rounded-xl border border-alert/40 bg-alert-surface px-4 py-3 text-sm text-ink"
+    >
       {children}
     </p>
   )
 }
 
 const STATE_STYLES: Record<string, string> = {
-  active: 'bg-[#16302a] text-[#7debc0]',
-  free: 'bg-[#16302a] text-[#7debc0]',
-  expiring: 'bg-[#3a3314] text-[#ffe27d]',
-  grace: 'bg-[#3a1f14] text-[#ffb37d]',
-  read_only: 'bg-[#2a2f3d] text-ink-soft',
-  suspended: 'bg-[#3a1418] text-[#ff9aa6]',
+  active: 'bg-good-surface text-good',
+  free: 'bg-good-surface text-good',
+  expiring: 'bg-warn-surface text-warn',
+  grace: 'bg-alert-surface text-alert',
+  read_only: 'bg-raised text-ink-soft',
+  suspended: 'bg-danger-surface text-danger',
 }
 
 export function StateBadge({ state, label }: { state: string; label: string }) {
@@ -75,13 +78,18 @@ export function StateBadge({ state, label }: { state: string; label: string }) {
 
 export function Logo({ color = 'bg-accent' }: { color?: string }) {
   return (
-    <span className={clsx('flex h-9 w-9 items-center justify-center rounded-[10px]', color)}>
+    <span
+      className={clsx(
+        'flex h-9 w-9 items-center justify-center rounded-[10px] text-on-accent',
+        color,
+      )}
+    >
       <svg
         width="20"
         height="20"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#0B0E14"
+        stroke="currentColor"
         strokeWidth="2.2"
         aria-hidden="true"
       >

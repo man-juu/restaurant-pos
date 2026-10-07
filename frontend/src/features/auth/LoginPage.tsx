@@ -5,9 +5,11 @@ import { useTranslation } from 'react-i18next'
 import { Navigate } from 'react-router'
 import { z } from 'zod'
 
+import { AppearanceMenu } from '../../components/AppearanceMenu'
 import { LanguageSwitch } from '../../components/LanguageSwitch'
 import { Alert, Button, Card, Field, Logo } from '../../components/ui'
 import { errorMessage } from '../../lib/errors'
+import { useAppearance } from '../../lib/theme'
 import {
   useLogin,
   useMfaConfirm,
@@ -24,26 +26,37 @@ export function LoginPage() {
   const { t } = useTranslation()
   const session = useSession()
   const [codes, setCodes] = useState<string[] | null>(null)
+  const appearance = useAppearance()
 
   if (session.data?.mfa_state === 'ok' && !codes) return <Navigate to="/" replace />
   const state = session.data?.mfa_state
 
   return (
     <div className="flex min-h-screen flex-wrap bg-ground">
-      <section className="flex min-w-0 flex-[1_1_560px] flex-col justify-between gap-10 bg-[radial-gradient(circle_at_20%_15%,#2a1a12_0%,#0b0e14_55%)] px-6 py-10 sm:px-16 sm:py-14">
-        <div className="flex items-center gap-3">
+      <section
+        data-theme="dark"
+        data-accent={appearance.accent}
+        className="relative flex min-w-0 flex-[1_1_560px] flex-col justify-between gap-10 overflow-hidden bg-[#0f151c] bg-cover bg-center px-6 py-10 text-[#e6edf3] [background-image:var(--app-background)] sm:px-16 sm:py-14"
+      >
+        {/* The hero sits on the chosen background image with a dark scrim, so its text stays
+            readable in light and dark mode alike. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-r from-[#0f151c]/85 to-[#0f151c]/35"
+        />
+        <div className="relative flex items-center gap-3">
           <Logo />
           <span className="font-display text-xl font-bold">{t('app.title')}</span>
         </div>
-        <div className="max-w-xl">
-          <span className="inline-flex items-center gap-2 rounded-full border border-line-strong px-3 py-1.5 text-sm text-ink-soft">
-            <span className="h-2 w-2 rounded-full bg-good" />
+        <div className="relative max-w-xl">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1.5 text-sm text-[#c9d4de]">
+            <span className="h-2 w-2 rounded-full bg-accent" />
             {t('app.badge')}
           </span>
           <h1 className="mt-5 font-display text-4xl leading-none font-extrabold tracking-tight sm:text-6xl">
             {t('app.tagline')} <span className="text-accent">{t('app.taglineAccent')}</span>
           </h1>
-          <p className="mt-4 text-lg leading-relaxed text-ink-soft">{t('app.pitch')}</p>
+          <p className="mt-4 text-lg leading-relaxed text-[#c9d4de]">{t('app.pitch')}</p>
         </div>
         <span />
       </section>
@@ -51,7 +64,10 @@ export function LoginPage() {
         <div className="flex w-full max-w-sm flex-col gap-7">
           <div className="flex items-center justify-between">
             <h2 className="font-display text-3xl font-bold">{t('auth.signIn')}</h2>
-            <LanguageSwitch />
+            <div className="flex items-center gap-2">
+              <LanguageSwitch />
+              <AppearanceMenu />
+            </div>
           </div>
           {codes ? (
             <RecoveryCodes codes={codes} onDone={() => setCodes(null)} />

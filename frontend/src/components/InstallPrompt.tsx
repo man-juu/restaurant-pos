@@ -23,7 +23,7 @@ export function InstallPrompt() {
 
   if (!event) return null
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-[#4a2e1d] bg-gradient-to-br from-[#2a1a12] to-card p-4">
+    <div className="flex items-center gap-3 rounded-2xl border border-notice-line bg-notice p-4">
       <div className="flex-1">
         <p className="font-extrabold">{t('install.title')}</p>
         <p className="text-sm text-ink-soft">{t('install.body')}</p>

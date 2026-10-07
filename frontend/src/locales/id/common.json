@@ -6,7 +6,11 @@
     "pitch": "Penjualan, stok, resep, pembelian, dan central kitchen di satu tempat. Di desktop, tablet, dan ponsel.",
     "badge": "Dari dapur ke kasir, satu sistem"
   },
-  "lang": { "label": "Bahasa", "en": "EN", "id": "ID" },
+  "lang": {
+    "label": "Bahasa",
+    "en": "EN",
+    "id": "ID"
+  },
   "auth": {
     "signIn": "Masuk",
     "email": "Email",
@@ -110,5 +114,32 @@
     "tenant_suspended": "Usaha ini ditangguhkan.",
     "network_error": "Tidak dapat terhubung ke server. Periksa koneksi Anda.",
     "generic": "Terjadi kesalahan. Silakan coba lagi."
+  },
+  "appearance": {
+    "open": "Tampilan",
+    "title": "Tampilan",
+    "description": "Pilih mode terang atau gelap, warna aksen, dan latar.",
+    "mode": "Mode",
+    "modes": {
+      "system": "Sistem",
+      "dark": "Gelap",
+      "light": "Terang"
+    },
+    "accent": "Warna aksen",
+    "accents": {
+      "teal": "Hijau toska",
+      "sage": "Hijau sage",
+      "lavender": "Lavender",
+      "sky": "Biru langit",
+      "sand": "Pasir"
+    },
+    "background": "Latar",
+    "backgrounds": {
+      "tide": "Ombak",
+      "mist": "Kabut",
+      "dusk": "Senja",
+      "leaf": "Daun"
+    },
+    "done": "Selesai"
   }
 }

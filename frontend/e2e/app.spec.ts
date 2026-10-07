@@ -87,3 +87,25 @@ test('layout fits the screen without horizontal scrolling', async ({ page }) => 
   )
   expect(overflow).toBeLessThanOrEqual(0)
 })
+
+test('appearance: light mode, accent swatch and background are applied and remembered', async ({
+  page,
+}) => {
+  await mockApi(page, { signedIn: false })
+  await page.goto('/login')
+  await page.getByRole('button', { name: 'EN' }).click()
+  await page.getByRole('button', { name: 'Appearance' }).click()
+  await page.getByRole('button', { name: 'Light' }).click()
+  await page.getByRole('button', { name: 'Lavender' }).click()
+  await page.getByRole('button', { name: 'Dusk' }).click()
+  await page.getByRole('button', { name: 'Done' }).click()
+  const html = page.locator('html')
+  await expect(html).toHaveAttribute('data-theme', 'light')
+  await expect(html).toHaveAttribute('data-accent', 'lavender')
+  await page.reload()
+  await expect(html).toHaveAttribute('data-theme', 'light')
+  const bg = await page.evaluate(() =>
+    document.documentElement.style.getPropertyValue('--app-background'),
+  )
+  expect(bg).toContain('dusk.svg')
+})

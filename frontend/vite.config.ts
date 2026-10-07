@@ -11,13 +11,13 @@ export default defineConfig({
     // Installable app (PWA): "Install" on desktop, "Add to home screen" on phones.
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icon.svg'],
+      includeAssets: ['icon.svg', 'backgrounds/*.svg'],
       manifest: {
         name: 'Restaurant POS',
         short_name: 'POS',
         description: 'Point of sale and back office for restaurants and kitchens',
-        theme_color: '#0B0E14',
-        background_color: '#0B0E14',
+        theme_color: '#0f151c',
+        background_color: '#0f151c',
         display: 'standalone',
         start_url: '/',
         icons: [

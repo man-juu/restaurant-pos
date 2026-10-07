@@ -6,7 +6,11 @@
     "pitch": "Sales, stock, recipes, purchasing and central kitchen in one place. On desktop, tablet and phone.",
     "badge": "Kitchen to cashier, one system"
   },
-  "lang": { "label": "Language", "en": "EN", "id": "ID" },
+  "lang": {
+    "label": "Language",
+    "en": "EN",
+    "id": "ID"
+  },
   "auth": {
     "signIn": "Sign in",
     "email": "Email",
@@ -110,5 +114,32 @@
     "tenant_suspended": "This business is suspended.",
     "network_error": "Cannot reach the server. Check your connection.",
     "generic": "Something went wrong. Please try again."
+  },
+  "appearance": {
+    "open": "Appearance",
+    "title": "Appearance",
+    "description": "Choose light or dark mode, an accent colour and a background.",
+    "mode": "Mode",
+    "modes": {
+      "system": "System",
+      "dark": "Dark",
+      "light": "Light"
+    },
+    "accent": "Accent colour",
+    "accents": {
+      "teal": "Teal",
+      "sage": "Sage",
+      "lavender": "Lavender",
+      "sky": "Sky",
+      "sand": "Sand"
+    },
+    "background": "Background",
+    "backgrounds": {
+      "tide": "Tide",
+      "mist": "Mist",
+      "dusk": "Dusk",
+      "leaf": "Leaf"
+    },
+    "done": "Done"
   }
 }

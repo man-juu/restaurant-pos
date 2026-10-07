@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { NavLink, Navigate, Outlet } from 'react-router'
 
 import { InstallPrompt } from '../components/InstallPrompt'
+import { AppearanceMenu } from '../components/AppearanceMenu'
 import { LanguageSwitch } from '../components/LanguageSwitch'
 import { Button, Logo } from '../components/ui'
 import type { Capabilities, SessionInfo } from '../lib/api/types'
@@ -99,7 +100,7 @@ function TopBar({ session }: { session: SessionInfo }) {
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
           <Button variant="ghost" aria-label={t('shell.switchBusiness')}>
-            <span className="h-5 w-5 rounded-md bg-good" />
+            <span className="h-5 w-5 rounded-md bg-accent" />
             {active?.name ?? t('shell.business')}
           </Button>
         </DropdownMenu.Trigger>
@@ -122,6 +123,7 @@ function TopBar({ session }: { session: SessionInfo }) {
       </DropdownMenu.Root>
       <div className="flex items-center gap-3">
         <LanguageSwitch />
+        <AppearanceMenu />
         <Button variant="ghost" onClick={() => logout.mutate()}>
           {t('auth.signOut')}
         </Button>
@@ -142,7 +144,7 @@ export function SubscriptionBanner({ caps }: { caps: Capabilities | undefined })
   return (
     <div
       role="status"
-      className="flex flex-wrap items-center gap-3 rounded-2xl border border-[#4a2e1d] bg-gradient-to-r from-[#2a1a12] to-card px-4 py-3"
+      className="flex flex-wrap items-center gap-3 rounded-2xl border border-notice-line bg-notice px-4 py-3"
     >
       <p className="flex-1 text-sm">
         {t(`subscription.${state}`, { count: caps.subscription.days_left ?? 0 })}
