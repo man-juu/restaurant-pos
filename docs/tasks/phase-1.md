@@ -10,6 +10,7 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 - [x] 1b part 5 Catalog screens: items (search, type filter, edit, conversions), categories, units, channels, prices per channel; EN/ID; phone/tablet/desktop e2e (FR-CAT-001, 002, 004, 009)
 - [x] 1c Recipes: versions (draft, active from a date), nesting with cycle check, expansion to ingredients, theoretical cost and margin per channel through a cost source that 1e will provide (FR-CAT-005 to 007). FR-CAT-012 (food-cost alert) is still open, see below.
 - [x] 1e Inventory ledger: append-only movements, batches with expiry, FEFO, moving average per outlet, balances, reversals, valuation at any date, opening stock, negative-stock policy setting, stock screen (FR-INV-001 to 006, 014, FR-X-005). Recipe costing now uses the ledger's average costs.
+- [x] 1i Waste logs (posted at once, reversible), adjustments and stock counts (full, spot, cycle, blind) with approval rules and "never your own request" (FR-INV-007 to 009). Waste photos wait for uploads (1b part 3).
 - [x] Legacy app reviewed, ideas kept (docs/existing-code-review.md), old branches deleted
 - [x] Complexity limits in lint: ruff C90 (max 10), PLR09xx, SIM/PERF; ESLint complexity 10, max-depth 3, max-params 4
 
@@ -25,7 +26,6 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 | 8 | 1f Purchasing: vendors, PR, PO, receiving, quick purchase, PDF, invoice attachment | FR-PUR-001 to 006, 010, 011 | attachment optional, configurable mandatory |
 | 9 | 1g Production with yield and costing, shelf-life labels, prep list | FR-PRD-001 to 004, 007, 008 | |
 | 10 | 1h Transfers with approval, delivery note, discrepancies | FR-TRF-001 to 004 | |
-| 11 | 1i Counts, waste, adjustments with approvals | FR-INV-007 to 009 | |
 | 12 | 1j Stock levels, DOI, alerts, reorder suggestions, producible quantity, notification center | FR-INV-010 to 013, 020, FR-NTF-001 to 003 | |
 | 13 | 1k Manual daily sales entry, recipe consumption, day lock, platform item mapping | FR-SAL-001 to 003, FR-CAT-010 | |
 | 14 | 1l Reports and variance | FR-RPT-001 to 006, 010, 011, FR-INV-015 | |

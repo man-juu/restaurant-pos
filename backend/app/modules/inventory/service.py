@@ -31,6 +31,9 @@ from app.modules.inventory.models import (
 )
 
 COST = Decimal("0.000001")
+# FR-INV-003: goods arriving need an expiry date if they spoil. Stock found in a count or an
+# adjustment has no delivery to read it from, so those may leave it empty.
+EXPIRY_REQUIRED = frozenset({"purchase_receipt", "production_output", "opening_balance"})
 
 
 class StockError(AppError):
@@ -198,7 +201,8 @@ async def receive(
     items = await _stock_items(db, {ln.item_id for ln in lines})
     movements = []
     for ln in sorted(lines, key=lambda x: x.item_id):
-        if items[ln.item_id].perishable and ln.expiry_date is None:
+        needs_expiry = movement_type in EXPIRY_REQUIRED and items[ln.item_id].perishable
+        if needs_expiry and ln.expiry_date is None:
             raise StockError("expiry_required", details={"item_id": str(ln.item_id)})
         cost = await _cost_row(db, p, ln.item_id)
         batch = StockBatch(

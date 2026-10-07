@@ -158,7 +158,12 @@
     "nothing_to_reverse": "Ini sudah dibatalkan.",
     "batch_already_used": "Sebagian stok ini sudah terpakai, jadi tidak bisa dibatalkan.",
     "outlet_not_found": "Outlet ini tidak ada atau tidak aktif.",
-    "document_not_found": "Dokumen ini sudah tidak ada."
+    "document_not_found": "Dokumen ini sudah tidak ada.",
+    "wrong_status": "Dokumen ini sudah berpindah status. Muat ulang untuk melihatnya.",
+    "approver_role_required": "Peran Anda tidak bisa menyetujui ini; aturan persetujuan menyebut peran lain.",
+    "cannot_approve_own_request": "Anda tidak bisa menyetujui permintaan sendiri.",
+    "count_incomplete": "Isi jumlah terhitung untuk setiap baris dulu.",
+    "items_required": "Pilih minimal satu item untuk dihitung."
   },
   "appearance": {
     "open": "Tampilan",
@@ -418,7 +423,10 @@
     "tabs": {
       "stock": "Stok tersedia",
       "opening": "Stok awal",
-      "valuation": "Nilai stok"
+      "valuation": "Nilai stok",
+      "waste": "Barang terbuang",
+      "adjustments": "Penyesuaian",
+      "counts": "Stok opname"
     },
     "empty": "Belum ada stok tercatat di outlet ini.",
     "negative": "Di bawah nol: pemakaian melebihi stok yang tercatat masuk",
@@ -455,6 +463,53 @@
       "posted": "Terposting ({{count}} baris).",
       "undo": "Batalkan",
       "undone": "Dibatalkan. Pembatalan tetap tersimpan di riwayat."
+    },
+    "reasons": {
+      "spoilage": "Rusak/basi",
+      "expired": "Kedaluwarsa",
+      "preparation_loss": "Susut persiapan",
+      "damaged": "Rusak",
+      "staff_meal": "Makan karyawan",
+      "other": "Lainnya",
+      "correction": "Koreksi",
+      "found": "Ditemukan",
+      "theft": "Hilang / dicuri"
+    },
+    "countTypes": {
+      "full": "Opname penuh",
+      "spot": "Cek acak",
+      "cycle": "Opname bergilir"
+    },
+    "status": {
+      "draft": "Draf",
+      "submitted": "Menunggu persetujuan",
+      "posted": "Terposting",
+      "rejected": "Ditolak",
+      "reversed": "Dibatalkan"
+    },
+    "docs": {
+      "none": "Belum ada catatan.",
+      "reason": "Alasan",
+      "date": "Tanggal",
+      "postWaste": "Catat barang terbuang",
+      "signedQty": "Perubahan (+ menambah, âˆ’ mengurangi)",
+      "adjustHelp": "Gunakan penyesuaian hanya bila tidak ada opname, barang terbuang atau pengiriman yang menjelaskan perubahan. Perubahan besar menunggu persetujuan.",
+      "submit": "Ajukan",
+      "approve": "Setujui",
+      "reject": "Tolak",
+      "open": "Buka",
+      "result": {
+        "posted": "{{number}} terposting.",
+        "submitted": "{{number}} menunggu persetujuan.",
+        "draft": "{{number}} disimpan sebagai draf.",
+        "rejected": "{{number}} ditolak."
+      },
+      "countType": "Jenis",
+      "blind": "Opname buta (penghitung tidak melihat jumlah sistem)",
+      "startCount": "Mulai opname",
+      "blindHelp": "Hitung yang benar-benar ada. Jumlah sistem muncul setelah Anda mengajukan.",
+      "system": "Sistem: {{qty}}",
+      "counted": "Terhitung ({{unit}})"
     }
   }
 }

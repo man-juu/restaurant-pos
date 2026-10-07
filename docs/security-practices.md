@@ -122,6 +122,15 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - Opening stock carries an idempotency key, so a retried request cannot post twice.
 - Performance: stock and valuation lists are keyset-paginated aggregates on `(tenant_id, outlet_id, item_id, ...)` indexes; names come in one extra query per page. The inventory screen is a 3 KB gzip lazy chunk.
 
+## Slice 1i review (waste, adjustments, counts)
+
+- Separation of duties: approvals refuse the document's creator (docs/03 rule 1) and anyone whose role is not named by the rule (owners excepted); tested with two managers.
+- Decision endpoints accept only `approve` or `reject` (anything else is 422, never a silent reject); status checks stop double posting (`wrong_status`).
+- Blind counts hide frozen system quantities from counters until submit (server-side, not only in the UI).
+- All six tables have FORCED RLS and composite tenant foreign keys; outlet scope is checked on every route, including actions on an existing document (404 outside scope); tested across tenants.
+- Waste carries an idempotency key; every save, submit, decision and reversal is audited.
+- Performance: document lists are capped at 100 rows on a `(tenant_id, outlet_id, ...)` index; posting reuses the batched ledger engine. The migration drift test now also covers inventory tables (Alembic `env.py` imports them).
+
 ## Dev tools added (2026-10-07)
 
 - complexipy 8.0.1 (MIT, PyPI release 2026-09-07) and eslint-plugin-sonarjs 4.2.2 (LGPL-3.0, SonarSource, dev only, not shipped in the bundle). Installed with the 7-day cooling-off; npm audit clean. Owner approved.

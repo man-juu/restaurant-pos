@@ -557,6 +557,176 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/inventory/adjustments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Create Adjustment */
+    post: operations['create_adjustment_api_v1_inventory_adjustments_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/adjustments/{doc_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Adjustment */
+    put: operations['update_adjustment_api_v1_inventory_adjustments__doc_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/adjustments/{doc_id}/submit': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Submit Adjustment */
+    post: operations['submit_adjustment_api_v1_inventory_adjustments__doc_id__submit_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/adjustments/{doc_id}/{decision}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Decide Adjustment */
+    post: operations['decide_adjustment_api_v1_inventory_adjustments__doc_id___decision__post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/counts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Start Count */
+    post: operations['start_count_api_v1_inventory_counts_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/counts/{doc_id}/lines': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Enter Counted */
+    put: operations['enter_counted_api_v1_inventory_counts__doc_id__lines_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/counts/{doc_id}/submit': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Submit Count */
+    post: operations['submit_count_api_v1_inventory_counts__doc_id__submit_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/counts/{doc_id}/{decision}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Decide Count */
+    post: operations['decide_count_api_v1_inventory_counts__doc_id___decision__post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/documents/{kind}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Documents */
+    get: operations['list_documents_api_v1_inventory_documents__kind__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/documents/{kind}/{doc_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Document */
+    get: operations['get_document_api_v1_inventory_documents__kind___doc_id__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/inventory/movements': {
     parameters: {
       query?: never
@@ -653,6 +823,40 @@ export interface paths {
     get: operations['stock_valuation_api_v1_inventory_valuation_get']
     put?: never
     post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/waste': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Post Waste */
+    post: operations['post_waste_api_v1_inventory_waste_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/waste/{doc_id}/reverse': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reverse Waste */
+    post: operations['reverse_waste_api_v1_inventory_waste__doc_id__reverse_post']
     delete?: never
     options?: never
     head?: never
@@ -814,6 +1018,45 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    /** AdjustmentIn */
+    AdjustmentIn: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /** Lines */
+      lines: components['schemas']['AdjustmentLineIn'][]
+      /** Note */
+      note?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /**
+       * Reason Code
+       * @enum {string}
+       */
+      reason_code: 'correction' | 'found' | 'theft' | 'damaged' | 'other'
+    }
+    /** AdjustmentLineIn */
+    AdjustmentLineIn: {
+      /** Expiry Date */
+      expiry_date?: string | null
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: number | string
+      /**
+       * Unit Id
+       * Format: uuid
+       */
+      unit_id: string
+    }
     /** AlertRuleIn */
     AlertRuleIn: {
       /**
@@ -1285,6 +1528,74 @@ export interface components {
        * Format: date
        */
       on: string
+    }
+    /**
+     * CountIn
+     * @description Full: every item with stock at the outlet, plus `item_ids`. Spot and cycle: only
+     *     `item_ids`. Blind: counters do not see the system quantity.
+     */
+    CountIn: {
+      /**
+       * Blind
+       * @default false
+       */
+      blind: boolean
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /**
+       * Count Type
+       * @enum {string}
+       */
+      count_type: 'full' | 'spot' | 'cycle'
+      /** Item Ids */
+      item_ids?: string[]
+      /** Note */
+      note?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
+    /** CountedIn */
+    CountedIn: {
+      /** Lines */
+      lines: components['schemas']['CountedLine'][]
+    }
+    /** CountedLine */
+    CountedLine: {
+      /** Counted Qty */
+      counted_qty: number | string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+    }
+    /** DocLine */
+    DocLine: {
+      /** Counted Qty */
+      counted_qty?: string | null
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Name */
+      name: string
+      /** Qty */
+      qty?: string | null
+      /** Sku */
+      sku: string
+      /** System Qty */
+      system_qty?: string | null
+      /** Unit Code */
+      unit_code: string
+      /** Unit Id */
+      unit_id?: string | null
     }
     /** EffectivePrice */
     EffectivePrice: {
@@ -1774,6 +2085,21 @@ export interface components {
        */
       valid_from: string
     }
+    /** QtyLine */
+    QtyLine: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: number | string
+      /**
+       * Unit Id
+       * Format: uuid
+       */
+      unit_id: string
+    }
     /** RecoveryCodesOut */
     RecoveryCodesOut: {
       /** Recovery Codes */
@@ -1857,6 +2183,48 @@ export interface components {
        * @default 60
        */
       idle_minutes: number
+    }
+    /** StockDocument */
+    StockDocument: {
+      /**
+       * Blind
+       * @default false
+       */
+      blind: boolean
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /** Count Type */
+      count_type?: string | null
+      /** Created By */
+      created_by: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'waste' | 'adjustment' | 'count'
+      /** Lines */
+      lines?: components['schemas']['DocLine'][]
+      /** Note */
+      note: string | null
+      /** Number */
+      number: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Reason Code */
+      reason_code?: string | null
+      /** Status */
+      status: string
     }
     /** StockRow */
     StockRow: {
@@ -2036,6 +2404,33 @@ export interface components {
       unit_code: string
       /** Value */
       value: number
+    }
+    /** WasteIn */
+    WasteIn: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /**
+       * Confirm Negative
+       * @default false
+       */
+      confirm_negative: boolean
+      /** Lines */
+      lines: components['schemas']['QtyLine'][]
+      /** Note */
+      note?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /**
+       * Reason Code
+       * @enum {string}
+       */
+      reason_code: 'spoilage' | 'expired' | 'preparation_loss' | 'damaged' | 'staff_meal' | 'other'
     }
   }
   responses: never
@@ -3295,6 +3690,335 @@ export interface operations {
       }
     }
   }
+  create_adjustment_api_v1_inventory_adjustments_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AdjustmentIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StockDocument']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_adjustment_api_v1_inventory_adjustments__doc_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        doc_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AdjustmentIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StockDocument']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  submit_adjustment_api_v1_inventory_adjustments__doc_id__submit_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        doc_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StockDocument']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  decide_adjustment_api_v1_inventory_adjustments__doc_id___decision__post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        doc_id: string
+        decision: 'approve' | 'reject'
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StockDocument']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  start_count_api_v1_inventory_counts_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CountIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StockDocument']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  enter_counted_api_v1_inventory_counts__doc_id__lines_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        doc_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CountedIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StockDocument']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  submit_count_api_v1_inventory_counts__doc_id__submit_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        doc_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StockDocument']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  decide_count_api_v1_inventory_counts__doc_id___decision__post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        doc_id: string
+        decision: 'approve' | 'reject'
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StockDocument']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_documents_api_v1_inventory_documents__kind__get: {
+    parameters: {
+      query: {
+        outlet_id: string
+      }
+      header?: never
+      path: {
+        kind: 'waste' | 'adjustments' | 'counts'
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StockDocument'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_document_api_v1_inventory_documents__kind___doc_id__get: {
+    parameters: {
+      query?: {
+        lang?: string
+      }
+      header?: never
+      path: {
+        kind: 'waste' | 'adjustments' | 'counts'
+        doc_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StockDocument']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   movement_history_api_v1_inventory_movements_get: {
     parameters: {
       query: {
@@ -3487,6 +4211,72 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['Page_ValuationRow_']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  post_waste_api_v1_inventory_waste_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['WasteIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StockDocument']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reverse_waste_api_v1_inventory_waste__doc_id__reverse_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        doc_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StockDocument']
         }
       }
       /** @description Validation Error */

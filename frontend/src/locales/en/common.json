@@ -158,7 +158,12 @@
     "nothing_to_reverse": "This was already undone.",
     "batch_already_used": "Part of this stock is already used, so it cannot be undone.",
     "outlet_not_found": "This outlet does not exist or is inactive.",
-    "document_not_found": "This document no longer exists."
+    "document_not_found": "This document no longer exists.",
+    "wrong_status": "This document has already moved on. Reload to see its status.",
+    "approver_role_required": "Your role cannot approve this; the approval rule names another role.",
+    "cannot_approve_own_request": "You cannot approve your own request.",
+    "count_incomplete": "Enter a counted quantity for every line first.",
+    "items_required": "Choose at least one item to count."
   },
   "appearance": {
     "open": "Appearance",
@@ -418,7 +423,10 @@
     "tabs": {
       "stock": "On hand",
       "opening": "Opening stock",
-      "valuation": "Valuation"
+      "valuation": "Valuation",
+      "waste": "Waste",
+      "adjustments": "Adjustments",
+      "counts": "Stock counts"
     },
     "empty": "No stock recorded at this outlet yet.",
     "negative": "Below zero: more was used than was recorded in",
@@ -455,6 +463,53 @@
       "posted": "Posted ({{count}} lines).",
       "undo": "Undo",
       "undone": "Undone. The reversal is kept in the history."
+    },
+    "reasons": {
+      "spoilage": "Spoiled",
+      "expired": "Expired",
+      "preparation_loss": "Preparation loss",
+      "damaged": "Damaged",
+      "staff_meal": "Staff meal",
+      "other": "Other",
+      "correction": "Correction",
+      "found": "Found",
+      "theft": "Missing / theft"
+    },
+    "countTypes": {
+      "full": "Full count",
+      "spot": "Spot check",
+      "cycle": "Cycle count"
+    },
+    "status": {
+      "draft": "Draft",
+      "submitted": "Waiting for approval",
+      "posted": "Posted",
+      "rejected": "Rejected",
+      "reversed": "Undone"
+    },
+    "docs": {
+      "none": "Nothing recorded yet.",
+      "reason": "Reason",
+      "date": "Date",
+      "postWaste": "Record waste",
+      "signedQty": "Change (+ adds, âˆ’ removes)",
+      "adjustHelp": "Use adjustments only when no count, waste or delivery explains the change. Larger changes wait for approval.",
+      "submit": "Submit",
+      "approve": "Approve",
+      "reject": "Reject",
+      "open": "Open",
+      "result": {
+        "posted": "{{number}} posted.",
+        "submitted": "{{number}} is waiting for approval.",
+        "draft": "{{number}} saved as draft.",
+        "rejected": "{{number}} rejected."
+      },
+      "countType": "Type",
+      "blind": "Blind count (counters do not see the system quantity)",
+      "startCount": "Start count",
+      "blindHelp": "Count what is physically there. The system quantity appears after you submit.",
+      "system": "System: {{qty}}",
+      "counted": "Counted ({{unit}})"
     }
   }
 }

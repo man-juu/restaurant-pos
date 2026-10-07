@@ -9,7 +9,9 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 import app.admin.models
 import app.core.settings.models
-import app.modules.catalog.models  # noqa: F401 - module tables
+import app.modules.catalog.models
+import app.modules.inventory.doc_models
+import app.modules.inventory.models  # noqa: F401 - module tables
 from app.core.config import get_settings
 from app.core.models import Base
 
