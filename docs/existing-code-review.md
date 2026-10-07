@@ -59,3 +59,15 @@ Data:
 - Real sample menu (Korean restaurant: sets, rice bowls, ala carte, soups, add-ons; about 54 menus, 45 ingredients with recipes) stays with the owner; it is business data, so it is not committed. A fictional demo seed with the same shape is created in slice 1d.
 
 Not carried forward: client-side SQLite, Electron/Tauri shells, glassmorphism and 3D toggles (hurt contrast and speed on cheap tablets).
+
+## Order and table screens (owner request, 2026-10-07)
+
+The legacy order screen and table screen are the starting reference for Phase 2. Before building them, research current POS practice (Loyverse, Moka, Odoo POS, Square, Toast) and check against docs/ux-review.md. Logic rules already decided:
+
+- An order is a document with a state machine: open → sent to kitchen → paid → closed; void and refund are reversals with reason and approval, never deletes.
+- Table session: a table opens a session, orders attach to it, the bill can be split or merged, and the table is freed only when paid. Moving or merging tables is audited.
+- Totals are computed on the server with the tax and service-charge rules from settings; the client shows them but never decides them.
+- Stock is deducted by recipe in the same transaction as payment; one item running out never leaves half a sale saved.
+- Each order line keeps the price, tax and recipe version used, so reports never change when prices change later.
+- Idempotency key on order create and pay, so a double tap or a network retry never charges twice.
+- Promotions are discount lines on the order (who applied, why, within the role's limit), not edited prices.
