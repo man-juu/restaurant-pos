@@ -345,6 +345,41 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/catalog/channels': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Channels */
+    get: operations['list_channels_api_v1_catalog_channels_get']
+    put?: never
+    /** Create Channel */
+    post: operations['create_channel_api_v1_catalog_channels_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/channels/{channel_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Channel */
+    put: operations['update_channel_api_v1_catalog_channels__channel_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/catalog/items': {
     parameters: {
       query?: never
@@ -376,6 +411,58 @@ export interface paths {
     put: operations['update_item_api_v1_catalog_items__item_id__put']
     post?: never
     delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/items/{item_id}/prices': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Price History */
+    get: operations['price_history_api_v1_catalog_items__item_id__prices_get']
+    /** Set Price */
+    put: operations['set_price_api_v1_catalog_items__item_id__prices_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/prices': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Effective Prices */
+    get: operations['effective_prices_api_v1_catalog_prices_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/prices/{price_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Delete Price */
+    delete: operations['delete_price_api_v1_catalog_prices__price_id__delete']
     options?: never
     head?: never
     patch?: never
@@ -735,6 +822,59 @@ export interface components {
        */
       sort_order: number
     }
+    /** ChannelIn */
+    ChannelIn: {
+      /** Code */
+      code: string
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'dine_in' | 'takeaway' | 'platform' | 'wholesale'
+      /** Name */
+      name: string
+      /** Platform */
+      platform?: string | null
+      /**
+       * Sort Order
+       * @default 0
+       */
+      sort_order: number
+    }
+    /** ChannelOut */
+    ChannelOut: {
+      /** Code */
+      code: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'dine_in' | 'takeaway' | 'platform' | 'wholesale'
+      /** Name */
+      name: string
+      /** Platform */
+      platform?: string | null
+      /**
+       * Sort Order
+       * @default 0
+       */
+      sort_order: number
+    }
     /** CodeRequest */
     CodeRequest: {
       /** Code */
@@ -759,6 +899,21 @@ export interface components {
        * Format: uuid
        */
       unit_id: string
+    }
+    /** EffectivePrice */
+    EffectivePrice: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Price */
+      price: number
+      /**
+       * Valid From
+       * Format: date
+       */
+      valid_from: string
     }
     /** HTTPValidationError */
     HTTPValidationError: {
@@ -992,6 +1147,13 @@ export interface components {
       /** Type */
       type: string
     }
+    /** Page[EffectivePrice] */
+    Page_EffectivePrice_: {
+      /** Items */
+      items: components['schemas']['EffectivePrice'][]
+      /** Next Cursor */
+      next_cursor: string | null
+    }
     /** Page[ItemSummary] */
     Page_ItemSummary_: {
       /** Items */
@@ -1040,6 +1202,46 @@ export interface components {
     PaymentMethodSettings: {
       /** Methods */
       methods?: components['schemas']['PaymentMethod'][]
+    }
+    /** PriceIn */
+    PriceIn: {
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /** Price */
+      price: number
+      /**
+       * Valid From
+       * Format: date
+       */
+      valid_from: string
+    }
+    /** PriceOut */
+    PriceOut: {
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Price */
+      price: number
+      /**
+       * Valid From
+       * Format: date
+       */
+      valid_from: string
     }
     /** RecoveryCodesOut */
     RecoveryCodesOut: {
@@ -1857,6 +2059,105 @@ export interface operations {
       }
     }
   }
+  list_channels_api_v1_catalog_channels_get: {
+    parameters: {
+      query?: {
+        include_inactive?: boolean
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChannelOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_channel_api_v1_catalog_channels_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ChannelIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChannelOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_channel_api_v1_catalog_channels__channel_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        channel_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ChannelIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChannelOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   list_items_api_v1_catalog_items_get: {
     parameters: {
       query?: {
@@ -1990,6 +2291,136 @@ export interface operations {
         content: {
           'application/json': components['schemas']['ItemOut']
         }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  price_history_api_v1_catalog_items__item_id__prices_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PriceOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  set_price_api_v1_catalog_items__item_id__prices_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PriceIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PriceOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  effective_prices_api_v1_catalog_prices_get: {
+    parameters: {
+      query: {
+        channel_id: string
+        on?: string | null
+        limit?: number
+        cursor?: string | null
+        sort?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Page_EffectivePrice_']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  delete_price_api_v1_catalog_prices__price_id__delete: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        price_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Validation Error */
       422: {

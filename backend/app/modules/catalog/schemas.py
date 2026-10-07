@@ -1,8 +1,16 @@
 import uuid
+from datetime import date
 from decimal import Decimal
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    StringConstraints,
+    field_validator,
+    model_validator,
+)
 
 Language = Annotated[str, StringConstraints(pattern=r"^[a-z]{2}(-[A-Z]{2})?$")]
 Code = Annotated[str, StringConstraints(strip_whitespace=True, pattern=r"^[A-Za-z0-9._-]{1,16}$")]
@@ -111,3 +119,51 @@ class ItemOut(ItemSummary):
     version: int
     translations: list[TranslationOut]
     conversions: list[ConversionOut]
+
+
+# ─── Channels and prices (FR-CAT-004) ─────────────────────────────────────
+
+# Same shape as the channel slugs tenant settings already use (service_charge.channels).
+ChannelCode = Annotated[str, StringConstraints(pattern=r"^[a-z0-9_]{1,40}$")]
+ChannelKind = Literal["dine_in", "takeaway", "platform", "wholesale"]
+MAX_PRICE = 10**12  # minor units; far above any menu price, far below bigint
+
+
+class ChannelIn(Strict):
+    code: ChannelCode
+    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=80)]
+    kind: ChannelKind
+    platform: ChannelCode | None = None  # e.g. "grabfood"; required for kind "platform" only
+    sort_order: int = Field(default=0, ge=0, le=100_000)
+    is_active: bool = True
+
+    @model_validator(mode="after")
+    def _platform_only_for_platform_kind(self) -> "ChannelIn":
+        if (self.kind == "platform") != (self.platform is not None):
+            raise ValueError("platform is required for kind 'platform' and only for it")
+        return self
+
+
+class ChannelOut(ChannelIn):
+    id: uuid.UUID
+
+
+class PriceIn(Strict):
+    channel_id: uuid.UUID
+    valid_from: date
+    # Strict: a JSON integer only; never coerce "25000" or 1.5 into money.
+    price: int = Field(ge=0, le=MAX_PRICE, strict=True)
+
+
+class PriceOut(BaseModel):
+    id: uuid.UUID
+    item_id: uuid.UUID
+    channel_id: uuid.UUID
+    valid_from: date
+    price: int
+
+
+class EffectivePrice(BaseModel):
+    item_id: uuid.UUID
+    valid_from: date
+    price: int

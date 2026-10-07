@@ -1,4 +1,4 @@
-"""Catalog tables (docs/05 section 2.2, FR-CAT-001, 002, 008, 009).
+"""Catalog tables (docs/05 section 2.2, FR-CAT-001, 002, 004, 008, 009).
 
 Units with tenant_id NULL are platform units (g, kg, ml, l, pcs) readable by every tenant.
 Translatable names live in item_translations; tenant tables carry tenant_id and composite
@@ -6,11 +6,13 @@ Translatable names live in item_translations; tenant tables carry tenant_id and 
 """
 
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 
 from sqlalchemy import (
+    BigInteger,
     CheckConstraint,
+    Date,
     ForeignKey,
     ForeignKeyConstraint,
     Index,
@@ -28,6 +30,7 @@ from app.core.models import Base, _check_in, _created_at, _id
 UNIT_DIMENSIONS = ("mass", "volume", "count")
 ITEM_TYPES = ("ingredient", "semi_finished", "menu")
 STORAGE_TYPES = ("frozen", "chilled", "dry")
+CHANNEL_KINDS = ("dine_in", "takeaway", "platform", "wholesale")
 
 
 class Unit(Base):
@@ -131,3 +134,62 @@ class ItemUnitConversion(Base):
     item_id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
     unit_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("units.id"), primary_key=True)
     factor_to_base: Mapped[Decimal] = mapped_column(Numeric(18, 6))
+
+
+class Channel(Base):
+    """FR-CAT-004: where an item is sold. `code` is what tenant settings refer to (for example
+    service_charge.channels), so it never changes after creation."""
+
+    __tablename__ = "channels"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "code"),
+        _check_in("kind", CHANNEL_KINDS),
+        CheckConstraint("(kind = 'platform') = (platform IS NOT NULL)", name="platform_kind"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    code: Mapped[str] = mapped_column(String(40))
+    name: Mapped[str] = mapped_column(String(80))
+    kind: Mapped[str] = mapped_column(Text)
+    platform: Mapped[str | None] = mapped_column(String(40))
+    sort_order: Mapped[int] = mapped_column(server_default="0")
+    is_active: Mapped[bool] = mapped_column(server_default="true")
+
+
+class ItemPrice(Base):
+    """FR-CAT-004 list price of an item on a channel from `valid_from` (docs/09 0.20).
+
+    The price on a date is the row with the latest valid_from on or before it. outlet_id and
+    valid_to follow docs/05 but stay NULL until per-outlet overrides arrive in Phase 2.
+    Money is integer minor units (CLAUDE.md rule 5)."""
+
+    __tablename__ = "item_prices"
+    __table_args__ = (
+        ForeignKeyConstraint(["tenant_id", "item_id"], ["items.tenant_id", "items.id"]),
+        ForeignKeyConstraint(["tenant_id", "channel_id"], ["channels.tenant_id", "channels.id"]),
+        ForeignKeyConstraint(["tenant_id", "outlet_id"], ["outlets.tenant_id", "outlets.id"]),
+        UniqueConstraint(
+            "tenant_id",
+            "item_id",
+            "channel_id",
+            "outlet_id",
+            "valid_from",
+            postgresql_nulls_not_distinct=True,
+        ),
+        CheckConstraint("price >= 0", name="price_not_negative"),
+        CheckConstraint("valid_to IS NULL OR valid_to >= valid_from", name="valid_range"),
+        Index(None, "tenant_id", "channel_id", "item_id", "valid_from"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    item_id: Mapped[uuid.UUID] = mapped_column()
+    channel_id: Mapped[uuid.UUID] = mapped_column()
+    outlet_id: Mapped[uuid.UUID | None] = mapped_column()
+    price: Mapped[int] = mapped_column(BigInteger)
+    valid_from: Mapped[date] = mapped_column(Date)
+    valid_to: Mapped[date | None] = mapped_column(Date)
+    created_at: Mapped[datetime] = _created_at()
+    created_by: Mapped[uuid.UUID | None] = mapped_column()

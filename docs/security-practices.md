@@ -84,6 +84,16 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - Numbering uses one atomic upsert; 20 concurrent allocations gave 20 unique numbers, and a rolled-back document does not burn a number.
 - Performance: the settings screen loads in 2 queries (guard: 8).
 
+## Slice 1b part 2 review (channels and list prices, FR-CAT-004)
+
+- Both new tables have FORCED RLS and composite (tenant_id, id) foreign keys. Foreign keys ignore RLS, so the item and channel are looked up under RLS first; a test proves tenant B cannot price A's item, use A's channel, read A's history or delete A's price (404/422, never 200).
+- `outlet_id` is never taken from the client (per-outlet prices are Phase 2).
+- Price input is strict: a JSON integer in minor units, 0 to 10^12; strings such as "25000" and fractions are refused (found by a test: lax mode accepted numeric strings).
+- Abuse limits: price history returns at most 500 rows; the price list uses keyset pagination (max 200).
+- History stays trustworthy for margin reports: only prices that have not started yet (tenant time zone) can be deleted; corrections and deletes are audited with before and after values.
+- Performance: the price list of 30 items runs in a constant number of queries (guard: 8); one DISTINCT ON query served by the `(tenant_id, channel_id, item_id, valid_from)` index.
+- Dev setup fixes found on a Windows checkout: `.gitattributes` keeps container scripts LF (the database init script failed with CRLF), and the dev frontend image now copies `.npmrc`, so `ignore-scripts` (supply-chain guard) also applies inside Docker.
+
 ## Dev tools added (2026-10-07)
 
 - complexipy 8.0.1 (MIT, PyPI release 2026-09-07) and eslint-plugin-sonarjs 4.2.2 (LGPL-3.0, SonarSource, dev only, not shipped in the bundle). Installed with the 7-day cooling-off; npm audit clean. Owner approved.

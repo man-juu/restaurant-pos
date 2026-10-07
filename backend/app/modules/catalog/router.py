@@ -1,11 +1,12 @@
-"""Catalog endpoints (FR-CAT-001, 002, 008, 009). Language for names comes from the `lang`
+"""Catalog endpoints (FR-CAT-001, 002, 004, 008, 009). Language for names comes from the `lang`
 query parameter (the UI sends its current language); missing names fall back to the tenant
 default language."""
 
 import uuid
+from datetime import date
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, Query, Request
+from fastapi import APIRouter, Depends, Query, Request, Response
 from fastapi.responses import JSONResponse
 
 from app.core.access.policy import Principal, require
@@ -18,15 +19,20 @@ from app.core.idempotency import (
 from app.core.pagination import Page, PageParams, page_params
 from app.core.tenancy import tenant_session
 from app.modules.catalog import permissions as perm
-from app.modules.catalog import service
+from app.modules.catalog import prices, service
 from app.modules.catalog.schemas import (
     CategoryIn,
     CategoryOut,
+    ChannelIn,
+    ChannelOut,
+    EffectivePrice,
     ItemIn,
     ItemOut,
     ItemSummary,
     ItemUpdate,
     Language,
+    PriceIn,
+    PriceOut,
     UnitIn,
     UnitOut,
 )
@@ -139,3 +145,72 @@ async def update_item(
             db, tenant_id=p.tenant_id, user_id=p.user_id, item_id=item_id, data=body, language=lang
         )
         return await service.get_item(db, tenant_id=p.tenant_id, item_id=item_id, language=lang)
+
+
+# ─── Channels and prices (FR-CAT-004) ─────────────────────────────────────
+# docs/03 has one row for "Edit items, menu, recipes, prices", so prices reuse the item
+# permissions (and no new permission needs back-filling into existing tenants' roles).
+
+
+@router.get("/channels", response_model=list[ChannelOut])
+async def list_channels(
+    request: Request, p: View, include_inactive: bool = False
+) -> list[ChannelOut]:
+    async with _db(request, p) as db:
+        rows = await prices.list_channels(db, include_inactive=include_inactive)
+        return [ChannelOut.model_validate(r, from_attributes=True) for r in rows]
+
+
+@router.post("/channels", response_model=ChannelOut, status_code=201)
+async def create_channel(body: ChannelIn, request: Request, p: Update) -> ChannelOut:
+    async with _db(request, p) as db:
+        row = await prices.save_channel(db, tenant_id=p.tenant_id, user_id=p.user_id, data=body)
+        return ChannelOut.model_validate(row, from_attributes=True)
+
+
+@router.put("/channels/{channel_id}", response_model=ChannelOut)
+async def update_channel(
+    channel_id: uuid.UUID, body: ChannelIn, request: Request, p: Update
+) -> ChannelOut:
+    async with _db(request, p) as db:
+        row = await prices.save_channel(
+            db, tenant_id=p.tenant_id, user_id=p.user_id, data=body, channel_id=channel_id
+        )
+        return ChannelOut.model_validate(row, from_attributes=True)
+
+
+@router.get("/items/{item_id}/prices", response_model=list[PriceOut])
+async def price_history(item_id: uuid.UUID, request: Request, p: View) -> list[PriceOut]:
+    async with _db(request, p) as db:
+        return await prices.price_history(db, item_id)
+
+
+@router.put("/items/{item_id}/prices", response_model=PriceOut)
+async def set_price(item_id: uuid.UUID, body: PriceIn, request: Request, p: Update) -> PriceOut:
+    # PUT keyed by (channel, start date) is naturally idempotent: a retry saves the same row.
+    async with _db(request, p) as db:
+        return await prices.set_price(
+            db, tenant_id=p.tenant_id, user_id=p.user_id, item_id=item_id, data=body
+        )
+
+
+@router.delete("/prices/{price_id}", status_code=204)
+async def delete_price(price_id: uuid.UUID, request: Request, p: Update) -> Response:
+    async with _db(request, p) as db:
+        await prices.delete_price(db, tenant_id=p.tenant_id, user_id=p.user_id, price_id=price_id)
+    return Response(status_code=204)
+
+
+@router.get("/prices", response_model=Page[EffectivePrice])
+async def effective_prices(
+    request: Request,
+    p: View,
+    params: Annotated[PageParams, Depends(page_params)],
+    channel_id: uuid.UUID,
+    on: date | None = None,
+) -> Page[EffectivePrice]:
+    async with _db(request, p) as db:
+        rows, cursor = await prices.effective_prices(
+            db, tenant_id=p.tenant_id, channel_id=channel_id, on=on, params=params
+        )
+    return Page(items=rows, next_cursor=cursor)
