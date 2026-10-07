@@ -1,22 +1,43 @@
-# Existing code review (Q-001)
+# Existing code review (Q-001, Step 0)
 
-Reviewed: commit `564b870` "Initial FastAPI setup". Status: waiting on an owner decision. Nothing has been changed.
+Reviewed 2026-10-07 at commit `564b870` ("Initial FastAPI setup"). Read-only: no code changed.
 
-## What exists
+## 1. What exists
 
-| File | Contents | Recommendation |
-| --- | --- | --- |
-| `app/main.py` | 6-line FastAPI hello-world (`GET /`) | **Rewrite**: replace with `backend/app/main.py` (app factory, health route) in Phase 0. Nothing in it is worth keeping. |
-| `requirements.txt` | `pip freeze` output, **UTF-16 LE with CRLF**, includes `colorama` (Windows-only) | **Rewrite**: many tools can't read UTF-16. Use `backend/pyproject.toml` with pinned deps (async SQLAlchemy needs `asyncpg`, plus `alembic`, `pydantic-settings`); dev tools go in a separate group. |
-| `.gitignore` | venv, pycache, `*.db`, `.env` | **Keep and extend**: add `.env.*` with `!.env.example`, `node_modules/`, `dist/`, `.mypy_cache/`, `.pytest_cache/`, `.ruff_cache/`, `.coverage`. |
+| Item | Finding |
+| --- | --- |
+| Structure | `app/main.py`, `requirements.txt`, `.gitignore`. One commit. |
+| Language and framework | Python, FastAPI 0.134, Pydantic 2.12, SQLAlchemy 2.0.47 (installed, not used). |
+| Database, models, migrations | None. No database driver (`asyncpg` is missing), no Alembic. |
+| Tests, lint, CI, Docker | None. |
+| How it runs | Presumably `uvicorn app.main:app`, which serves `GET /` → `{"message": "Restaurant POS Running 🚀"}`. |
 
-## Gaps against CLAUDE.md
+## 2. Quality assessment
 
-- `docs/` is missing: no specs, no ADRs, no `README.md` approval table, no `docs/tasks/phase-0.md`. Because of the status gate, no application code can be written until these exist and are approved.
-- The layout doesn't match yet (`app/` at the root instead of `backend/app/`, no `frontend/` or `infra/`).
-- No tests, lint config, Docker Compose or CI.
+- `app/main.py` is a hello-world: a sync handler, no settings, no app factory, and no `/health`.
+- `requirements.txt` is `pip freeze` output saved as **UTF-16 LE with CRLF line endings** (from Windows PowerShell `>` redirection). Many tools and Linux Docker builds can't read it. It also pins `colorama`, which is Windows-only, and mixes direct and transitive dependencies.
+- `.gitignore` is reasonable but incomplete for the planned monorepo.
 
-## Decision needed from the owner
+## 3. Comparison with docs/04 and docs/05
 
-1. Add the `docs/` specs to the repo and mark them Approved in `docs/README.md`.
-2. Confirm that the prototype can be deleted and replaced as described above.
+Nothing overlaps yet. The planned `backend/`, `frontend/`, `infra/` layout, the module structure, RLS tenancy, ledgers and audit log don't exist. Because there is no data model, there is no float-money or tenant-isolation debt to undo.
+
+## 4. Keep or rewrite
+
+| File | Recommendation |
+| --- | --- |
+| `app/main.py` | **Rewrite** as `backend/app/main.py` in slice 0.2. |
+| `requirements.txt` | **Replace** with `backend/pyproject.toml` (UTF-8, direct deps only, with a lock file) in slice 0.1. |
+| `.gitignore` | **Keep and extend** in slice 0.1 (`.env.*` with `!.env.example`, `node_modules/`, `dist/`, tool caches, coverage). |
+
+In short, treat it as a throwaway prototype and start clean (this matches the Q-001 default).
+
+## 5. Risks
+
+- Secrets in history: none. Both commits contain only the files above, and `.env` was never tracked.
+- Encoding: the UTF-16 file would break a Linux build. Removing it fixes that.
+- No other risks found.
+
+## 6. Questions for the owner
+
+See the summary in chat. Recorded answers go into the `docs/09` changelog.

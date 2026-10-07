@@ -1,0 +1,94 @@
+# CLAUDE.md: Restaurant POS / ERP
+
+Multi-tenant, modular POS and back-office ERP for restaurants, cloud kitchens and central-kitchen groups. Indonesia first (IDR, EN/ID), country-neutral design. Built and maintained by one developer.
+
+## Source of truth
+
+All specs live in `docs/`. Read the relevant document before working on a slice; do not guess.
+
+| Need | Read |
+| --- | --- |
+| What and why | `docs/01-product-spec.md` |
+| Exact requirements (IDs like `FR-INV-014`) | `docs/02-functional-spec.md` |
+| Roles and permissions | `docs/03-roles-permissions.md` |
+| Structure, module rules, tenancy | `docs/04-architecture.md` |
+| Tables, ledger rules, rounding | `docs/05-data-model.md` |
+| Security checklist | `docs/06-security-compliance.md` |
+| Hosting, deploy, backups | `docs/07-infrastructure-cost.md` |
+| Build order, testing, definition of done | `docs/08-roadmap-engineering.md` |
+| Decisions (ADRs) and open questions | `docs/09-decisions-open-questions.md` |
+| Current task brief | `docs/tasks/phase-0.md` |
+
+If code and docs disagree, the docs win until the owner agrees to change them. Changes to a decision go through a new ADR in `docs/09`; never silently deviate.
+
+## Status gate (read first)
+
+Check the approval table in `docs/README.md`. If any document is still **Draft**, do **not** write application code. Do only read-only work (repo review, gap report, doc improvement suggestions) and ask the owner to approve. Existing prototype code, if present, is unreviewed (Q-001): inspect it first, report keep/rewrite recommendations in `docs/existing-code-review.md`, and change nothing until the owner decides.
+
+## Stack (decided)
+
+- Backend: Python 3.12+, FastAPI, Pydantic v2, SQLAlchemy 2 (async, asyncpg), Alembic, PostgreSQL. Jobs: Postgres-backed queue (no Redis at launch, ADR-005).
+- Frontend: React + TypeScript + Vite, Tailwind + Radix/shadcn-style components, TanStack Query, React Hook Form + Zod, i18next, PWA. API client generated from OpenAPI.
+- Run: Docker Compose; Caddy serves the built PWA and proxies the API. One small VPS, Cloudflare in front.
+- Quality: ruff, mypy, import-linter, pytest (+ Hypothesis), ESLint, `tsc`, Vitest, Playwright, k6.
+
+## Layout
+
+```
+backend/   app/core, app/modules/<module>, app/admin, migrations, tests
+frontend/  src/app, src/features, src/components, src/lib, src/locales
+infra/     compose files, Caddyfile, deploy and backup scripts
+docs/      specs, ADRs, runbooks, task briefs
+```
+
+Each backend module has `models.py, schemas.py, service.py, router.py, events.py, permissions.py, module.py`.
+
+## Commands
+
+Fill this section with the real commands as soon as they exist, and keep it current.
+
+```
+# planned, verify they exist before relying on them
+docker compose up            # local stack
+make test | pytest           # backend tests
+ruff check . && mypy .       # lint and types
+npm run test / lint / build  # frontend
+```
+
+## Non-negotiable rules
+
+1. **Tenant isolation.** Every tenant table has `tenant_id`, RLS enabled and FORCED, and a leading `tenant_id` index. Set the tenant per transaction with `set_config('app.tenant_id', :id, true)`; never session-level. The app role is not a superuser or table owner. A test must fail if any tenant table lacks the policy.
+2. **Server decides.** Permission, outlet scope, module-enabled and subscription state are enforced on the server for every route (deny by default). UI hiding is cosmetic. Never take the tenant ID from the client.
+3. **Ledgers are append-only.** Stock movements and journals are never updated or deleted; corrections are reversals. Stock and journal postings happen in the same transaction as the business document.
+4. **Module boundaries.** A module imports only `core` and declared dependencies, never touches another module's tables, and talks through service interfaces or events. import-linter must pass.
+5. **Money and quantities.** Money is integer minor units (IDR scale 0). Quantities `numeric(18,4)` in base unit; unit costs `numeric(18,6)`. Never floats. Follow the rounding policy in `docs/05`.
+6. **Configuration, not constants.** Tax rates, service charge, payment methods, approval thresholds and numbering are tenant settings. Never hard-code Indonesian rates.
+7. **Audit.** Security-relevant and financial actions write to the append-only audit log.
+8. **i18n.** No hard-coded user-facing strings; add EN and ID keys.
+9. **Idempotency.** Create endpoints that clients may retry accept an idempotency key.
+10. **Secrets.** Never commit secrets, real data or `.env` files. Use `.env.example`. Do not log passwords, tokens or personal data.
+11. **Migrations.** Alembic only; expand-then-contract for risky changes; test upgrade from an empty database.
+
+## Out of scope (do not build or add)
+
+Redis (until measured need), marketplace scraping, native mobile apps, payroll or attendance, direct GrabFood/GoFood/ShopeeFood APIs (Phase 4, partner only), AI features that receive tenant or customer data, payment gateway (Phase 4).
+
+## Workflow
+
+- Work in small slices from `docs/08` and the task brief; one short-lived branch per slice; Conventional Commits.
+- Before coding a slice: restate the requirement IDs, the acceptance criteria and the plan; then implement with tests.
+- Every slice must meet the Definition of Done in `docs/08` section 10: tests (unit, integration with real PostgreSQL, tenant isolation, permissions), audit, EN/ID strings, security checklist, docs and ADR updates.
+- Trace work to requirement IDs in commit messages and test names.
+- Update this file when commands, layout or rules change.
+
+## Ask the owner before
+
+- Deviating from any ADR or document, or adding a new technology or dependency not listed above.
+- Changing the data model beyond what `docs/05` describes.
+- Anything involving production servers, DNS, accounts, paid services or credentials.
+- Destructive actions (dropping data, force-push, deleting branches or volumes).
+- Ambiguous requirements: ask a short question instead of guessing.
+
+## About the owner
+
+Solo developer who knows FastAPI and TypeScript and wants to learn best practices along the way: briefly explain the reason for non-obvious architecture or security choices. Cannot use credit cards: any paid service must accept virtual account, e-wallet, QRIS or bank transfer. The owner reads on a phone often: keep summaries short and put detail in files.
