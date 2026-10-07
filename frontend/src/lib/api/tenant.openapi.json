@@ -66,7 +66,9 @@
             "type": "string"
           }
         },
-        "required": ["code"],
+        "required": [
+          "code"
+        ],
         "title": "CodeRequest",
         "type": "object"
       },
@@ -111,7 +113,10 @@
             "type": "string"
           }
         },
-        "required": ["token", "password"],
+        "required": [
+          "token",
+          "password"
+        ],
         "title": "InvitationAccept",
         "type": "object"
       },
@@ -130,7 +135,10 @@
             "type": "string"
           }
         },
-        "required": ["email", "role_id"],
+        "required": [
+          "email",
+          "role_id"
+        ],
         "title": "InvitationCreate",
         "type": "object"
       },
@@ -151,7 +159,11 @@
             "type": "string"
           }
         },
-        "required": ["id", "email", "expires_at"],
+        "required": [
+          "id",
+          "email",
+          "expires_at"
+        ],
         "title": "InvitationOut",
         "type": "object"
       },
@@ -171,7 +183,10 @@
             "type": "string"
           }
         },
-        "required": ["email", "password"],
+        "required": [
+          "email",
+          "password"
+        ],
         "title": "LoginRequest",
         "type": "object"
       },
@@ -186,7 +201,10 @@
             "type": "string"
           }
         },
-        "required": ["secret", "otpauth_uri"],
+        "required": [
+          "secret",
+          "otpauth_uri"
+        ],
         "title": "MfaSetupOut",
         "type": "object"
       },
@@ -214,7 +232,13 @@
             "type": "string"
           }
         },
-        "required": ["id", "name", "type", "timezone", "is_active"],
+        "required": [
+          "id",
+          "name",
+          "type",
+          "timezone",
+          "is_active"
+        ],
         "title": "OutletOut",
         "type": "object"
       },
@@ -233,7 +257,10 @@
             "type": "string"
           }
         },
-        "required": ["token", "new_password"],
+        "required": [
+          "token",
+          "new_password"
+        ],
         "title": "PasswordResetConfirm",
         "type": "object"
       },
@@ -247,7 +274,9 @@
             "type": "string"
           }
         },
-        "required": ["email"],
+        "required": [
+          "email"
+        ],
         "title": "PasswordResetRequest",
         "type": "object"
       },
@@ -261,7 +290,9 @@
             "type": "array"
           }
         },
-        "required": ["recovery_codes"],
+        "required": [
+          "recovery_codes"
+        ],
         "title": "RecoveryCodesOut",
         "type": "object"
       },
@@ -298,7 +329,13 @@
             "$ref": "#/components/schemas/UserOut"
           }
         },
-        "required": ["user", "tenants", "active_tenant_id", "csrf_token", "mfa_state"],
+        "required": [
+          "user",
+          "tenants",
+          "active_tenant_id",
+          "csrf_token",
+          "mfa_state"
+        ],
         "title": "SessionInfo",
         "type": "object"
       },
@@ -346,7 +383,14 @@
             "title": "User Agent"
           }
         },
-        "required": ["id", "created_at", "last_seen_at", "ip", "user_agent", "current"],
+        "required": [
+          "id",
+          "created_at",
+          "last_seen_at",
+          "ip",
+          "user_agent",
+          "current"
+        ],
         "title": "SessionOut",
         "type": "object"
       },
@@ -368,7 +412,10 @@
             "type": "string"
           }
         },
-        "required": ["state", "days_left"],
+        "required": [
+          "state",
+          "days_left"
+        ],
         "title": "SubscriptionBanner",
         "type": "object"
       },
@@ -380,7 +427,9 @@
             "type": "string"
           }
         },
-        "required": ["tenant_id"],
+        "required": [
+          "tenant_id"
+        ],
         "title": "SwitchTenantRequest",
         "type": "object"
       },
@@ -396,7 +445,10 @@
             "type": "string"
           }
         },
-        "required": ["id", "name"],
+        "required": [
+          "id",
+          "name"
+        ],
         "title": "TenantOption",
         "type": "object"
       },
@@ -420,7 +472,12 @@
             "type": "string"
           }
         },
-        "required": ["id", "email", "name", "locale"],
+        "required": [
+          "id",
+          "email",
+          "name",
+          "locale"
+        ],
         "title": "UserOut",
         "type": "object"
       },
@@ -456,7 +513,11 @@
             "type": "string"
           }
         },
-        "required": ["loc", "msg", "type"],
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
         "title": "ValidationError",
         "type": "object"
       }
@@ -498,7 +559,9 @@
           }
         },
         "summary": "Accept Invitation",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/api/v1/auth/login": {
@@ -537,7 +600,9 @@
           }
         },
         "summary": "Login",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/api/v1/auth/logout": {
@@ -549,7 +614,9 @@
           }
         },
         "summary": "Logout",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/api/v1/auth/mfa/confirm": {
@@ -589,7 +656,9 @@
           }
         },
         "summary": "Mfa Confirm",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/api/v1/auth/mfa/setup": {
@@ -609,7 +678,9 @@
           }
         },
         "summary": "Mfa Setup",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/api/v1/auth/mfa/verify": {
@@ -649,7 +720,9 @@
           }
         },
         "summary": "Mfa Verify",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/api/v1/auth/password-reset/confirm": {
@@ -682,7 +755,9 @@
           }
         },
         "summary": "Confirm Password Reset",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/api/v1/auth/password-reset/request": {
@@ -720,7 +795,9 @@
           }
         },
         "summary": "Request Password Reset",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/api/v1/auth/session": {
@@ -739,7 +816,9 @@
           }
         },
         "summary": "Current Session",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/api/v1/auth/sessions": {
@@ -763,7 +842,9 @@
           }
         },
         "summary": "My Sessions",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/api/v1/auth/sessions/{session_id}": {
@@ -798,7 +879,9 @@
           }
         },
         "summary": "Revoke Session",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/api/v1/auth/switch-tenant": {
@@ -838,7 +921,9 @@
           }
         },
         "summary": "Switch Tenant",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/api/v1/invitations": {
@@ -878,7 +963,9 @@
           }
         },
         "summary": "Create Invitation",
-        "tags": ["invitations"]
+        "tags": [
+          "invitations"
+        ]
       }
     },
     "/api/v1/me/capabilities": {
@@ -898,7 +985,9 @@
           }
         },
         "summary": "Capabilities",
-        "tags": ["tenant"]
+        "tags": [
+          "tenant"
+        ]
       }
     },
     "/api/v1/outlets": {
@@ -921,7 +1010,9 @@
           }
         },
         "summary": "List Outlets",
-        "tags": ["tenant"]
+        "tags": [
+          "tenant"
+        ]
       }
     },
     "/api/v1/outlets/{outlet_id}": {
@@ -963,7 +1054,9 @@
           }
         },
         "summary": "Get Outlet",
-        "tags": ["tenant"]
+        "tags": [
+          "tenant"
+        ]
       }
     },
     "/health": {
@@ -981,7 +1074,9 @@
           }
         },
         "summary": "Health",
-        "tags": ["health"]
+        "tags": [
+          "health"
+        ]
       }
     }
   }

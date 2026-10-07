@@ -1,3 +1,5 @@
 dist
 node_modules
 package-lock.json
+# Generated from the backend (python -m app.openapi); compared byte-for-byte in CI.
+src/lib/api/*.json

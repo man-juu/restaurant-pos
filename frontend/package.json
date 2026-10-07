@@ -14,7 +14,7 @@
     "format:check": "prettier --check .",
     "audit:deps": "npm audit --audit-level=high",
     "e2e": "playwright test",
-    "api:generate": "openapi-typescript src/lib/api/tenant.openapi.json -o src/lib/api/tenant.d.ts && openapi-typescript src/lib/api/admin.openapi.json -o src/lib/api/admin.d.ts && prettier --write src/lib/api"
+    "api:generate": "openapi-typescript src/lib/api/tenant.openapi.json -o src/lib/api/tenant.d.ts && openapi-typescript src/lib/api/admin.openapi.json -o src/lib/api/admin.d.ts && prettier --write 'src/lib/api/*.d.ts'"
   },
   "dependencies": {
     "@hookform/resolvers": "5.9.1",
