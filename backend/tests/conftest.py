@@ -36,6 +36,7 @@ APP_PASSWORD = "test-only-app-password"  # noqa: S105 - local test database only
 
 TEST_OWNER_URL = OWNER_URL.set(database=TEST_DB)
 TEST_APP_URL = OWNER_URL.set(database=TEST_DB, username="pos_app", password=APP_PASSWORD)
+TEST_ADMIN_URL = OWNER_URL.set(database=TEST_DB, username="pos_admin", password=APP_PASSWORD)
 
 
 async def _recreate_database(name: str) -> None:
@@ -50,7 +51,8 @@ async def _enable_app_login() -> None:
     # Roles are cluster-wide; migrations create them NOLOGIN, tests give the app role a password.
     engine = create_async_engine(TEST_OWNER_URL, isolation_level="AUTOCOMMIT")
     async with engine.connect() as conn:
-        await conn.execute(text(f"ALTER ROLE pos_app LOGIN PASSWORD '{APP_PASSWORD}'"))
+        for role in ("pos_app", "pos_admin"):
+            await conn.execute(text(f"ALTER ROLE {role} LOGIN PASSWORD '{APP_PASSWORD}'"))
     await engine.dispose()
 
 
@@ -85,7 +87,11 @@ def anyio_backend() -> str:
 @pytest.fixture
 def settings() -> Settings:
     return Settings.model_validate(
-        {"environment": "test", "database_url": TEST_APP_URL.render_as_string(hide_password=False)}
+        {
+            "environment": "test",
+            "database_url": TEST_APP_URL.render_as_string(hide_password=False),
+            "admin_database_url": TEST_ADMIN_URL.render_as_string(hide_password=False),
+        }
     )
 
 

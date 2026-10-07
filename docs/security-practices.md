@@ -23,7 +23,7 @@ Status: ✅ done and tested, 🔜 planned (slice), 👤 owner action.
 | **Ransomware / data destruction** | Server compromised and database encrypted or wiped | Encrypted nightly backups at a **different provider** with credentials the server cannot use to delete (write-only key or object lock), monthly restore drill, append-only ledgers and audit log, fast rebuild runbook | 🔜 0.8 |
 | **Backdoor / supply chain** (A03) | Compromised package, malicious dependency or CI action | Exact version pins, owner approval for every new dependency, gitleaks on every commit and full history, CI with read-only token on `pull_request` only; add `pip-audit` and `npm audit`, Dependabot alerts, pinned action SHAs | ✅ partly; 🔜 0.8 |
 | **Server compromise** (A02) | Weak SSH, exposed database, unpatched OS | SSH keys only, firewall (Cloudflare IPs only on 80/443), database never public, non-root containers, automatic security updates | 🔜 0.8 |
-| **Insider misuse** | Platform support reads tenant data | Separate admin accounts with 2FA, read-only time-limited impersonation with reason, visible to the tenant owner | 🔜 0.6 |
+| **Insider misuse** | Platform support reads tenant data | Separate admin app, DB role and accounts with mandatory 2FA; support role cannot change tenants; impersonation is a read-only DB transaction with reason and expiry, logged in the tenant audit log | ✅ 0.6 |
 | **Secrets leak** | Password in Git or logs | `.env` ignored, gitleaks, secrets only in a root-owned server file, never logged | ✅ |
 | **Repudiation** | "I never voided that" | Append-only audit log (revoked privileges + trigger) with user, time, IP, request ID | ✅ 0.3 |
 

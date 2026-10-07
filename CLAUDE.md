@@ -48,7 +48,7 @@ Each backend module has `models.py, schemas.py, service.py, router.py, events.py
 Run from the repository root unless noted.
 
 ```
-docker compose up --build           # local stack: db :5432, migrate (one-shot), api :8000, web :5173
+docker compose up --build           # local stack: db :5432, migrate (one-shot), api :8000, admin :8001, web :5173
 docker compose down -v              # reset the local database (destroys local data only)
 pre-commit install                  # once: ruff, Prettier, gitleaks on every commit
 
@@ -59,6 +59,8 @@ lint-imports                        # layer contract (per-module rules: tests/te
 pytest                              # needs PostgreSQL: docker compose up -d db (creates pos_test)
 alembic revision --autogenerate -m "..."  # then review by hand; add RLS via migrations/helpers.py
 alembic upgrade head                # uses MIGRATION_DATABASE_URL (owner role)
+python -m app.admin.cli create-admin you@example.com "Name" super_admin   # first platform admin
+python -m app.admin.cli subscription-job                                  # daily job (cron in 0.8)
 
 # frontend/ (first: npm ci)
 npm run dev | lint | typecheck | test | build | format:check
@@ -66,7 +68,7 @@ npm run dev | lint | typecheck | test | build | format:check
 
 CI (`.github/workflows/ci.yml`) runs all of these plus a gitleaks scan of the full Git history.
 
-Database roles: migrations run as the owner; the API connects as `pos_app` (no superuser, no table ownership, no BYPASSRLS); `pos_readonly` for reports; NOLOGIN `pos_auth` (BYPASSRLS) only owns the sign-in lookup function `auth_user_memberships()`. New tenant tables must call `enable_tenant_rls` and `grant` from `migrations/helpers.py`; `tests/test_schema_security.py` fails otherwise.
+Database roles: migrations run as the owner; the API connects as `pos_app` (no superuser, no table ownership, no BYPASSRLS); `pos_readonly` for reports; NOLOGIN `pos_auth` (BYPASSRLS) only owns the sign-in lookup functions; `pos_admin` is used only by the platform admin app (`app/admin`, port 8001) and sees tenant tables only through explicit `platform_admin` policies. New tenant tables must call `enable_tenant_rls` and `grant` from `migrations/helpers.py`; `tests/test_schema_security.py` fails otherwise.
 
 Every route needs `Depends(require("module.resource.action"))` (or `public()` for sign-in style routes); include routers with `app.core.access.policy.include`. The app refuses to start otherwise. Module permissions and default role grants go in the module's `ModuleManifest`.
 

@@ -14,6 +14,9 @@ class Settings(BaseModel):
     database_url: PostgresDsn = Field(
         default=PostgresDsn("postgresql+asyncpg://pos_owner:dev-only-password@localhost:5432/pos")
     )
+    # Platform admin app (app.admin) connects as pos_admin, never as the tenant API role.
+    admin_database_url: PostgresDsn | None = None
+    impersonation_max_minutes: int = Field(default=60, ge=5, le=240)
     # Owner role for Alembic. Unset means "same as database_url" (fine only for local dev).
     migration_database_url: PostgresDsn | None = None
     db_pool_size: int = Field(default=5, ge=1, le=50)  # small VPS: keep connections few

@@ -7,6 +7,7 @@ from alembic import context
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
 
+import app.admin.models  # noqa: F401 - registers the admin tables on Base.metadata
 from app.core.config import get_settings
 from app.core.models import Base
 

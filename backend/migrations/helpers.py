@@ -8,6 +8,9 @@ READONLY_ROLE = "pos_readonly"  # reporting and support queries
 # Owns the few SECURITY DEFINER functions that must look across tenants (sign-in needs "which
 # tenants does this user belong to" before any tenant is chosen). NOLOGIN: nobody connects as it.
 AUTH_ROLE = "pos_auth"
+# The platform admin app connects as this role (never the tenant API). It is not BYPASSRLS:
+# it only sees tenant tables through explicit `platform_admin` policies (admin_access below).
+ADMIN_ROLE = "pos_admin"
 
 _CURRENT_TENANT = "nullif(current_setting('app.tenant_id', true), '')::uuid"
 
@@ -65,3 +68,22 @@ def make_append_only(table: str) -> None:
         f"CREATE TRIGGER {table}_no_truncate BEFORE TRUNCATE ON {table} "
         "FOR EACH STATEMENT EXECUTE FUNCTION reject_change()"
     )
+
+
+def ensure_admin_role() -> None:
+    op.execute(
+        f"DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '{ADMIN_ROLE}') "
+        f"THEN CREATE ROLE {ADMIN_ROLE} NOLOGIN NOSUPERUSER NOBYPASSRLS; END IF; END $$"
+    )
+    op.execute(f"GRANT USAGE ON SCHEMA public TO {ADMIN_ROLE}")
+
+
+def admin_access(table: str, privileges: str, *, rls: bool = True) -> None:
+    """Grant the admin role `privileges` on a table and, for RLS tables, a permissive policy
+    that lets it see all tenants' rows. Every admin action is audited in the app layer."""
+    op.execute(f"GRANT {privileges} ON {table} TO {ADMIN_ROLE}")
+    if rls:
+        op.execute(
+            f"CREATE POLICY platform_admin ON {table} TO {ADMIN_ROLE} "
+            "USING (true) WITH CHECK (true)"
+        )

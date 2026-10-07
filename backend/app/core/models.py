@@ -330,7 +330,8 @@ class Invitation(Base):
     tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
     email: Mapped[str] = mapped_column(CITEXT)
     role_id: Mapped[uuid.UUID] = mapped_column()
-    invited_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    # NULL when the platform admin invited the first owner of a new tenant.
+    invited_by: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"))
     token_hash: Mapped[bytes] = mapped_column(unique=True)
     expires_at: Mapped[datetime] = mapped_column()
     used_at: Mapped[datetime | None] = mapped_column()
@@ -363,3 +364,5 @@ class Subscription(Base):
     reminders_enabled: Mapped[bool] = mapped_column(server_default="true")
     reminder_days: Mapped[list[int]] = mapped_column(ARRAY(Integer), server_default="{14,7,3,1}")
     suspended: Mapped[bool] = mapped_column(server_default="false")
+    # Last state the daily job recorded; transitions are written to the audit log.
+    last_state: Mapped[str | None] = mapped_column(Text)

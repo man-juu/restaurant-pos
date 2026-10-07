@@ -10,6 +10,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dev-only-password}
       APP_DB_PASSWORD: ${APP_DB_PASSWORD:-dev-only-app-password}
       READONLY_DB_PASSWORD: ${READONLY_DB_PASSWORD:-dev-only-readonly-password}
+      ADMIN_DB_PASSWORD: ${ADMIN_DB_PASSWORD:-dev-only-admin-password}
     ports: ["127.0.0.1:5432:5432"] # bound to localhost only
     volumes:
       - db-data:/var/lib/postgresql/data
@@ -34,6 +35,17 @@ services:
       # The API connects as the restricted role so row-level security always applies.
       DATABASE_URL: postgresql+asyncpg://pos_app:${APP_DB_PASSWORD:-dev-only-app-password}@db:5432/${POSTGRES_DB:-pos}
     ports: ["127.0.0.1:8000:8000"]
+    volumes: [../backend/app:/app/app]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
+  # Platform admin API: separate app, port and database role (pos_admin).
+  admin:
+    build: ../backend
+    command: ["uvicorn", "app.admin.main:create_admin_app", "--factory", "--host", "0.0.0.0", "--port", "8001", "--reload"]
+    environment:
+      ADMIN_DATABASE_URL: postgresql+asyncpg://pos_admin:${ADMIN_DB_PASSWORD:-dev-only-admin-password}@db:5432/${POSTGRES_DB:-pos}
+    ports: ["127.0.0.1:8001:8001"]
     volumes: [../backend/app:/app/app]
     depends_on:
       migrate: { condition: service_completed_successfully }

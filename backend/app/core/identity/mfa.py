@@ -4,6 +4,7 @@ import base64
 import hashlib
 import secrets
 import uuid
+from typing import Any
 
 from sqlalchemy import delete, func, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -29,14 +30,18 @@ def new_recovery_code() -> str:
     return f"{raw[:5]}-{raw[5:]}"
 
 
+# Admin accounts (app.admin) have the same TOTP columns; `model` selects the table.
+TotpModel = Any
+
+
 async def start_setup(
-    session: AsyncSession, box: SecretBox, user: User, *, issuer: str
+    session: AsyncSession, box: SecretBox, user: Any, *, issuer: str, model: TotpModel = User
 ) -> tuple[str, str]:
     """Store a new (unconfirmed) secret and return it with its otpauth URI."""
     secret = totp.new_secret()
     await session.execute(
-        update(User)
-        .where(User.id == user.id)
+        update(model)
+        .where(model.id == user.id)
         .values(
             totp_secret_encrypted=box.encrypt(secret, context=_context(user.id)),
             totp_enabled_at=None,
@@ -46,7 +51,9 @@ async def start_setup(
     return secret, totp.provisioning_uri(secret, account=user.email, issuer=issuer)
 
 
-async def check_totp(session: AsyncSession, box: SecretBox, user: User, code: str) -> bool:
+async def check_totp(
+    session: AsyncSession, box: SecretBox, user: Any, code: str, *, model: TotpModel = User
+) -> bool:
     """Verify a TOTP code and burn its time step (no replay)."""
     if user.totp_secret_encrypted is None:
         return False
@@ -54,7 +61,7 @@ async def check_totp(session: AsyncSession, box: SecretBox, user: User, code: st
     step = totp.verify(secret, code, last_used_step=user.totp_last_step)
     if step is None:
         return False
-    await session.execute(update(User).where(User.id == user.id).values(totp_last_step=step))
+    await session.execute(update(model).where(model.id == user.id).values(totp_last_step=step))
     return True
 
 
