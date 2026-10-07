@@ -266,7 +266,7 @@ def test_role_templates_follow_docs_03() -> None:
     assert registry.templates["owner"] == registry.permissions
     assert "tenant.ownership.transfer" not in registry.templates["co_owner"]
     assert "tenant.user.manage" not in registry.templates["manager"]
-    assert registry.templates["viewer"] <= {"tenant.outlet.view", "audit.log.view"}
+    assert all(code.endswith(".view") for code in registry.templates["viewer"])  # read-only
     with pytest.raises(PermissionError_):
         build_registry([ModuleManifest("sales", permissions=("inventory.x.view",))])
 
@@ -286,7 +286,12 @@ def test_capabilities_reflect_role(client: TestClient, tenants: Tenants) -> None
     _, email = add_member(tenants.a, tenants.roles_a["viewer"], HASH)
     signin(client, email)
     caps = client.get("/api/v1/me/capabilities").json()
-    assert set(caps["permissions"]) == {"tenant.outlet.view", "audit.log.view"}
+    assert set(caps["permissions"]) == {
+        "tenant.outlet.view",
+        "audit.log.view",
+        "catalog.item.view",
+        "catalog.cost.view",
+    }
     assert caps["subscription"] == {"state": "free", "days_left": None}
 
 

@@ -310,6 +310,95 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/catalog/categories': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Categories */
+    get: operations['list_categories_api_v1_catalog_categories_get']
+    put?: never
+    /** Create Category */
+    post: operations['create_category_api_v1_catalog_categories_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/categories/{category_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Category */
+    put: operations['update_category_api_v1_catalog_categories__category_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/items': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Items */
+    get: operations['list_items_api_v1_catalog_items_get']
+    put?: never
+    /** Create Item */
+    post: operations['create_item_api_v1_catalog_items_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/items/{item_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Item */
+    get: operations['get_item_api_v1_catalog_items__item_id__get']
+    /** Update Item */
+    put: operations['update_item_api_v1_catalog_items__item_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/units': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Units */
+    get: operations['list_units_api_v1_catalog_units_get']
+    put?: never
+    /** Create Unit */
+    post: operations['create_unit_api_v1_catalog_units_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/invitations': {
     parameters: {
       query?: never
@@ -607,10 +696,69 @@ export interface components {
        */
       tenant_id: string
     }
+    /** CategoryIn */
+    CategoryIn: {
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /** Name */
+      name: string
+      /** Parent Id */
+      parent_id?: string | null
+      /**
+       * Sort Order
+       * @default 0
+       */
+      sort_order: number
+    }
+    /** CategoryOut */
+    CategoryOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /** Name */
+      name: string
+      /** Parent Id */
+      parent_id?: string | null
+      /**
+       * Sort Order
+       * @default 0
+       */
+      sort_order: number
+    }
     /** CodeRequest */
     CodeRequest: {
       /** Code */
       code: string
+    }
+    /** ConversionIn */
+    ConversionIn: {
+      /** Factor To Base */
+      factor_to_base: number | string
+      /**
+       * Unit Id
+       * Format: uuid
+       */
+      unit_id: string
+    }
+    /** ConversionOut */
+    ConversionOut: {
+      /** Factor To Base */
+      factor_to_base: string
+      /**
+       * Unit Id
+       * Format: uuid
+       */
+      unit_id: string
     }
     /** HTTPValidationError */
     HTTPValidationError: {
@@ -650,6 +798,143 @@ export interface components {
        * Format: uuid
        */
       id: string
+    }
+    /** ItemIn */
+    ItemIn: {
+      /** Allergens */
+      allergens?: string[]
+      /**
+       * Base Unit Id
+       * Format: uuid
+       */
+      base_unit_id: string
+      /** Category Id */
+      category_id?: string | null
+      /** Conversions */
+      conversions?: components['schemas']['ConversionIn'][]
+      /**
+       * Is Stocked
+       * @default true
+       */
+      is_stocked: boolean
+      /** Shelf Life Days */
+      shelf_life_days?: number | null
+      /** Sku */
+      sku: string
+      /** Storage Type */
+      storage_type?: ('frozen' | 'chilled' | 'dry') | null
+      /** Translations */
+      translations: components['schemas']['TranslationIn'][]
+      /**
+       * Type
+       * @enum {string}
+       */
+      type: 'ingredient' | 'semi_finished' | 'menu'
+    }
+    /** ItemOut */
+    ItemOut: {
+      /** Allergens */
+      allergens: string[]
+      /**
+       * Base Unit Id
+       * Format: uuid
+       */
+      base_unit_id: string
+      /** Category Id */
+      category_id: string | null
+      /** Conversions */
+      conversions: components['schemas']['ConversionOut'][]
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Is Active */
+      is_active: boolean
+      /** Is Stocked */
+      is_stocked: boolean
+      /** Name */
+      name: string
+      /** Shelf Life Days */
+      shelf_life_days: number | null
+      /** Sku */
+      sku: string
+      /** Storage Type */
+      storage_type: string | null
+      /** Translations */
+      translations: components['schemas']['TranslationOut'][]
+      /**
+       * Type
+       * @enum {string}
+       */
+      type: 'ingredient' | 'semi_finished' | 'menu'
+      /** Version */
+      version: number
+    }
+    /** ItemSummary */
+    ItemSummary: {
+      /**
+       * Base Unit Id
+       * Format: uuid
+       */
+      base_unit_id: string
+      /** Category Id */
+      category_id: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Is Active */
+      is_active: boolean
+      /** Name */
+      name: string
+      /** Sku */
+      sku: string
+      /**
+       * Type
+       * @enum {string}
+       */
+      type: 'ingredient' | 'semi_finished' | 'menu'
+    }
+    /** ItemUpdate */
+    ItemUpdate: {
+      /** Allergens */
+      allergens?: string[]
+      /**
+       * Base Unit Id
+       * Format: uuid
+       */
+      base_unit_id: string
+      /** Category Id */
+      category_id?: string | null
+      /** Conversions */
+      conversions?: components['schemas']['ConversionIn'][]
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Is Stocked
+       * @default true
+       */
+      is_stocked: boolean
+      /** Shelf Life Days */
+      shelf_life_days?: number | null
+      /** Sku */
+      sku: string
+      /** Storage Type */
+      storage_type?: ('frozen' | 'chilled' | 'dry') | null
+      /** Translations */
+      translations: components['schemas']['TranslationIn'][]
+      /**
+       * Type
+       * @enum {string}
+       */
+      type: 'ingredient' | 'semi_finished' | 'menu'
+      /** Version */
+      version: number
     }
     /** LoginRequest */
     LoginRequest: {
@@ -706,6 +991,13 @@ export interface components {
       timezone: string
       /** Type */
       type: string
+    }
+    /** Page[ItemSummary] */
+    Page_ItemSummary_: {
+      /** Items */
+      items: components['schemas']['ItemSummary'][]
+      /** Next Cursor */
+      next_cursor: string | null
     }
     /** PasswordResetConfirm */
     PasswordResetConfirm: {
@@ -891,6 +1183,55 @@ export interface components {
        * Format: uuid
        */
       id: string
+      /** Name */
+      name: string
+    }
+    /** TranslationIn */
+    TranslationIn: {
+      /** Description */
+      description?: string | null
+      /** Language */
+      language: string
+      /** Name */
+      name: string
+    }
+    /** TranslationOut */
+    TranslationOut: {
+      /** Description */
+      description: string | null
+      /** Language */
+      language: string
+      /** Name */
+      name: string
+    }
+    /** UnitIn */
+    UnitIn: {
+      /** Code */
+      code: string
+      /**
+       * Dimension
+       * @enum {string}
+       */
+      dimension: 'mass' | 'volume' | 'count'
+      /** Name */
+      name: string
+    }
+    /** UnitOut */
+    UnitOut: {
+      /** Code */
+      code: string
+      /**
+       * Dimension
+       * @enum {string}
+       */
+      dimension: 'mass' | 'volume' | 'count'
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Is Platform */
+      is_platform: boolean
       /** Name */
       name: string
     }
@@ -1415,6 +1756,292 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['SessionInfo']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_categories_api_v1_catalog_categories_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CategoryOut'][]
+        }
+      }
+    }
+  }
+  create_category_api_v1_catalog_categories_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CategoryIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CategoryOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_category_api_v1_catalog_categories__category_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        category_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CategoryIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CategoryOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_items_api_v1_catalog_items_get: {
+    parameters: {
+      query?: {
+        lang?: string
+        type?: ('ingredient' | 'semi_finished' | 'menu') | null
+        category_id?: string | null
+        q?: string | null
+        include_inactive?: boolean
+        limit?: number
+        cursor?: string | null
+        sort?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Page_ItemSummary_']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_item_api_v1_catalog_items_post: {
+    parameters: {
+      query?: {
+        lang?: string
+      }
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ItemIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ItemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_item_api_v1_catalog_items__item_id__get: {
+    parameters: {
+      query?: {
+        lang?: string
+      }
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ItemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_item_api_v1_catalog_items__item_id__put: {
+    parameters: {
+      query?: {
+        lang?: string
+      }
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ItemUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ItemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_units_api_v1_catalog_units_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnitOut'][]
+        }
+      }
+    }
+  }
+  create_unit_api_v1_catalog_units_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UnitIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnitOut']
         }
       }
       /** @description Validation Error */
