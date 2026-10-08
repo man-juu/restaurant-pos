@@ -3,6 +3,7 @@
 Documents in other modules (purchasing, production, transfers, sales) post stock only through
 these functions, inside their own transaction, so the ledger keeps one writer."""
 
+from app.modules.inventory.bridges import BatchInfo, batch_details, loss_adjustment
 from app.modules.inventory.levels import below_par
 from app.modules.inventory.opening import visible_outlet
 from app.modules.inventory.policy import negative_allowed
@@ -17,12 +18,15 @@ from app.modules.inventory.service import (
 )
 
 __all__ = [
+    "BatchInfo",
     "InLine",
     "OutLine",
     "Posting",
     "StockError",
+    "batch_details",
     "below_par",
     "consume",
+    "loss_adjustment",
     "negative_allowed",
     "receive",
     "reverse",

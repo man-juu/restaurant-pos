@@ -1744,6 +1744,126 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/transfers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Transfers */
+    get: operations['list_transfers_api_v1_transfers_get']
+    put?: never
+    /** Request Transfer */
+    post: operations['request_transfer_api_v1_transfers_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/transfers/{transfer_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Transfer */
+    get: operations['get_transfer_api_v1_transfers__transfer_id__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/transfers/{transfer_id}/approve': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Approve Transfer */
+    post: operations['approve_transfer_api_v1_transfers__transfer_id__approve_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/transfers/{transfer_id}/cancel': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Cancel Transfer */
+    post: operations['cancel_transfer_api_v1_transfers__transfer_id__cancel_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/transfers/{transfer_id}/delivery-note': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Delivery Note */
+    get: operations['delivery_note_api_v1_transfers__transfer_id__delivery_note_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/transfers/{transfer_id}/receive': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Receive Transfer */
+    post: operations['receive_transfer_api_v1_transfers__transfer_id__receive_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/transfers/{transfer_id}/ship': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Ship Transfer */
+    post: operations['ship_transfer_api_v1_transfers__transfer_id__ship_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/uploads/{upload_id}': {
     parameters: {
       query?: never
@@ -1964,6 +2084,16 @@ export interface components {
       min_amount: number
       /** Outlet Id */
       outlet_id?: string | null
+    }
+    /** ApproveLine */
+    ApproveLine: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: number | string
     }
     /** BankDetails */
     BankDetails: {
@@ -3434,6 +3564,18 @@ export interface components {
       /** Note */
       note?: string | null
     }
+    /** ReceiveLine */
+    ReceiveLine: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: number | string
+      /** Reason */
+      reason?: ('short' | 'damaged') | null
+    }
     /** ReceiveLineIn */
     ReceiveLineIn: {
       /** Expiry Date */
@@ -3454,6 +3596,16 @@ export interface components {
     RecoveryCodesOut: {
       /** Recovery Codes */
       recovery_codes: string[]
+    }
+    /** RequestLine */
+    RequestLine: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: number | string
     }
     /** RoleOut */
     RoleOut: {
@@ -3690,6 +3842,138 @@ export interface components {
       id: string
       /** Name */
       name: string
+    }
+    /**
+     * TransferApproveIn
+     * @description The source may change quantities (0 drops a line); missing lines keep the request.
+     */
+    TransferApproveIn: {
+      /** Lines */
+      lines?: components['schemas']['ApproveLine'][]
+    }
+    /** TransferLineOut */
+    TransferLineOut: {
+      /** Approved Qty */
+      approved_qty: string | null
+      /** Discrepancy Reason */
+      discrepancy_reason: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /**
+       * Item Name
+       * @default
+       */
+      item_name: string
+      /** Received Qty */
+      received_qty: string | null
+      /** Requested Qty */
+      requested_qty: string
+      /** Shipped Qty */
+      shipped_qty: string | null
+      /**
+       * Unit Code
+       * @default
+       */
+      unit_code: string
+      /** Value */
+      value: number
+    }
+    /** TransferOut */
+    TransferOut: {
+      /** Adjustment Id */
+      adjustment_id: string | null
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /**
+       * From Outlet Id
+       * Format: uuid
+       */
+      from_outlet_id: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Lines */
+      lines: components['schemas']['TransferLineOut'][]
+      /** Needed By */
+      needed_by: string | null
+      /** Note */
+      note: string | null
+      /** Number */
+      number: string
+      /** Received On */
+      received_on: string | null
+      /** Shipped On */
+      shipped_on: string | null
+      /** Shipped Value */
+      shipped_value: number
+      /** Status */
+      status: string
+      /**
+       * To Outlet Id
+       * Format: uuid
+       */
+      to_outlet_id: string
+    }
+    /**
+     * TransferReceiveIn
+     * @description FR-TRF-003: lines not listed arrived complete.
+     */
+    TransferReceiveIn: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /** Lines */
+      lines?: components['schemas']['ReceiveLine'][]
+    }
+    /**
+     * TransferRequestIn
+     * @description FR-TRF-001: the receiving outlet asks the source for stock.
+     */
+    TransferRequestIn: {
+      /**
+       * From Outlet Id
+       * Format: uuid
+       */
+      from_outlet_id: string
+      /** Lines */
+      lines: components['schemas']['RequestLine'][]
+      /** Needed By */
+      needed_by?: string | null
+      /** Note */
+      note?: string | null
+      /**
+       * To Outlet Id
+       * Format: uuid
+       */
+      to_outlet_id: string
+    }
+    /** TransferShipIn */
+    TransferShipIn: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /**
+       * Confirm Negative
+       * @default false
+       */
+      confirm_negative: boolean
     }
     /** TranslationIn */
     TranslationIn: {
@@ -7532,6 +7816,275 @@ export interface operations {
           'application/json': {
             [key: string]: unknown
           }
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_transfers_api_v1_transfers_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TransferOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  request_transfer_api_v1_transfers_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TransferRequestIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TransferOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_transfer_api_v1_transfers__transfer_id__get: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        transfer_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TransferOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  approve_transfer_api_v1_transfers__transfer_id__approve_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        transfer_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TransferApproveIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TransferOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  cancel_transfer_api_v1_transfers__transfer_id__cancel_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        transfer_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TransferOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  delivery_note_api_v1_transfers__transfer_id__delivery_note_get: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        transfer_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  receive_transfer_api_v1_transfers__transfer_id__receive_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        transfer_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TransferReceiveIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TransferOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  ship_transfer_api_v1_transfers__transfer_id__ship_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        transfer_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TransferShipIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TransferOut']
         }
       }
       /** @description Validation Error */

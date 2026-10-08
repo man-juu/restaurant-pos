@@ -24,6 +24,9 @@ const PurchasingPage = lazy(() =>
 const ProductionPage = lazy(() =>
   import('../features/production/ProductionPage').then((m) => ({ default: m.ProductionPage })),
 )
+const TransfersPage = lazy(() =>
+  import('../features/transfers/TransfersPage').then((m) => ({ default: m.TransfersPage })),
+)
 const InventoryPage = lazy(() =>
   import('../features/inventory/InventoryPage').then((m) => ({ default: m.InventoryPage })),
 )
@@ -47,6 +50,7 @@ export const routes = [
       { path: 'inventory', element: page(<InventoryPage />) },
       { path: 'purchasing', element: page(<PurchasingPage />) },
       { path: 'production', element: page(<ProductionPage />) },
+      { path: 'transfers', element: page(<TransfersPage />) },
       // Module pages arrive with their modules (Phase 1); nav entries come from capabilities.
       { path: '*', element: <DashboardPage /> },
     ],

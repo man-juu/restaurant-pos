@@ -186,7 +186,12 @@
     "order_not_found": "This order no longer exists.",
     "not_producible": "Only stocked semi-finished items can be produced.",
     "output_as_component": "An item cannot be used to make itself.",
-    "production_not_found": "Production order not found."
+    "production_not_found": "Production order not found.",
+    "same_outlet": "Choose two different outlets.",
+    "nothing_to_send": "Approve at least one item.",
+    "reason_required": "Say why less arrived (short or damaged).",
+    "more_than_shipped": "More than was shipped.",
+    "transfer_not_found": "Transfer not found."
   },
   "appearance": {
     "open": "Appearance",
@@ -750,6 +755,38 @@
     "labels": {
       "copies": "Labels",
       "print": "Print {{count}} label(s)"
+    }
+  },
+  "transfers": {
+    "title": "Transfers",
+    "new": "Request stock",
+    "from": "From outlet",
+    "add": "Add an item",
+    "qtyOf": "{{name}} (base unit)",
+    "send": "Send request",
+    "empty": "No transfers for this outlet yet.",
+    "note": "Delivery note (PDF)",
+    "approve": "Approve and set quantities",
+    "approveSave": "Approve",
+    "receive": "Record what arrived",
+    "receiveSave": "Receive",
+    "lineQty": "{{name}} ({{unit}})",
+    "reason": "Why less",
+    "emptyMeansAll": "Leave a quantity empty to keep it as shown.",
+    "ship": "Ship now",
+    "shipAnyway": "Not enough stock: ship anyway",
+    "cancel": "Cancel",
+    "reasons": {
+      "none": "Arrived complete",
+      "short": "Short",
+      "damaged": "Damaged"
+    },
+    "status": {
+      "requested": "Requested",
+      "approved": "Approved",
+      "shipped": "On the way",
+      "received": "Received",
+      "cancelled": "Cancelled"
     }
   }
 }

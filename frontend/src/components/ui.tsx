@@ -77,6 +77,8 @@ const STATE_STYLES: Record<string, string> = {
   rejected: 'bg-danger-surface text-danger',
   cancelled: 'bg-raised text-ink-soft',
   planned: 'bg-warn-surface text-warn',
+  requested: 'bg-warn-surface text-warn',
+  shipped: 'bg-alert-surface text-alert',
   completed: 'bg-good-surface text-good',
 }
 

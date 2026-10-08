@@ -186,7 +186,12 @@
     "order_not_found": "Pesanan ini sudah tidak ada.",
     "not_producible": "Hanya barang setengah jadi yang distok yang bisa diproduksi.",
     "output_as_component": "Barang tidak bisa dipakai untuk membuat dirinya sendiri.",
-    "production_not_found": "Order produksi tidak ditemukan."
+    "production_not_found": "Order produksi tidak ditemukan.",
+    "same_outlet": "Pilih dua outlet yang berbeda.",
+    "nothing_to_send": "Setujui setidaknya satu barang.",
+    "reason_required": "Isi alasan barang kurang (kurang atau rusak).",
+    "more_than_shipped": "Lebih dari yang dikirim.",
+    "transfer_not_found": "Transfer tidak ditemukan."
   },
   "appearance": {
     "open": "Tampilan",
@@ -750,6 +755,38 @@
     "labels": {
       "copies": "Label",
       "print": "Cetak {{count}} label"
+    }
+  },
+  "transfers": {
+    "title": "Transfer",
+    "new": "Minta stok",
+    "from": "Dari outlet",
+    "add": "Tambah barang",
+    "qtyOf": "{{name}} (satuan dasar)",
+    "send": "Kirim permintaan",
+    "empty": "Belum ada transfer untuk outlet ini.",
+    "note": "Surat jalan (PDF)",
+    "approve": "Setujui dan atur jumlah",
+    "approveSave": "Setujui",
+    "receive": "Catat barang yang datang",
+    "receiveSave": "Terima",
+    "lineQty": "{{name}} ({{unit}})",
+    "reason": "Kenapa kurang",
+    "emptyMeansAll": "Kosongkan jumlah untuk memakai angka yang tertera.",
+    "ship": "Kirim sekarang",
+    "shipAnyway": "Stok kurang: tetap kirim",
+    "cancel": "Batalkan",
+    "reasons": {
+      "none": "Datang lengkap",
+      "short": "Kurang",
+      "damaged": "Rusak"
+    },
+    "status": {
+      "requested": "Diminta",
+      "approved": "Disetujui",
+      "shipped": "Dalam perjalanan",
+      "received": "Diterima",
+      "cancelled": "Dibatalkan"
     }
   }
 }

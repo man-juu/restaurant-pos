@@ -393,6 +393,35 @@
         "title": "ApprovalRuleOut",
         "type": "object"
       },
+      "ApproveLine": {
+        "additionalProperties": false,
+        "properties": {
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "qty": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Qty"
+          }
+        },
+        "required": [
+          "item_id",
+          "qty"
+        ],
+        "title": "ApproveLine",
+        "type": "object"
+      },
       "BankDetails": {
         "properties": {
           "bank_details": {
@@ -4314,6 +4343,50 @@
         "title": "ReceiveIn",
         "type": "object"
       },
+      "ReceiveLine": {
+        "additionalProperties": false,
+        "properties": {
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "qty": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Qty"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "enum": [
+                  "short",
+                  "damaged"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "required": [
+          "item_id",
+          "qty"
+        ],
+        "title": "ReceiveLine",
+        "type": "object"
+      },
       "ReceiveLineIn": {
         "additionalProperties": false,
         "properties": {
@@ -4394,6 +4467,35 @@
           "recovery_codes"
         ],
         "title": "RecoveryCodesOut",
+        "type": "object"
+      },
+      "RequestLine": {
+        "additionalProperties": false,
+        "properties": {
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "qty": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Qty"
+          }
+        },
+        "required": [
+          "item_id",
+          "qty"
+        ],
+        "title": "RequestLine",
         "type": "object"
       },
       "RoleOut": {
@@ -4937,6 +5039,333 @@
           "name"
         ],
         "title": "TenantOption",
+        "type": "object"
+      },
+      "TransferApproveIn": {
+        "additionalProperties": false,
+        "description": "The source may change quantities (0 drops a line); missing lines keep the request.",
+        "properties": {
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/ApproveLine"
+            },
+            "maxItems": 200,
+            "title": "Lines",
+            "type": "array"
+          }
+        },
+        "title": "TransferApproveIn",
+        "type": "object"
+      },
+      "TransferLineOut": {
+        "properties": {
+          "approved_qty": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approved Qty"
+          },
+          "discrepancy_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discrepancy Reason"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "item_name": {
+            "default": "",
+            "title": "Item Name",
+            "type": "string"
+          },
+          "received_qty": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Received Qty"
+          },
+          "requested_qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Requested Qty",
+            "type": "string"
+          },
+          "shipped_qty": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shipped Qty"
+          },
+          "unit_code": {
+            "default": "",
+            "title": "Unit Code",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "item_id",
+          "requested_qty",
+          "approved_qty",
+          "shipped_qty",
+          "received_qty",
+          "discrepancy_reason",
+          "value"
+        ],
+        "title": "TransferLineOut",
+        "type": "object"
+      },
+      "TransferOut": {
+        "properties": {
+          "adjustment_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Adjustment Id"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "from_outlet_id": {
+            "format": "uuid",
+            "title": "From Outlet Id",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/TransferLineOut"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "needed_by": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Needed By"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "received_on": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Received On"
+          },
+          "shipped_on": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shipped On"
+          },
+          "shipped_value": {
+            "title": "Shipped Value",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "to_outlet_id": {
+            "format": "uuid",
+            "title": "To Outlet Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "from_outlet_id",
+          "to_outlet_id",
+          "status",
+          "needed_by",
+          "note",
+          "shipped_value",
+          "adjustment_id",
+          "created_at",
+          "shipped_on",
+          "received_on",
+          "lines"
+        ],
+        "title": "TransferOut",
+        "type": "object"
+      },
+      "TransferReceiveIn": {
+        "additionalProperties": false,
+        "description": "FR-TRF-003: lines not listed arrived complete.",
+        "properties": {
+          "business_date": {
+            "format": "date",
+            "title": "Business Date",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/ReceiveLine"
+            },
+            "maxItems": 200,
+            "title": "Lines",
+            "type": "array"
+          }
+        },
+        "required": [
+          "business_date"
+        ],
+        "title": "TransferReceiveIn",
+        "type": "object"
+      },
+      "TransferRequestIn": {
+        "additionalProperties": false,
+        "description": "FR-TRF-001: the receiving outlet asks the source for stock.",
+        "properties": {
+          "from_outlet_id": {
+            "format": "uuid",
+            "title": "From Outlet Id",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/RequestLine"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "title": "Lines",
+            "type": "array"
+          },
+          "needed_by": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Needed By"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "to_outlet_id": {
+            "format": "uuid",
+            "title": "To Outlet Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "from_outlet_id",
+          "to_outlet_id",
+          "lines"
+        ],
+        "title": "TransferRequestIn",
+        "type": "object"
+      },
+      "TransferShipIn": {
+        "additionalProperties": false,
+        "properties": {
+          "business_date": {
+            "format": "date",
+            "title": "Business Date",
+            "type": "string"
+          },
+          "confirm_negative": {
+            "default": false,
+            "title": "Confirm Negative",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "business_date"
+        ],
+        "title": "TransferShipIn",
         "type": "object"
       },
       "TranslationIn": {
@@ -11280,6 +11709,438 @@
         "summary": "Put Setting",
         "tags": [
           "settings"
+        ]
+      }
+    },
+    "/api/v1/transfers": {
+      "get": {
+        "operationId": "list_transfers_api_v1_transfers_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TransferOut"
+                  },
+                  "title": "Response List Transfers Api V1 Transfers Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Transfers",
+        "tags": [
+          "transfers"
+        ]
+      },
+      "post": {
+        "operationId": "request_transfer_api_v1_transfers_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferRequestIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Request Transfer",
+        "tags": [
+          "transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/{transfer_id}": {
+      "get": {
+        "operationId": "get_transfer_api_v1_transfers__transfer_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "transfer_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Transfer Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Transfer",
+        "tags": [
+          "transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/{transfer_id}/approve": {
+      "post": {
+        "operationId": "approve_transfer_api_v1_transfers__transfer_id__approve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "transfer_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Transfer Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferApproveIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Approve Transfer",
+        "tags": [
+          "transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/{transfer_id}/cancel": {
+      "post": {
+        "operationId": "cancel_transfer_api_v1_transfers__transfer_id__cancel_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "transfer_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Transfer Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancel Transfer",
+        "tags": [
+          "transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/{transfer_id}/delivery-note": {
+      "get": {
+        "operationId": "delivery_note_api_v1_transfers__transfer_id__delivery_note_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "transfer_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Transfer Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delivery Note",
+        "tags": [
+          "transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/{transfer_id}/receive": {
+      "post": {
+        "operationId": "receive_transfer_api_v1_transfers__transfer_id__receive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "transfer_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Transfer Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferReceiveIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Receive Transfer",
+        "tags": [
+          "transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/{transfer_id}/ship": {
+      "post": {
+        "operationId": "ship_transfer_api_v1_transfers__transfer_id__ship_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "transfer_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Transfer Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferShipIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ship Transfer",
+        "tags": [
+          "transfers"
         ]
       }
     },

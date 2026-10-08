@@ -107,7 +107,7 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | --- | --- |
 | `production_orders`, `production_lines` | output item, planned_qty, actual_qty, outlet, bom_id, status, output_batch_id |
 | `transfer_requests`, `transfer_lines` | from_outlet, to_outlet, status (requested, approved, shipped, received, cancelled), requested_qty, approved_qty, shipped_qty, received_qty, discrepancy_reason |
-| `delivery_notes` | transfer_id, number, pdf_ref |
+| `delivery_notes` | transfer_id, number, pdf_ref | not built (0.36): the note is rendered from `transfer_picks` (transfer_id, line_id, batch_id, lot_code, expiry_date, qty, unit_cost) |
 | `in_transit` | Represented as a pseudo-location in the ledger: shipped quantities leave the source and sit in transit until received |
 
 ### 2.6 Sales

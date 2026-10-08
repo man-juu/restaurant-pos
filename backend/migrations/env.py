@@ -16,7 +16,8 @@ import app.modules.catalog.models
 import app.modules.inventory.doc_models
 import app.modules.inventory.models
 import app.modules.production.models
-import app.modules.purchasing.models  # noqa: F401 - module tables
+import app.modules.purchasing.models
+import app.modules.transfers.models  # noqa: F401 - module tables
 from app.core.config import get_settings
 from app.core.models import Base
 
