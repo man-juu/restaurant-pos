@@ -181,7 +181,9 @@
     "invoice_required": "This business requires a photo of the supplier invoice for every purchase.",
     "vendor_name_taken": "A vendor with this name already exists.",
     "already_reversed": "This was already undone.",
-    "quantity_too_small": "A quantity is too small to record."
+    "quantity_too_small": "A quantity is too small to record.",
+    "more_than_ordered": "That is more than was ordered. Check the quantity or make a new order.",
+    "order_not_found": "This order no longer exists."
   },
   "appearance": {
     "open": "Appearance",
@@ -629,7 +631,8 @@
     "tabs": {
       "buy": "Quick purchase",
       "receipts": "Received",
-      "vendors": "Vendors"
+      "vendors": "Vendors",
+      "orders": "Orders"
     },
     "quick": {
       "help": "Record what you bought at the market or paid in cash. Stock is added at once and the price updates the average cost.",
@@ -665,6 +668,32 @@
       "terms": "Payment terms (days)",
       "bank": "Bank details (stored encrypted)",
       "bankKept": "Saved. Type to replace."
+    },
+    "orders": {
+      "new": "New order",
+      "empty": "No purchase orders for this outlet yet.",
+      "draft": "Draft order",
+      "pickVendor": "Choose a vendor",
+      "expected": "Expected delivery (optional)",
+      "unitPrice": "Price per unit ({{currency}})",
+      "saveDraft": "Save draft",
+      "submit": "Submit",
+      "approve": "Approve",
+      "reject": "Reject",
+      "cancel": "Cancel order",
+      "pdf": "Download PDF",
+      "receive": "Receive goods",
+      "arrived": "Arrived now ({{left}} still to come)",
+      "receiveSave": "Save receipt",
+      "status": {
+        "draft": "Draft",
+        "submitted": "Waiting for approval",
+        "approved": "Approved",
+        "partially_received": "Partly received",
+        "received": "Received",
+        "rejected": "Rejected",
+        "cancelled": "Cancelled"
+      }
     }
   }
 }

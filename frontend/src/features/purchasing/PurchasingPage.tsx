@@ -5,6 +5,7 @@ import { useOutletContext } from 'react-router'
 import { SelectInput, Tabs } from '../../components/form'
 import type { Capabilities } from '../../lib/api/types'
 import { useOutlets } from '../../lib/session'
+import { OrdersTab } from './OrdersTab'
 import { QuickPurchaseTab } from './QuickPurchaseTab'
 import { ReceiptsTab } from './ReceiptsTab'
 import { VendorsTab } from './VendorsTab'
@@ -22,6 +23,20 @@ const TABS: Record<
   buy: {
     visible: (a) => a.has('purchasing.receipt.create'),
     render: (o, a) => <QuickPurchaseTab outletId={o} currency={a.currency} />,
+  },
+  orders: {
+    visible: (a) => a.has('purchasing.vendor.view'),
+    render: (o, a) => (
+      <OrdersTab
+        outletId={o}
+        currency={a.currency}
+        can={{
+          create: a.has('purchasing.order.create'),
+          approve: a.has('purchasing.order.approve'),
+          receive: a.has('purchasing.receipt.create'),
+        }}
+      />
+    ),
   },
   receipts: {
     visible: () => true,

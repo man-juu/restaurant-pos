@@ -181,7 +181,9 @@
     "invoice_required": "Usaha ini mewajibkan foto nota pemasok untuk setiap pembelian.",
     "vendor_name_taken": "Pemasok dengan nama ini sudah ada.",
     "already_reversed": "Ini sudah dibatalkan.",
-    "quantity_too_small": "Jumlahnya terlalu kecil untuk dicatat."
+    "quantity_too_small": "Jumlahnya terlalu kecil untuk dicatat.",
+    "more_than_ordered": "Jumlahnya melebihi pesanan. Periksa jumlah atau buat pesanan baru.",
+    "order_not_found": "Pesanan ini sudah tidak ada."
   },
   "appearance": {
     "open": "Tampilan",
@@ -629,7 +631,8 @@
     "tabs": {
       "buy": "Beli cepat",
       "receipts": "Diterima",
-      "vendors": "Pemasok"
+      "vendors": "Pemasok",
+      "orders": "Pesanan"
     },
     "quick": {
       "help": "Catat belanja di pasar atau pembayaran tunai. Stok langsung bertambah dan harganya memperbarui biaya rata-rata.",
@@ -665,6 +668,32 @@
       "terms": "Termin bayar (hari)",
       "bank": "Data bank (disimpan terenkripsi)",
       "bankKept": "Tersimpan. Ketik untuk mengganti."
+    },
+    "orders": {
+      "new": "Pesanan baru",
+      "empty": "Belum ada pesanan pembelian di outlet ini.",
+      "draft": "Draf pesanan",
+      "pickVendor": "Pilih pemasok",
+      "expected": "Perkiraan kirim (opsional)",
+      "unitPrice": "Harga per satuan ({{currency}})",
+      "saveDraft": "Simpan draf",
+      "submit": "Ajukan",
+      "approve": "Setujui",
+      "reject": "Tolak",
+      "cancel": "Batalkan pesanan",
+      "pdf": "Unduh PDF",
+      "receive": "Terima barang",
+      "arrived": "Datang sekarang (sisa {{left}})",
+      "receiveSave": "Simpan penerimaan",
+      "status": {
+        "draft": "Draf",
+        "submitted": "Menunggu persetujuan",
+        "approved": "Disetujui",
+        "partially_received": "Diterima sebagian",
+        "received": "Diterima",
+        "rejected": "Ditolak",
+        "cancelled": "Dibatalkan"
+      }
     }
   }
 }

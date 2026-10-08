@@ -24,6 +24,17 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.core.models import Base, _check_in, _created_at, _id
 
 RECEIPT_STATUSES = ("posted", "reversed")
+# draft -> submitted (waits for approval) -> approved -> partially_received -> received;
+# rejected and cancelled end it. No approval rule: submitting approves at once.
+PO_STATUSES = (
+    "draft",
+    "submitted",
+    "approved",
+    "rejected",
+    "partially_received",
+    "received",
+    "cancelled",
+)
 
 
 def _fk(column: str, table: str) -> ForeignKeyConstraint:
@@ -81,6 +92,79 @@ class VendorItem(Base):
     valid_from: Mapped[date] = mapped_column(Date)
 
 
+class PurchaseOrder(Base):
+    """FR-PUR-003: an order to one vendor for one outlet, approved by amount (FR-TEN-007)."""
+
+    __tablename__ = "purchase_orders"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        _fk("outlet_id", "outlets"),
+        _fk("vendor_id", "vendors"),
+        _check_in("status", PO_STATUSES),
+        CheckConstraint("total >= 0", name="total"),
+        Index(None, "tenant_id", "outlet_id", "status"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    number: Mapped[str | None] = mapped_column(String(40))  # given on submit
+    outlet_id: Mapped[uuid.UUID] = mapped_column()
+    vendor_id: Mapped[uuid.UUID] = mapped_column()
+    status: Mapped[str] = mapped_column(Text, server_default="draft")
+    order_date: Mapped[date] = mapped_column(Date)
+    expected_date: Mapped[date | None] = mapped_column(Date)
+    total: Mapped[int] = mapped_column(BigInteger, server_default="0")
+    note: Mapped[str | None] = mapped_column(Text)
+    created_by: Mapped[uuid.UUID | None] = mapped_column()
+    created_at: Mapped[datetime] = _created_at()
+    submitted_at: Mapped[datetime | None] = mapped_column()
+    decided_by: Mapped[uuid.UUID | None] = mapped_column()
+    decided_at: Mapped[datetime | None] = mapped_column()
+
+
+class PurchaseOrderLine(Base):
+    __tablename__ = "purchase_order_lines"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "po_id"], ["purchase_orders.tenant_id", "purchase_orders.id"]
+        ),
+        _fk("item_id", "items"),
+        CheckConstraint("qty > 0", name="qty"),
+        CheckConstraint("received_qty >= 0", name="received_qty"),
+        CheckConstraint("unit_price >= 0", name="unit_price"),
+        Index(None, "tenant_id", "po_id"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    po_id: Mapped[uuid.UUID] = mapped_column()
+    item_id: Mapped[uuid.UUID] = mapped_column()
+    qty: Mapped[Decimal] = mapped_column(Numeric(18, 4))  # in unit_id
+    unit_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("units.id"))
+    unit_price: Mapped[int] = mapped_column(BigInteger)  # per unit_id, minor units
+    received_qty: Mapped[Decimal] = mapped_column(Numeric(18, 4), server_default="0")
+
+
+class VendorLeadHistory(Base):
+    """FR-PUR-006: how long a vendor really took, per item (ordered -> received). Append-only."""
+
+    __tablename__ = "vendor_lead_history"
+    __table_args__ = (
+        _fk("vendor_id", "vendors"),
+        _fk("item_id", "items"),
+        Index(None, "tenant_id", "vendor_id", "item_id"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    vendor_id: Mapped[uuid.UUID] = mapped_column()
+    item_id: Mapped[uuid.UUID] = mapped_column()
+    ordered_at: Mapped[date] = mapped_column(Date)
+    received_at: Mapped[date] = mapped_column(Date)
+    source_doc_id: Mapped[uuid.UUID] = mapped_column()
+
+
 class GoodsReceipt(Base):
     """FR-PUR-004/005: stock arriving. `po_id` is NULL for a quick purchase."""
 
@@ -90,6 +174,7 @@ class GoodsReceipt(Base):
         _fk("outlet_id", "outlets"),
         _fk("vendor_id", "vendors"),
         _fk("invoice_upload_id", "uploads"),
+        _fk("po_id", "purchase_orders"),
         _check_in("status", RECEIPT_STATUSES),
         CheckConstraint("total >= 0", name="total"),
         Index(None, "tenant_id", "outlet_id", "business_date"),
@@ -127,6 +212,7 @@ class GoodsReceiptLine(Base):
     id: Mapped[uuid.UUID] = _id()
     tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
     receipt_id: Mapped[uuid.UUID] = mapped_column()
+    po_line_id: Mapped[uuid.UUID | None] = mapped_column()  # NULL for a quick purchase
     item_id: Mapped[uuid.UUID] = mapped_column()
     qty: Mapped[Decimal] = mapped_column(Numeric(18, 4))  # in unit_id
     unit_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("units.id"))

@@ -172,3 +172,4 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - Quick purchase requires an idempotency key (tested: same key twice = one receipt); outlet scope enforced (out-of-scope outlet looks like 404); items, vendor and invoice upload looked up under RLS before use. Undo is a ledger reversal.
 - Price history is append-only (trigger plus grants).
 - Invoice photos reuse the upload engine checks; the stored file is re-encoded; the receipt can only reference an upload of purpose `invoice` in the same tenant.
+- Purchase orders: every step locks the order row and checks its status (no double approve or receive); the submitter cannot approve their own order when a rule applies; receiving needs an idempotency key and cannot exceed the ordered quantity; outlet scope is enforced on list, read and PDF. The PDF escapes all user text before ReportLab markup.

@@ -110,3 +110,67 @@ class ReceiptOut(BaseModel):
     invoice_upload_id: uuid.UUID | None
     note: str | None
     lines: list[ReceiptLineOut]
+
+
+class OrderLineIn(Strict):
+    item_id: uuid.UUID
+    qty: Qty
+    unit_id: uuid.UUID
+    unit_price: Money  # per unit_id
+
+
+class OrderIn(Strict):
+    outlet_id: uuid.UUID
+    vendor_id: uuid.UUID
+    order_date: date
+    expected_date: date | None = None
+    note: Annotated[str, StringConstraints(strip_whitespace=True, max_length=500)] | None = None
+    lines: list[OrderLineIn] = Field(min_length=1, max_length=MAX_LINES)
+
+    @model_validator(mode="after")
+    def _check(self) -> "OrderIn":
+        if len({ln.item_id for ln in self.lines}) != len(self.lines):
+            raise ValueError("one line per item")
+        if self.expected_date and self.expected_date < self.order_date:
+            raise ValueError("expected_date before order_date")
+        return self
+
+
+class OrderLineOut(OrderLineIn):
+    id: uuid.UUID
+    received_qty: Decimal
+
+
+class OrderOut(BaseModel):
+    id: uuid.UUID
+    number: str | None
+    outlet_id: uuid.UUID
+    vendor_id: uuid.UUID
+    status: str
+    order_date: date
+    expected_date: date | None
+    total: int
+    note: str | None
+    created_by: uuid.UUID | None
+    lines: list[OrderLineOut]
+
+
+class DecisionIn(Strict):
+    approve: bool
+
+
+class ReceiveLineIn(Strict):
+    po_line_id: uuid.UUID
+    qty: Qty  # in the order line's unit
+    unit_price: Money | None = None  # actual price per unit; default: the ordered price
+    lot_code: Annotated[str, StringConstraints(strip_whitespace=True, max_length=64)] | None = None
+    expiry_date: date | None = None
+
+
+class ReceiveIn(Strict):
+    """FR-PUR-005: what actually arrived; partial receipts are fine."""
+
+    business_date: date
+    lines: list[ReceiveLineIn] = Field(min_length=1, max_length=MAX_LINES)
+    invoice_upload_id: uuid.UUID | None = None
+    note: Annotated[str, StringConstraints(strip_whitespace=True, max_length=500)] | None = None

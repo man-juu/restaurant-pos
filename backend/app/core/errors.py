@@ -99,6 +99,9 @@ async def _integrity_error(_: Request, exc: Exception) -> JSONResponse:
     orig = getattr(exc, "orig", None)
     code = getattr(orig, "sqlstate", None) or getattr(orig, "pgcode", None)
     status, error = _CONSTRAINT_ERRORS.get(str(code), (409, "conflict"))
+    # The constraint name goes to the server log only (no values: they may be personal data).
+    cause = getattr(orig, "__cause__", None)
+    log.warning("integrity error %s on %s", code, getattr(cause, "constraint_name", None))
     # No constraint names or SQL in the response: they reveal the schema.
     return _response(status, error)
 

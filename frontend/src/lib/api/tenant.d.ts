@@ -1287,6 +1287,127 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/purchasing/orders': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Orders */
+    get: operations['list_orders_api_v1_purchasing_orders_get']
+    put?: never
+    /** Create Order */
+    post: operations['create_order_api_v1_purchasing_orders_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/orders/{po_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Order */
+    get: operations['get_order_api_v1_purchasing_orders__po_id__get']
+    /** Update Order */
+    put: operations['update_order_api_v1_purchasing_orders__po_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/orders/{po_id}/cancel': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Cancel Order */
+    post: operations['cancel_order_api_v1_purchasing_orders__po_id__cancel_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/orders/{po_id}/decide': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Decide Order */
+    post: operations['decide_order_api_v1_purchasing_orders__po_id__decide_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/orders/{po_id}/pdf': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Order Pdf */
+    get: operations['order_pdf_api_v1_purchasing_orders__po_id__pdf_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/orders/{po_id}/receipts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Receive Order */
+    post: operations['receive_order_api_v1_purchasing_orders__po_id__receipts_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/orders/{po_id}/submit': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Submit Order */
+    post: operations['submit_order_api_v1_purchasing_orders__po_id__submit_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/purchasing/quick-purchases': {
     parameters: {
       query?: never
@@ -2088,6 +2209,11 @@ export interface components {
        */
       item_id: string
     }
+    /** DecisionIn */
+    DecisionIn: {
+      /** Approve */
+      approve: boolean
+    }
     /** DocLine */
     DocLine: {
       /** Counted Qty */
@@ -2519,6 +2645,108 @@ export interface components {
        */
       unit_id: string
     }
+    /** OrderIn */
+    OrderIn: {
+      /** Expected Date */
+      expected_date?: string | null
+      /** Lines */
+      lines: components['schemas']['OrderLineIn'][]
+      /** Note */
+      note?: string | null
+      /**
+       * Order Date
+       * Format: date
+       */
+      order_date: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /**
+       * Vendor Id
+       * Format: uuid
+       */
+      vendor_id: string
+    }
+    /** OrderLineIn */
+    OrderLineIn: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: number | string
+      /**
+       * Unit Id
+       * Format: uuid
+       */
+      unit_id: string
+      /** Unit Price */
+      unit_price: number
+    }
+    /** OrderLineOut */
+    OrderLineOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: string
+      /** Received Qty */
+      received_qty: string
+      /**
+       * Unit Id
+       * Format: uuid
+       */
+      unit_id: string
+      /** Unit Price */
+      unit_price: number
+    }
+    /** OrderOut */
+    OrderOut: {
+      /** Created By */
+      created_by: string | null
+      /** Expected Date */
+      expected_date: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Lines */
+      lines: components['schemas']['OrderLineOut'][]
+      /** Note */
+      note: string | null
+      /** Number */
+      number: string | null
+      /**
+       * Order Date
+       * Format: date
+       */
+      order_date: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Status */
+      status: string
+      /** Total */
+      total: number
+      /**
+       * Vendor Id
+       * Format: uuid
+       */
+      vendor_id: string
+    }
     /** OutletOut */
     OutletOut: {
       /**
@@ -2809,6 +3037,39 @@ export interface components {
       vendor_id: string | null
       /** Vendor Name */
       vendor_name: string | null
+    }
+    /**
+     * ReceiveIn
+     * @description FR-PUR-005: what actually arrived; partial receipts are fine.
+     */
+    ReceiveIn: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /** Invoice Upload Id */
+      invoice_upload_id?: string | null
+      /** Lines */
+      lines: components['schemas']['ReceiveLineIn'][]
+      /** Note */
+      note?: string | null
+    }
+    /** ReceiveLineIn */
+    ReceiveLineIn: {
+      /** Expiry Date */
+      expiry_date?: string | null
+      /** Lot Code */
+      lot_code?: string | null
+      /**
+       * Po Line Id
+       * Format: uuid
+       */
+      po_line_id: string
+      /** Qty */
+      qty: number | string
+      /** Unit Price */
+      unit_price?: number | null
     }
     /** RecoveryCodesOut */
     RecoveryCodesOut: {
@@ -5867,6 +6128,303 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['UploadRef']
+        }
+      }
+    }
+  }
+  list_orders_api_v1_purchasing_orders_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OrderOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_order_api_v1_purchasing_orders_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OrderIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_order_api_v1_purchasing_orders__po_id__get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        po_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_order_api_v1_purchasing_orders__po_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        po_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OrderIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  cancel_order_api_v1_purchasing_orders__po_id__cancel_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        po_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  decide_order_api_v1_purchasing_orders__po_id__decide_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        po_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DecisionIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  order_pdf_api_v1_purchasing_orders__po_id__pdf_get: {
+    parameters: {
+      query?: {
+        lang?: string
+      }
+      header?: never
+      path: {
+        po_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  receive_order_api_v1_purchasing_orders__po_id__receipts_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path: {
+        po_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReceiveIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReceiptOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  submit_order_api_v1_purchasing_orders__po_id__submit_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        po_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
         }
       }
     }

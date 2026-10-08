@@ -23,7 +23,7 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 | 5 | 1c rest: food-cost alert | FR-CAT-012 | needs a target HPP % per item and tenant (not in docs/05: owner decision) and the notification center (1j); build with 1j |
 | 6 | 1d Import/export CSV/XLSX (done 2026-10-08: items, recipes, opening stock, demo kitchen in docs/demo; vendors come with 1f), demo seed (fictional menu shaped like the legacy one) | FR-IMP-001 to 003 | XLSX library needs owner approval |
 | 7 | 1e follow-ups: negative-stock and expiry alerts; nightly invariant job (I-1, I-2) | docs/05 rule 8, FR-INV-011 | with the notification center and jobs in 1j |
-| 8 | 1f Purchasing (part 1 done 2026-10-08: vendors, vendor items, quick purchase, invoice photo, price history; next: PR/PO, receiving against PO, PDF): vendors, PR, PO, receiving, quick purchase, PDF, invoice attachment | FR-PUR-001 to 006, 010, 011 | attachment optional, configurable mandatory |
+| 8 | 1f Purchasing (parts 1 and 2 done 2026-10-08: vendors, quick purchase, invoice photo, price history, PO with approval, receiving against PO, lead-time history, PO PDF; optional: purchase requests): vendors, PR, PO, receiving, quick purchase, PDF, invoice attachment | FR-PUR-001 to 006, 010, 011 | attachment optional, configurable mandatory |
 | 9 | 1g Production with yield and costing, shelf-life labels, prep list | FR-PRD-001 to 004, 007, 008 | |
 | 10 | 1h Transfers with approval, delivery note, discrepancies | FR-TRF-001 to 004 | |
 | 12 | 1j Stock levels, DOI, alerts, reorder suggestions, producible quantity, notification center | FR-INV-010 to 013, 020, FR-NTF-001 to 003 | |
