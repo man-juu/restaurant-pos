@@ -291,12 +291,12 @@ async def consume(
     (FR-INV-006: the caller applies the tenant policy); the shortage is reported."""
     if movement_type not in (*OUTBOUND, "adjustment", "count_correction"):
         raise StockError("wrong_movement_type")
-    await _stock_items(db, {ln.item_id for ln in lines})
+    items = await _stock_items(db, {ln.item_id for ln in lines})
     result = ConsumeResult(movements=[])
     for ln in sorted(lines, key=lambda x: x.item_id):
         cost = await _cost_row(db, p, ln.item_id)
         picks, short = await _picks(db, p, ln)
-        if short and not allow_negative:
+        if short and not (allow_negative or items[ln.item_id].estimated):
             raise InsufficientStock(details={"item_id": str(ln.item_id), "short": str(short)})
         if short:
             result.short[ln.item_id] = short

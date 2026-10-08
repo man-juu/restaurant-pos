@@ -1750,6 +1750,22 @@
             "title": "Sku",
             "type": "string"
           },
+          "standard_cost": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,19}0*$)\\d{0,12}\\.\\d{0,6}0*$)",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Standard Cost"
+          },
           "storage_type": {
             "anyOf": [
               {
@@ -1765,6 +1781,22 @@
               }
             ],
             "title": "Storage Type"
+          },
+          "tracking_mode": {
+            "anyOf": [
+              {
+                "enum": [
+                  "exact",
+                  "estimated",
+                  "untracked"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tracking Mode"
           },
           "translations": {
             "items": {
@@ -1871,6 +1903,18 @@
             "title": "Sku",
             "type": "string"
           },
+          "standard_cost": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Standard Cost"
+          },
           "storage_type": {
             "anyOf": [
               {
@@ -1881,6 +1925,11 @@
               }
             ],
             "title": "Storage Type"
+          },
+          "tracking_mode": {
+            "default": "exact",
+            "title": "Tracking Mode",
+            "type": "string"
           },
           "translations": {
             "items": {
@@ -2058,6 +2107,22 @@
             "title": "Sku",
             "type": "string"
           },
+          "standard_cost": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,19}0*$)\\d{0,12}\\.\\d{0,6}0*$)",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Standard Cost"
+          },
           "storage_type": {
             "anyOf": [
               {
@@ -2073,6 +2138,22 @@
               }
             ],
             "title": "Storage Type"
+          },
+          "tracking_mode": {
+            "anyOf": [
+              {
+                "enum": [
+                  "exact",
+                  "estimated",
+                  "untracked"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tracking Mode"
           },
           "translations": {
             "items": {
@@ -3090,6 +3171,53 @@
         "title": "SessionSettings",
         "type": "object"
       },
+      "SetOnHandIn": {
+        "additionalProperties": false,
+        "properties": {
+          "business_date": {
+            "format": "date",
+            "title": "Business Date",
+            "type": "string"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "qty": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Qty"
+          },
+          "unit_id": {
+            "format": "uuid",
+            "title": "Unit Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "item_id",
+          "qty",
+          "unit_id",
+          "business_date"
+        ],
+        "title": "SetOnHandIn",
+        "type": "object"
+      },
       "StockDocument": {
         "properties": {
           "blind": {
@@ -3225,6 +3353,11 @@
           },
           "sku": {
             "title": "Sku",
+            "type": "string"
+          },
+          "tracking_mode": {
+            "default": "exact",
+            "title": "Tracking Mode",
             "type": "string"
           },
           "unit_code": {
@@ -3678,6 +3811,11 @@
           },
           "sku": {
             "title": "Sku",
+            "type": "string"
+          },
+          "tracking_mode": {
+            "default": "exact",
+            "title": "Tracking Mode",
             "type": "string"
           },
           "unit_code": {
@@ -4889,7 +5027,7 @@
     },
     "/api/v1/catalog/exports/items": {
       "get": {
-        "description": "Same columns as the import template, so an export can be edited and imported elsewhere.",
+        "description": "Same columns as the import template, so an export can be edited and imported elsewhere.\nStandard costs only for users who may see costs (docs/03 rule 5).",
         "operationId": "export_items_api_v1_catalog_exports_items_get",
         "parameters": [
           {
@@ -7278,6 +7416,56 @@
           }
         },
         "summary": "Stock",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/stock/set-on-hand": {
+      "post": {
+        "description": "Estimated items only: post the difference to what is on hand now.",
+        "operationId": "set_on_hand_api_v1_inventory_stock_set_on_hand_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetOnHandIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/StockDocument"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Set On Hand Api V1 Inventory Stock Set On Hand Post"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set On Hand",
         "tags": [
           "inventory"
         ]

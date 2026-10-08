@@ -42,6 +42,12 @@ class StockItem:
     is_stocked: bool
     is_active: bool
     shelf_life_days: int | None
+    tracking_mode: str = "exact"
+
+    @property
+    def estimated(self) -> bool:
+        """Hard-to-measure items never block a posting for lack of stock (owner, 0.26/0.27)."""
+        return self.tracking_mode == "estimated"
 
     @property
     def perishable(self) -> bool:
@@ -58,6 +64,7 @@ async def stock_items(db: AsyncSession, ids: Iterable[uuid.UUID]) -> dict[uuid.U
         Item.is_stocked,
         Item.is_active,
         Item.shelf_life_days,
+        Item.tracking_mode,
     ).where(Item.id.in_(set(ids)))
     return {row.id: StockItem(*row) for row in (await db.execute(stmt)).all()}
 

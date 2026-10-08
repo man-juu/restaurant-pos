@@ -65,3 +65,15 @@ export const useSaveCounted = () =>
   )
 
 export const useSubmitCount = () => useDocMutation((id: string) => post(`counts/${id}/submit`))
+
+export type SetOnHand = {
+  outlet_id: string
+  item_id: string
+  qty: string
+  unit_id: string
+  business_date: string
+}
+
+/** Estimated items: "this is what is on hand now" (the server posts the difference). */
+export const useSetOnHand = () =>
+  useDocMutation((body: SetOnHand) => post('stock/set-on-hand', body))

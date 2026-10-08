@@ -30,6 +30,9 @@ from app.core.models import Base, _check_in, _created_at, _id
 
 UNIT_DIMENSIONS = ("mass", "volume", "count")
 ITEM_TYPES = ("ingredient", "semi_finished", "menu")
+# exact: every movement counts; estimated: hard to measure (rice, oil, gas), never blocks a
+# posting, corrected with "set on hand"; untracked: no stock at all (is_stocked false).
+TRACKING_MODES = ("exact", "estimated", "untracked")
 STORAGE_TYPES = ("frozen", "chilled", "dry")
 CHANNEL_KINDS = ("dine_in", "takeaway", "platform", "wholesale")
 BOM_STATUSES = ("draft", "active")
@@ -78,6 +81,11 @@ class Item(Base):
             name="storage_type_valid",
         ),
         CheckConstraint("shelf_life_days IS NULL OR shelf_life_days > 0", name="shelf_life"),
+        _check_in("tracking_mode", TRACKING_MODES),
+        CheckConstraint(
+            "(tracking_mode = 'untracked') = (NOT is_stocked)", name="tracking_matches_stocked"
+        ),
+        CheckConstraint("standard_cost IS NULL OR standard_cost >= 0", name="standard_cost"),
         ForeignKeyConstraint(
             ["tenant_id", "category_id"], ["item_categories.tenant_id", "item_categories.id"]
         ),
@@ -92,6 +100,9 @@ class Item(Base):
     category_id: Mapped[uuid.UUID | None] = mapped_column()
     base_unit_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("units.id"))
     is_stocked: Mapped[bool] = mapped_column(server_default="true")
+    tracking_mode: Mapped[str] = mapped_column(Text, server_default="exact")
+    # Minor units per base unit, used when the ledger has no average yet (or never will).
+    standard_cost: Mapped[Decimal | None] = mapped_column(Numeric(18, 6))
     shelf_life_days: Mapped[int | None] = mapped_column()
     storage_type: Mapped[str | None] = mapped_column(Text)
     allergens: Mapped[list[str]] = mapped_column(ARRAY(String(40)), server_default="{}")

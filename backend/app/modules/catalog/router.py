@@ -8,6 +8,7 @@ from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, Query, Request, Response
 from fastapi.responses import JSONResponse
+from sqlalchemy import select
 
 from app.core.access.policy import Principal, require
 from app.core.idempotency import (
@@ -20,6 +21,7 @@ from app.core.pagination import Page, PageParams, page_params
 from app.core.tenancy import tenant_session
 from app.modules.catalog import permissions as perm
 from app.modules.catalog import prices, service
+from app.modules.catalog.models import Item
 from app.modules.catalog.schemas import (
     CategoryIn,
     CategoryOut,
@@ -47,6 +49,13 @@ Lang = Annotated[Language, Query()]
 
 def _db(request: Request, p: Principal):  # type: ignore[no-untyped-def]
     return tenant_session(request.app.state.sessionmaker, p.tenant_id, p.user_id)
+
+
+def _visible(p: Principal, item: ItemOut) -> ItemOut:
+    """docs/03 rule 5: cost data is hidden from roles without catalog.cost.view, in the API too."""
+    if not p.can(perm.COST_VIEW):
+        item.standard_cost = None
+    return item
 
 
 @router.get("/units", response_model=list[UnitOut])
@@ -114,7 +123,9 @@ async def list_items(
 @router.get("/items/{item_id}", response_model=ItemOut)
 async def get_item(item_id: uuid.UUID, request: Request, p: View, lang: Lang = "en") -> ItemOut:
     async with _db(request, p) as db:
-        return await service.get_item(db, tenant_id=p.tenant_id, item_id=item_id, language=lang)
+        return _visible(
+            p, await service.get_item(db, tenant_id=p.tenant_id, item_id=item_id, language=lang)
+        )
 
 
 @router.post("/items", response_model=ItemOut, status_code=201)
@@ -130,7 +141,9 @@ async def create_item(
         if key and (stored := await replay_or_none(db, key, fingerprint)):
             return JSONResponse(stored.body, status_code=stored.status)
         item_id = await service.create_item(db, tenant_id=p.tenant_id, user_id=p.user_id, data=body)
-        out = await service.get_item(db, tenant_id=p.tenant_id, item_id=item_id, language=lang)
+        out = _visible(
+            p, await service.get_item(db, tenant_id=p.tenant_id, item_id=item_id, language=lang)
+        )
         if key:
             await remember(db, p.tenant_id, key, fingerprint, 201, out.model_dump(mode="json"))
     return out
@@ -141,10 +154,17 @@ async def update_item(
     item_id: uuid.UUID, body: ItemUpdate, request: Request, p: Update, lang: Lang = "en"
 ) -> ItemOut:
     async with _db(request, p) as db:
+        if not p.can(perm.COST_VIEW):
+            # They never saw the standard cost, so their save must not change or clear it.
+            body.standard_cost = await db.scalar(
+                select(Item.standard_cost).where(Item.id == item_id)
+            )
         await service.update_item(
             db, tenant_id=p.tenant_id, user_id=p.user_id, item_id=item_id, data=body, language=lang
         )
-        return await service.get_item(db, tenant_id=p.tenant_id, item_id=item_id, language=lang)
+        return _visible(
+            p, await service.get_item(db, tenant_id=p.tenant_id, item_id=item_id, language=lang)
+        )
 
 
 # ─── Channels and prices (FR-CAT-004) ─────────────────────────────────────

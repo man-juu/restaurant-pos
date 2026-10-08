@@ -49,6 +49,7 @@ class Labelled(BaseModel):
     sku: str
     name: str
     unit_code: str  # base unit of qty
+    tracking_mode: str = "exact"  # "estimated" rows get the "set on hand" correction
 
 
 class StockRow(Labelled):

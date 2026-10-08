@@ -272,6 +272,8 @@ async def get_item(
     return ItemOut(
         **_summary(item, name or next(iter(by_lang.values()), item.sku)).model_dump(),
         is_stocked=item.is_stocked,
+        tracking_mode=item.tracking_mode,
+        standard_cost=item.standard_cost,
         shelf_life_days=item.shelf_life_days,
         storage_type=item.storage_type,
         allergens=list(item.allergens),
@@ -321,6 +323,8 @@ _ITEM_FIELDS: Sequence[str] = (
     "category_id",
     "base_unit_id",
     "is_stocked",
+    "tracking_mode",
+    "standard_cost",
     "shelf_life_days",
     "storage_type",
     "allergens",

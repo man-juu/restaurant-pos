@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse
 from app.core.access.policy import Principal, require
 from app.core.idempotency import idempotency_key, remember, replay_or_none, request_fingerprint
 from app.core.tenancy import tenant_session
-from app.modules.inventory import counts, doc_queries, documents
+from app.modules.inventory import counts, doc_queries, documents, estimates
 from app.modules.inventory import permissions as perm
 from app.modules.inventory.doc_queries import HEADERS, Kind
 from app.modules.inventory.doc_schemas import (
@@ -21,6 +21,7 @@ from app.modules.inventory.doc_schemas import (
     StockDocument,
     WasteIn,
 )
+from app.modules.inventory.estimates import SetOnHandIn
 
 router = APIRouter(prefix="/api/v1/inventory", tags=["inventory"])
 
@@ -134,6 +135,15 @@ async def create_adjustment(body: AdjustmentIn, request: Request, p: AdjCreate) 
             db, tenant_id=p.tenant_id, user_id=p.user_id, data=body
         )
     return await _read(request, p, "adjustment", adj.id)
+
+
+@router.post("/stock/set-on-hand", response_model=StockDocument | None)
+async def set_on_hand(body: SetOnHandIn, request: Request, p: AdjCreate) -> StockDocument | None:
+    """Estimated items only: post the difference to what is on hand now."""
+    p.require_outlet(body.outlet_id)
+    async with _db(request, p) as db:
+        adj = await estimates.set_on_hand(db, tenant_id=p.tenant_id, user_id=p.user_id, data=body)
+    return await _read(request, p, "adjustment", adj.id) if adj else None
 
 
 @router.put("/adjustments/{doc_id}", response_model=StockDocument)

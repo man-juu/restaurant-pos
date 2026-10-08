@@ -460,6 +460,7 @@ export interface paths {
     /**
      * Export Items
      * @description Same columns as the import template, so an export can be edited and imported elsewhere.
+     *     Standard costs only for users who may see costs (docs/03 rule 5).
      */
     get: operations['export_items_api_v1_catalog_exports_items_get']
     put?: never
@@ -1095,6 +1096,26 @@ export interface paths {
     get: operations['stock_api_v1_inventory_stock_get']
     put?: never
     post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/stock/set-on-hand': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Set On Hand
+     * @description Estimated items only: post the difference to what is on hand now.
+     */
+    post: operations['set_on_hand_api_v1_inventory_stock_set_on_hand_post']
     delete?: never
     options?: never
     head?: never
@@ -2059,8 +2080,12 @@ export interface components {
       shelf_life_days?: number | null
       /** Sku */
       sku: string
+      /** Standard Cost */
+      standard_cost?: number | string | null
       /** Storage Type */
       storage_type?: ('frozen' | 'chilled' | 'dry') | null
+      /** Tracking Mode */
+      tracking_mode?: ('exact' | 'estimated' | 'untracked') | null
       /** Translations */
       translations: components['schemas']['TranslationIn'][]
       /**
@@ -2099,8 +2124,15 @@ export interface components {
       shelf_life_days: number | null
       /** Sku */
       sku: string
+      /** Standard Cost */
+      standard_cost?: string | null
       /** Storage Type */
       storage_type: string | null
+      /**
+       * Tracking Mode
+       * @default exact
+       */
+      tracking_mode: string
       /** Translations */
       translations: components['schemas']['TranslationOut'][]
       /**
@@ -2166,8 +2198,12 @@ export interface components {
       shelf_life_days?: number | null
       /** Sku */
       sku: string
+      /** Standard Cost */
+      standard_cost?: number | string | null
       /** Storage Type */
       storage_type?: ('frozen' | 'chilled' | 'dry') | null
+      /** Tracking Mode */
+      tracking_mode?: ('exact' | 'estimated' | 'untracked') | null
       /** Translations */
       translations: components['schemas']['TranslationIn'][]
       /**
@@ -2590,6 +2626,31 @@ export interface components {
        */
       idle_minutes: number
     }
+    /** SetOnHandIn */
+    SetOnHandIn: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Qty */
+      qty: number | string
+      /**
+       * Unit Id
+       * Format: uuid
+       */
+      unit_id: string
+    }
     /** StockDocument */
     StockDocument: {
       /**
@@ -2647,6 +2708,11 @@ export interface components {
       qty: string
       /** Sku */
       sku: string
+      /**
+       * Tracking Mode
+       * @default exact
+       */
+      tracking_mode: string
       /** Unit Code */
       unit_code: string
       /** Value */
@@ -2822,6 +2888,11 @@ export interface components {
       qty: string
       /** Sku */
       sku: string
+      /**
+       * Tracking Mode
+       * @default exact
+       */
+      tracking_mode: string
       /** Unit Code */
       unit_code: string
       /** Value */
@@ -5105,6 +5176,39 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['Page_StockRow_']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  set_on_hand_api_v1_inventory_stock_set_on_hand_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetOnHandIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StockDocument'] | null
         }
       }
       /** @description Validation Error */

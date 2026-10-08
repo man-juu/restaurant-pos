@@ -176,7 +176,8 @@
     "missing_columns": "Kolom wajib tidak ada. Mulai dari template.",
     "too_many_rows": "Baris terlalu banyak (maksimal 2.000).",
     "already_reverted": "Impor ini sudah dibatalkan.",
-    "not_utf8": "Simpan CSV sebagai UTF-8, atau gunakan template Excel."
+    "not_utf8": "Simpan CSV sebagai UTF-8, atau gunakan template Excel.",
+    "not_estimated": "Hanya barang perkiraan yang bisa diatur langsung. Gunakan hitung stok atau penyesuaian."
   },
   "appearance": {
     "open": "Tampilan",
@@ -358,7 +359,9 @@
         "unit": "Pilih satuan dasar.",
         "shelfLife": "Masa simpan berupa jumlah hari (bilangan bulat).",
         "conversion": "Setiap konversi perlu satuan berbeda dan angka di atas 0."
-      }
+      },
+      "tracking": "Pencatatan stok",
+      "standardCost": "Biaya standar per satuan dasar (opsional)"
     },
     "conversions": {
       "title": "Konversi satuan",
@@ -496,7 +499,16 @@
     "export": {
       "xlsx": "Ekspor Excel",
       "csv": "Ekspor CSV"
-    }
+    },
+    "tracking": {
+      "exact": "Tepat",
+      "estimated": "Perkiraan",
+      "untracked": "Tidak dicatat",
+      "exactHelp": "Setiap pergerakan dihitung; kekurangan mengikuti aturan stok Anda.",
+      "estimatedHelp": "Untuk barang yang sulit diukur (beras, minyak). Tidak pernah memblokir penjualan atau catatan buangan; koreksi dengan \"Atur stok\".",
+      "untrackedHelp": "Stok tidak dicatat (misalnya gas). Isi biaya standar agar resep tetap menampilkan biaya lengkap."
+    },
+    "problems": {}
   },
   "inventory": {
     "title": "Persediaan",
@@ -594,6 +606,13 @@
       "blindHelp": "Hitung yang benar-benar ada. Jumlah sistem muncul setelah Anda mengajukan.",
       "system": "Sistem: {{qty}}",
       "counted": "Terhitung ({{unit}})"
+    },
+    "setOnHand": {
+      "title": "Atur stok yang ada",
+      "help": "Barang ini dicatat perkiraan. Isi jumlah yang benar-benar ada sekarang; selisihnya dicatat sebagai koreksi.",
+      "qty": "Stok sekarang ({{unit}})",
+      "save": "Simpan",
+      "done": "Tersimpan. Stok sekarang sesuai yang Anda isi."
     }
   }
 }

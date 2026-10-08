@@ -32,7 +32,15 @@ class Viewer:
 
 async def _labels(db: AsyncSession, v: Viewer, ids: list[uuid.UUID]) -> dict[uuid.UUID, Any]:
     names = await item_names(db, v.tenant_id, v.language, ids)
-    return {i: {"sku": n.sku, "name": n.name, "unit_code": n.unit_code} for i, n in names.items()}
+    return {
+        i: {
+            "sku": n.sku,
+            "name": n.name,
+            "unit_code": n.unit_code,
+            "tracking_mode": n.tracking_mode,
+        }
+        for i, n in names.items()
+    }
 
 
 async def on_hand(

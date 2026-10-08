@@ -13,10 +13,12 @@ export function StockTab({
   outletId,
   showCost,
   currency,
+  canAdjust = false,
 }: {
   outletId: string
   showCost: boolean
   currency: string
+  canAdjust?: boolean
 }) {
   const { t, i18n } = useTranslation()
   const stock = useStock(outletId, i18n.language)
@@ -24,7 +26,14 @@ export function StockTab({
   const [open, setOpen] = useState<StockRow>()
 
   if (open)
-    return <ItemStockDetail outletId={outletId} row={open} onClose={() => setOpen(undefined)} />
+    return (
+      <ItemStockDetail
+        outletId={outletId}
+        row={open}
+        canAdjust={canAdjust}
+        onClose={() => setOpen(undefined)}
+      />
+    )
   return (
     <div className="flex flex-col gap-3">
       {stock.error && <Alert>{errorMessage(stock.error, t)}</Alert>}

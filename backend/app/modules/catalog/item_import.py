@@ -30,8 +30,11 @@ COLUMNS = (
     "storage_type",
     "shelf_life_days",
     "is_stocked",
+    "tracking_mode",
+    "standard_cost",
 )
 REQUIRED = ("sku", "type", "base_unit")
+TRACKING_ALIASES = {"tepat": "exact", "perkiraan": "estimated", "tidak": "untracked"}
 TYPE_ALIASES = {
     "bahan": "ingredient",
     "setengah_jadi": "semi_finished",
@@ -84,6 +87,11 @@ async def _lookups(db: AsyncSession, create_categories: bool) -> Lookups:
     return Lookups(units, cats, skus, create_categories)
 
 
+def _tracking(value: str) -> str | None:
+    v = value.lower()
+    return TRACKING_ALIASES.get(v, v) or None
+
+
 def _flag(value: str) -> bool | None:
     v = value.lower()
     return True if v in TRUE else False if v in FALSE else None
@@ -109,6 +117,8 @@ def _row_to_item(row: dict[str, str], look: Lookups) -> tuple[dict[str, Any], li
         "storage_type": row.get("storage_type", "").lower() or None,
         "shelf_life_days": row.get("shelf_life_days") or None,
         "is_stocked": bool(stocked),
+        "tracking_mode": _tracking(row.get("tracking_mode", "")),
+        "standard_cost": row.get("standard_cost") or None,
         "translations": [{"language": lang, "name": n} for lang, n in names if n],
     }
     return data, problems

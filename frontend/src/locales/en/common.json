@@ -176,7 +176,8 @@
     "missing_columns": "The file is missing required columns. Start from the template.",
     "too_many_rows": "The file has too many rows (maximum 2,000).",
     "already_reverted": "This import was already undone.",
-    "not_utf8": "Save the CSV as UTF-8, or use the Excel template."
+    "not_utf8": "Save the CSV as UTF-8, or use the Excel template.",
+    "not_estimated": "Only estimated items can be set directly. Use a stock count or adjustment."
   },
   "appearance": {
     "open": "Appearance",
@@ -358,7 +359,9 @@
         "unit": "Choose a base unit.",
         "shelfLife": "Shelf life is a whole number of days.",
         "conversion": "Each conversion needs a different unit and a number above 0."
-      }
+      },
+      "tracking": "Stock tracking",
+      "standardCost": "Standard cost per base unit (optional)"
     },
     "conversions": {
       "title": "Unit conversions",
@@ -496,7 +499,16 @@
     "export": {
       "xlsx": "Export Excel",
       "csv": "Export CSV"
-    }
+    },
+    "tracking": {
+      "exact": "Exact",
+      "estimated": "Estimated",
+      "untracked": "Not tracked",
+      "exactHelp": "Every movement counts; shortages follow your stock rules.",
+      "estimatedHelp": "For things hard to measure (rice, oil). Never blocks a sale or waste entry; correct it with \"Set on hand\".",
+      "untrackedHelp": "No stock is kept (for example gas). Add a standard cost so recipes still show a full cost."
+    },
+    "problems": {}
   },
   "inventory": {
     "title": "Inventory",
@@ -594,6 +606,13 @@
       "blindHelp": "Count what is physically there. The system quantity appears after you submit.",
       "system": "System: {{qty}}",
       "counted": "Counted ({{unit}})"
+    },
+    "setOnHand": {
+      "title": "Set what is on hand",
+      "help": "This item is estimated. Enter what is really there now; the difference is recorded as a correction.",
+      "qty": "On hand now ({{unit}})",
+      "save": "Save",
+      "done": "Saved. Stock now matches what you entered."
     }
   }
 }

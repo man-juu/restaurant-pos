@@ -4,15 +4,18 @@ import { Button, Card } from '../../components/ui'
 import type { StockRow } from '../../lib/api/types'
 import { formatDate, formatNumber, intlLocale } from '../../lib/format'
 import { useBatches, useMovements } from './api'
+import { SetOnHand } from './SetOnHand'
 
 /** Batches in FEFO order and the latest movements of one item at one outlet. */
 export function ItemStockDetail({
   outletId,
   row,
+  canAdjust = false,
   onClose,
 }: {
   outletId: string
   row: StockRow
+  canAdjust?: boolean
   onClose: () => void
 }) {
   const { t, i18n } = useTranslation()
@@ -29,6 +32,9 @@ export function ItemStockDetail({
         </Button>
         <h2 className="font-display text-2xl font-extrabold">{row.name}</h2>
       </div>
+      {canAdjust && row.tracking_mode === 'estimated' && (
+        <SetOnHand outletId={outletId} row={row} />
+      )}
       <Card className="flex flex-col gap-2">
         <h3 className="font-bold">{t('inventory.batches')}</h3>
         <p className="text-sm text-ink-soft">{t('inventory.fefo')}</p>

@@ -151,7 +151,7 @@ test('manager adds a channel, an item and its dine-in price (FR-CAT-001, 004)', 
   await page.getByLabel('Name (English)').fill('Fried rice')
   await page.getByLabel('Name (Indonesian)').fill('Nasi goreng')
   await page.getByLabel('SKU').fill('NASI-01')
-  await page.getByLabel('Base unit').selectOption({ label: 'pcs (piece)' })
+  await page.getByRole('combobox', { name: /^Base unit/ }).selectOption({ label: 'pcs (piece)' })
   await save.click()
 
   await expect(page.getByRole('heading', { name: 'Prices per channel' })).toBeVisible()

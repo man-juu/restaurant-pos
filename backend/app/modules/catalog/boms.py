@@ -44,6 +44,7 @@ class ItemLabel(NamedTuple):
     sku: str
     name: str  # in the requested language, else the tenant language, else the SKU
     unit_code: str  # base unit
+    tracking_mode: str = "exact"
 
 
 async def item_names(
@@ -52,13 +53,20 @@ async def item_names(
     default = (await db.scalar(select(Tenant.language).where(Tenant.id == tenant_id))) or "en"
     want, fallback = aliased(ItemTranslation), aliased(ItemTranslation)
     stmt = (
-        select(Item.id, Item.sku, func.coalesce(want.name, fallback.name, Item.sku), Unit.code)
+        select(
+            Item.id,
+            Item.sku,
+            func.coalesce(want.name, fallback.name, Item.sku),
+            Unit.code,
+            Item.tracking_mode,
+        )
         .join(Unit, Unit.id == Item.base_unit_id)
         .outerjoin(want, (want.item_id == Item.id) & (want.language == language))
         .outerjoin(fallback, (fallback.item_id == Item.id) & (fallback.language == default))
         .where(Item.id.in_(set(ids)))
     )
-    return {i: ItemLabel(sku, name, code) for i, sku, name, code in (await db.execute(stmt)).all()}
+    rows = (await db.execute(stmt)).all()
+    return {i: ItemLabel(sku, name, code, mode) for i, sku, name, code, mode in rows}
 
 
 async def active_boms(db: AsyncSession, item_ids: set[uuid.UUID], on: date) -> dict[uuid.UUID, Bom]:

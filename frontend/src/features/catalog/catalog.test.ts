@@ -14,6 +14,8 @@ const item: ItemOut = {
   base_unit_id: 'pcs',
   is_active: true,
   is_stocked: false,
+  tracking_mode: 'untracked',
+  standard_cost: null,
   shelf_life_days: null,
   storage_type: null,
   allergens: ['egg'],

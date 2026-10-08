@@ -159,3 +159,9 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - All rows are checked first; one bad row blocks the whole file, so nothing is half-imported. Same file twice is refused by SHA-256 (per tenant). Undo archives the created items (master data is never deleted). Import needs `catalog.item.create`, undo `catalog.item.update`, export `catalog.item.view` (no cost data in the export). Imports and undo are audited.
 - Performance: a 2,000-row import runs about 6 queries per row in one transaction (acceptable for a one-off upload); revisit with bulk inserts if real files are larger.
 - Part 2 (recipes, opening stock): same file limits and safe parsing. The check runs the real save in a savepoint that is always rolled back, so the check can never pass something the import would refuse. Opening-stock rows for outlets outside the user's scope are refused like unknown outlets (no hint that they exist); undo posts ledger reversals (never deletes) and re-checks outlet scope.
+
+## Tracking modes and standard cost (2026-10-08)
+
+- Standard cost is cost data: removed from item responses and exports for roles without `catalog.cost.view` (tested with a cashier), and preserved on save by such roles so a hidden value can never be wiped.
+- "Set on hand" bypasses approvals only for items marked estimated; exact items get 409 `not_estimated` (tested). Needs `inventory.adjustment.create` plus outlet access; every correction is a normal audited adjustment document with ledger movements (append-only).
+- A database check constraint keeps `tracking_mode` and `is_stocked` consistent.

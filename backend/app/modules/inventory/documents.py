@@ -167,6 +167,13 @@ async def _post_adjustment(db: AsyncSession, adj: Adjustment, user_id: uuid.UUID
     flow.mark_decided(adj, "posted", user_id)
 
 
+async def post_now(db: AsyncSession, adj: Adjustment, user_id: uuid.UUID) -> None:
+    """Post a draft without the approval flow (estimated-item corrections only)."""
+    flow.ensure_status(adj, "draft")
+    await _post_adjustment(db, adj, user_id)
+    await _audit(db, adj, user_id, "adjustment.post_now")
+
+
 async def submit_adjustment(
     db: AsyncSession, *, user_id: uuid.UUID, adjustment_id: uuid.UUID
 ) -> Adjustment:

@@ -123,7 +123,9 @@ async def import_recipes(request: Request, p: Create, file_name: FileName) -> Im
 
 @router.get("/exports/items")  # not /items/export: /items/{item_id} would catch it
 async def export_items(request: Request, p: View, format: Format = "xlsx") -> Response:
-    """Same columns as the import template, so an export can be edited and imported elsewhere."""
+    """Same columns as the import template, so an export can be edited and imported elsewhere.
+    Standard costs only for users who may see costs (docs/03 rule 5)."""
+    show_cost = p.can(perm.COST_VIEW)
     en, id_ = aliased(ItemTranslation), aliased(ItemTranslation)
     stmt = (
         select(Item, en.name, id_.name, Unit.code, ItemCategory.name)
@@ -148,6 +150,8 @@ async def export_items(request: Request, p: View, format: Format = "xlsx") -> Re
             i.storage_type or "",
             i.shelf_life_days or "",
             "yes" if i.is_stocked else "no",
+            i.tracking_mode,
+            i.standard_cost if show_cost and i.standard_cost is not None else "",
         ]
         for i, n_en, n_id, unit, cat in result
     ]

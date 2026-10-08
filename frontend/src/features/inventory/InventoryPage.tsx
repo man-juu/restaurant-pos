@@ -25,7 +25,14 @@ const TABS: Record<
 > = {
   stock: {
     visible: () => true,
-    render: (o, a) => <StockTab outletId={o} showCost={a.showCost} currency={a.currency} />,
+    render: (o, a) => (
+      <StockTab
+        outletId={o}
+        showCost={a.showCost}
+        currency={a.currency}
+        canAdjust={a.has('inventory.adjustment.create')}
+      />
+    ),
   },
   waste: {
     visible: (a) => a.has('inventory.waste.create'),

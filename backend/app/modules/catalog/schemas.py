@@ -62,6 +62,9 @@ class ItemIn(Strict):
     category_id: uuid.UUID | None = None
     base_unit_id: uuid.UUID
     is_stocked: bool = True
+    # Optional; derived from is_stocked when missing. "untracked" always means not stocked.
+    tracking_mode: Literal["exact", "estimated", "untracked"] | None = None
+    standard_cost: Decimal | None = Field(default=None, ge=0, max_digits=18, decimal_places=6)
     shelf_life_days: int | None = Field(default=None, gt=0, le=36500)
     storage_type: Literal["frozen", "chilled", "dry"] | None = None
     allergens: list[Annotated[str, StringConstraints(min_length=1, max_length=40)]] = Field(
@@ -76,6 +79,13 @@ class ItemIn(Strict):
         if len({t.language for t in v}) != len(v):
             raise ValueError("one translation per language")
         return v
+
+    @model_validator(mode="after")
+    def _tracking(self) -> "ItemIn":
+        if self.tracking_mode is None:
+            self.tracking_mode = "exact" if self.is_stocked else "untracked"
+        self.is_stocked = self.tracking_mode != "untracked"
+        return self
 
     @field_validator("conversions")
     @classmethod
@@ -114,6 +124,8 @@ class ItemSummary(BaseModel):
 
 class ItemOut(ItemSummary):
     is_stocked: bool
+    tracking_mode: str = "exact"
+    standard_cost: Decimal | None = None
     shelf_life_days: int | None
     storage_type: str | None
     allergens: list[str]

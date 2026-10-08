@@ -11,7 +11,8 @@ export interface ItemDraft {
   type: ItemIn['type']
   category_id: string
   base_unit_id: string
-  is_stocked: boolean
+  tracking_mode: 'exact' | 'estimated' | 'untracked'
+  standard_cost: string
   shelf_life: string
   storage_type: '' | NonNullable<ItemIn['storage_type']>
   allergens: string
@@ -29,7 +30,8 @@ export const EMPTY_DRAFT: ItemDraft = {
   type: 'menu',
   category_id: '',
   base_unit_id: '',
-  is_stocked: true,
+  tracking_mode: 'exact',
+  standard_cost: '',
   shelf_life: '',
   storage_type: '',
   allergens: '',
@@ -46,7 +48,8 @@ export function toDraft(item?: ItemOut): ItemDraft {
     type: item.type,
     category_id: item.category_id ?? '',
     base_unit_id: item.base_unit_id,
-    is_stocked: item.is_stocked,
+    tracking_mode: (item.tracking_mode ?? 'exact') as ItemDraft['tracking_mode'],
+    standard_cost: item.standard_cost == null ? '' : String(item.standard_cost),
     shelf_life: String(item.shelf_life_days ?? ''),
     storage_type: (item.storage_type ?? '') as ItemDraft['storage_type'],
     allergens: item.allergens.join(', '),
@@ -59,25 +62,34 @@ export function toDraft(item?: ItemOut): ItemDraft {
   }
 }
 
-export type DraftProblem = 'sku' | 'name' | 'unit' | 'shelfLife' | 'conversion'
+export type DraftProblem = 'sku' | 'name' | 'unit' | 'shelfLife' | 'conversion' | 'standardCost'
+
+const SHELF = /^\d{1,5}$/
+
+/** Each rule is a check and the problem it reports; a table instead of an if-chain. */
+const RULES: [DraftProblem, (d: ItemDraft) => boolean][] = [
+  ['sku', (d) => !SKU.test(d.sku.trim())],
+  ['name', (d) => !d.names.en.trim() && !d.names.id.trim()],
+  ['unit', (d) => !d.base_unit_id],
+  ['shelfLife', (d) => Boolean(d.shelf_life) && !(SHELF.test(d.shelf_life) && +d.shelf_life >= 1)],
+  ['standardCost', (d) => Boolean(d.standard_cost) && !FACTOR.test(d.standard_cost)],
+  ['conversion', (d) => conversionsInvalid(d)],
+]
 
 export function problems(d: ItemDraft): DraftProblem[] {
-  const found: DraftProblem[] = []
-  if (!SKU.test(d.sku.trim())) found.push('sku')
-  if (!d.names.en.trim() && !d.names.id.trim()) found.push('name')
-  if (!d.base_unit_id) found.push('unit')
-  if (d.shelf_life && !(/^\d{1,5}$/.test(d.shelf_life) && +d.shelf_life >= 1))
-    found.push('shelfLife')
+  return RULES.filter(([, failed]) => failed(d)).map(([problem]) => problem)
+}
+
+function conversionsInvalid(d: ItemDraft): boolean {
   const units = d.conversions.map((c) => c.unit_id)
-  const badConversion = d.conversions.some(
+  const bad = d.conversions.some(
     (c) =>
       !c.unit_id ||
       c.unit_id === d.base_unit_id ||
       !FACTOR.test(c.factor) ||
       !+c.factor.replace(',', '.'),
   )
-  if (badConversion || new Set(units).size !== units.length) found.push('conversion')
-  return found
+  return bad || new Set(units).size !== units.length
 }
 
 /** Translations in other languages (added later through import or the API) are kept. */
@@ -95,7 +107,10 @@ export function toBody(d: ItemDraft, item?: ItemOut): ItemIn {
     type: d.type,
     category_id: d.category_id || null,
     base_unit_id: d.base_unit_id,
-    is_stocked: d.is_stocked,
+    is_stocked: d.tracking_mode !== 'untracked',
+    tracking_mode: d.tracking_mode,
+    // Exact decimal string (per base unit), never a float.
+    standard_cost: d.standard_cost ? d.standard_cost.replace(',', '.') : null,
     shelf_life_days: d.shelf_life ? Number(d.shelf_life) : null,
     storage_type: d.storage_type || null,
     allergens: d.allergens

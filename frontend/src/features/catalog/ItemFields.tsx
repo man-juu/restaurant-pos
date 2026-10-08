@@ -5,6 +5,8 @@ import { useCategories, useUnits } from './api'
 import type { DraftProblem, ItemDraft } from './itemDraft'
 import { ITEM_TYPES, STORAGE_TYPES } from './labels'
 
+const TRACKING_MODES = ['exact', 'estimated', 'untracked'] as const
+
 export interface FieldsProps {
   d: ItemDraft
   set: (patch: Partial<ItemDraft>) => void
@@ -108,10 +110,26 @@ export function StockFields({ d, set, issues, isNew }: FieldsProps) {
         value={d.allergens}
         onChange={(e) => set({ allergens: e.target.value })}
       />
-      <CheckInput
-        label={t('catalog.item.stocked')}
-        checked={d.is_stocked}
-        onChange={(v) => set({ is_stocked: v })}
+      <SelectInput
+        label={t('catalog.item.tracking')}
+        value={d.tracking_mode}
+        onChange={(e) => set({ tracking_mode: e.target.value as ItemDraft['tracking_mode'] })}
+      >
+        {TRACKING_MODES.map((k) => (
+          <option key={k} value={k}>
+            {t(`catalog.tracking.${k}`)}
+          </option>
+        ))}
+      </SelectInput>
+      <p className="text-sm text-muted sm:col-span-2">
+        {t(`catalog.tracking.${d.tracking_mode}Help`)}
+      </p>
+      <TextInput
+        label={t('catalog.item.standardCost')}
+        inputMode="decimal"
+        value={d.standard_cost}
+        invalid={issues.includes('standardCost')}
+        onChange={(e) => set({ standard_cost: e.target.value })}
       />
       {!isNew && (
         <CheckInput

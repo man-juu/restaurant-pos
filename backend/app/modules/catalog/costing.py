@@ -131,6 +131,20 @@ async def _margins(
     return out
 
 
+async def _with_standard_costs(db: AsyncSession, ids: set[uuid.UUID]) -> dict[uuid.UUID, Decimal]:
+    """Ledger averages first; an item's standard cost fills the gap (gas, or before the first
+    purchase), so one such line does not make the whole recipe cost unknown."""
+    costs = await _cost_source(db, ids)
+    if missing := ids - costs.keys():
+        stmt = select(Item.id, Item.standard_cost).where(
+            Item.id.in_(missing), Item.standard_cost.is_not(None)
+        )
+        for item_id, cost in (await db.execute(stmt)).all():
+            if cost is not None:
+                costs[item_id] = cost
+    return costs
+
+
 async def costing(
     db: AsyncSession,
     *,
@@ -147,7 +161,7 @@ async def costing(
     bom = (await active_boms(db, {item_id}, on)).get(item_id)
     leaves = await explode(db, {item_id: Decimal(1)}, on) if bom else {}
     names = await item_names(db, tenant_id, language, leaves)
-    costs = await _cost_source(db, set(leaves)) if show_cost else {}
+    costs = await _with_standard_costs(db, set(leaves)) if show_cost else {}
     lines = [
         CostLine(
             item_id=i,
