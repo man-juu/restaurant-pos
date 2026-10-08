@@ -12,7 +12,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.catalog.boms import ItemLabel, item_names
-from app.modules.catalog.costing import CostSource, explode, set_cost_source
+from app.modules.catalog.costing import CostSource, explode, recipe_needs, set_cost_source
 from app.modules.catalog.models import Item, Unit
 from app.modules.catalog.permissions import COST_VIEW
 from app.modules.catalog.prices import tenant_today
@@ -27,6 +27,7 @@ __all__ = [
     "explode",
     "item_ids_by_sku",
     "item_names",
+    "recipe_needs",
     "set_cost_source",
     "stock_items",
     "tenant_today",

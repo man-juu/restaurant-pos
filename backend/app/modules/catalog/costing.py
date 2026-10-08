@@ -187,3 +187,15 @@ async def costing(
         cost_visible=show_cost,
         margins=await _margins(db, tenant_id, item_id, on, total) if show_cost else [],
     )
+
+
+async def recipe_needs(
+    db: AsyncSession, item_id: uuid.UUID, qty: Decimal, on: date
+) -> tuple[uuid.UUID | None, dict[uuid.UUID, Decimal]]:
+    """One level of the recipe in force on `on`: (recipe id, base quantity per component)
+    to make `qty` base units of `item_id`. Production consumes this level only, because the
+    semi-finished components were produced and stocked separately."""
+    boms = await active_boms(db, {item_id}, on)
+    if item_id not in boms:
+        return None, {}
+    return boms[item_id].id, dict(await _expand_level(db, {item_id: qty}, boms))

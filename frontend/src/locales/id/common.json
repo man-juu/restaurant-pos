@@ -183,7 +183,10 @@
     "already_reversed": "Ini sudah dibatalkan.",
     "quantity_too_small": "Jumlahnya terlalu kecil untuk dicatat.",
     "more_than_ordered": "Jumlahnya melebihi pesanan. Periksa jumlah atau buat pesanan baru.",
-    "order_not_found": "Pesanan ini sudah tidak ada."
+    "order_not_found": "Pesanan ini sudah tidak ada.",
+    "not_producible": "Hanya barang setengah jadi yang distok yang bisa diproduksi.",
+    "output_as_component": "Barang tidak bisa dipakai untuk membuat dirinya sendiri.",
+    "production_not_found": "Order produksi tidak ditemukan."
   },
   "appearance": {
     "open": "Tampilan",
@@ -694,6 +697,33 @@
         "rejected": "Ditolak",
         "cancelled": "Dibatalkan"
       }
+    }
+  },
+  "production": {
+    "title": "Produksi",
+    "date": "Hari",
+    "plan": "Rencanakan produksi",
+    "what": "Yang dibuat (barang setengah jadi)",
+    "plannedQty": "Jumlah yang dibuat (satuan dasar)",
+    "planSave": "Tambah ke rencana",
+    "complete": "Catat hasil produksi",
+    "actualQty": "Jumlah hasil ({{unit}})",
+    "used": "{{name}} terpakai ({{unit}}), kosongkan untuk mengikuti resep",
+    "completeSave": "Simpan dan catat stok",
+    "completeAnyway": "Stok kurang: tetap simpan",
+    "cancel": "Batalkan rencana",
+    "reverse": "Batalkan produksi",
+    "empty": "Belum ada rencana untuk hari ini.",
+    "planned": "Rencana: {{qty}} {{unit}}",
+    "made": "Hasil: {{qty}} {{unit}}",
+    "variance": "Selisih dari rencana: {{qty}} {{unit}}",
+    "cost": "Bahan terpakai: {{value}}",
+    "useBy": "Gunakan sebelum {{date}}",
+    "status": {
+      "planned": "Direncanakan",
+      "completed": "Selesai",
+      "cancelled": "Dibatalkan",
+      "reversed": "Dibatalkan (dibalik)"
     }
   }
 }

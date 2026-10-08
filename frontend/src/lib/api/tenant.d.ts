@@ -1267,6 +1267,92 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/production/orders': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Orders */
+    get: operations['list_orders_api_v1_production_orders_get']
+    put?: never
+    /** Plan Order */
+    post: operations['plan_order_api_v1_production_orders_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/production/orders/{order_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Order */
+    get: operations['get_order_api_v1_production_orders__order_id__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/production/orders/{order_id}/cancel': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Cancel Order */
+    post: operations['cancel_order_api_v1_production_orders__order_id__cancel_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/production/orders/{order_id}/complete': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Complete Order */
+    post: operations['complete_order_api_v1_production_orders__order_id__complete_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/production/orders/{order_id}/reverse': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reverse Order */
+    post: operations['reverse_order_api_v1_production_orders__order_id__reverse_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/purchasing/attachments': {
     parameters: {
       query?: never
@@ -2907,6 +2993,147 @@ export interface components {
        * Format: date
        */
       valid_from: string
+    }
+    /**
+     * ProductionCompleteIn
+     * @description FR-PRD-002, 003: what really came out and, if different from the recipe, what was used.
+     */
+    ProductionCompleteIn: {
+      /** Actual Qty */
+      actual_qty: number | string
+      /**
+       * Confirm Negative
+       * @default false
+       */
+      confirm_negative: boolean
+      /** Expiry Date */
+      expiry_date?: string | null
+      /** Lot Code */
+      lot_code?: string | null
+      /** Used */
+      used?: components['schemas']['ProductionUsedIn'][]
+    }
+    /** ProductionLineOut */
+    ProductionLineOut: {
+      /** Actual Qty */
+      actual_qty: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /**
+       * Item Name
+       * @default
+       */
+      item_name: string
+      /** Planned Qty */
+      planned_qty: string
+      /**
+       * Unit Code
+       * @default
+       */
+      unit_code: string
+      /** Value */
+      value: number
+    }
+    /** ProductionOut */
+    ProductionOut: {
+      /** Actual Qty */
+      actual_qty: string | null
+      /** Bom Id */
+      bom_id: string | null
+      /** Completed At */
+      completed_at: string | null
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Expiry Date */
+      expiry_date: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Input Value */
+      input_value: number
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Item Name */
+      item_name: string
+      /** Lines */
+      lines: components['schemas']['ProductionLineOut'][]
+      /** Lot Code */
+      lot_code: string | null
+      /** Note */
+      note: string | null
+      /** Number */
+      number: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Planned Qty */
+      planned_qty: string
+      /**
+       * Production Date
+       * Format: date
+       */
+      production_date: string
+      /** Status */
+      status: string
+      /** Unit Code */
+      unit_code: string
+      /** Unit Cost */
+      unit_cost: string | null
+      /** Yield Variance */
+      yield_variance: string | null
+    }
+    /**
+     * ProductionPlanIn
+     * @description FR-PRD-001: what to make, how much (base unit), where and when.
+     */
+    ProductionPlanIn: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Note */
+      note?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Planned Qty */
+      planned_qty: number | string
+      /**
+       * Production Date
+       * Format: date
+       */
+      production_date: string
+    }
+    /** ProductionUsedIn */
+    ProductionUsedIn: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: number | string
     }
     /**
      * PurchasingSettings
@@ -6099,6 +6326,204 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['OutletOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_orders_api_v1_production_orders_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        on?: string | null
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProductionOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  plan_order_api_v1_production_orders_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ProductionPlanIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProductionOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_order_api_v1_production_orders__order_id__get: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProductionOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  cancel_order_api_v1_production_orders__order_id__cancel_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProductionOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  complete_order_api_v1_production_orders__order_id__complete_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ProductionCompleteIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProductionOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reverse_order_api_v1_production_orders__order_id__reverse_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProductionOut']
         }
       }
       /** @description Validation Error */

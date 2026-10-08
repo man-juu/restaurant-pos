@@ -76,6 +76,8 @@ const STATE_STYLES: Record<string, string> = {
   received: 'bg-good-surface text-good',
   rejected: 'bg-danger-surface text-danger',
   cancelled: 'bg-raised text-ink-soft',
+  planned: 'bg-warn-surface text-warn',
+  completed: 'bg-good-surface text-good',
 }
 
 export function StateBadge({ state, label }: { state: string; label: string }) {

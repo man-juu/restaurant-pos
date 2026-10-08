@@ -183,7 +183,10 @@
     "already_reversed": "This was already undone.",
     "quantity_too_small": "A quantity is too small to record.",
     "more_than_ordered": "That is more than was ordered. Check the quantity or make a new order.",
-    "order_not_found": "This order no longer exists."
+    "order_not_found": "This order no longer exists.",
+    "not_producible": "Only stocked semi-finished items can be produced.",
+    "output_as_component": "An item cannot be used to make itself.",
+    "production_not_found": "Production order not found."
   },
   "appearance": {
     "open": "Appearance",
@@ -694,6 +697,33 @@
         "rejected": "Rejected",
         "cancelled": "Cancelled"
       }
+    }
+  },
+  "production": {
+    "title": "Production",
+    "date": "Day",
+    "plan": "Plan production",
+    "what": "What to make (semi-finished item)",
+    "plannedQty": "Quantity to make (base unit)",
+    "planSave": "Add to plan",
+    "complete": "Record what was made",
+    "actualQty": "Quantity made ({{unit}})",
+    "used": "{{name}} used ({{unit}}), leave empty to use the recipe",
+    "completeSave": "Save and post stock",
+    "completeAnyway": "Not enough stock: save anyway",
+    "cancel": "Cancel plan",
+    "reverse": "Undo production",
+    "empty": "Nothing planned for this day.",
+    "planned": "Planned: {{qty}} {{unit}}",
+    "made": "Made: {{qty}} {{unit}}",
+    "variance": "Difference from plan: {{qty}} {{unit}}",
+    "cost": "Ingredients used: {{value}}",
+    "useBy": "Use by {{date}}",
+    "status": {
+      "planned": "Planned",
+      "completed": "Done",
+      "cancelled": "Cancelled",
+      "reversed": "Undone"
     }
   }
 }
