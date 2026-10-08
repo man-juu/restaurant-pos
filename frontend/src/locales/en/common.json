@@ -486,7 +486,12 @@
         "storage_type": "storage type",
         "shelf_life_days": "shelf life (days)",
         "translations": "name (EN or ID)"
-      }
+      },
+      "openRecipes": "Import recipes",
+      "recipesTitle": "Import recipes from Excel or CSV",
+      "recipesHelp": "One row per ingredient line, grouped by the dish SKU. Each dish gets a draft recipe; open the dish and activate it when it looks right.",
+      "createCategories": "Create categories that do not exist yet",
+      "newCategories": "New categories will be created: {{names}}"
     },
     "export": {
       "xlsx": "Export Excel",
@@ -538,7 +543,10 @@
       "post": "Post opening stock",
       "posted": "Posted ({{count}} lines).",
       "undo": "Undo",
-      "undone": "Undone. The reversal is kept in the history."
+      "undone": "Undone. The reversal is kept in the history.",
+      "importOpen": "Import from file",
+      "importTitle": "Import opening stock from Excel or CSV",
+      "importHelp": "One row per item and outlet, with the outlet name as in Outlets. Perishable items need an expiry date (YYYY-MM-DD or DD/MM/YYYY)."
     },
     "reasons": {
       "spoilage": "Spoiled",

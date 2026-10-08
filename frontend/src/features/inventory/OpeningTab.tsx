@@ -9,6 +9,7 @@ import { useUnits } from '../catalog/api'
 import { ComponentPicker } from '../catalog/ComponentPicker'
 import { todayIso } from '../catalog/labels'
 import { usePostOpening, useReverseOpening } from './api'
+import { OpeningImport } from './OpeningImport'
 import { OpeningLines } from './OpeningLines'
 import { lineProblem, type OpeningLineDraft, toOpeningBody } from './openingDraft'
 
@@ -50,6 +51,7 @@ export function OpeningTab({ outletId, currency }: { outletId: string; currency:
         className="max-w-xs"
         onChange={(e) => setDate(e.target.value)}
       />
+      <OpeningImport businessDate={date} />
       <OpeningLines
         lines={lines}
         units={units.data ?? []}

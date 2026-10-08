@@ -1587,6 +1587,14 @@
             "title": "Errors",
             "type": "array"
           },
+          "new_categories": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "New Categories",
+            "type": "array"
+          },
           "rows_ok": {
             "title": "Rows Ok",
             "type": "integer"
@@ -4965,6 +4973,16 @@
               "title": "File Name",
               "type": "string"
             }
+          },
+          {
+            "in": "query",
+            "name": "create_categories",
+            "required": false,
+            "schema": {
+              "default": true,
+              "title": "Create Categories",
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -5009,6 +5027,16 @@
               "pattern": "^[^/\\\\]+\\.(csv|xlsx)$",
               "title": "File Name",
               "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "create_categories",
+            "required": false,
+            "schema": {
+              "default": true,
+              "title": "Create Categories",
+              "type": "boolean"
             }
           }
         ],
@@ -5080,6 +5108,142 @@
           }
         },
         "summary": "Item Template",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/imports/recipes": {
+      "post": {
+        "description": "Creates one draft version per dish; activate each after review.",
+        "operationId": "import_recipes_api_v1_catalog_imports_recipes_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "file_name",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[^/\\\\]+\\.(csv|xlsx)$",
+              "title": "File Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportBatchOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Import Recipes",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/imports/recipes/check": {
+      "post": {
+        "operationId": "check_recipes_api_v1_catalog_imports_recipes_check_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "file_name",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[^/\\\\]+\\.(csv|xlsx)$",
+              "title": "File Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportCheckOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Check Recipes",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/imports/recipes/template": {
+      "get": {
+        "operationId": "recipe_template_api_v1_catalog_imports_recipes_template_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "xlsx",
+              "enum": [
+                "csv",
+                "xlsx"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Recipe Template",
         "tags": [
           "catalog"
         ]
@@ -6593,6 +6757,219 @@
           }
         },
         "summary": "Get Document",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/imports/opening": {
+      "post": {
+        "operationId": "import_opening_api_v1_inventory_imports_opening_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "file_name",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[^/\\\\]+\\.(csv|xlsx)$",
+              "title": "File Name",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "business_date",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Business Date"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportBatchOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Import Opening",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/imports/opening/check": {
+      "post": {
+        "operationId": "check_opening_api_v1_inventory_imports_opening_check_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "file_name",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[^/\\\\]+\\.(csv|xlsx)$",
+              "title": "File Name",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "business_date",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Business Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportCheckOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Check Opening",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/imports/opening/template": {
+      "get": {
+        "operationId": "opening_template_api_v1_inventory_imports_opening_template_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "xlsx",
+              "enum": [
+                "csv",
+                "xlsx"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Opening Template",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/imports/{batch_id}/revert": {
+      "post": {
+        "description": "Posts reversals for every opening document the import created.",
+        "operationId": "revert_opening_api_v1_inventory_imports__batch_id__revert_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "batch_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Batch Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportBatchOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Revert Opening",
         "tags": [
           "inventory"
         ]

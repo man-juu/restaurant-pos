@@ -54,7 +54,7 @@ def test_fr_imp_001_002_check_commit_idempotent_and_revert(
 ) -> None:
     h = signin(client, world["manager_a"])
     checked = send(client, h, "/check", GOOD.encode(), "items.csv")
-    assert checked.json() == {"rows_ok": 2, "errors": []}
+    assert checked.json() == {"rows_ok": 2, "errors": [], "new_categories": []}
     batch = send(client, h, "", GOOD.encode(), "items.csv")
     assert batch.status_code == 201, batch.text
     skus = {i["sku"] for i in client.get("/api/v1/catalog/items").json()["items"]}
@@ -102,3 +102,16 @@ def test_export_round_trip_permissions_and_isolation(
     hb = signin(client, world["manager_b"])
     assert client.get("/api/v1/catalog/exports/items?format=csv").text.count("\n") == 1
     assert send(client, hb, "", b"x", "../evil.csv").status_code == 422  # path in name refused
+
+
+def test_missing_categories_created_or_refused(client: TestClient, world: dict[str, Any]) -> None:
+    h = signin(client, world["manager_a"])
+    rows = HEADER + "K1,ingredient,Kimchi,Kimchi,kg,Sauces,chilled,30,yes\n"
+    strict = send(client, h, "/check", rows.encode(), "c.csv&create_categories=false").json()
+    assert strict["errors"] == [{"row": 2, "field": "category"}]
+    checked = send(client, h, "/check", rows.encode(), "c.csv").json()
+    assert checked["new_categories"] == ["Sauces"] and checked["errors"] == []
+    assert send(client, h, "", rows.encode(), "c.csv").status_code == 201
+    cats = {c["name"]: c["id"] for c in client.get("/api/v1/catalog/categories").json()}
+    item = client.get("/api/v1/catalog/items").json()["items"][0]
+    assert item["category_id"] == cats["Sauces"]

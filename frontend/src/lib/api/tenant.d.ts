@@ -538,6 +538,60 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/catalog/imports/recipes': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Import Recipes
+     * @description Creates one draft version per dish; activate each after review.
+     */
+    post: operations['import_recipes_api_v1_catalog_imports_recipes_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/imports/recipes/check': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Check Recipes */
+    post: operations['check_recipes_api_v1_catalog_imports_recipes_check_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/imports/recipes/template': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Recipe Template */
+    get: operations['recipe_template_api_v1_catalog_imports_recipes_template_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/catalog/imports/{batch_id}/revert': {
     parameters: {
       query?: never
@@ -902,6 +956,77 @@ export interface paths {
     get: operations['get_document_api_v1_inventory_documents__kind___doc_id__get']
     put?: never
     post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/imports/opening': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Import Opening */
+    post: operations['import_opening_api_v1_inventory_imports_opening_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/imports/opening/check': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Check Opening */
+    post: operations['check_opening_api_v1_inventory_imports_opening_check_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/imports/opening/template': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Opening Template */
+    get: operations['opening_template_api_v1_inventory_imports_opening_template_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/imports/{batch_id}/revert': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Revert Opening
+     * @description Posts reversals for every opening document the import created.
+     */
+    post: operations['revert_opening_api_v1_inventory_imports__batch_id__revert_post']
     delete?: never
     options?: never
     head?: never
@@ -1870,6 +1995,11 @@ export interface components {
       errors: {
         [key: string]: unknown
       }[]
+      /**
+       * New Categories
+       * @default []
+       */
+      new_categories: string[]
       /** Rows Ok */
       rows_ok: number
     }
@@ -3660,6 +3790,7 @@ export interface operations {
     parameters: {
       query: {
         file_name: string
+        create_categories?: boolean
       }
       header?: never
       path?: never
@@ -3691,6 +3822,7 @@ export interface operations {
     parameters: {
       query: {
         file_name: string
+        create_categories?: boolean
       }
       header?: never
       path?: never
@@ -3719,6 +3851,99 @@ export interface operations {
     }
   }
   item_template_api_v1_catalog_imports_items_template_get: {
+    parameters: {
+      query?: {
+        format?: 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  import_recipes_api_v1_catalog_imports_recipes_post: {
+    parameters: {
+      query: {
+        file_name: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ImportBatchOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  check_recipes_api_v1_catalog_imports_recipes_check_post: {
+    parameters: {
+      query: {
+        file_name: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ImportCheckOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  recipe_template_api_v1_catalog_imports_recipes_template_get: {
     parameters: {
       query?: {
         format?: 'csv' | 'xlsx'
@@ -4618,6 +4843,132 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['StockDocument']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  import_opening_api_v1_inventory_imports_opening_post: {
+    parameters: {
+      query: {
+        file_name: string
+        business_date?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ImportBatchOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  check_opening_api_v1_inventory_imports_opening_check_post: {
+    parameters: {
+      query: {
+        file_name: string
+        business_date?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ImportCheckOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  opening_template_api_v1_inventory_imports_opening_template_get: {
+    parameters: {
+      query?: {
+        format?: 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  revert_opening_api_v1_inventory_imports__batch_id__revert_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        batch_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ImportBatchOut']
         }
       }
       /** @description Validation Error */

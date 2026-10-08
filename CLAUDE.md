@@ -91,7 +91,7 @@ Every route needs `Depends(require("module.resource.action"))` (or `public()` fo
 3. **Ledgers are append-only.** Stock movements and journals are never updated or deleted; corrections are reversals. Stock and journal postings happen in the same transaction as the business document.
 4. **Module boundaries.** A module imports only `core` and declared dependencies, never touches another module's tables, and talks through service interfaces or events. import-linter must pass.
 5. **Money and quantities.** Money is integer minor units (IDR scale 0). Quantities `numeric(18,4)` in base unit; unit costs `numeric(18,6)`. Never floats. Follow the rounding policy in `docs/05`.
-6. **Configuration, not constants.** Tax rates, service charge, payment methods, approval thresholds and numbering are tenant settings. Never hard-code Indonesian rates.
+6. **Configuration, not constants.** Tax rates, service charge, payment methods, approval thresholds and numbering are tenant settings. Never hard-code Indonesian rates. More broadly (owner, 2026-10-08): every business works differently, so rules, workflows and options are per-tenant settings or switches with sensible defaults, never one fixed behaviour.
 7. **Audit.** Security-relevant and financial actions write to the append-only audit log.
 8. **i18n.** No hard-coded user-facing strings; add EN and ID keys. ESLint rule `local/no-literal-text` enforces it.
 9. **Idempotency.** Create endpoints that clients may retry accept an idempotency key.
@@ -117,11 +117,11 @@ Redis (until measured need), marketplace scraping, native mobile apps, payroll o
 
 ## Ask the owner before
 
-- Deviating from any ADR or document, or adding a new technology or dependency not listed above.
-- Changing the data model beyond what `docs/05` describes.
-- Anything involving production servers, DNS, accounts, paid services or credentials.
-- Destructive actions (dropping data, force-push, deleting branches or volumes).
-- Ambiguous requirements: ask a short question instead of guessing.
+The owner decides only these (2026-10-08); everything else, build and record the decision in `docs/09` (and `docs/05` for data-model changes):
+
+- Adding a new library, plugin, tool or installation not listed above (and any outside service).
+- Risky actions: anything involving production servers, DNS, accounts, paid services or credentials; destructive actions (dropping data, force-push, deleting branches or volumes); deviating from an ADR.
+- Ambiguous requirements where a wrong guess is costly: ask a short question instead of guessing.
 
 ## About the owner
 

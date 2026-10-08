@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.catalog.boms import ItemLabel, item_names
 from app.modules.catalog.costing import CostSource, explode, set_cost_source
-from app.modules.catalog.models import Item
+from app.modules.catalog.models import Item, Unit
 from app.modules.catalog.permissions import COST_VIEW
 from app.modules.catalog.prices import tenant_today
 from app.modules.catalog.units import base_factors
@@ -25,10 +25,12 @@ __all__ = [
     "StockItem",
     "base_factors",
     "explode",
+    "item_ids_by_sku",
     "item_names",
     "set_cost_source",
     "stock_items",
     "tenant_today",
+    "unit_ids_by_code",
 ]
 
 
@@ -58,3 +60,13 @@ async def stock_items(db: AsyncSession, ids: Iterable[uuid.UUID]) -> dict[uuid.U
         Item.shelf_life_days,
     ).where(Item.id.in_(set(ids)))
     return {row.id: StockItem(*row) for row in (await db.execute(stmt)).all()}
+
+
+async def item_ids_by_sku(db: AsyncSession) -> dict[str, uuid.UUID]:
+    """Lower-cased SKU -> item id for the current tenant (imports)."""
+    return {s.lower(): i for i, s in (await db.execute(select(Item.id, Item.sku))).all()}
+
+
+async def unit_ids_by_code(db: AsyncSession) -> dict[str, uuid.UUID]:
+    """Lower-cased unit code -> unit id (platform and tenant units)."""
+    return {c.lower(): i for i, c in (await db.execute(select(Unit.id, Unit.code))).all()}

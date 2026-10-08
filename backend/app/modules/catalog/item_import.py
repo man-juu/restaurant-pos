@@ -8,16 +8,17 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from pydantic import ValidationError
-from sqlalchemy import func, select, update
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import audit
-from app.core.errors import ConflictError, NotFoundError
+from app.core.errors import ConflictError
+from app.core.imports import runner
 from app.core.imports.models import ImportBatch
 from app.core.tabular import InvalidTable, read_table
-from app.modules.catalog import service
+from app.modules.catalog import recipe_import, service
 from app.modules.catalog.models import Item, ItemCategory, Unit
-from app.modules.catalog.schemas import ItemIn
+from app.modules.catalog.schemas import CategoryIn, ItemIn
 
 COLUMNS = (
     "sku",
@@ -58,6 +59,9 @@ SAMPLE = [
 class Checked:
     items: list[ItemIn] = field(default_factory=list)
     errors: list[dict[str, Any]] = field(default_factory=list)
+    # Category name per item (same order as `items`) when it does not exist yet.
+    pending: list[str | None] = field(default_factory=list)
+    new_categories: list[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True)
@@ -65,9 +69,10 @@ class Lookups:
     units: dict[str, uuid.UUID]
     categories: dict[str, uuid.UUID]
     skus: set[str]
+    create_categories: bool = True
 
 
-async def _lookups(db: AsyncSession) -> Lookups:
+async def _lookups(db: AsyncSession, create_categories: bool) -> Lookups:
     units = {
         code.lower(): uid for uid, code in (await db.execute(select(Unit.id, Unit.code))).all()
     }
@@ -76,7 +81,7 @@ async def _lookups(db: AsyncSession) -> Lookups:
         for cid, name in (await db.execute(select(ItemCategory.id, ItemCategory.name))).all()
     }
     skus = {s.lower() for s in (await db.scalars(select(Item.sku)))}
-    return Lookups(units, cats, skus)
+    return Lookups(units, cats, skus, create_categories)
 
 
 def _flag(value: str) -> bool | None:
@@ -90,7 +95,7 @@ def _row_to_item(row: dict[str, str], look: Lookups) -> tuple[dict[str, Any], li
     if row.get("base_unit") and unit is None:
         problems.append("base_unit")
     category = look.categories.get(row.get("category", "").lower()) if row.get("category") else None
-    if row.get("category") and category is None:
+    if row.get("category") and category is None and not look.create_categories:
         problems.append("category")
     stocked = _flag(row.get("is_stocked", ""))
     if stocked is None:
@@ -122,21 +127,51 @@ def _check_row(n: int, row: dict[str, str], look: Lookups, seen: set[str], out: 
         out.items.append(ItemIn.model_validate(data))
     except ValidationError as exc:
         out.errors.extend({"row": n, "field": str(e["loc"][0])} for e in exc.errors())
+        return
+    name = row.get("category", "")
+    missing = bool(name) and data["category_id"] is None
+    if missing and len(name) > 120:
+        out.items.pop()
+        out.errors.append({"row": n, "field": "category"})
+        return
+    out.pending.append(name if missing else None)
+    if missing and name.lower() not in {c.lower() for c in out.new_categories}:
+        out.new_categories.append(name)
 
 
-async def check(db: AsyncSession, raw: bytes, file_name: str) -> Checked:
+async def check(
+    db: AsyncSession, raw: bytes, file_name: str, create_categories: bool = True
+) -> Checked:
     rows = read_table(raw, file_name)
     missing = [c for c in REQUIRED if rows and c not in rows[0]]
     if missing:
         raise InvalidTable("missing_columns", details={"columns": missing})
-    look, out, seen = await _lookups(db), Checked(), set[str]()
+    look, out, seen = await _lookups(db, create_categories), Checked(), set[str]()
     for n, row in enumerate(rows, start=2):  # row 1 is the header in the user's sheet
         _check_row(n, row, look, seen, out)
     return out
 
 
+async def _create_categories(
+    db: AsyncSession, tenant_id: uuid.UUID, user_id: uuid.UUID, names: list[str]
+) -> dict[str, uuid.UUID]:
+    made = {}
+    for name in names:
+        row = await service.save_category(
+            db, tenant_id=tenant_id, user_id=user_id, data=CategoryIn(name=name)
+        )
+        made[name.lower()] = row.id
+    return made
+
+
 async def commit(
-    db: AsyncSession, *, tenant_id: uuid.UUID, user_id: uuid.UUID, raw: bytes, file_name: str
+    db: AsyncSession,
+    *,
+    tenant_id: uuid.UUID,
+    user_id: uuid.UUID,
+    raw: bytes,
+    file_name: str,
+    create_categories: bool = True,
 ) -> ImportBatch:
     digest = hashlib.sha256(raw).hexdigest()
     done = await db.scalar(
@@ -144,9 +179,13 @@ async def commit(
     )
     if done is not None:
         raise ConflictError("already_imported", details={"batch_id": str(done.id)})
-    checked = await check(db, raw, file_name)
+    checked = await check(db, raw, file_name, create_categories)
     if checked.errors:
         raise InvalidTable("rows_invalid", details={"errors": checked.errors[:200]})
+    made = await _create_categories(db, tenant_id, user_id, checked.new_categories)
+    for item, name in zip(checked.items, checked.pending, strict=True):
+        if name:
+            item.category_id = made[name.lower()]
     ids = [
         await service.create_item(db, tenant_id=tenant_id, user_id=user_id, data=item)
         for item in checked.items
@@ -174,24 +213,16 @@ async def commit(
     return batch
 
 
-async def revert(
-    db: AsyncSession, *, tenant_id: uuid.UUID, user_id: uuid.UUID, batch_id: uuid.UUID
-) -> ImportBatch:
-    batch = await db.get(ImportBatch, batch_id, with_for_update=True)
-    if batch is None:
-        raise NotFoundError("import_not_found")
-    if batch.status != "committed":
-        raise ConflictError("already_reverted")
+async def revert(db: AsyncSession, *, user_id: uuid.UUID, batch_id: uuid.UUID) -> ImportBatch:
+    """Items: archive what the import created. Recipes: delete drafts still unused."""
+    batch = await runner.open_for_revert(db, batch_id, {"items", "recipes"})
     ids = [uuid.UUID(i) for i in batch.created_ids]
+    if batch.kind == "recipes":
+        removed = await recipe_import.undo(db, user_id, ids)
+        return await runner.mark_reverted(
+            db, batch, user_id=user_id, summary={"deleted_drafts": removed}
+        )
     await db.execute(update(Item).where(Item.id.in_(ids)).values(is_active=False))
-    batch.status, batch.reverted_at = "reverted", func.now()
-    await audit.record(
-        db,
-        tenant_id=tenant_id,
-        user_id=user_id,
-        action="catalog.import.revert",
-        target_type="import_batch",
-        target_id=batch.id,
-        summary={"archived_items": len(ids)},
+    return await runner.mark_reverted(
+        db, batch, user_id=user_id, summary={"archived_items": len(ids)}
     )
-    return batch

@@ -94,6 +94,11 @@ def add_member(
                 scope="outlets" if outlets is not None else "all",
             )
         )
+        # Tenant context for tables whose RLS also binds the owner (FORCE): the same rule the
+        # app follows, so these helpers work whether or not the test role is a superuser.
+        await db.execute(
+            text("SELECT set_config('app.tenant_id', :t, true)"), {"t": str(tenant_id)}
+        )
         for outlet in outlets or ():
             await db.execute(
                 text(

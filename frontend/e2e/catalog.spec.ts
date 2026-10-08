@@ -195,7 +195,7 @@ test('import shows problem rows and blocks the import (FR-IMP-001)', async ({ pa
   const fake = await mock(page, EDIT)
   await page.goto('/catalog')
   await page.getByRole('button', { name: 'EN' }).click()
-  await page.getByRole('button', { name: 'Import' }).click()
+  await page.getByRole('button', { name: 'Import', exact: true }).click()
   await page.getByLabel(/File \(.xlsx or .csv/).setInputFiles({
     name: 'items.csv',
     mimeType: 'text/csv',

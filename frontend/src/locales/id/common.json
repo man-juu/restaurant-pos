@@ -486,7 +486,12 @@
         "storage_type": "jenis penyimpanan",
         "shelf_life_days": "umur simpan (hari)",
         "translations": "nama (EN atau ID)"
-      }
+      },
+      "openRecipes": "Impor resep",
+      "recipesTitle": "Impor resep dari Excel atau CSV",
+      "recipesHelp": "Satu baris per bahan, dikelompokkan menurut SKU menu. Setiap menu mendapat draf resep; buka menunya dan aktifkan bila sudah benar.",
+      "createCategories": "Buat kategori yang belum ada",
+      "newCategories": "Kategori baru akan dibuat: {{names}}"
     },
     "export": {
       "xlsx": "Ekspor Excel",
@@ -538,7 +543,10 @@
       "post": "Posting stok awal",
       "posted": "Terposting ({{count}} baris).",
       "undo": "Batalkan",
-      "undone": "Dibatalkan. Pembatalan tetap tersimpan di riwayat."
+      "undone": "Dibatalkan. Pembatalan tetap tersimpan di riwayat.",
+      "importOpen": "Impor dari file",
+      "importTitle": "Impor stok awal dari Excel atau CSV",
+      "importHelp": "Satu baris per barang dan outlet, dengan nama outlet seperti di menu Outlet. Barang yang mudah rusak perlu tanggal kedaluwarsa (YYYY-MM-DD atau DD/MM/YYYY)."
     },
     "reasons": {
       "spoilage": "Rusak/basi",
