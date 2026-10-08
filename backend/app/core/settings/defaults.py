@@ -53,6 +53,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
         },
         "session": {"idle_minutes": 60},
         "stock": STOCK,
+        "purchasing": {"require_invoice_attachment": False},
     }
 }
 
@@ -64,6 +65,7 @@ FALLBACK: dict[str, Any] = {
     "numbering": {"formats": {}},
     "session": {"idle_minutes": 60},
     "stock": STOCK,
+    "purchasing": {"require_invoice_attachment": False},
 }
 
 

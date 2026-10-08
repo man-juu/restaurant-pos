@@ -1267,6 +1267,153 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/purchasing/attachments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Upload Invoice
+     * @description FR-PUR-011: photo of a supplier invoice or delivery note (JPEG, PNG or WebP).
+     */
+    put: operations['upload_invoice_api_v1_purchasing_attachments_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/quick-purchases': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Quick Purchase
+     * @description A retried request (bad connection at the market) never receives the stock twice.
+     */
+    post: operations['quick_purchase_api_v1_purchasing_quick_purchases_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/receipts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Receipts */
+    get: operations['list_receipts_api_v1_purchasing_receipts_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/receipts/{receipt_id}/reverse': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reverse Receipt */
+    post: operations['reverse_receipt_api_v1_purchasing_receipts__receipt_id__reverse_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/vendors': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Vendors */
+    get: operations['list_vendors_api_v1_purchasing_vendors_get']
+    put?: never
+    /** Create Vendor */
+    post: operations['create_vendor_api_v1_purchasing_vendors_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/vendors/{vendor_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Vendor */
+    put: operations['update_vendor_api_v1_purchasing_vendors__vendor_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/vendors/{vendor_id}/bank-details': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Reveal Bank Details
+     * @description POST, not GET: viewing is an audited action and is never cached or prefetched.
+     */
+    post: operations['reveal_bank_details_api_v1_purchasing_vendors__vendor_id__bank_details_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/vendors/{vendor_id}/items': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Vendor Items */
+    get: operations['vendor_items_api_v1_purchasing_vendors__vendor_id__items_get']
+    put?: never
+    /** Add Vendor Item */
+    post: operations['add_vendor_item_api_v1_purchasing_vendors__vendor_id__items_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/roles': {
     parameters: {
       query?: never
@@ -1481,6 +1628,7 @@ export interface components {
     AllSettings: {
       numbering: components['schemas']['NumberingSettings']
       payment_methods: components['schemas']['PaymentMethodSettings']
+      purchasing: components['schemas']['PurchasingSettings']
       service_charge: components['schemas']['ServiceChargeSettings']
       session: components['schemas']['SessionSettings']
       stock: components['schemas']['StockSettings']
@@ -1540,6 +1688,11 @@ export interface components {
       min_amount: number
       /** Outlet Id */
       outlet_id?: string | null
+    }
+    /** BankDetails */
+    BankDetails: {
+      /** Bank Details */
+      bank_details: string | null
     }
     /** BatchOut */
     BatchOut: {
@@ -2527,6 +2680,17 @@ export interface components {
        */
       valid_from: string
     }
+    /**
+     * PurchasingSettings
+     * @description FR-PUR-011: supplier invoice photo on receipts, optional unless the tenant requires it.
+     */
+    PurchasingSettings: {
+      /**
+       * Require Invoice Attachment
+       * @default false
+       */
+      require_invoice_attachment: boolean
+    }
     /** QtyLine */
     QtyLine: {
       /**
@@ -2541,6 +2705,110 @@ export interface components {
        * Format: uuid
        */
       unit_id: string
+    }
+    /** QuickLineIn */
+    QuickLineIn: {
+      /** Expiry Date */
+      expiry_date?: string | null
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Line Total */
+      line_total: number
+      /** Lot Code */
+      lot_code?: string | null
+      /** Qty */
+      qty: number | string
+      /**
+       * Unit Id
+       * Format: uuid
+       */
+      unit_id: string
+    }
+    /**
+     * QuickPurchaseIn
+     * @description FR-PUR-004: a market or cash purchase, received in one step without a PO.
+     */
+    QuickPurchaseIn: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /** Invoice Upload Id */
+      invoice_upload_id?: string | null
+      /** Lines */
+      lines: components['schemas']['QuickLineIn'][]
+      /** Note */
+      note?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Vendor Id */
+      vendor_id?: string | null
+      /** Vendor Name */
+      vendor_name?: string | null
+    }
+    /** ReceiptLineOut */
+    ReceiptLineOut: {
+      /** Expiry Date */
+      expiry_date: string | null
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Line Total */
+      line_total: number
+      /** Lot Code */
+      lot_code: string | null
+      /** Qty */
+      qty: string
+      /**
+       * Unit Id
+       * Format: uuid
+       */
+      unit_id: string
+    }
+    /** ReceiptOut */
+    ReceiptOut: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Invoice Upload Id */
+      invoice_upload_id: string | null
+      /** Lines */
+      lines: components['schemas']['ReceiptLineOut'][]
+      /** Note */
+      note: string | null
+      /** Number */
+      number: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Po Id */
+      po_id: string | null
+      /** Status */
+      status: string
+      /** Total */
+      total: number
+      /** Vendor Id */
+      vendor_id: string | null
+      /** Vendor Name */
+      vendor_name: string | null
     }
     /** RecoveryCodesOut */
     RecoveryCodesOut: {
@@ -2897,6 +3165,128 @@ export interface components {
       unit_code: string
       /** Value */
       value: number
+    }
+    /** VendorIn */
+    VendorIn: {
+      /** Address */
+      address?: string | null
+      /** Bank Details */
+      bank_details?: string | null
+      /** Contact Name */
+      contact_name?: string | null
+      /** Email */
+      email?: string | null
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Lead Time Days
+       * @default 1
+       */
+      lead_time_days: number
+      /** Name */
+      name: string
+      /**
+       * Payment Terms Days
+       * @default 0
+       */
+      payment_terms_days: number
+      /** Phone */
+      phone?: string | null
+      /** Tax Id */
+      tax_id?: string | null
+    }
+    /** VendorItemIn */
+    VendorItemIn: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Min Order Qty */
+      min_order_qty?: number | string | null
+      /** Pack Qty */
+      pack_qty: number | string
+      /**
+       * Pack Unit Id
+       * Format: uuid
+       */
+      pack_unit_id: string
+      /** Price */
+      price: number
+      /**
+       * Valid From
+       * Format: date
+       */
+      valid_from: string
+      /** Vendor Sku */
+      vendor_sku?: string | null
+    }
+    /** VendorItemOut */
+    VendorItemOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Min Order Qty */
+      min_order_qty?: string | null
+      /** Pack Qty */
+      pack_qty: string
+      /**
+       * Pack Unit Id
+       * Format: uuid
+       */
+      pack_unit_id: string
+      /** Price */
+      price: number
+      /**
+       * Valid From
+       * Format: date
+       */
+      valid_from: string
+      /**
+       * Vendor Id
+       * Format: uuid
+       */
+      vendor_id: string
+      /** Vendor Sku */
+      vendor_sku?: string | null
+    }
+    /** VendorOut */
+    VendorOut: {
+      /** Address */
+      address: string | null
+      /** Contact Name */
+      contact_name: string | null
+      /** Email */
+      email: string | null
+      /** Has Bank Details */
+      has_bank_details: boolean
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Is Active */
+      is_active: boolean
+      /** Lead Time Days */
+      lead_time_days: number
+      /** Name */
+      name: string
+      /** Payment Terms Days */
+      payment_terms_days: number
+      /** Phone */
+      phone: string | null
+      /** Tax Id */
+      tax_id: string | null
     }
     /** WasteIn */
     WasteIn: {
@@ -5448,6 +5838,319 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['OutletOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  upload_invoice_api_v1_purchasing_attachments_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UploadRef']
+        }
+      }
+    }
+  }
+  quick_purchase_api_v1_purchasing_quick_purchases_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['QuickPurchaseIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReceiptOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_receipts_api_v1_purchasing_receipts_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReceiptOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reverse_receipt_api_v1_purchasing_receipts__receipt_id__reverse_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        receipt_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReceiptOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_vendors_api_v1_purchasing_vendors_get: {
+    parameters: {
+      query?: {
+        include_inactive?: boolean
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_vendor_api_v1_purchasing_vendors_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VendorIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_vendor_api_v1_purchasing_vendors__vendor_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        vendor_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VendorIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reveal_bank_details_api_v1_purchasing_vendors__vendor_id__bank_details_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        vendor_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BankDetails']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  vendor_items_api_v1_purchasing_vendors__vendor_id__items_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        vendor_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorItemOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  add_vendor_item_api_v1_purchasing_vendors__vendor_id__items_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        vendor_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VendorItemIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorItemOut']
         }
       }
       /** @description Validation Error */

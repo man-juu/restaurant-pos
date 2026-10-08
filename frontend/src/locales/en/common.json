@@ -177,7 +177,11 @@
     "too_many_rows": "The file has too many rows (maximum 2,000).",
     "already_reverted": "This import was already undone.",
     "not_utf8": "Save the CSV as UTF-8, or use the Excel template.",
-    "not_estimated": "Only estimated items can be set directly. Use a stock count or adjustment."
+    "not_estimated": "Only estimated items can be set directly. Use a stock count or adjustment.",
+    "invoice_required": "This business requires a photo of the supplier invoice for every purchase.",
+    "vendor_name_taken": "A vendor with this name already exists.",
+    "already_reversed": "This was already undone.",
+    "quantity_too_small": "A quantity is too small to record."
   },
   "appearance": {
     "open": "Appearance",
@@ -219,7 +223,8 @@
       "payments": "Payment methods",
       "numbering": "Numbering",
       "approvals": "Approvals",
-      "stock": "Stock"
+      "stock": "Stock",
+      "purchasing": "Purchasing"
     },
     "tax": {
       "help": "Rates are set per business; check regional rates with your tax advisor.",
@@ -294,6 +299,10 @@
         "warn": "Ask to confirm",
         "block": "Refuse"
       }
+    },
+    "purchasing": {
+      "requireInvoice": "Require a photo of the supplier invoice on every purchase",
+      "help": "Off by default. When on, a purchase cannot be saved without the photo."
     }
   },
   "catalog": {
@@ -613,6 +622,49 @@
       "qty": "On hand now ({{unit}})",
       "save": "Save",
       "done": "Saved. Stock now matches what you entered."
+    }
+  },
+  "purchasing": {
+    "title": "Purchasing",
+    "tabs": {
+      "buy": "Quick purchase",
+      "receipts": "Received",
+      "vendors": "Vendors"
+    },
+    "quick": {
+      "help": "Record what you bought at the market or paid in cash. Stock is added at once and the price updates the average cost.",
+      "vendor": "Vendor",
+      "noVendor": "No vendor record (market)",
+      "where": "Bought where (optional)",
+      "add": "Add an item bought",
+      "paid": "Paid for this line ({{currency}})",
+      "expiry": "Expiry (empty: from shelf life)",
+      "remove": "Remove",
+      "invoice": "Invoice photo (optional)",
+      "invoiceOk": "Invoice photo attached.",
+      "total": "Total {{total}}",
+      "save": "Save purchase",
+      "done": "Saved as {{number}}."
+    },
+    "receipts": {
+      "empty": "Nothing received at this outlet yet.",
+      "vendor": "Market purchase",
+      "posted": "Posted",
+      "reversed": "Reversed",
+      "reverse": "Undo"
+    },
+    "vendors": {
+      "new": "New vendor",
+      "empty": "No vendors yet.",
+      "noContact": "No contact details",
+      "name": "Name",
+      "contact_name": "Contact person",
+      "phone": "Phone",
+      "email": "Email",
+      "tax_id": "Tax ID (NPWP)",
+      "terms": "Payment terms (days)",
+      "bank": "Bank details (stored encrypted)",
+      "bankKept": "Saved. Type to replace."
     }
   }
 }

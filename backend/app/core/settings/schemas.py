@@ -112,6 +112,12 @@ class StockSettings(Strict):
     negative_stock: NegativeStockPolicy = Field(default_factory=NegativeStockPolicy)
 
 
+class PurchasingSettings(Strict):
+    """FR-PUR-011: supplier invoice photo on receipts, optional unless the tenant requires it."""
+
+    require_invoice_attachment: bool = False
+
+
 SETTINGS: dict[str, type[Strict]] = {
     "tax": TaxSettings,
     "service_charge": ServiceChargeSettings,
@@ -119,6 +125,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "numbering": NumberingSettings,
     "session": SessionSettings,
     "stock": StockSettings,
+    "purchasing": PurchasingSettings,
 }
 
 
@@ -131,3 +138,4 @@ class AllSettings(BaseModel):
     numbering: NumberingSettings
     session: SessionSettings
     stock: StockSettings
+    purchasing: PurchasingSettings

@@ -177,7 +177,11 @@
     "too_many_rows": "Baris terlalu banyak (maksimal 2.000).",
     "already_reverted": "Impor ini sudah dibatalkan.",
     "not_utf8": "Simpan CSV sebagai UTF-8, atau gunakan template Excel.",
-    "not_estimated": "Hanya barang perkiraan yang bisa diatur langsung. Gunakan hitung stok atau penyesuaian."
+    "not_estimated": "Hanya barang perkiraan yang bisa diatur langsung. Gunakan hitung stok atau penyesuaian.",
+    "invoice_required": "Usaha ini mewajibkan foto nota pemasok untuk setiap pembelian.",
+    "vendor_name_taken": "Pemasok dengan nama ini sudah ada.",
+    "already_reversed": "Ini sudah dibatalkan.",
+    "quantity_too_small": "Jumlahnya terlalu kecil untuk dicatat."
   },
   "appearance": {
     "open": "Tampilan",
@@ -219,7 +223,8 @@
       "payments": "Metode pembayaran",
       "numbering": "Penomoran",
       "approvals": "Persetujuan",
-      "stock": "Stok"
+      "stock": "Stok",
+      "purchasing": "Pembelian"
     },
     "tax": {
       "help": "Tarif diatur per usaha; periksa tarif daerah dengan konsultan pajak Anda.",
@@ -294,6 +299,10 @@
         "warn": "Minta konfirmasi",
         "block": "Tolak"
       }
+    },
+    "purchasing": {
+      "requireInvoice": "Wajibkan foto nota pemasok di setiap pembelian",
+      "help": "Mati secara bawaan. Jika aktif, pembelian tidak bisa disimpan tanpa foto."
     }
   },
   "catalog": {
@@ -613,6 +622,49 @@
       "qty": "Stok sekarang ({{unit}})",
       "save": "Simpan",
       "done": "Tersimpan. Stok sekarang sesuai yang Anda isi."
+    }
+  },
+  "purchasing": {
+    "title": "Pembelian",
+    "tabs": {
+      "buy": "Beli cepat",
+      "receipts": "Diterima",
+      "vendors": "Pemasok"
+    },
+    "quick": {
+      "help": "Catat belanja di pasar atau pembayaran tunai. Stok langsung bertambah dan harganya memperbarui biaya rata-rata.",
+      "vendor": "Pemasok",
+      "noVendor": "Tanpa data pemasok (pasar)",
+      "where": "Beli di mana (opsional)",
+      "add": "Tambah barang yang dibeli",
+      "paid": "Dibayar untuk baris ini ({{currency}})",
+      "expiry": "Kedaluwarsa (kosong: dari umur simpan)",
+      "remove": "Hapus",
+      "invoice": "Foto nota (opsional)",
+      "invoiceOk": "Foto nota terlampir.",
+      "total": "Total {{total}}",
+      "save": "Simpan pembelian",
+      "done": "Tersimpan sebagai {{number}}."
+    },
+    "receipts": {
+      "empty": "Belum ada penerimaan di outlet ini.",
+      "vendor": "Belanja pasar",
+      "posted": "Tercatat",
+      "reversed": "Dibatalkan",
+      "reverse": "Batalkan"
+    },
+    "vendors": {
+      "new": "Pemasok baru",
+      "empty": "Belum ada pemasok.",
+      "noContact": "Tanpa kontak",
+      "name": "Nama",
+      "contact_name": "Nama kontak",
+      "phone": "Telepon",
+      "email": "Email",
+      "tax_id": "NPWP",
+      "terms": "Termin bayar (hari)",
+      "bank": "Data bank (disimpan terenkripsi)",
+      "bankKept": "Tersimpan. Ketik untuk mengganti."
     }
   }
 }

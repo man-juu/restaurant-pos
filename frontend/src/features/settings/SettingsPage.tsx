@@ -8,6 +8,7 @@ import { errorMessage } from '../../lib/errors'
 import { useSettings } from './api'
 import { ApprovalsSection } from './ApprovalsSection'
 import { NumberingSection, PaymentsSection, ServiceSection } from './ChargesSections'
+import { PurchasingSection } from './PurchasingSection'
 import { StockSection } from './StockSection'
 import { TaxSection } from './TaxSection'
 
@@ -21,6 +22,7 @@ const SECTIONS = {
   numbering: (p: Props) => <NumberingSection data={p.data} />,
   approvals: (p: Props) => <ApprovalsSection canEdit={p.canEdit} />,
   stock: (p: Props) => <StockSection {...p} />,
+  purchasing: (p: Props) => <PurchasingSection {...p} />,
 } satisfies Record<string, (p: Props) => ReactNode>
 type Tab = keyof typeof SECTIONS
 const TABS = Object.keys(SECTIONS) as Tab[]

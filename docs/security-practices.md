@@ -165,3 +165,10 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - Standard cost is cost data: removed from item responses and exports for roles without `catalog.cost.view` (tested with a cashier), and preserved on save by such roles so a hidden value can never be wiped.
 - "Set on hand" bypasses approvals only for items marked estimated; exact items get 409 `not_estimated` (tested). Needs `inventory.adjustment.create` plus outlet access; every correction is a normal audited adjustment document with ledger movements (append-only).
 - A database check constraint keeps `tracking_mode` and `is_stocked` consistent.
+
+## Slice 1f part 1: purchasing (2026-10-08)
+
+- Vendor bank details: AES-GCM with a per-field context, never in list or save responses (only `has_bank_details`); revealed only by POST with `purchasing.vendor.manage`, audited (tested: ciphertext does not contain the account number; warehouse role gets 403).
+- Quick purchase requires an idempotency key (tested: same key twice = one receipt); outlet scope enforced (out-of-scope outlet looks like 404); items, vendor and invoice upload looked up under RLS before use. Undo is a ledger reversal.
+- Price history is append-only (trigger plus grants).
+- Invoice photos reuse the upload engine checks; the stored file is re-encoded; the receipt can only reference an upload of purpose `invoice` in the same tenant.

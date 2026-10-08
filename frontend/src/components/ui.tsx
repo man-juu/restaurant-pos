@@ -67,6 +67,8 @@ const STATE_STYLES: Record<string, string> = {
   grace: 'bg-alert-surface text-alert',
   read_only: 'bg-raised text-ink-soft',
   suspended: 'bg-danger-surface text-danger',
+  posted: 'bg-good-surface text-good',
+  reversed: 'bg-raised text-ink-soft',
 }
 
 export function StateBadge({ state, label }: { state: string; label: string }) {
