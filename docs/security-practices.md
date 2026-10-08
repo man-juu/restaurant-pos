@@ -143,3 +143,10 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - Uploading a photo needs `catalog.item.update`; store and link happen in one transaction; every upload and photo change is audited. Identical files are de-duplicated by SHA-256 per tenant and purpose.
 - Backups now include the uploads volume, encrypted with the same public key.
 - Known gap (low): if a transaction rolls back after the file is written, the file stays unreferenced on disk. Harmless (not served without a row); a sweep job can be added later.
+
+## Slice 1b part 4: free AI images (2026-10-08)
+
+- Only the typed prompt is sent (tested: the fake provider receives exactly the prompt). Prompt: 3 to 300 printable characters, no control characters.
+- Cost can never occur: off without keys; the account must stay on the Workers Free plan (over-limit requests fail there); our own budget stops at 85% of the free allowance, counted across all tenants, plus 10 per tenant per day. The budget is reserved in a committed transaction before the call (no race on the last slot); a failed call returns the platform budget. Tested: tenant cap, platform cap across two tenants, refund on failure, disabled state.
+- The returned image goes through the same Pillow checks and re-encoding as uploads. Provider errors are not echoed (could contain account details). The account id must be 32 hex characters before it is used in the URL. The API token needs only "Workers AI: Read".
+- Generating needs `catalog.item.update` (cashiers get 403); every generation is audited with its prompt.

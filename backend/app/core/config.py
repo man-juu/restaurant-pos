@@ -41,6 +41,21 @@ class Settings(BaseModel):
     upload_dir: str = "/var/lib/pos/uploads"
     upload_max_bytes: int = Field(default=8 * 1024 * 1024, ge=1024, le=50 * 1024 * 1024)
 
+    # Free AI images (ADR-022). Off unless both Cloudflare values are set. The account must stay
+    # on the Workers Free plan: there, going over the daily allowance fails instead of billing.
+    ai_cf_account_id: str = ""
+    ai_cf_api_token: str = ""
+    ai_daily_free_neurons: int = Field(
+        default=10_000, ge=0
+    )  # Cloudflare free allowance per UTC day
+    ai_budget_percent: int = Field(default=85, ge=0, le=95)  # stop here, leaving a buffer
+    ai_neurons_per_image: int = Field(default=60, ge=1)  # flux-1-schnell 1024 px, 4 steps ~ 57.6
+    ai_tenant_daily_images: int = Field(default=10, ge=0, le=500)
+
+    @property
+    def ai_enabled(self) -> bool:
+        return bool(self.ai_cf_account_id and self.ai_cf_api_token)
+
     @property
     def encryption_key(self) -> str:
         if self.secret_encryption_key:

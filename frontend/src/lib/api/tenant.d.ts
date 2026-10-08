@@ -310,6 +310,40 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/catalog/ai-images': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Generate */
+    post: operations['generate_api_v1_catalog_ai_images_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/ai-images/usage': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Usage */
+    get: operations['get_usage_api_v1_catalog_ai_images_usage_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/catalog/boms/{bom_id}': {
     parameters: {
       query?: never
@@ -504,6 +538,26 @@ export interface paths {
     post?: never
     /** Delete Photo */
     delete: operations['delete_photo_api_v1_catalog_items__item_id__photo_delete']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/items/{item_id}/photo/{upload_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Use Existing Photo
+     * @description Accept an image already stored for this tenant (for example an AI image).
+     */
+    put: operations['use_existing_photo_api_v1_catalog_items__item_id__photo__upload_id__put']
+    post?: never
+    delete?: never
     options?: never
     head?: never
     patch?: never
@@ -1096,6 +1150,22 @@ export interface components {
        */
       unit_id: string
     }
+    /** AiUsage */
+    AiUsage: {
+      /** Enabled */
+      enabled: boolean
+      /** Remaining */
+      remaining: number
+      /**
+       * Resets At
+       * Format: date-time
+       */
+      resets_at: string
+      /** Tenant Limit */
+      tenant_limit: number
+      /** Tenant Used */
+      tenant_used: number
+    }
     /** AlertRuleIn */
     AlertRuleIn: {
       /**
@@ -1650,6 +1720,16 @@ export interface components {
        * Format: date
        */
       valid_from: string
+    }
+    /** GenerateIn */
+    GenerateIn: {
+      /** Prompt */
+      prompt: string
+    }
+    /** GenerateOut */
+    GenerateOut: {
+      image: components['schemas']['UploadRef']
+      usage: components['schemas']['AiUsage']
     }
     /** HTTPValidationError */
     HTTPValidationError: {
@@ -2419,6 +2499,22 @@ export interface components {
       /** Name */
       name: string
     }
+    /** UploadRef */
+    UploadRef: {
+      /** Byte Size */
+      byte_size: number
+      /** Content Type */
+      content_type: string
+      /** Height */
+      height: number | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Width */
+      width: number | null
+    }
     /** UserOut */
     UserOut: {
       /** Email */
@@ -2994,6 +3090,59 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  generate_api_v1_catalog_ai_images_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GenerateIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GenerateOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_usage_api_v1_catalog_ai_images_usage_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AiUsage']
         }
       }
     }
@@ -3614,6 +3763,38 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  use_existing_photo_api_v1_catalog_items__item_id__photo__upload_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+        upload_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PhotoOut']
+        }
       }
       /** @description Validation Error */
       422: {

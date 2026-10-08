@@ -102,6 +102,40 @@
         "title": "AdjustmentLineIn",
         "type": "object"
       },
+      "AiUsage": {
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "remaining": {
+            "title": "Remaining",
+            "type": "integer"
+          },
+          "resets_at": {
+            "format": "date-time",
+            "title": "Resets At",
+            "type": "string"
+          },
+          "tenant_limit": {
+            "title": "Tenant Limit",
+            "type": "integer"
+          },
+          "tenant_used": {
+            "title": "Tenant Used",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "enabled",
+          "tenant_used",
+          "tenant_limit",
+          "remaining",
+          "resets_at"
+        ],
+        "title": "AiUsage",
+        "type": "object"
+      },
       "AlertRuleIn": {
         "properties": {
           "alert_type": {
@@ -1443,6 +1477,38 @@
           "price"
         ],
         "title": "EffectivePrice",
+        "type": "object"
+      },
+      "GenerateIn": {
+        "properties": {
+          "prompt": {
+            "maxLength": 300,
+            "minLength": 3,
+            "pattern": "^[^\\x00-\\x1f\\x7f]+$",
+            "title": "Prompt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "title": "GenerateIn",
+        "type": "object"
+      },
+      "GenerateOut": {
+        "properties": {
+          "image": {
+            "$ref": "#/components/schemas/UploadRef"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/AiUsage"
+          }
+        },
+        "required": [
+          "image",
+          "usage"
+        ],
+        "title": "GenerateOut",
         "type": "object"
       },
       "HTTPValidationError": {
@@ -3394,6 +3460,54 @@
         "title": "UnitOut",
         "type": "object"
       },
+      "UploadRef": {
+        "properties": {
+          "byte_size": {
+            "title": "Byte Size",
+            "type": "integer"
+          },
+          "content_type": {
+            "title": "Content Type",
+            "type": "string"
+          },
+          "height": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Height"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Width"
+          }
+        },
+        "required": [
+          "id",
+          "content_type",
+          "width",
+          "height",
+          "byte_size"
+        ],
+        "title": "UploadRef",
+        "type": "object"
+      },
       "UserOut": {
         "properties": {
           "email": {
@@ -4166,6 +4280,68 @@
         "summary": "Switch Tenant",
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/api/v1/catalog/ai-images": {
+      "post": {
+        "operationId": "generate_api_v1_catalog_ai_images_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Generate",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/ai-images/usage": {
+      "get": {
+        "operationId": "get_usage_api_v1_catalog_ai_images_usage_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiUsage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Usage",
+        "tags": [
+          "catalog"
         ]
       }
     },
@@ -5220,6 +5396,60 @@
           }
         },
         "summary": "Put Photo",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/items/{item_id}/photo/{upload_id}": {
+      "put": {
+        "description": "Accept an image already stored for this tenant (for example an AI image).",
+        "operationId": "use_existing_photo_api_v1_catalog_items__item_id__photo__upload_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "upload_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Upload Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhotoOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Use Existing Photo",
         "tags": [
           "catalog"
         ]

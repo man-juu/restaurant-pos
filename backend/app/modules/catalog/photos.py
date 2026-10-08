@@ -13,6 +13,7 @@ from app.core.access.policy import Principal, require
 from app.core.errors import NotFoundError
 from app.core.tenancy import tenant_session
 from app.core.uploads import service as uploads
+from app.core.uploads.models import Upload
 from app.modules.catalog import permissions as perm
 from app.modules.catalog.models import Item
 
@@ -65,3 +66,16 @@ async def put_photo(item_id: uuid.UUID, request: Request, p: Update) -> PhotoOut
 async def delete_photo(item_id: uuid.UUID, request: Request, p: Update) -> None:
     async with tenant_session(request.app.state.sessionmaker, p.tenant_id, p.user_id) as db:
         await _set_photo(db, p, item_id, None)
+
+
+@router.put("/items/{item_id}/photo/{upload_id}", response_model=PhotoOut)
+async def use_existing_photo(
+    item_id: uuid.UUID, upload_id: uuid.UUID, request: Request, p: Update
+) -> PhotoOut:
+    """Accept an image already stored for this tenant (for example an AI image)."""
+    async with tenant_session(request.app.state.sessionmaker, p.tenant_id, p.user_id) as db:
+        row = await db.get(Upload, upload_id)  # RLS: another tenant's upload is not found
+        if row is None or row.purpose != "item_photo":
+            raise NotFoundError("upload_not_found")
+        await _set_photo(db, p, item_id, upload_id)
+        return PhotoOut.model_validate(row, from_attributes=True)

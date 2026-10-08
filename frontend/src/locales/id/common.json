@@ -165,7 +165,11 @@
     "count_incomplete": "Isi jumlah terhitung untuk setiap baris dulu.",
     "items_required": "Pilih minimal satu item untuk dihitung.",
     "invalid_image": "File ini bukan gambar yang didukung. Gunakan JPEG, PNG atau WebP.",
-    "upload_too_large": "File terlalu besar. Batasnya 8 MB."
+    "upload_too_large": "File terlalu besar. Batasnya 8 MB.",
+    "ai_disabled": "Gambar AI belum diaktifkan.",
+    "tenant_daily_limit": "Usaha Anda sudah memakai semua gambar AI gratis hari ini. Coba lagi besok.",
+    "platform_daily_limit": "Gambar AI gratis hari ini sudah habis. Coba lagi besok.",
+    "ai_provider_error": "Layanan gambar tidak merespons. Jatah gratis Anda tidak terpakai; coba lagi."
   },
   "appearance": {
     "open": "Tampilan",
@@ -428,6 +432,19 @@
       "uploading": "Mengunggah…",
       "alt": "Foto {{name}}",
       "tooBig": "File ini lebih dari 8 MB."
+    },
+    "ai": {
+      "title": "Buat foto dengan AI (gratis)",
+      "left_one": "Sisa {{count}} gambar hari ini · direset {{time}}",
+      "left_other": "Sisa {{count}} gambar hari ini · direset {{time}}",
+      "privacy": "Hanya kata yang Anda ketik yang dikirim ke layanan gambar. Tidak ada data usaha lainnya.",
+      "prompt": "Jelaskan fotonya",
+      "placeholder": "mis. bibimbap di mangkuk batu, tampak atas",
+      "generate": "Buat gambar",
+      "working": "Membuat… (hingga satu menit)",
+      "previewAlt": "Pratinjau gambar AI",
+      "use": "Pakai foto ini",
+      "discard": "Buang"
     }
   },
   "inventory": {

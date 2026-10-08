@@ -165,7 +165,11 @@
     "count_incomplete": "Enter a counted quantity for every line first.",
     "items_required": "Choose at least one item to count.",
     "invalid_image": "This file is not a supported image. Use JPEG, PNG or WebP.",
-    "upload_too_large": "This file is too large. The limit is 8 MB."
+    "upload_too_large": "This file is too large. The limit is 8 MB.",
+    "ai_disabled": "AI images are not switched on.",
+    "tenant_daily_limit": "Your business used all free AI images for today. Try again tomorrow.",
+    "platform_daily_limit": "Free AI images are used up for today. Try again tomorrow.",
+    "ai_provider_error": "The image service did not answer. Your free image was not used up; try again."
   },
   "appearance": {
     "open": "Appearance",
@@ -428,6 +432,19 @@
       "uploading": "Uploading…",
       "alt": "Photo of {{name}}",
       "tooBig": "This file is larger than 8 MB."
+    },
+    "ai": {
+      "title": "Create a photo with AI (free)",
+      "left_one": "{{count}} image left today · resets {{time}}",
+      "left_other": "{{count}} images left today · resets {{time}}",
+      "privacy": "Only the words you type are sent to the image service. Nothing else about your business.",
+      "prompt": "Describe the photo",
+      "placeholder": "e.g. bibimbap in a stone bowl, top view",
+      "generate": "Create image",
+      "working": "Creating… (up to a minute)",
+      "previewAlt": "AI image preview",
+      "use": "Use this photo",
+      "discard": "Discard"
     }
   },
   "inventory": {

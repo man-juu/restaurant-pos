@@ -36,6 +36,14 @@ const add = (list: Body[], row: Body) => {
   return row
 }
 
+const usage = (remaining: number) => ({
+  enabled: true,
+  tenant_used: 2 - remaining,
+  tenant_limit: 2,
+  remaining,
+  resets_at: '2026-10-09T00:00:00Z',
+})
+
 /** "METHOD path" -> handler; a lookup table instead of an if-chain. */
 const ROUTES: Record<string, (fake: Fake, body: Body) => unknown> = {
   'GET /api/v1/catalog/units': (f) => f.units,
@@ -50,6 +58,15 @@ const ROUTES: Record<string, (fake: Fake, body: Body) => unknown> = {
   'PUT /api/v1/catalog/items/i1/photo': (f) => {
     f.items[0].photo_upload_id = 'up1'
     return { id: 'up1', content_type: 'image/webp', width: 1, height: 1, byte_size: 68 }
+  },
+  'GET /api/v1/catalog/ai-images/usage': () => usage(2),
+  'POST /api/v1/catalog/ai-images': () => ({
+    image: { id: 'ai1', content_type: 'image/webp', width: 1, height: 1, byte_size: 68 },
+    usage: usage(0),
+  }),
+  'PUT /api/v1/catalog/items/i1/photo/ai1': (f) => {
+    f.items[0].photo_upload_id = 'ai1'
+    return { id: 'ai1', content_type: 'image/webp', width: 1, height: 1, byte_size: 68 }
   },
   'PUT /api/v1/catalog/items/i1/prices': (f, b) =>
     add(f.prices, { id: `p${f.prices.length}`, item_id: 'i1', ...b }),
@@ -150,6 +167,15 @@ test('manager adds a channel, an item and its dine-in price (FR-CAT-001, 004)', 
   })
   await expect(page.getByRole('img', { name: 'Photo of Fried rice' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Replace photo' })).toBeVisible()
+
+  // Free AI image: counter shown, generate, accept; at 0 left the button is blocked.
+  await expect(page.getByText(/2 images left today/)).toBeVisible()
+  await page.getByLabel('Describe the photo').fill('fried rice on a plate')
+  await page.getByRole('button', { name: 'Create image' }).click()
+  await expect(page.getByText(/0 images left today/)).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Create image' })).toBeDisabled()
+  await page.getByRole('button', { name: 'Use this photo' }).click()
+  expect(fake.posts.at(-1)?.path).toBe('/api/v1/catalog/items/i1/photo/ai1')
 })
 
 test('staff without edit rights see the catalog read-only', async ({ page }) => {
