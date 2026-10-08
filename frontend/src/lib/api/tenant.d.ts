@@ -1034,6 +1034,24 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/inventory/levels': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Levels */
+    get: operations['list_levels_api_v1_inventory_levels_get']
+    /** Save Levels */
+    put: operations['save_levels_api_v1_inventory_levels_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/inventory/movements': {
     parameters: {
       query?: never
@@ -1336,6 +1354,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/production/orders/{order_id}/labels': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Labels */
+    get: operations['labels_api_v1_production_orders__order_id__labels_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/production/orders/{order_id}/reverse': {
     parameters: {
       query?: never
@@ -1347,6 +1382,40 @@ export interface paths {
     put?: never
     /** Reverse Order */
     post: operations['reverse_order_api_v1_production_orders__order_id__reverse_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/production/prep-list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Prep List */
+    get: operations['prep_list_api_v1_production_prep_list_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/production/prep-list/pdf': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Prep List Pdf */
+    get: operations['prep_list_pdf_api_v1_production_prep_list_pdf_get']
+    put?: never
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -2579,6 +2648,67 @@ export interface components {
       /** Version */
       version: number
     }
+    /**
+     * LevelIn
+     * @description One item's targets at one outlet, in the item's base unit; empty = no target.
+     */
+    LevelIn: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Lead Time Days */
+      lead_time_days?: number | null
+      /** Max Qty */
+      max_qty?: number | string | null
+      /** Min Qty */
+      min_qty?: number | string | null
+      /** Par Qty */
+      par_qty?: number | string | null
+      /** Reorder Point */
+      reorder_point?: number | string | null
+      /** Safety Qty */
+      safety_qty?: number | string | null
+    }
+    /** LevelOut */
+    LevelOut: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Lead Time Days */
+      lead_time_days?: number | null
+      /** Max Qty */
+      max_qty?: string | null
+      /** Min Qty */
+      min_qty?: string | null
+      /** Name */
+      name: string
+      /** On Hand */
+      on_hand: string
+      /** Par Qty */
+      par_qty?: string | null
+      /** Reorder Point */
+      reorder_point?: string | null
+      /** Safety Qty */
+      safety_qty?: string | null
+      /** Sku */
+      sku: string
+      /** Unit Code */
+      unit_code: string
+    }
+    /** LevelsIn */
+    LevelsIn: {
+      /** Levels */
+      levels: components['schemas']['LevelIn'][]
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
     /** LoginRequest */
     LoginRequest: {
       /** Email */
@@ -2953,6 +3083,28 @@ export interface components {
       doc_type: string
       /** Movements */
       movements: number
+    }
+    /** PrepRow */
+    PrepRow: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Name */
+      name: string
+      /** On Hand */
+      on_hand: string
+      /** Par Qty */
+      par_qty: string
+      /** Planned */
+      planned: string
+      /** Sku */
+      sku: string
+      /** Suggested */
+      suggested: string
+      /** Unit Code */
+      unit_code: string
     }
     /** PriceIn */
     PriceIn: {
@@ -5931,6 +6083,73 @@ export interface operations {
       }
     }
   }
+  list_levels_api_v1_inventory_levels_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        lang?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LevelOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  save_levels_api_v1_inventory_levels_put: {
+    parameters: {
+      query?: {
+        lang?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LevelsIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LevelOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   movement_history_api_v1_inventory_movements_get: {
     parameters: {
       query: {
@@ -6506,6 +6725,40 @@ export interface operations {
       }
     }
   }
+  labels_api_v1_production_orders__order_id__labels_get: {
+    parameters: {
+      query?: {
+        copies?: number
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   reverse_order_api_v1_production_orders__order_id__reverse_post: {
     parameters: {
       query?: never
@@ -6524,6 +6777,72 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ProductionOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  prep_list_api_v1_production_prep_list_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        on: string
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrepRow'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  prep_list_pdf_api_v1_production_prep_list_pdf_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        on: string
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
         }
       }
       /** @description Validation Error */

@@ -6,6 +6,7 @@ import { errorMessage } from '../../lib/errors'
 import { formatMoney, intlLocale } from '../../lib/format'
 import { useProductionAction } from './api'
 import { CompleteForm } from './CompleteForm'
+import { LabelLink } from './LabelLink'
 
 /** One production order: plan, result (yield and cost) and the next step. */
 export function ProductionCard({
@@ -32,6 +33,7 @@ export function ProductionCard({
         {t('production.planned', { qty: Number(order.planned_qty), unit: order.unit_code })}
       </p>
       {done && <Result order={order} currency={currency} locale={intlLocale(i18n.language)} />}
+      {done && <LabelLink orderId={order.id} />}
       {step.error ? <Alert>{errorMessage(step.error, t)}</Alert> : null}
       {can.manage && order.status === 'planned' && <CompleteForm order={order} />}
       {can.manage && order.status === 'planned' && (

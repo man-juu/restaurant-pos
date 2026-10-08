@@ -84,3 +84,34 @@ class MovementOut(BaseModel):
 class ValuationRow(Labelled):
     qty: Decimal
     value: int
+
+
+Level = Annotated[Decimal, Field(ge=0, max_digits=18, decimal_places=4)]
+
+
+class LevelIn(BaseModel):
+    """One item's targets at one outlet, in the item's base unit; empty = no target."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    item_id: uuid.UUID
+    par_qty: Level | None = None
+    min_qty: Level | None = None
+    reorder_point: Level | None = None
+    max_qty: Level | None = None
+    safety_qty: Level | None = None
+    lead_time_days: int | None = Field(default=None, ge=0, le=365)
+
+
+class LevelsIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    outlet_id: uuid.UUID
+    levels: list[LevelIn] = Field(max_length=500)
+
+
+class LevelOut(LevelIn):
+    sku: str
+    name: str
+    unit_code: str
+    on_hand: Decimal

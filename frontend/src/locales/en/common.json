@@ -533,7 +533,8 @@
       "valuation": "Valuation",
       "waste": "Waste",
       "adjustments": "Adjustments",
-      "counts": "Stock counts"
+      "counts": "Stock counts",
+      "levels": "Levels"
     },
     "empty": "No stock recorded at this outlet yet.",
     "negative": "Below zero: more was used than was recorded in",
@@ -627,6 +628,16 @@
       "qty": "On hand now ({{unit}})",
       "save": "Save",
       "done": "Saved. Stock now matches what you entered."
+    },
+    "levels": {
+      "help": "Targets per item at this outlet, in the item's base unit. Par drives the daily prep list; min, reorder point and max drive alerts.",
+      "add": "Add an item",
+      "save": "Save levels",
+      "onHand": "On hand: {{qty}} {{unit}}",
+      "par_qty": "Par",
+      "min_qty": "Minimum",
+      "reorder_point": "Reorder at",
+      "max_qty": "Maximum"
     }
   },
   "purchasing": {
@@ -724,6 +735,21 @@
       "completed": "Done",
       "cancelled": "Cancelled",
       "reversed": "Undone"
+    },
+    "tabs": {
+      "plan": "Plan and record",
+      "prep": "Prep list"
+    },
+    "prep": {
+      "help": "Items below their par level today, minus what is already planned.",
+      "print": "Print prep list (PDF)",
+      "empty": "Everything is at par. Set par levels under Inventory, Levels.",
+      "line": "Make {{make}} {{unit}} · have {{have}} · par {{par}} · planned {{planned}}",
+      "plan": "Plan it"
+    },
+    "labels": {
+      "copies": "Labels",
+      "print": "Print {{count}} label(s)"
     }
   }
 }

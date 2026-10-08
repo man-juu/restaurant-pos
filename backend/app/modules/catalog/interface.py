@@ -44,6 +44,8 @@ class StockItem:
     is_active: bool
     shelf_life_days: int | None
     tracking_mode: str = "exact"
+    storage_type: str | None = None
+    allergens: tuple[str, ...] = ()
 
     @property
     def estimated(self) -> bool:
@@ -66,8 +68,11 @@ async def stock_items(db: AsyncSession, ids: Iterable[uuid.UUID]) -> dict[uuid.U
         Item.is_active,
         Item.shelf_life_days,
         Item.tracking_mode,
+        Item.storage_type,
+        Item.allergens,
     ).where(Item.id.in_(set(ids)))
-    return {row.id: StockItem(*row) for row in (await db.execute(stmt)).all()}
+    rows = (await db.execute(stmt)).all()
+    return {r.id: StockItem(*r[:-1], allergens=tuple(r.allergens or ())) for r in rows}
 
 
 async def item_ids_by_sku(db: AsyncSession) -> dict[str, uuid.UUID]:

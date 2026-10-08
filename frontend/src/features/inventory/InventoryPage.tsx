@@ -7,6 +7,7 @@ import type { Capabilities } from '../../lib/api/types'
 import { useOutlets } from '../../lib/session'
 import { AdjustmentsTab } from './AdjustmentsTab'
 import { CountsTab } from './CountsTab'
+import { LevelsTab } from './LevelsTab'
 import { OpeningTab } from './OpeningTab'
 import { StockTab } from './StockTab'
 import { ValuationTab } from './ValuationTab'
@@ -55,6 +56,12 @@ const TABS: Record<
   opening: {
     visible: (a) => a.has('inventory.opening.post'),
     render: (o, a) => <OpeningTab key={o} outletId={o} currency={a.currency} />,
+  },
+  levels: {
+    visible: () => true,
+    render: (o, a) => (
+      <LevelsTab key={o} outletId={o} canManage={a.has('inventory.level.manage')} />
+    ),
   },
   valuation: {
     visible: (a) => a.showCost,

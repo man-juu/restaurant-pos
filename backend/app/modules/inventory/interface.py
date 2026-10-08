@@ -3,6 +3,7 @@
 Documents in other modules (purchasing, production, transfers, sales) post stock only through
 these functions, inside their own transaction, so the ledger keeps one writer."""
 
+from app.modules.inventory.levels import below_par
 from app.modules.inventory.opening import visible_outlet
 from app.modules.inventory.policy import negative_allowed
 from app.modules.inventory.service import (
@@ -20,6 +21,7 @@ __all__ = [
     "OutLine",
     "Posting",
     "StockError",
+    "below_par",
     "consume",
     "negative_allowed",
     "receive",

@@ -533,7 +533,8 @@
       "valuation": "Nilai stok",
       "waste": "Barang terbuang",
       "adjustments": "Penyesuaian",
-      "counts": "Stok opname"
+      "counts": "Stok opname",
+      "levels": "Level"
     },
     "empty": "Belum ada stok tercatat di outlet ini.",
     "negative": "Di bawah nol: pemakaian melebihi stok yang tercatat masuk",
@@ -627,6 +628,16 @@
       "qty": "Stok sekarang ({{unit}})",
       "save": "Simpan",
       "done": "Tersimpan. Stok sekarang sesuai yang Anda isi."
+    },
+    "levels": {
+      "help": "Target per barang di outlet ini, dalam satuan dasar. Par dipakai untuk daftar persiapan harian; minimum, titik pesan ulang dan maksimum untuk peringatan.",
+      "add": "Tambah barang",
+      "save": "Simpan level",
+      "onHand": "Stok: {{qty}} {{unit}}",
+      "par_qty": "Par",
+      "min_qty": "Minimum",
+      "reorder_point": "Pesan ulang di",
+      "max_qty": "Maksimum"
     }
   },
   "purchasing": {
@@ -724,6 +735,21 @@
       "completed": "Selesai",
       "cancelled": "Dibatalkan",
       "reversed": "Dibatalkan (dibalik)"
+    },
+    "tabs": {
+      "plan": "Rencana dan hasil",
+      "prep": "Daftar persiapan"
+    },
+    "prep": {
+      "help": "Barang di bawah level par hari ini, dikurangi yang sudah direncanakan.",
+      "print": "Cetak daftar persiapan (PDF)",
+      "empty": "Semua sudah sesuai par. Atur level par di Inventaris, Level.",
+      "line": "Buat {{make}} {{unit}} · ada {{have}} · par {{par}} · direncanakan {{planned}}",
+      "plan": "Rencanakan"
+    },
+    "labels": {
+      "copies": "Label",
+      "print": "Cetak {{count}} label"
     }
   }
 }

@@ -81,7 +81,7 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `stock_movements` | tenant_id, outlet_id, item_id, batch_id, movement_type, qty (signed), unit_cost, value, doc_type, doc_id, doc_line_id, business_date, posted_at, posted_by, reverses_id | **Append-only** |
 | `stock_balances` | tenant_id, outlet_id, item_id, batch_id, qty | Cache maintained in the same transaction; rebuildable from movements |
 | `item_costs` | tenant_id, outlet_id, item_id, avg_cost, qty_on_hand_for_avg, updated_at | Moving average state |
-| `stock_levels` | tenant_id, outlet_id, item_id, min_qty, max_qty, reorder_point, lead_time_days, safety_qty, preferred_vendor_id | |
+| `stock_levels` | tenant_id, outlet_id, item_id, par_qty, min_qty, max_qty, reorder_point, lead_time_days, safety_qty, preferred_vendor_id | par_qty added 2026-10-08 (0.35) for the daily prep list; preferred_vendor_id comes with reorder hints (1j) |
 | `stock_counts`, `stock_count_lines` | header: outlet, type, blind, status; line: item, batch, system_qty, counted_qty | Status: draft, submitted, approved, posted |
 | `waste_logs`, `waste_lines` | outlet, reason_code, photo_ref | Post as movements |
 | `adjustments`, `adjustment_lines` | outlet, reason_code, status | Post as movements |

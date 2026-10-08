@@ -65,6 +65,18 @@ async function mock(page: Page) {
     ],
     'GET /api/v1/catalog/items': () => ({ items: [sambal], next_cursor: null }),
     'GET /api/v1/production/orders': () => orders,
+    'GET /api/v1/production/prep-list': () => [
+      {
+        item_id: 'i-sambal',
+        sku: 'SAMBAL',
+        name: 'Sambal',
+        unit_code: 'g',
+        par_qty: '2000.0000',
+        on_hand: '300.0000',
+        planned: '0',
+        suggested: '1700.0000',
+      },
+    ],
     'POST /api/v1/production/orders': (body) => {
       orders = [planned(body)]
       return orders[0]
@@ -139,4 +151,18 @@ test('cook plans sambal, records a smaller yield and sees cost and use-by (FR-PR
   await expect(page.getByText(/Ingredients used: .*35[.,]000/)).toBeVisible()
   await expect(page.getByText('Use by 2026-10-11')).toBeVisible()
   expect(sent.at(-1)?.body).toEqual({ actual_qty: '900', used: [], confirm_negative: false })
+})
+
+test('prep list shows what is below par, ticks off and plans it (FR-PRD-008)', async ({ page }) => {
+  const sent = await mock(page)
+  await page.goto('/production')
+  await page.getByRole('button', { name: 'EN' }).click()
+  await page.getByRole('tab', { name: 'Prep list' }).click()
+  await expect(page.getByText('Make 1700 g · have 300 · par 2000 · planned 0')).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Print prep list (PDF)' })).toBeVisible()
+  const tick = page.getByRole('checkbox', { name: /Sambal/ })
+  await tick.check()
+  await expect(tick).toBeChecked()
+  await page.getByRole('button', { name: 'Plan it' }).click()
+  await expect.poll(() => sent.at(-1)?.body.planned_qty).toBe('1700.0000')
 })

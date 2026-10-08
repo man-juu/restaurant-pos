@@ -151,3 +151,33 @@ class ItemCost(Base):
     avg_cost: Mapped[Decimal] = mapped_column(Numeric(18, 6))
     qty_on_hand_for_avg: Mapped[Decimal] = mapped_column(Numeric(18, 4))
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+
+class StockLevel(Base):
+    """Targets per outlet and item (docs/05 2.3): par level for the daily prep list
+    (FR-PRD-008), and min / reorder point / max for alerts and reorder hints (slice 1j)."""
+
+    __tablename__ = "stock_levels"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "outlet_id", "item_id"),
+        _outlet_fk(),
+        _item_fk(),
+        CheckConstraint(
+            "coalesce(par_qty, 0) >= 0 AND coalesce(min_qty, 0) >= 0"
+            " AND coalesce(reorder_point, 0) >= 0 AND coalesce(max_qty, 0) >= 0"
+            " AND coalesce(safety_qty, 0) >= 0",
+            name="non_negative",
+        ),
+        CheckConstraint("lead_time_days IS NULL OR lead_time_days >= 0", name="lead_time"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    outlet_id: Mapped[uuid.UUID] = mapped_column()
+    item_id: Mapped[uuid.UUID] = mapped_column()
+    par_qty: Mapped[Decimal | None] = mapped_column(Numeric(18, 4))
+    min_qty: Mapped[Decimal | None] = mapped_column(Numeric(18, 4))
+    reorder_point: Mapped[Decimal | None] = mapped_column(Numeric(18, 4))
+    max_qty: Mapped[Decimal | None] = mapped_column(Numeric(18, 4))
+    safety_qty: Mapped[Decimal | None] = mapped_column(Numeric(18, 4))
+    lead_time_days: Mapped[int | None] = mapped_column()

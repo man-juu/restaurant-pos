@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useOutletContext } from 'react-router'
 
-import { SelectInput, TextInput } from '../../components/form'
+import { SelectInput, Tabs, TextInput } from '../../components/form'
 import { Alert } from '../../components/ui'
 import type { Capabilities } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
@@ -10,6 +10,7 @@ import { useOutlets } from '../../lib/session'
 import { todayIso } from '../catalog/labels'
 import { useProduction } from './api'
 import { PlanForm } from './PlanForm'
+import { PrepTab } from './PrepTab'
 import { ProductionCard } from './ProductionCard'
 
 /** FR-PRD-001 to 004: plan what the kitchen makes today, then record what came out. */
@@ -20,6 +21,7 @@ export function ProductionPage() {
   const outlets = useOutlets()
   const [picked, setPicked] = useState('')
   const [date, setDate] = useState(todayIso)
+  const [tab, setTab] = useState<'plan' | 'prep'>('plan')
   const outletId = picked || outlets.data?.find((o) => o.is_active)?.id || ''
   const can = { manage: has('production.order.manage'), reverse: has('production.order.reverse') }
   return (
@@ -44,8 +46,21 @@ export function ProductionPage() {
           onChange={(e) => setDate(e.target.value)}
         />
       </div>
-      {can.manage && outletId && <PlanForm outletId={outletId} date={date} />}
-      <DayList outletId={outletId} date={date} currency={caps?.currency ?? 'IDR'} can={can} />
+      <Tabs
+        tabs={['plan', 'prep'] as const}
+        value={tab}
+        onChange={setTab}
+        label={(k) => t(`production.tabs.${k}`)}
+      />
+      {outletId && (
+        <TabBody
+          tab={tab}
+          outletId={outletId}
+          date={date}
+          currency={caps?.currency ?? 'IDR'}
+          can={can}
+        />
+      )}
     </div>
   )
 }
@@ -73,6 +88,40 @@ function DayList({
       {today.map((o) => (
         <ProductionCard key={o.id} order={o} currency={currency} can={can} />
       ))}
+    </>
+  )
+}
+
+function TabBody({
+  tab,
+  ...rest
+}: {
+  tab: 'plan' | 'prep'
+  outletId: string
+  date: string
+  currency: string
+  can: { manage: boolean; reverse: boolean }
+}) {
+  if (tab === 'prep')
+    return <PrepTab outletId={rest.outletId} date={rest.date} canPlan={rest.can.manage} />
+  return <PlanTab {...rest} />
+}
+
+function PlanTab({
+  outletId,
+  date,
+  currency,
+  can,
+}: {
+  outletId: string
+  date: string
+  currency: string
+  can: { manage: boolean; reverse: boolean }
+}) {
+  return (
+    <>
+      {can.manage && <PlanForm outletId={outletId} date={date} />}
+      <DayList outletId={outletId} date={date} currency={currency} can={can} />
     </>
   )
 }

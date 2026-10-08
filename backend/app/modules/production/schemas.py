@@ -71,3 +71,14 @@ class ProductionOut(BaseModel):
     created_at: datetime
     completed_at: datetime | None
     lines: list[ProductionLineOut]
+
+
+class PrepRow(BaseModel):
+    item_id: uuid.UUID
+    sku: str
+    name: str
+    unit_code: str
+    par_qty: Decimal
+    on_hand: Decimal
+    planned: Decimal  # already planned for the day, not made yet
+    suggested: Decimal  # par - on hand - planned, never below 0
