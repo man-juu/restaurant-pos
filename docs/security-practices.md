@@ -150,3 +150,11 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - Cost can never occur: off without keys; the account must stay on the Workers Free plan (over-limit requests fail there); our own budget stops at 85% of the free allowance, counted across all tenants, plus 10 per tenant per day. The budget is reserved in a committed transaction before the call (no race on the last slot); a failed call returns the platform budget. Tested: tenant cap, platform cap across two tenants, refund on failure, disabled state.
 - The returned image goes through the same Pillow checks and re-encoding as uploads. Provider errors are not echoed (could contain account details). The account id must be 32 hex characters before it is used in the URL. The API token needs only "Workers AI: Read".
 - Generating needs `catalog.item.update` (cashiers get 403); every generation is audited with its prompt.
+
+## Slice 1d part 1: item import and export (2026-10-08)
+
+- openpyxl 3.1.5 + et-xmlfile 2.0.0 (MIT, no advisories). XLSX opened read-only with cached values only: formulas are never evaluated. Zip-bomb guard: total uncompressed size checked (50 MB) before openpyxl opens the file; 5 MB body limit while streaming; at most 2,000 rows, 40 columns, 2,000 characters per cell. CSV must be UTF-8 (BOM accepted; `;` or `,` detected).
+- File names in the query are restricted to `name.csv`/`name.xlsx` without slashes (tested with `../evil.csv`); the name is only stored as a label, never used as a path.
+- Export protects against CSV/formula injection: cells starting with `= + - @`, tab or CR get a leading apostrophe (tested).
+- All rows are checked first; one bad row blocks the whole file, so nothing is half-imported. Same file twice is refused by SHA-256 (per tenant). Undo archives the created items (master data is never deleted). Import needs `catalog.item.create`, undo `catalog.item.update`, export `catalog.item.view` (no cost data in the export). Imports and undo are audited.
+- Performance: a 2,000-row import runs about 6 queries per row in one transaction (acceptable for a one-off upload); revisit with bulk inserts if real files are larger.

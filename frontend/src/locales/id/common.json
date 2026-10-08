@@ -169,7 +169,14 @@
     "ai_disabled": "Gambar AI belum diaktifkan.",
     "tenant_daily_limit": "Usaha Anda sudah memakai semua gambar AI gratis hari ini. Coba lagi besok.",
     "platform_daily_limit": "Gambar AI gratis hari ini sudah habis. Coba lagi besok.",
-    "ai_provider_error": "Layanan gambar tidak merespons. Jatah gratis Anda tidak terpakai; coba lagi."
+    "ai_provider_error": "Layanan gambar tidak merespons. Jatah gratis Anda tidak terpakai; coba lagi.",
+    "invalid_file": "File ini tidak bisa dibaca. Gunakan template (.xlsx atau .csv, UTF-8).",
+    "already_imported": "File yang sama sudah pernah diimpor. Lihat riwayat impor.",
+    "rows_invalid": "Beberapa baris bermasalah. Periksa file lalu coba lagi.",
+    "missing_columns": "Kolom wajib tidak ada. Mulai dari template.",
+    "too_many_rows": "Baris terlalu banyak (maksimal 2.000).",
+    "already_reverted": "Impor ini sudah dibatalkan.",
+    "not_utf8": "Simpan CSV sebagai UTF-8, atau gunakan template Excel."
   },
   "appearance": {
     "open": "Tampilan",
@@ -445,6 +452,45 @@
       "previewAlt": "Pratinjau gambar AI",
       "use": "Pakai foto ini",
       "discard": "Buang"
+    },
+    "import": {
+      "open": "Impor",
+      "title": "Impor barang dari Excel atau CSV",
+      "close": "Tutup",
+      "help": "Unduh template, isi satu barang per baris, lalu pilih file. Tidak ada yang disimpan sampai semua baris benar.",
+      "templateXlsx": "Template (Excel)",
+      "templateCsv": "Template (CSV)",
+      "file": "File (.xlsx atau .csv, maks. 5 MB)",
+      "tooBig": "File ini lebih dari 5 MB.",
+      "allGood_one": "{{count}} baris siap.",
+      "allGood_other": "{{count}} baris siap.",
+      "problems_one": "{{count}} masalah perlu diperbaiki di file:",
+      "problems_other": "{{count}} masalah perlu diperbaiki di file:",
+      "rowProblem": "Baris {{row}}: periksa {{field}}",
+      "confirm_one": "Impor {{count}} barang",
+      "confirm_other": "Impor {{count}} barang",
+      "done_one": "{{count}} barang diimpor.",
+      "done_other": "{{count}} barang diimpor.",
+      "history": "Riwayat impor",
+      "rows_one": "{{count}} baris",
+      "rows_other": "{{count}} baris",
+      "undo": "Batalkan",
+      "undone": "Dibatalkan",
+      "fields": {
+        "sku": "SKU",
+        "type": "jenis",
+        "base_unit": "satuan dasar",
+        "category": "kategori",
+        "is_stocked": "dicatat stoknya (ya/tidak)",
+        "sku_taken": "SKU sudah ada atau berulang di file",
+        "storage_type": "jenis penyimpanan",
+        "shelf_life_days": "umur simpan (hari)",
+        "translations": "nama (EN atau ID)"
+      }
+    },
+    "export": {
+      "xlsx": "Ekspor Excel",
+      "csv": "Ekspor CSV"
     }
   },
   "inventory": {

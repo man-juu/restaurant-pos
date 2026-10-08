@@ -450,6 +450,111 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/catalog/exports/items': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Export Items
+     * @description Same columns as the import template, so an export can be edited and imported elsewhere.
+     */
+    get: operations['export_items_api_v1_catalog_exports_items_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/imports': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Imports */
+    get: operations['list_imports_api_v1_catalog_imports_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/imports/items': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Import Items */
+    post: operations['import_items_api_v1_catalog_imports_items_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/imports/items/check': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Check Items */
+    post: operations['check_items_api_v1_catalog_imports_items_check_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/imports/items/template': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Item Template */
+    get: operations['item_template_api_v1_catalog_imports_items_template_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/imports/{batch_id}/revert': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Revert Import */
+    post: operations['revert_import_api_v1_catalog_imports__batch_id__revert_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/catalog/items': {
     parameters: {
       query?: never
@@ -1735,6 +1840,38 @@ export interface components {
     HTTPValidationError: {
       /** Detail */
       detail?: components['schemas']['ValidationError'][]
+    }
+    /** ImportBatchOut */
+    ImportBatchOut: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** File Name */
+      file_name: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Kind */
+      kind: string
+      /** Reverted At */
+      reverted_at: string | null
+      /** Row Count */
+      row_count: number
+      /** Status */
+      status: string
+    }
+    /** ImportCheckOut */
+    ImportCheckOut: {
+      /** Errors */
+      errors: {
+        [key: string]: unknown
+      }[]
+      /** Rows Ok */
+      rows_ok: number
     }
     /** InvitationAccept */
     InvitationAccept: {
@@ -3455,6 +3592,181 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ChannelOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  export_items_api_v1_catalog_exports_items_get: {
+    parameters: {
+      query?: {
+        format?: 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_imports_api_v1_catalog_imports_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ImportBatchOut'][]
+        }
+      }
+    }
+  }
+  import_items_api_v1_catalog_imports_items_post: {
+    parameters: {
+      query: {
+        file_name: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ImportBatchOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  check_items_api_v1_catalog_imports_items_check_post: {
+    parameters: {
+      query: {
+        file_name: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ImportCheckOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  item_template_api_v1_catalog_imports_items_template_get: {
+    parameters: {
+      query?: {
+        format?: 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  revert_import_api_v1_catalog_imports__batch_id__revert_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        batch_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ImportBatchOut']
         }
       }
       /** @description Validation Error */

@@ -169,7 +169,14 @@
     "ai_disabled": "AI images are not switched on.",
     "tenant_daily_limit": "Your business used all free AI images for today. Try again tomorrow.",
     "platform_daily_limit": "Free AI images are used up for today. Try again tomorrow.",
-    "ai_provider_error": "The image service did not answer. Your free image was not used up; try again."
+    "ai_provider_error": "The image service did not answer. Your free image was not used up; try again.",
+    "invalid_file": "This file could not be read. Use the template (.xlsx or .csv, UTF-8).",
+    "already_imported": "This exact file was imported before. See past imports.",
+    "rows_invalid": "Some rows have problems. Check the file and try again.",
+    "missing_columns": "The file is missing required columns. Start from the template.",
+    "too_many_rows": "The file has too many rows (maximum 2,000).",
+    "already_reverted": "This import was already undone.",
+    "not_utf8": "Save the CSV as UTF-8, or use the Excel template."
   },
   "appearance": {
     "open": "Appearance",
@@ -445,6 +452,45 @@
       "previewAlt": "AI image preview",
       "use": "Use this photo",
       "discard": "Discard"
+    },
+    "import": {
+      "open": "Import",
+      "title": "Import items from Excel or CSV",
+      "close": "Close",
+      "help": "Download the template, fill one item per row, then choose the file. Nothing is saved until every row is correct.",
+      "templateXlsx": "Template (Excel)",
+      "templateCsv": "Template (CSV)",
+      "file": "File (.xlsx or .csv, up to 5 MB)",
+      "tooBig": "This file is larger than 5 MB.",
+      "allGood_one": "{{count}} row is ready.",
+      "allGood_other": "{{count}} rows are ready.",
+      "problems_one": "{{count}} problem to fix in the file:",
+      "problems_other": "{{count}} problems to fix in the file:",
+      "rowProblem": "Row {{row}}: check {{field}}",
+      "confirm_one": "Import {{count}} item",
+      "confirm_other": "Import {{count}} items",
+      "done_one": "{{count}} item imported.",
+      "done_other": "{{count}} items imported.",
+      "history": "Past imports",
+      "rows_one": "{{count}} row",
+      "rows_other": "{{count}} rows",
+      "undo": "Undo",
+      "undone": "Undone",
+      "fields": {
+        "sku": "SKU",
+        "type": "type",
+        "base_unit": "base unit",
+        "category": "category",
+        "is_stocked": "is stocked (yes/no)",
+        "sku_taken": "SKU already exists or repeats in the file",
+        "storage_type": "storage type",
+        "shelf_life_days": "shelf life (days)",
+        "translations": "name (EN or ID)"
+      }
+    },
+    "export": {
+      "xlsx": "Export Excel",
+      "csv": "Export CSV"
     }
   },
   "inventory": {

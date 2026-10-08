@@ -5,6 +5,7 @@ import { SelectInput, TextInput } from '../../components/form'
 import { Alert, Button, StateBadge } from '../../components/ui'
 import { errorMessage } from '../../lib/errors'
 import { type ItemFilter, useItems } from './api'
+import { DataToolbar } from './DataToolbar'
 import { ITEM_TYPES } from './labels'
 
 export function ItemsTab({
@@ -48,6 +49,7 @@ export function ItemsTab({
         </SelectInput>
         {canCreate && <Button onClick={onCreate}>{t('catalog.items.new')}</Button>}
       </div>
+      <DataToolbar canImport={canCreate} />
       {items.error && <Alert>{errorMessage(items.error, t)}</Alert>}
       {items.isSuccess && rows.length === 0 && (
         <p className="text-ink-soft">

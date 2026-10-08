@@ -1524,6 +1524,81 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "ImportBatchOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "file_name": {
+            "title": "File Name",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "reverted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reverted At"
+          },
+          "row_count": {
+            "title": "Row Count",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "file_name",
+          "status",
+          "row_count",
+          "created_at",
+          "reverted_at"
+        ],
+        "title": "ImportBatchOut",
+        "type": "object"
+      },
+      "ImportCheckOut": {
+        "properties": {
+          "errors": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Errors",
+            "type": "array"
+          },
+          "rows_ok": {
+            "title": "Rows Ok",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rows_ok",
+          "errors"
+        ],
+        "title": "ImportCheckOut",
+        "type": "object"
+      },
       "InvitationAccept": {
         "properties": {
           "name": {
@@ -4799,6 +4874,255 @@
           }
         },
         "summary": "Update Channel",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/exports/items": {
+      "get": {
+        "description": "Same columns as the import template, so an export can be edited and imported elsewhere.",
+        "operationId": "export_items_api_v1_catalog_exports_items_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "xlsx",
+              "enum": [
+                "csv",
+                "xlsx"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export Items",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/imports": {
+      "get": {
+        "operationId": "list_imports_api_v1_catalog_imports_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ImportBatchOut"
+                  },
+                  "title": "Response List Imports Api V1 Catalog Imports Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Imports",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/imports/items": {
+      "post": {
+        "operationId": "import_items_api_v1_catalog_imports_items_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "file_name",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[^/\\\\]+\\.(csv|xlsx)$",
+              "title": "File Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportBatchOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Import Items",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/imports/items/check": {
+      "post": {
+        "operationId": "check_items_api_v1_catalog_imports_items_check_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "file_name",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[^/\\\\]+\\.(csv|xlsx)$",
+              "title": "File Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportCheckOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Check Items",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/imports/items/template": {
+      "get": {
+        "operationId": "item_template_api_v1_catalog_imports_items_template_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "xlsx",
+              "enum": [
+                "csv",
+                "xlsx"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Item Template",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/imports/{batch_id}/revert": {
+      "post": {
+        "operationId": "revert_import_api_v1_catalog_imports__batch_id__revert_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "batch_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Batch Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportBatchOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Revert Import",
         "tags": [
           "catalog"
         ]

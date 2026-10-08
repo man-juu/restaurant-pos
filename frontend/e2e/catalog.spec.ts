@@ -59,6 +59,11 @@ const ROUTES: Record<string, (fake: Fake, body: Body) => unknown> = {
     f.items[0].photo_upload_id = 'up1'
     return { id: 'up1', content_type: 'image/webp', width: 1, height: 1, byte_size: 68 }
   },
+  'GET /api/v1/catalog/imports': () => [],
+  'POST /api/v1/catalog/imports/items/check': () => ({
+    rows_ok: 1,
+    errors: [{ row: 3, field: 'base_unit' }],
+  }),
   'GET /api/v1/catalog/ai-images/usage': () => usage(2),
   'POST /api/v1/catalog/ai-images': () => ({
     image: { id: 'ai1', content_type: 'image/webp', width: 1, height: 1, byte_size: 68 },
@@ -184,4 +189,20 @@ test('staff without edit rights see the catalog read-only', async ({ page }) => 
   await page.getByRole('button', { name: 'EN' }).click()
   await expect(page.getByText('Ask a manager to change items or prices.')).toBeVisible()
   await expect(page.getByRole('button', { name: 'New item' })).toHaveCount(0)
+})
+
+test('import shows problem rows and blocks the import (FR-IMP-001)', async ({ page }) => {
+  const fake = await mock(page, EDIT)
+  await page.goto('/catalog')
+  await page.getByRole('button', { name: 'EN' }).click()
+  await page.getByRole('button', { name: 'Import' }).click()
+  await page.getByLabel(/File \(.xlsx or .csv/).setInputFiles({
+    name: 'items.csv',
+    mimeType: 'text/csv',
+    buffer: Buffer.from('sku,type,base_unit\nA,ingredient,g\nB,ingredient,parsec\n'),
+  })
+  await expect(page.getByText('Row 3: check base unit')).toBeVisible()
+  await expect(page.getByRole('button', { name: /^Import 1 item/ })).toBeDisabled()
+  expect(fake.posts.at(-1)?.path).toBe('/api/v1/catalog/imports/items/check')
+  await expect(page.getByRole('link', { name: 'Export Excel' })).toBeVisible()
 })

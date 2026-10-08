@@ -158,6 +158,7 @@ def drop_tenant(tenant_id: uuid.UUID) -> None:
             "DELETE FROM items WHERE tenant_id = :t",
             "DELETE FROM item_categories WHERE tenant_id = :t",
             "DELETE FROM ai_image_requests WHERE tenant_id = :t",
+            "DELETE FROM import_batches WHERE tenant_id = :t",
             "DELETE FROM uploads WHERE tenant_id = :t",
             "DELETE FROM units WHERE tenant_id = :t",
             "DELETE FROM idempotency_keys WHERE tenant_id = :t",
