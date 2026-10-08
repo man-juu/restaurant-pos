@@ -85,7 +85,12 @@ def test_fr_pur_003_submit_without_rule_approves_and_receives_in_parts(
 def test_fr_ten_007_order_above_threshold_needs_another_approver(
     client: TestClient, world: dict[str, Any], items: dict[str, str]
 ) -> None:
-    roles = tenant_sql(world["a"], "SELECT id FROM roles WHERE template_key = 'manager'")
+    # Platform template roles are readable too: pick this tenant's own manager role.
+    roles = tenant_sql(
+        world["a"],
+        "SELECT id FROM roles WHERE template_key = 'manager' AND tenant_id = :t",
+        {"t": world["a"]},
+    )
     tenant_sql(
         world["a"],
         "INSERT INTO approval_rules (id, tenant_id, document_type, min_amount, approver_role_id) "
