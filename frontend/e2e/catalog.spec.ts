@@ -180,7 +180,8 @@ test('manager adds a channel, an item and its dine-in price (FR-CAT-001, 004)', 
   await expect(page.getByText(/0 images left today/)).toBeVisible()
   await expect(page.getByRole('button', { name: 'Create image' })).toBeDisabled()
   await page.getByRole('button', { name: 'Use this photo' }).click()
-  expect(fake.posts.at(-1)?.path).toBe('/api/v1/catalog/items/i1/photo/ai1')
+  // The click only starts the request: wait until the fake API has received it.
+  await expect.poll(() => fake.posts.at(-1)?.path).toBe('/api/v1/catalog/items/i1/photo/ai1')
 })
 
 test('staff without edit rights see the catalog read-only', async ({ page }) => {
@@ -203,6 +204,6 @@ test('import shows problem rows and blocks the import (FR-IMP-001)', async ({ pa
   })
   await expect(page.getByText('Row 3: check base unit')).toBeVisible()
   await expect(page.getByRole('button', { name: /^Import 1 item/ })).toBeDisabled()
-  expect(fake.posts.at(-1)?.path).toBe('/api/v1/catalog/imports/items/check')
+  await expect.poll(() => fake.posts.at(-1)?.path).toBe('/api/v1/catalog/imports/items/check')
   await expect(page.getByRole('link', { name: 'Export Excel' })).toBeVisible()
 })
