@@ -119,8 +119,8 @@ def test_fr_prd_001_to_004_plan_complete_cost_and_reverse(
     out = done.json()
     assert out["status"] == "completed"
     assert Decimal(out["yield_variance"]) == Decimal(-100)  # FR-PRD-003
-    assert out["input_value"] == 1000 * 30 + 250 * 20  # FR-PRD-004
-    assert Decimal(out["unit_cost"]) == Decimal("38.888889")
+    # Cooks lack catalog.cost.view, so costs are hidden (Phase 1 security review).
+    assert out["input_value"] is None and out["unit_cost"] is None
     assert out["expiry_date"] == "2026-03-05"  # production date + 3 days shelf life
     stock = on_hand(client, world["kitchen"])
     assert stock == {"CHILI": Decimal(1000), "OIL": Decimal(750), "SAMBAL": Decimal(900)}
@@ -130,6 +130,9 @@ def test_fr_prd_001_to_004_plan_complete_cost_and_reverse(
     # Cooks may not undo; a manager can, while the output is still all there.
     assert client.post(f"{PRD}/{order['id']}/reverse", headers=h).status_code == 403
     m = login(client, world["manager_a"])
+    seen = client.get(f"{PRD}/{order['id']}", headers=m).json()
+    assert seen["input_value"] == 1000 * 30 + 250 * 20  # FR-PRD-004
+    assert Decimal(seen["unit_cost"]) == Decimal("38.888889")
     back = client.post(f"{PRD}/{order['id']}/reverse", headers=m)
     assert back.status_code == 200 and back.json()["status"] == "reversed"
     stock = on_hand(client, world["kitchen"])

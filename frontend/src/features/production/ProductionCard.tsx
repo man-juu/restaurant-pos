@@ -74,7 +74,9 @@ function Result({
       <li>
         {t('production.variance', { qty: Number(order.yield_variance), unit: order.unit_code })}
       </li>
-      <li>{t('production.cost', { value: formatMoney(order.input_value, currency, locale) })}</li>
+      {order.input_value != null && (
+        <li>{t('production.cost', { value: formatMoney(order.input_value, currency, locale) })}</li>
+      )}
       {order.expiry_date && <li>{t('production.useBy', { date: order.expiry_date })}</li>}
     </ul>
   )

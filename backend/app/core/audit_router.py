@@ -10,7 +10,7 @@ from typing import Annotated, Any, Literal, cast
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import Response
 from pydantic import BaseModel
-from sqlalchemy import ColumnElement, Select, select
+from sqlalchemy import ColumnElement, Select, or_, select
 
 from app.core.access.policy import Principal, require
 from app.core.errors import AppError
@@ -69,7 +69,7 @@ def filters(
     )
 
 
-def _query(f: Filters) -> Select[Any]:
+def _query(f: Filters, p: Principal) -> Select[Any]:
     # Names only for this tenant's members (users is a shared table).
     name = (
         select(User.name)
@@ -91,6 +91,10 @@ def _query(f: Filters) -> Select[Any]:
         value = getattr(f, key)
         if value is not None:
             stmt = stmt.where(make(value))
+    if not p.all_outlets:
+        # docs/03 "own outlets": entries of other outlets stay hidden; tenant-wide entries
+        # (settings, users, catalog) have no outlet and are shown.
+        stmt = stmt.where(or_(AuditLog.outlet_id.in_(p.outlet_ids), AuditLog.outlet_id.is_(None)))
     return stmt
 
 
@@ -120,7 +124,7 @@ async def list_audit(
         at = cast(ColumnElement[Any], AuditLog.at)
         rows, cursor = await paginate(
             db,
-            _query(f),
+            _query(f, p),
             PageParams(limit=params.limit, cursor=params.cursor, sort=params.sort or "-at"),
             id_column=cast(ColumnElement[Any], AuditLog.id),
             sortable={"at": at},
@@ -144,7 +148,7 @@ async def export_audit(
     ):
         raise ExportRangeRequired(details={"max_days": EXPORT_MAX_DAYS})
     async with tenant_session(request.app.state.sessionmaker, p.tenant_id, p.user_id) as db:
-        stmt = _query(f).order_by(AuditLog.at, AuditLog.id).limit(EXPORT_MAX_ROWS)
+        stmt = _query(f, p).order_by(AuditLog.at, AuditLog.id).limit(EXPORT_MAX_ROWS)
         rows = [_row(log, name) for log, name in (await db.execute(stmt)).all()]
     header = (
         "at",

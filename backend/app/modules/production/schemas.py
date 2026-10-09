@@ -47,7 +47,7 @@ class ProductionLineOut(BaseModel):
     unit_code: str = ""
     planned_qty: Decimal
     actual_qty: Decimal | None
-    value: int
+    value: int | None  # hidden without catalog.cost.view
 
 
 class ProductionOut(BaseModel):
@@ -63,7 +63,7 @@ class ProductionOut(BaseModel):
     planned_qty: Decimal
     actual_qty: Decimal | None
     yield_variance: Decimal | None  # actual - planned (FR-PRD-003)
-    input_value: int
+    input_value: int | None  # hidden without catalog.cost.view
     unit_cost: Decimal | None
     expiry_date: date | None
     lot_code: str | None

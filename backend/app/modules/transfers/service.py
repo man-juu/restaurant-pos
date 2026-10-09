@@ -56,7 +56,10 @@ async def transfer_picks(db: AsyncSession, transfer_id: uuid.UUID) -> list[Trans
     return list(await db.scalars(stmt.order_by(TransferPick.item_id, TransferPick.expiry_date)))
 
 
-async def transfer_out(db: AsyncSession, t: Transfer, lang: str = "en") -> TransferOut:
+async def transfer_out(
+    db: AsyncSession, t: Transfer, lang: str = "en", *, show_cost: bool = False
+) -> TransferOut:
+    """Values only with catalog.cost.view (docs/03 rule 5); hidden unless the caller says so."""
     rows = await transfer_lines(db, t.id)
     names = await item_names(db, t.tenant_id, lang, {ln.item_id for ln in rows})
     lines = [
@@ -66,7 +69,11 @@ async def transfer_out(db: AsyncSession, t: Transfer, lang: str = "en") -> Trans
         for ln in rows
     ]
     fields = {k: getattr(t, k) for k in TransferOut.model_fields if k != "lines"}
-    return TransferOut(**fields, lines=lines)
+    out = TransferOut(**fields, lines=lines)
+    if show_cost:
+        return out
+    hidden = [ln.model_copy(update={"value": None}) for ln in out.lines]
+    return out.model_copy(update={"shipped_value": None, "lines": hidden})
 
 
 async def _audit(db: AsyncSession, t: Transfer, user_id: uuid.UUID, action: str) -> None:

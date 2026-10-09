@@ -78,7 +78,7 @@ class TransferLineOut(BaseModel):
     shipped_qty: Decimal | None
     received_qty: Decimal | None
     discrepancy_reason: str | None
-    value: int
+    value: int | None  # hidden without catalog.cost.view
 
 
 class TransferOut(BaseModel):
@@ -89,7 +89,7 @@ class TransferOut(BaseModel):
     status: str
     needed_by: date | None
     note: str | None
-    shipped_value: int
+    shipped_value: int | None  # hidden without catalog.cost.view
     adjustment_id: uuid.UUID | None
     created_at: datetime
     shipped_on: date | None

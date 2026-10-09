@@ -4183,8 +4183,15 @@
             "type": "string"
           },
           "value": {
-            "title": "Value",
-            "type": "integer"
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
           }
         },
         "required": [
@@ -4258,8 +4265,15 @@
             "type": "string"
           },
           "input_value": {
-            "title": "Input Value",
-            "type": "integer"
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Value"
           },
           "item_id": {
             "format": "uuid",
@@ -5999,8 +6013,15 @@
             "type": "string"
           },
           "value": {
-            "title": "Value",
-            "type": "integer"
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
           }
         },
         "required": [
@@ -6104,8 +6125,15 @@
             "title": "Shipped On"
           },
           "shipped_value": {
-            "title": "Shipped Value",
-            "type": "integer"
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shipped Value"
           },
           "status": {
             "title": "Status",

@@ -17,6 +17,7 @@ from app.core.idempotency import (
     required_idempotency_key,
 )
 from app.core.tenancy import tenant_session
+from app.modules.catalog.interface import COST_VIEW
 from app.modules.production import permissions as perm
 from app.modules.production import service
 from app.modules.production.models import ProductionOrder
@@ -51,7 +52,10 @@ async def list_orders(
         if on is not None:
             stmt = stmt.where(ProductionOrder.production_date == on)
         stmt = stmt.order_by(ProductionOrder.created_at.desc()).limit(100)
-        return [await service.order_out(db, o, lang) for o in await db.scalars(stmt)]
+        return [
+            await service.order_out(db, o, lang, show_cost=p.can(COST_VIEW))
+            for o in await db.scalars(stmt)
+        ]
 
 
 @router.get("/{order_id}", response_model=ProductionOut)
@@ -59,7 +63,9 @@ async def get_order(
     order_id: uuid.UUID, request: Request, p: View, lang: Lang = "en"
 ) -> ProductionOut:
     async with _db(request, p) as db:
-        return await service.order_out(db, await _scoped(db, p, order_id), lang)
+        return await service.order_out(
+            db, await _scoped(db, p, order_id), lang, show_cost=p.can(COST_VIEW)
+        )
 
 
 @router.post("", response_model=ProductionOut, status_code=201)
@@ -72,7 +78,7 @@ async def plan_order(
         if stored := await replay_or_none(db, key, fingerprint):
             return JSONResponse(stored.body, status_code=stored.status)
         order = await service.plan(db, tenant_id=p.tenant_id, user_id=p.user_id, data=body)
-        out = await service.order_out(db, order)
+        out = await service.order_out(db, order, show_cost=p.can(COST_VIEW))
         await remember(db, p.tenant_id, key, fingerprint, 201, out.model_dump(mode="json"))
         return out
 
@@ -84,7 +90,7 @@ async def complete_order(
     async with _db(request, p) as db:
         await _scoped(db, p, order_id)
         order = await service.complete(db, user_id=p.user_id, order_id=order_id, data=body)
-        return await service.order_out(db, order)
+        return await service.order_out(db, order, show_cost=p.can(COST_VIEW))
 
 
 @router.post("/{order_id}/cancel", response_model=ProductionOut)
@@ -92,7 +98,7 @@ async def cancel_order(order_id: uuid.UUID, request: Request, p: Manage) -> Prod
     async with _db(request, p) as db:
         await _scoped(db, p, order_id)
         order = await service.cancel(db, user_id=p.user_id, order_id=order_id)
-        return await service.order_out(db, order)
+        return await service.order_out(db, order, show_cost=p.can(COST_VIEW))
 
 
 @router.post("/{order_id}/reverse", response_model=ProductionOut)
@@ -100,4 +106,4 @@ async def reverse_order(order_id: uuid.UUID, request: Request, p: Reverse) -> Pr
     async with _db(request, p) as db:
         await _scoped(db, p, order_id)
         order = await service.reverse_order(db, user_id=p.user_id, order_id=order_id)
-        return await service.order_out(db, order)
+        return await service.order_out(db, order, show_cost=p.can(COST_VIEW))

@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from app.core.access.policy import Principal, require
+from app.core.errors import NotFoundError
 from app.core.idempotency import (
     remember,
     replay_or_none,
@@ -18,6 +19,7 @@ from app.core.tenancy import tenant_session
 from app.core.uploads import service as uploads
 from app.modules.purchasing import permissions as perm
 from app.modules.purchasing import service, vendors
+from app.modules.purchasing.models import GoodsReceipt
 from app.modules.purchasing.schemas import (
     QuickPurchaseIn,
     ReceiptOut,
@@ -153,6 +155,9 @@ async def quick_purchase(
 @router.post("/receipts/{receipt_id}/reverse", response_model=ReceiptOut)
 async def reverse_receipt(receipt_id: uuid.UUID, request: Request, p: Reverse) -> ReceiptOut:
     async with _db(request, p) as db:
+        found = await db.get(GoodsReceipt, receipt_id)
+        if found is None:
+            raise NotFoundError("receipt_not_found")
+        p.require_outlet(found.outlet_id)  # before any work: another outlet's receipt is 404
         receipt = await service.reverse_receipt(db, user_id=p.user_id, receipt_id=receipt_id)
-        p.require_outlet(receipt.outlet_id)
         return await service.receipt_out(db, receipt)

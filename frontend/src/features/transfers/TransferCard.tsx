@@ -49,11 +49,7 @@ export function TransferCard({
           </li>
         ))}
       </ul>
-      {transfer.shipped_value > 0 && (
-        <p className="text-sm">
-          {formatMoney(transfer.shipped_value, currency, intlLocale(i18n.language))}
-        </p>
-      )}
+      <ShippedValue value={transfer.shipped_value} currency={currency} />
       {(s === 'shipped' || s === 'received') && (
         <a
           className="text-sm font-semibold text-accent underline"
@@ -114,4 +110,11 @@ function Actions({
       )}
     </div>
   )
+}
+
+/** Shipped value; null when the person may not see costs. */
+function ShippedValue({ value, currency }: { value: number | null; currency: string }) {
+  const { i18n } = useTranslation()
+  if (!value) return null
+  return <p className="text-sm">{formatMoney(value, currency, intlLocale(i18n.language))}</p>
 }

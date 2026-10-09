@@ -16,6 +16,9 @@ from app.core.models import Role
 from app.core.notifications.service import members, notify
 from app.core.settings.service import required_approver_roles
 
+# Named here as a string: core sits below the catalog module that defines it.
+COST_PERMISSION = "catalog.cost.view"
+
 
 class SelfApprovalForbidden(AppError):
     status_code, code = 403, "cannot_approve_own_request"
@@ -79,8 +82,18 @@ async def request_approval(
     roles = await approvers_needed(db, document_type, doc, amount)
     if roles:
         users = await members(db, doc.outlet_id, role_ids=roles) - {doc.created_by}
-        params = {"document": document_type, "number": number or "", "amount": amount}
-        await notify(db, doc.tenant_id, users, "approval_requested", params, link)
+        # The amount is cost data (docs/03 rule 5): only approvers who may see costs get it.
+        with_cost = await members(db, doc.outlet_id, role_ids=roles, permission=COST_PERMISSION)
+        params = {"document": document_type, "number": number or ""}
+        await notify(
+            db,
+            doc.tenant_id,
+            users & with_cost,
+            "approval_requested",
+            {**params, "amount": amount},
+            link,
+        )
+        await notify(db, doc.tenant_id, users - with_cost, "approval_requested", params, link)
     return roles
 
 

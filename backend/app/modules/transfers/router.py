@@ -19,7 +19,7 @@ from app.core.idempotency import (
 )
 from app.core.models import Outlet
 from app.core.tenancy import tenant_session
-from app.modules.catalog.interface import item_names
+from app.modules.catalog.interface import COST_VIEW, item_names
 from app.modules.transfers import pdf, service
 from app.modules.transfers import permissions as perm
 from app.modules.transfers.models import Transfer
@@ -74,7 +74,10 @@ async def list_transfers(
             .order_by(Transfer.created_at.desc())
             .limit(100)
         )
-        return [await service.transfer_out(db, t, lang) for t in await db.scalars(stmt)]
+        return [
+            await service.transfer_out(db, t, lang, show_cost=p.can(COST_VIEW))
+            for t in await db.scalars(stmt)
+        ]
 
 
 @router.get("/{transfer_id}", response_model=TransferOut)
@@ -82,7 +85,9 @@ async def get_transfer(
     transfer_id: uuid.UUID, request: Request, p: View, lang: Lang = "en"
 ) -> TransferOut:
     async with _db(request, p) as db:
-        return await service.transfer_out(db, await _scoped(db, p, transfer_id, "either"), lang)
+        return await service.transfer_out(
+            db, await _scoped(db, p, transfer_id, "either"), lang, show_cost=p.can(COST_VIEW)
+        )
 
 
 @router.post("", response_model=TransferOut, status_code=201)
@@ -95,7 +100,7 @@ async def request_transfer(
         if stored := await replay_or_none(db, key, fingerprint):
             return JSONResponse(stored.body, status_code=stored.status)
         t = await service.request(db, tenant_id=p.tenant_id, user_id=p.user_id, data=body)
-        out = await service.transfer_out(db, t)
+        out = await service.transfer_out(db, t, show_cost=p.can(COST_VIEW))
         await remember(db, p.tenant_id, key, fingerprint, 201, out.model_dump(mode="json"))
         return out
 
@@ -107,7 +112,7 @@ async def approve_transfer(
     async with _db(request, p) as db:
         await _scoped(db, p, transfer_id, "from")
         t = await service.approve(db, user_id=p.user_id, transfer_id=transfer_id, data=body)
-        return await service.transfer_out(db, t)
+        return await service.transfer_out(db, t, show_cost=p.can(COST_VIEW))
 
 
 @router.post("/{transfer_id}/ship", response_model=TransferOut)
@@ -117,7 +122,7 @@ async def ship_transfer(
     async with _db(request, p) as db:
         await _scoped(db, p, transfer_id, "from")
         t = await service.ship(db, user_id=p.user_id, transfer_id=transfer_id, data=body)
-        return await service.transfer_out(db, t)
+        return await service.transfer_out(db, t, show_cost=p.can(COST_VIEW))
 
 
 @router.post("/{transfer_id}/receive", response_model=TransferOut)
@@ -129,7 +134,7 @@ async def receive_transfer(
         t = await service.receive_transfer(
             db, user_id=p.user_id, transfer_id=transfer_id, data=body
         )
-        return await service.transfer_out(db, t)
+        return await service.transfer_out(db, t, show_cost=p.can(COST_VIEW))
 
 
 @router.post("/{transfer_id}/cancel", response_model=TransferOut)
@@ -137,7 +142,7 @@ async def cancel_transfer(transfer_id: uuid.UUID, request: Request, p: Ask) -> T
     async with _db(request, p) as db:
         await _scoped(db, p, transfer_id, "either")
         t = await service.cancel(db, user_id=p.user_id, transfer_id=transfer_id)
-        return await service.transfer_out(db, t)
+        return await service.transfer_out(db, t, show_cost=p.can(COST_VIEW))
 
 
 @router.get("/{transfer_id}/delivery-note")

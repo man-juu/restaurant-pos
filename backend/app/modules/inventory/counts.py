@@ -19,7 +19,7 @@ from app.core.errors import AppError, NotFoundError
 from app.core.notifications.service import notify, recipients
 from app.core.settings import service as settings
 from app.core.settings.schemas import StockSettings
-from app.modules.catalog.interface import stock_items
+from app.modules.catalog.interface import COST_VIEW, stock_items
 from app.modules.inventory import flow
 from app.modules.inventory.doc_models import StockCount, StockCountLine
 from app.modules.inventory.doc_schemas import CountedIn, CountIn
@@ -163,7 +163,8 @@ async def _big_variance(db: AsyncSession, count: StockCount, amount: int) -> Non
     """FR-INV-012: a count whose difference is worth at least the tenant's threshold."""
     stock = cast(StockSettings, await settings.get_setting(db, count.tenant_id, "stock"))
     if stock.count_variance_alert and amount >= stock.count_variance_alert:
-        users = await recipients(db, "count_variance", count.outlet_id)
+        # The amount is cost data: only members who may see costs (docs/03 rule 5).
+        users = await recipients(db, "count_variance", count.outlet_id, COST_VIEW)
         params = {"number": count.number, "amount": amount}
         await notify(db, count.tenant_id, users, "count_variance", params, "/inventory")
 

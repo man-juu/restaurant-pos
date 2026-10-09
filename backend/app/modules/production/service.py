@@ -51,7 +51,10 @@ async def order_lines(db: AsyncSession, order_id: uuid.UUID) -> list[ProductionL
     return list(await db.scalars(stmt.order_by(ProductionLine.id)))
 
 
-async def order_out(db: AsyncSession, order: ProductionOrder, lang: str = "en") -> ProductionOut:
+async def order_out(
+    db: AsyncSession, order: ProductionOrder, lang: str = "en", *, show_cost: bool = False
+) -> ProductionOut:
+    """Costs only with catalog.cost.view (docs/03 rule 5); hidden unless the caller says so."""
     rows = await order_lines(db, order.id)
     names = await item_names(
         db, order.tenant_id, lang, {order.item_id, *(ln.item_id for ln in rows)}
@@ -66,13 +69,17 @@ async def order_out(db: AsyncSession, order: ProductionOrder, lang: str = "en") 
     fields = {k: getattr(order, k) for k in ProductionOut.model_fields if k not in skip}
     variance = None if order.actual_qty is None else order.actual_qty - order.planned_qty
     label = names[order.item_id]
-    return ProductionOut(
+    out = ProductionOut(
         **fields,
         item_name=label.name,
         unit_code=label.unit_code,
         yield_variance=variance,
         lines=lines,
     )
+    if show_cost:
+        return out
+    hidden = [ln.model_copy(update={"value": None}) for ln in out.lines]
+    return out.model_copy(update={"input_value": None, "unit_cost": None, "lines": hidden})
 
 
 async def _audit(db: AsyncSession, order: ProductionOrder, user_id: uuid.UUID, action: str) -> None:

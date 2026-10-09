@@ -52,6 +52,7 @@ def world() -> Iterator[dict[str, Any]]:
     w["manager_a"] = add_member(a, roles_a["manager"], HASH)[1]
     w["cashier_a"] = add_member(a, roles_a["cashier"], HASH)[1]
     w["store_a"] = add_member(a, roles_a["warehouse"], HASH, outlets=(kitchen,))[1]
+    w["kitchen_manager_a"] = add_member(a, roles_a["manager"], HASH, outlets=(kitchen,))[1]
     w["manager_b"] = add_member(b, roles_b["manager"], HASH)[1]
     w["outlet_b"] = add_outlet(b, "Beta shop")
     yield w

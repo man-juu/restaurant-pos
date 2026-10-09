@@ -3818,7 +3818,7 @@ export interface components {
        */
       unit_code: string
       /** Value */
-      value: number
+      value: number | null
     }
     /** ProductionOut */
     ProductionOut: {
@@ -3841,7 +3841,7 @@ export interface components {
        */
       id: string
       /** Input Value */
-      input_value: number
+      input_value: number | null
       /**
        * Item Id
        * Format: uuid
@@ -4521,7 +4521,7 @@ export interface components {
        */
       unit_code: string
       /** Value */
-      value: number
+      value: number | null
     }
     /** TransferOut */
     TransferOut: {
@@ -4555,7 +4555,7 @@ export interface components {
       /** Shipped On */
       shipped_on: string | null
       /** Shipped Value */
-      shipped_value: number
+      shipped_value: number | null
       /** Status */
       status: string
       /**
