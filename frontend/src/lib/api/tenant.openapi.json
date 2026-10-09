@@ -19900,6 +19900,62 @@
         ]
       }
     },
+    "/api/v1/production/orders/{order_id}/sheet": {
+      "get": {
+        "description": "FR-PRD-006: the cook's sheet for one production order, ingredients scaled.",
+        "operationId": "prep_sheet_api_v1_production_orders__order_id__sheet_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Prep Sheet",
+        "tags": [
+          "production"
+        ]
+      }
+    },
     "/api/v1/production/prep-list": {
       "get": {
         "operationId": "prep_list_api_v1_production_prep_list_get",

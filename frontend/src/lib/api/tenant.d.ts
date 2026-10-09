@@ -2472,6 +2472,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/production/orders/{order_id}/sheet': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Prep Sheet
+     * @description FR-PRD-006: the cook's sheet for one production order, ingredients scaled.
+     */
+    get: operations['prep_sheet_api_v1_production_orders__order_id__sheet_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/production/prep-list': {
     parameters: {
       query?: never
@@ -13248,6 +13268,39 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ProductionOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  prep_sheet_api_v1_production_orders__order_id__sheet_get: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
         }
       }
       /** @description Validation Error */
