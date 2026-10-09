@@ -2526,6 +2526,109 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/purchasing/bills': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Bills */
+    get: operations['list_bills_api_v1_purchasing_bills_get']
+    put?: never
+    /** Create Bill */
+    post: operations['create_bill_api_v1_purchasing_bills_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/bills/{bill_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Bill */
+    get: operations['get_bill_api_v1_purchasing_bills__bill_id__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/bills/{bill_id}/credits': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Apply Credit */
+    post: operations['apply_credit_api_v1_purchasing_bills__bill_id__credits_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/bills/{bill_id}/payments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Pay Bill */
+    post: operations['pay_bill_api_v1_purchasing_bills__bill_id__payments_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/bills/{bill_id}/payments/{payment_id}/reverse': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reverse Payment */
+    post: operations['reverse_payment_api_v1_purchasing_bills__bill_id__payments__payment_id__reverse_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/bills/{bill_id}/void': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Void Bill */
+    post: operations['void_bill_api_v1_purchasing_bills__bill_id__void_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/purchasing/orders': {
     parameters: {
       query?: never
@@ -2647,6 +2750,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/purchasing/payables': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Payables */
+    get: operations['payables_api_v1_purchasing_payables_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/purchasing/quick-purchases': {
     parameters: {
       query?: never
@@ -2746,6 +2866,78 @@ export interface paths {
     get: operations['purchases_api_v1_purchasing_reports_purchases_get']
     put?: never
     post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/returns': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Returns */
+    get: operations['list_returns_api_v1_purchasing_returns_get']
+    put?: never
+    /** Post Return */
+    post: operations['post_return_api_v1_purchasing_returns_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/returns/receipt-lines/{receipt_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Receipt Lines
+     * @description A receipt's lines in base units: the starting point for a return or a bill.
+     */
+    get: operations['receipt_lines_api_v1_purchasing_returns_receipt_lines__receipt_id__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/returns/{return_id}/credit-note': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Credit Note */
+    post: operations['credit_note_api_v1_purchasing_returns__return_id__credit_note_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/returns/{return_id}/reverse': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reverse Return */
+    post: operations['reverse_return_api_v1_purchasing_returns__return_id__reverse_post']
     delete?: never
     options?: never
     head?: never
@@ -3538,6 +3730,14 @@ export interface components {
       stock: components['schemas']['StockSettings']
       tax: components['schemas']['TaxSettings']
     }
+    /** ApplyCreditIn */
+    ApplyCreditIn: {
+      /**
+       * Return Id
+       * Format: uuid
+       */
+      return_id: string
+    }
     /** ApprovalRuleIn */
     ApprovalRuleIn: {
       /**
@@ -3644,6 +3844,27 @@ export interface components {
       /** Bank Details */
       bank_details: string | null
     }
+    /**
+     * BaseLine
+     * @description A receipt line in the item's base unit, to start a return or a bill from.
+     */
+    BaseLine: {
+      /** Amount */
+      amount: number
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Name */
+      name: string
+      /** Qty */
+      qty: string
+      /** Sku */
+      sku: string
+      /** Unit Code */
+      unit_code: string
+    }
     /** BatchOut */
     BatchOut: {
       /** Expiry Date */
@@ -3662,6 +3883,30 @@ export interface components {
        * Format: date-time
        */
       received_at: string
+    }
+    /** BillLineIn */
+    BillLineIn: {
+      /** Amount */
+      amount: number
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: number | string
+    }
+    /** BillLineOut */
+    BillLineOut: {
+      /** Amount */
+      amount: number
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: string
     }
     /** BomActivate */
     BomActivate: {
@@ -4093,6 +4338,18 @@ export interface components {
        * Format: uuid
        */
       item_id: string
+    }
+    /** CreditNoteIn */
+    CreditNoteIn: {
+      /** Credit Amount */
+      credit_amount?: number | null
+      /** Credit Note Number */
+      credit_note_number: string
+      /**
+       * Credited On
+       * Format: date
+       */
+      credited_on: string
     }
     /**
      * DayEntryIn
@@ -4819,6 +5076,30 @@ export interface components {
       /** Mappings */
       mappings: components['schemas']['MappingIn'][]
     }
+    /**
+     * MatchNote
+     * @description One three-way match finding for an item (FR-PUR-009).
+     */
+    MatchNote: {
+      /** Billed Qty */
+      billed_qty: string
+      /** Billed Unit Price */
+      billed_unit_price: string
+      /**
+       * Issue
+       * @enum {string}
+       */
+      issue: 'not_received' | 'qty_over_received' | 'price_over_po' | 'not_on_po'
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Po Unit Price */
+      po_unit_price: string | null
+      /** Received Qty */
+      received_qty: string
+    }
     /** MenuItemOut */
     MenuItemOut: {
       /** Category Id */
@@ -5273,6 +5554,49 @@ export interface components {
       /** Email */
       email: string
     }
+    /**
+     * PayableRow
+     * @description Accounts payable aging: what is still owed per bill.
+     */
+    PayableRow: {
+      /** Balance */
+      balance: number
+      /**
+       * Bill Id
+       * Format: uuid
+       */
+      bill_id: string
+      /** Days Overdue */
+      days_overdue: number
+      /**
+       * Due Date
+       * Format: date
+       */
+      due_date: string
+      /** Number */
+      number: string
+      /**
+       * Vendor Id
+       * Format: uuid
+       */
+      vendor_id: string
+      /** Vendor Invoice No */
+      vendor_invoice_no: string
+    }
+    /** PaymentIn */
+    PaymentIn: {
+      /** Amount */
+      amount: number
+      /** Method */
+      method: string
+      /**
+       * Paid On
+       * Format: date
+       */
+      paid_on: string
+      /** Reference */
+      reference?: string | null
+    }
     /** PaymentMethod */
     PaymentMethod: {
       /**
@@ -5302,6 +5626,27 @@ export interface components {
     PaymentMethodSettings: {
       /** Methods */
       methods?: components['schemas']['PaymentMethod'][]
+    }
+    /** PaymentOut */
+    PaymentOut: {
+      /** Amount */
+      amount: number
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Method */
+      method: string
+      /**
+       * Paid On
+       * Format: date
+       */
+      paid_on: string
+      /** Reference */
+      reference: string | null
+      /** Reverses Id */
+      reverses_id: string | null
     }
     /** PhotoOut */
     PhotoOut: {
@@ -5883,6 +6228,16 @@ export interface components {
      */
     PurchasingSettings: {
       /**
+       * Bill Price Tolerance Bp
+       * @default 0
+       */
+      bill_price_tolerance_bp: number
+      /**
+       * Block Mismatched Payment
+       * @default false
+       */
+      block_mismatched_payment: boolean
+      /**
        * Require Invoice Attachment
        * @default false
        */
@@ -6172,6 +6527,34 @@ export interface components {
       item_id: string
       /** Qty */
       qty: number | string
+    }
+    /** ReturnLineIn */
+    ReturnLineIn: {
+      /** Batch Id */
+      batch_id?: string | null
+      /** Credit Amount */
+      credit_amount?: number | null
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: number | string
+    }
+    /** ReturnLineOut */
+    ReturnLineOut: {
+      /** Batch Id */
+      batch_id: string | null
+      /** Credit Amount */
+      credit_amount: number
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: string
     }
     /** RoleLimitsOut */
     RoleLimitsOut: {
@@ -7289,6 +7672,92 @@ export interface components {
       /** Value */
       value: number
     }
+    /** VendorBillIn */
+    VendorBillIn: {
+      /**
+       * Bill Date
+       * Format: date
+       */
+      bill_date: string
+      /** Due Date */
+      due_date?: string | null
+      /** Lines */
+      lines: components['schemas']['BillLineIn'][]
+      /** Note */
+      note?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Po Id */
+      po_id?: string | null
+      /** Receipt Ids */
+      receipt_ids?: string[]
+      /**
+       * Vendor Id
+       * Format: uuid
+       */
+      vendor_id: string
+      /** Vendor Invoice No */
+      vendor_invoice_no: string
+    }
+    /** VendorBillOut */
+    VendorBillOut: {
+      /** Balance */
+      balance: number
+      /**
+       * Bill Date
+       * Format: date
+       */
+      bill_date: string
+      /** Credited */
+      credited: number
+      /**
+       * Due Date
+       * Format: date
+       */
+      due_date: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Lines */
+      lines: components['schemas']['BillLineOut'][]
+      /** Match Notes */
+      match_notes: components['schemas']['MatchNote'][]
+      /** Match Status */
+      match_status: string
+      /** Note */
+      note: string | null
+      /** Number */
+      number: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Paid */
+      paid: number
+      /** Payments */
+      payments: components['schemas']['PaymentOut'][]
+      /** Po Id */
+      po_id: string | null
+      /** Receipt Ids */
+      receipt_ids: string[]
+      /** Status */
+      status: string
+      /** Total */
+      total: number
+      /**
+       * Vendor Id
+       * Format: uuid
+       */
+      vendor_id: string
+      /** Vendor Invoice No */
+      vendor_invoice_no: string
+    }
     /** VendorIn */
     VendorIn: {
       /** Address */
@@ -7420,6 +7889,80 @@ export interface components {
       phone: string | null
       /** Tax Id */
       tax_id: string | null
+    }
+    /** VendorReturnIn */
+    VendorReturnIn: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /** Lines */
+      lines: components['schemas']['ReturnLineIn'][]
+      /** Note */
+      note?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /**
+       * Reason
+       * @enum {string}
+       */
+      reason: 'damaged' | 'expired' | 'wrong_item' | 'quality' | 'other'
+      /** Receipt Id */
+      receipt_id?: string | null
+      /**
+       * Vendor Id
+       * Format: uuid
+       */
+      vendor_id: string
+    }
+    /** VendorReturnOut */
+    VendorReturnOut: {
+      /** Applied Bill Id */
+      applied_bill_id: string | null
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /** Credit Amount */
+      credit_amount: number
+      /** Credit Note Number */
+      credit_note_number: string | null
+      /** Credited On */
+      credited_on: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Lines */
+      lines: components['schemas']['ReturnLineOut'][]
+      /** Note */
+      note: string | null
+      /** Number */
+      number: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Reason */
+      reason: string
+      /** Receipt Id */
+      receipt_id: string | null
+      /** Status */
+      status: string
+      /** Stock Value */
+      stock_value: number
+      /**
+       * Vendor Id
+       * Format: uuid
+       */
+      vendor_id: string
     }
     /** VoidIn */
     VoidIn: {
@@ -12804,6 +13347,239 @@ export interface operations {
       }
     }
   }
+  list_bills_api_v1_purchasing_bills_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        status?: ('open' | 'partially_paid' | 'paid' | 'void') | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorBillOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_bill_api_v1_purchasing_bills_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VendorBillIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorBillOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_bill_api_v1_purchasing_bills__bill_id__get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        bill_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorBillOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  apply_credit_api_v1_purchasing_bills__bill_id__credits_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        bill_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ApplyCreditIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorBillOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  pay_bill_api_v1_purchasing_bills__bill_id__payments_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path: {
+        bill_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PaymentIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorBillOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reverse_payment_api_v1_purchasing_bills__bill_id__payments__payment_id__reverse_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        bill_id: string
+        payment_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorBillOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  void_bill_api_v1_purchasing_bills__bill_id__void_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        bill_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorBillOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   list_orders_api_v1_purchasing_orders_get: {
     parameters: {
       query: {
@@ -13101,6 +13877,26 @@ export interface operations {
       }
     }
   }
+  payables_api_v1_purchasing_payables_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PayableRow'][]
+        }
+      }
+    }
+  }
   quick_purchase_api_v1_purchasing_quick_purchases_post: {
     parameters: {
       query?: never
@@ -13288,6 +14084,172 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['Report']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_returns_api_v1_purchasing_returns_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        vendor_id?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorReturnOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  post_return_api_v1_purchasing_returns_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VendorReturnIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorReturnOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  receipt_lines_api_v1_purchasing_returns_receipt_lines__receipt_id__get: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        receipt_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BaseLine'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  credit_note_api_v1_purchasing_returns__return_id__credit_note_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        return_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreditNoteIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorReturnOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reverse_return_api_v1_purchasing_returns__return_id__reverse_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        return_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorReturnOut']
         }
       }
       /** @description Validation Error */

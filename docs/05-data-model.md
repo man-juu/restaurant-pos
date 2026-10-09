@@ -102,7 +102,9 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `purchase_requests`, `purchase_request_lines` | outlet, status |
 | `purchase_orders`, `purchase_order_lines` | vendor, outlet, status, expected_date, totals |
 | `goods_receipts`, `goods_receipt_lines` | po_id (nullable for quick purchase), item, qty, unit_cost, batch data, discrepancy |
-| `vendor_bills`, `vendor_payments` | Phase 2 and 3 |
+| `vendor_returns`, `vendor_return_lines` | outlet, vendor, receipt (optional), reason, stock_value, credit_amount, credit_note_number, credited_on, applied_bill_id; lines: item, base qty, batch, credit (FR-PUR-008) |
+| `vendor_bills`, `vendor_bill_lines`, `vendor_bill_receipts` | vendor, vendor_invoice_no (unique per vendor), outlet, po, bill_date, due_date, total, paid, credited, status, match_status, match_notes; lines: item, base qty, amount (FR-PUR-009) |
+| `vendor_payments` | bill, paid_on, amount (negative = reversal of `reverses_id`), method code, reference; append-only |
 | `vendor_price_history` | vendor_id, item_id, price, observed_at, source_doc_id |
 | `vendor_lead_history` | vendor_id, ordered_at, received_at, item_id |
 

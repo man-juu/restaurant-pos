@@ -105,6 +105,12 @@ _ALLOCATE = text("""
 """)
 
 
+def _prefix(doc_type: str) -> str:
+    """Fallback prefix for a document type the tenant has no format for: "vendor_bill" ->
+    "VENDORBILL" (the prefix allows only A-Z, 0-9 and dashes)."""
+    return "".join(c for c in doc_type.upper() if c.isascii() and (c.isalnum() or c == "-"))[:10]
+
+
 async def allocate_number(
     db: AsyncSession,
     *,
@@ -117,7 +123,7 @@ async def allocate_number(
     transaction: concurrent callers wait on the row lock, so numbers never repeat, and a
     rolled-back document does not consume a number."""
     formats = cast(NumberingSettings, await get_setting(db, tenant_id, "numbering"))
-    fmt = formats.formats.get(doc_type) or NumberingFormat(prefix=doc_type[:10].upper())
+    fmt = formats.formats.get(doc_type) or NumberingFormat(prefix=_prefix(doc_type))
     year = on.year if fmt.reset == "yearly" else 0
     number = (
         await db.execute(

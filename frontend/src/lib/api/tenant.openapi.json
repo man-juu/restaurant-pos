@@ -311,6 +311,21 @@
         "title": "AllSettings",
         "type": "object"
       },
+      "ApplyCreditIn": {
+        "additionalProperties": false,
+        "properties": {
+          "return_id": {
+            "format": "uuid",
+            "title": "Return Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "return_id"
+        ],
+        "title": "ApplyCreditIn",
+        "type": "object"
+      },
       "ApprovalRuleIn": {
         "properties": {
           "approver_role_id": {
@@ -575,6 +590,47 @@
         "title": "BankDetails",
         "type": "object"
       },
+      "BaseLine": {
+        "description": "A receipt line in the item's base unit, to start a return or a bill from.",
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "integer"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Qty",
+            "type": "string"
+          },
+          "sku": {
+            "title": "Sku",
+            "type": "string"
+          },
+          "unit_code": {
+            "title": "Unit Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "sku",
+          "name",
+          "unit_code",
+          "qty",
+          "amount"
+        ],
+        "title": "BaseLine",
+        "type": "object"
+      },
       "BatchOut": {
         "properties": {
           "expiry_date": {
@@ -624,6 +680,67 @@
           "qty"
         ],
         "title": "BatchOut",
+        "type": "object"
+      },
+      "BillLineIn": {
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Amount",
+            "type": "integer"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "qty": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Qty"
+          }
+        },
+        "required": [
+          "item_id",
+          "qty",
+          "amount"
+        ],
+        "title": "BillLineIn",
+        "type": "object"
+      },
+      "BillLineOut": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "integer"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Qty",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "qty",
+          "amount"
+        ],
+        "title": "BillLineOut",
         "type": "object"
       },
       "BomActivate": {
@@ -1684,6 +1801,41 @@
           "counted_qty"
         ],
         "title": "CountedLine",
+        "type": "object"
+      },
+      "CreditNoteIn": {
+        "additionalProperties": false,
+        "properties": {
+          "credit_amount": {
+            "anyOf": [
+              {
+                "maximum": 1000000000000000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Credit Amount"
+          },
+          "credit_note_number": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Credit Note Number",
+            "type": "string"
+          },
+          "credited_on": {
+            "format": "date",
+            "title": "Credited On",
+            "type": "string"
+          }
+        },
+        "required": [
+          "credit_note_number",
+          "credited_on"
+        ],
+        "title": "CreditNoteIn",
         "type": "object"
       },
       "DayEntryIn": {
@@ -3655,6 +3807,63 @@
         "title": "MappingsIn",
         "type": "object"
       },
+      "MatchNote": {
+        "description": "One three-way match finding for an item (FR-PUR-009).",
+        "properties": {
+          "billed_qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Billed Qty",
+            "type": "string"
+          },
+          "billed_unit_price": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Billed Unit Price",
+            "type": "string"
+          },
+          "issue": {
+            "enum": [
+              "not_received",
+              "qty_over_received",
+              "price_over_po",
+              "not_on_po"
+            ],
+            "title": "Issue",
+            "type": "string"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "po_unit_price": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Po Unit Price"
+          },
+          "received_qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Received Qty",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "issue",
+          "billed_qty",
+          "received_qty",
+          "billed_unit_price",
+          "po_unit_price"
+        ],
+        "title": "MatchNote",
+        "type": "object"
+      },
       "MenuItemOut": {
         "properties": {
           "category_id": {
@@ -4808,6 +5017,94 @@
         "title": "PasswordResetRequest",
         "type": "object"
       },
+      "PayableRow": {
+        "description": "Accounts payable aging: what is still owed per bill.",
+        "properties": {
+          "balance": {
+            "title": "Balance",
+            "type": "integer"
+          },
+          "bill_id": {
+            "format": "uuid",
+            "title": "Bill Id",
+            "type": "string"
+          },
+          "days_overdue": {
+            "title": "Days Overdue",
+            "type": "integer"
+          },
+          "due_date": {
+            "format": "date",
+            "title": "Due Date",
+            "type": "string"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "vendor_id": {
+            "format": "uuid",
+            "title": "Vendor Id",
+            "type": "string"
+          },
+          "vendor_invoice_no": {
+            "title": "Vendor Invoice No",
+            "type": "string"
+          }
+        },
+        "required": [
+          "bill_id",
+          "number",
+          "vendor_id",
+          "vendor_invoice_no",
+          "due_date",
+          "balance",
+          "days_overdue"
+        ],
+        "title": "PayableRow",
+        "type": "object"
+      },
+      "PaymentIn": {
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 1000000000000000.0,
+            "title": "Amount",
+            "type": "integer"
+          },
+          "method": {
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Method",
+            "type": "string"
+          },
+          "paid_on": {
+            "format": "date",
+            "title": "Paid On",
+            "type": "string"
+          },
+          "reference": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference"
+          }
+        },
+        "required": [
+          "paid_on",
+          "amount",
+          "method"
+        ],
+        "title": "PaymentIn",
+        "type": "object"
+      },
       "PaymentMethod": {
         "additionalProperties": false,
         "properties": {
@@ -4863,6 +5160,61 @@
           }
         },
         "title": "PaymentMethodSettings",
+        "type": "object"
+      },
+      "PaymentOut": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "paid_on": {
+            "format": "date",
+            "title": "Paid On",
+            "type": "string"
+          },
+          "reference": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference"
+          },
+          "reverses_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reverses Id"
+          }
+        },
+        "required": [
+          "id",
+          "paid_on",
+          "amount",
+          "method",
+          "reference",
+          "reverses_id"
+        ],
+        "title": "PaymentOut",
         "type": "object"
       },
       "PhotoOut": {
@@ -6339,6 +6691,18 @@
         "additionalProperties": false,
         "description": "FR-PUR-011: supplier invoice photo on receipts, optional unless the tenant requires it.",
         "properties": {
+          "bill_price_tolerance_bp": {
+            "default": 0,
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Bill Price Tolerance Bp",
+            "type": "integer"
+          },
+          "block_mismatched_payment": {
+            "default": false,
+            "title": "Block Mismatched Payment",
+            "type": "boolean"
+          },
           "require_invoice_attachment": {
             "default": false,
             "title": "Require Invoice Attachment",
@@ -7144,6 +7508,98 @@
           "qty"
         ],
         "title": "RequestLine",
+        "type": "object"
+      },
+      "ReturnLineIn": {
+        "additionalProperties": false,
+        "properties": {
+          "batch_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Batch Id"
+          },
+          "credit_amount": {
+            "anyOf": [
+              {
+                "maximum": 1000000000000000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Credit Amount"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "qty": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Qty"
+          }
+        },
+        "required": [
+          "item_id",
+          "qty"
+        ],
+        "title": "ReturnLineIn",
+        "type": "object"
+      },
+      "ReturnLineOut": {
+        "properties": {
+          "batch_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Batch Id"
+          },
+          "credit_amount": {
+            "title": "Credit Amount",
+            "type": "integer"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Qty",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "qty",
+          "batch_id",
+          "credit_amount"
+        ],
+        "title": "ReturnLineOut",
         "type": "object"
       },
       "RoleLimitsOut": {
@@ -9824,6 +10280,231 @@
         "title": "ValuationRow",
         "type": "object"
       },
+      "VendorBillIn": {
+        "additionalProperties": false,
+        "properties": {
+          "bill_date": {
+            "format": "date",
+            "title": "Bill Date",
+            "type": "string"
+          },
+          "due_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due Date"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/BillLineIn"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "title": "Lines",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "po_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Po Id"
+          },
+          "receipt_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "title": "Receipt Ids",
+            "type": "array"
+          },
+          "vendor_id": {
+            "format": "uuid",
+            "title": "Vendor Id",
+            "type": "string"
+          },
+          "vendor_invoice_no": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Vendor Invoice No",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vendor_id",
+          "vendor_invoice_no",
+          "outlet_id",
+          "bill_date",
+          "lines"
+        ],
+        "title": "VendorBillIn",
+        "type": "object"
+      },
+      "VendorBillOut": {
+        "properties": {
+          "balance": {
+            "title": "Balance",
+            "type": "integer"
+          },
+          "bill_date": {
+            "format": "date",
+            "title": "Bill Date",
+            "type": "string"
+          },
+          "credited": {
+            "title": "Credited",
+            "type": "integer"
+          },
+          "due_date": {
+            "format": "date",
+            "title": "Due Date",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/BillLineOut"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "match_notes": {
+            "items": {
+              "$ref": "#/components/schemas/MatchNote"
+            },
+            "title": "Match Notes",
+            "type": "array"
+          },
+          "match_status": {
+            "title": "Match Status",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "paid": {
+            "title": "Paid",
+            "type": "integer"
+          },
+          "payments": {
+            "items": {
+              "$ref": "#/components/schemas/PaymentOut"
+            },
+            "title": "Payments",
+            "type": "array"
+          },
+          "po_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Po Id"
+          },
+          "receipt_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Receipt Ids",
+            "type": "array"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "vendor_id": {
+            "format": "uuid",
+            "title": "Vendor Id",
+            "type": "string"
+          },
+          "vendor_invoice_no": {
+            "title": "Vendor Invoice No",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "vendor_id",
+          "vendor_invoice_no",
+          "outlet_id",
+          "po_id",
+          "bill_date",
+          "due_date",
+          "total",
+          "paid",
+          "credited",
+          "balance",
+          "status",
+          "match_status",
+          "match_notes",
+          "receipt_ids",
+          "note",
+          "lines",
+          "payments"
+        ],
+        "title": "VendorBillOut",
+        "type": "object"
+      },
       "VendorIn": {
         "additionalProperties": false,
         "properties": {
@@ -10190,6 +10871,207 @@
           "is_active"
         ],
         "title": "VendorOut",
+        "type": "object"
+      },
+      "VendorReturnIn": {
+        "additionalProperties": false,
+        "properties": {
+          "business_date": {
+            "format": "date",
+            "title": "Business Date",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/ReturnLineIn"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "title": "Lines",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "damaged",
+              "expired",
+              "wrong_item",
+              "quality",
+              "other"
+            ],
+            "title": "Reason",
+            "type": "string"
+          },
+          "receipt_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Receipt Id"
+          },
+          "vendor_id": {
+            "format": "uuid",
+            "title": "Vendor Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "vendor_id",
+          "business_date",
+          "reason",
+          "lines"
+        ],
+        "title": "VendorReturnIn",
+        "type": "object"
+      },
+      "VendorReturnOut": {
+        "properties": {
+          "applied_bill_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Applied Bill Id"
+          },
+          "business_date": {
+            "format": "date",
+            "title": "Business Date",
+            "type": "string"
+          },
+          "credit_amount": {
+            "title": "Credit Amount",
+            "type": "integer"
+          },
+          "credit_note_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Credit Note Number"
+          },
+          "credited_on": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Credited On"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/ReturnLineOut"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "receipt_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Receipt Id"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "stock_value": {
+            "title": "Stock Value",
+            "type": "integer"
+          },
+          "vendor_id": {
+            "format": "uuid",
+            "title": "Vendor Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "outlet_id",
+          "vendor_id",
+          "receipt_id",
+          "business_date",
+          "reason",
+          "status",
+          "stock_value",
+          "credit_amount",
+          "credit_note_number",
+          "credited_on",
+          "applied_bill_id",
+          "note",
+          "lines"
+        ],
+        "title": "VendorReturnOut",
         "type": "object"
       },
       "VoidIn": {
@@ -19176,6 +20058,393 @@
         ]
       }
     },
+    "/api/v1/purchasing/bills": {
+      "get": {
+        "operationId": "list_bills_api_v1_purchasing_bills_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "open",
+                    "partially_paid",
+                    "paid",
+                    "void"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VendorBillOut"
+                  },
+                  "title": "Response List Bills Api V1 Purchasing Bills Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Bills",
+        "tags": [
+          "purchasing"
+        ]
+      },
+      "post": {
+        "operationId": "create_bill_api_v1_purchasing_bills_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorBillIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorBillOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Bill",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
+    "/api/v1/purchasing/bills/{bill_id}": {
+      "get": {
+        "operationId": "get_bill_api_v1_purchasing_bills__bill_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bill_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Bill Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorBillOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Bill",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
+    "/api/v1/purchasing/bills/{bill_id}/credits": {
+      "post": {
+        "operationId": "apply_credit_api_v1_purchasing_bills__bill_id__credits_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bill_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Bill Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyCreditIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorBillOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Apply Credit",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
+    "/api/v1/purchasing/bills/{bill_id}/payments": {
+      "post": {
+        "operationId": "pay_bill_api_v1_purchasing_bills__bill_id__payments_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bill_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Bill Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorBillOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Pay Bill",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
+    "/api/v1/purchasing/bills/{bill_id}/payments/{payment_id}/reverse": {
+      "post": {
+        "operationId": "reverse_payment_api_v1_purchasing_bills__bill_id__payments__payment_id__reverse_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bill_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Bill Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "payment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Payment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorBillOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reverse Payment",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
+    "/api/v1/purchasing/bills/{bill_id}/void": {
+      "post": {
+        "operationId": "void_bill_api_v1_purchasing_bills__bill_id__void_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bill_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Bill Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorBillOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Void Bill",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
     "/api/v1/purchasing/orders": {
       "get": {
         "operationId": "list_orders_api_v1_purchasing_orders_get",
@@ -19615,6 +20884,31 @@
         ]
       }
     },
+    "/api/v1/purchasing/payables": {
+      "get": {
+        "operationId": "payables_api_v1_purchasing_payables_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PayableRow"
+                  },
+                  "title": "Response Payables Api V1 Purchasing Payables Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Payables",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
     "/api/v1/purchasing/quick-purchases": {
       "post": {
         "description": "A retried request (bad connection at the market) never receives the stock twice.",
@@ -20029,6 +21323,285 @@
           }
         },
         "summary": "Purchases",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
+    "/api/v1/purchasing/returns": {
+      "get": {
+        "operationId": "list_returns_api_v1_purchasing_returns_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "vendor_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Vendor Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VendorReturnOut"
+                  },
+                  "title": "Response List Returns Api V1 Purchasing Returns Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Returns",
+        "tags": [
+          "purchasing"
+        ]
+      },
+      "post": {
+        "operationId": "post_return_api_v1_purchasing_returns_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorReturnIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorReturnOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Post Return",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
+    "/api/v1/purchasing/returns/receipt-lines/{receipt_id}": {
+      "get": {
+        "description": "A receipt's lines in base units: the starting point for a return or a bill.",
+        "operationId": "receipt_lines_api_v1_purchasing_returns_receipt_lines__receipt_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "receipt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Receipt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BaseLine"
+                  },
+                  "title": "Response Receipt Lines Api V1 Purchasing Returns Receipt Lines  Receipt Id  Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Receipt Lines",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
+    "/api/v1/purchasing/returns/{return_id}/credit-note": {
+      "post": {
+        "operationId": "credit_note_api_v1_purchasing_returns__return_id__credit_note_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "return_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Return Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreditNoteIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorReturnOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Credit Note",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
+    "/api/v1/purchasing/returns/{return_id}/reverse": {
+      "post": {
+        "operationId": "reverse_return_api_v1_purchasing_returns__return_id__reverse_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "return_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Return Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorReturnOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reverse Return",
         "tags": [
           "purchasing"
         ]

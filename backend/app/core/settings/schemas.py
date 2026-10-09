@@ -128,6 +128,10 @@ class PurchasingSettings(Strict):
     """FR-PUR-011: supplier invoice photo on receipts, optional unless the tenant requires it."""
 
     require_invoice_attachment: bool = False
+    # FR-PUR-009 three-way match: a billed unit price may exceed the PO price by this much
+    # (basis points) before it is flagged; and whether a flagged bill can still be paid.
+    bill_price_tolerance_bp: int = Field(default=0, ge=0, le=10_000)
+    block_mismatched_payment: bool = False
 
 
 class PosSettings(Strict):
