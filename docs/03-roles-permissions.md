@@ -98,6 +98,8 @@ Examples:
 | `inventory.adjustment.create` / `approve` | Manual adjustments |
 | `purchasing.order.create` / `approve` | Purchase orders |
 | `sales.order.create` / `void` / `refund` | POS orders |
+| `sales.order.pay` | Take payment for a POS order (waiters take orders without it) |
+| `sales.shift.open` / `sales.shift.view` | Own cash shift; review every shift's expected cash and variance |
 | `sales.discount.apply` | Discounts (with a per-role maximum percentage) |
 | `sales.day.lock` | Lock a sales day |
 | `finance.journal.post` / `reverse` | Manual journals |

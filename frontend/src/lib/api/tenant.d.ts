@@ -1515,6 +1515,213 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/pos/orders': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Orders */
+    get: operations['list_orders_api_v1_pos_orders_get']
+    put?: never
+    /** Create Order */
+    post: operations['create_order_api_v1_pos_orders_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/orders/{order_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Order */
+    get: operations['get_order_api_v1_pos_orders__order_id__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/orders/{order_id}/cancel': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Cancel Order */
+    post: operations['cancel_order_api_v1_pos_orders__order_id__cancel_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/orders/{order_id}/lines': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Add Line */
+    post: operations['add_line_api_v1_pos_orders__order_id__lines_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/orders/{order_id}/lines/{line_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Line */
+    put: operations['update_line_api_v1_pos_orders__order_id__lines__line_id__put']
+    post?: never
+    /** Remove Line */
+    delete: operations['remove_line_api_v1_pos_orders__order_id__lines__line_id__delete']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/orders/{order_id}/pay': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Pay Order */
+    post: operations['pay_order_api_v1_pos_orders__order_id__pay_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/orders/{order_id}/send': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Send Order */
+    post: operations['send_order_api_v1_pos_orders__order_id__send_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/shifts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Shifts */
+    get: operations['list_shifts_api_v1_pos_shifts_get']
+    put?: never
+    /** Open Shift */
+    post: operations['open_shift_api_v1_pos_shifts_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/shifts/current': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Current Shift */
+    get: operations['current_shift_api_v1_pos_shifts_current_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/shifts/{shift_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Shift */
+    get: operations['get_shift_api_v1_pos_shifts__shift_id__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/shifts/{shift_id}/close': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Close Shift */
+    post: operations['close_shift_api_v1_pos_shifts__shift_id__close_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/shifts/{shift_id}/movements': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Add Movement */
+    post: operations['add_movement_api_v1_pos_shifts__shift_id__movements_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/production/orders': {
     parameters: {
       query?: never
@@ -2408,6 +2615,7 @@ export interface components {
       catalog: components['schemas']['CatalogSettings']
       numbering: components['schemas']['NumberingSettings']
       payment_methods: components['schemas']['PaymentMethodSettings']
+      pos: components['schemas']['PosSettings']
       purchasing: components['schemas']['PurchasingSettings']
       service_charge: components['schemas']['ServiceChargeSettings']
       session: components['schemas']['SessionSettings']
@@ -3440,47 +3648,17 @@ export interface components {
       /** Secret */
       secret: string
     }
-    /** MovementOut */
-    MovementOut: {
-      /** Batch Id */
-      batch_id: string | null
+    /** MovementIn */
+    MovementIn: {
+      /** Amount */
+      amount: number
       /**
-       * Business Date
-       * Format: date
+       * Kind
+       * @enum {string}
        */
-      business_date: string
-      /**
-       * Doc Id
-       * Format: uuid
-       */
-      doc_id: string
-      /** Doc Type */
-      doc_type: string
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string
-      /**
-       * Item Id
-       * Format: uuid
-       */
-      item_id: string
-      /** Movement Type */
-      movement_type: string
-      /**
-       * Posted At
-       * Format: date-time
-       */
-      posted_at: string
-      /** Qty */
-      qty: string
-      /** Reverses Id */
-      reverses_id: string | null
-      /** Unit Cost */
-      unit_cost: string | null
-      /** Value */
-      value: number | null
+      kind: 'in' | 'out'
+      /** Reason */
+      reason: string
     }
     /**
      * NegativeStockPolicy
@@ -3788,7 +3966,7 @@ export interface components {
     /** Page[MovementOut] */
     Page_MovementOut_: {
       /** Items */
-      items: components['schemas']['MovementOut'][]
+      items: components['schemas']['app__modules__inventory__schemas__MovementOut'][]
       /** Next Cursor */
       next_cursor: string | null
     }
@@ -3863,6 +4041,238 @@ export interface components {
       id: string
       /** Width */
       width: number | null
+    }
+    /** PosLineIn */
+    PosLineIn: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Note */
+      note?: string | null
+      /** Option Ids */
+      option_ids?: string[]
+      /**
+       * Qty
+       * @default 1
+       */
+      qty: number | string
+    }
+    /** PosLineOut */
+    PosLineOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Line Total */
+      line_total: number
+      /** Modifiers */
+      modifiers: components['schemas']['PosModifierOut'][]
+      /** Name */
+      name: string
+      /** Note */
+      note: string | null
+      /** Qty */
+      qty: string
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'new' | 'sent'
+      /** Unit Price */
+      unit_price: number
+    }
+    /** PosLineUpdateIn */
+    PosLineUpdateIn: {
+      /** Note */
+      note?: string | null
+      /** Qty */
+      qty: number | string
+    }
+    /** PosModifierOut */
+    PosModifierOut: {
+      /** Name */
+      name: string
+      /**
+       * Option Id
+       * Format: uuid
+       */
+      option_id: string
+      /** Price Delta */
+      price_delta: number
+    }
+    /** PosOrderCreateIn */
+    PosOrderCreateIn: {
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /** Label */
+      label?: string | null
+      /** Note */
+      note?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
+    /** PosOrderOut */
+    PosOrderOut: {
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Document Id */
+      document_id?: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Label */
+      label: string | null
+      /** Lines */
+      lines: components['schemas']['PosLineOut'][]
+      /** Note */
+      note: string | null
+      /** Number */
+      number: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Paid At */
+      paid_at: string | null
+      /** Payments */
+      payments?: components['schemas']['PosPaymentOut'][]
+      /**
+       * Rounding
+       * @default 0
+       */
+      rounding: number
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'open' | 'paid' | 'cancelled' | 'void'
+      /**
+       * Tip
+       * @default 0
+       */
+      tip: number
+      totals: components['schemas']['PosTotalsOut']
+    }
+    /** PosOrderSummary */
+    PosOrderSummary: {
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Label */
+      label: string | null
+      /** Lines */
+      lines: number
+      /** Number */
+      number: string
+      /** Status */
+      status: string
+      /** Total */
+      total: number
+    }
+    /** PosPayIn */
+    PosPayIn: {
+      /** Payments */
+      payments: components['schemas']['PosPaymentIn'][]
+      /**
+       * Tip
+       * @default 0
+       */
+      tip: number
+    }
+    /** PosPaymentIn */
+    PosPaymentIn: {
+      /** Amount */
+      amount: number
+      /** Method */
+      method: string
+      /** Reference */
+      reference?: string | null
+      /** Tendered */
+      tendered?: number | null
+    }
+    /** PosPaymentOut */
+    PosPaymentOut: {
+      /** Amount */
+      amount: number
+      /** Change */
+      change: number
+      /** Kind */
+      kind: string
+      /** Method */
+      method: string
+      /** Reference */
+      reference: string | null
+      /** Tendered */
+      tendered: number | null
+    }
+    /**
+     * PosSettings
+     * @description FR-SAL-006, 009: how the cashier screen works for this business.
+     */
+    PosSettings: {
+      /**
+       * Cash Rounding Step
+       * @default 0
+       */
+      cash_rounding_step: number
+      /**
+       * Require Shift
+       * @default true
+       */
+      require_shift: boolean
+      /**
+       * Tips Enabled
+       * @default false
+       */
+      tips_enabled: boolean
+    }
+    /** PosTotalsOut */
+    PosTotalsOut: {
+      /** Service Charge */
+      service_charge: number
+      /** Subtotal */
+      subtotal: number
+      /** Tax */
+      tax: number
+      /** Total */
+      total: number
     }
     /** PostedDocument */
     PostedDocument: {
@@ -4477,6 +4887,79 @@ export interface components {
        */
       unit_id: string
     }
+    /** ShiftCloseIn */
+    ShiftCloseIn: {
+      /** Counted */
+      counted: number
+      /** Note */
+      note?: string | null
+    }
+    /** ShiftOpenIn */
+    ShiftOpenIn: {
+      /** Opening Float */
+      opening_float: number
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
+    /** ShiftOut */
+    ShiftOut: {
+      /** By Method */
+      by_method: {
+        [key: string]: number
+      }
+      /** Cash In */
+      cash_in: number
+      /** Cash Out */
+      cash_out: number
+      /** Cash Sales */
+      cash_sales: number
+      /**
+       * Cashier Id
+       * Format: uuid
+       */
+      cashier_id: string
+      /** Cashier Name */
+      cashier_name: string
+      /** Closed At */
+      closed_at: string | null
+      /** Counted */
+      counted: number | null
+      /** Expected */
+      expected: number
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Movements */
+      movements: components['schemas']['app__modules__sales__pos_schemas__MovementOut'][]
+      /** Note */
+      note: string | null
+      /**
+       * Opened At
+       * Format: date-time
+       */
+      opened_at: string
+      /** Opening Float */
+      opening_float: number
+      /** Orders */
+      orders: number
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'open' | 'closed'
+      /** Variance */
+      variance: number | null
+    }
     /** StockDocument */
     StockDocument: {
       /**
@@ -5074,6 +5557,62 @@ export interface components {
        * @enum {string}
        */
       reason_code: 'spoilage' | 'expired' | 'preparation_loss' | 'damaged' | 'staff_meal' | 'other'
+    }
+    /** MovementOut */
+    app__modules__inventory__schemas__MovementOut: {
+      /** Batch Id */
+      batch_id: string | null
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /**
+       * Doc Id
+       * Format: uuid
+       */
+      doc_id: string
+      /** Doc Type */
+      doc_type: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Movement Type */
+      movement_type: string
+      /**
+       * Posted At
+       * Format: date-time
+       */
+      posted_at: string
+      /** Qty */
+      qty: string
+      /** Reverses Id */
+      reverses_id: string | null
+      /** Unit Cost */
+      unit_cost: string | null
+      /** Value */
+      value: number | null
+    }
+    /** MovementOut */
+    app__modules__sales__pos_schemas__MovementOut: {
+      /** Amount */
+      amount: number
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Kind */
+      kind: string
+      /** Reason */
+      reason: string
     }
   }
   responses: never
@@ -8150,6 +8689,522 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['OutletOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_orders_api_v1_pos_orders_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        status?: 'open' | 'paid' | 'cancelled' | 'void'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderSummary'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_order_api_v1_pos_orders_post: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PosOrderCreateIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_order_api_v1_pos_orders__order_id__get: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  cancel_order_api_v1_pos_orders__order_id__cancel_post: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  add_line_api_v1_pos_orders__order_id__lines_post: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PosLineIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_line_api_v1_pos_orders__order_id__lines__line_id__put: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+        line_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PosLineUpdateIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  remove_line_api_v1_pos_orders__order_id__lines__line_id__delete: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+        line_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  pay_order_api_v1_pos_orders__order_id__pay_post: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PosPayIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  send_order_api_v1_pos_orders__order_id__send_post: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_shifts_api_v1_pos_shifts_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        date_from: string
+        date_to: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ShiftOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  open_shift_api_v1_pos_shifts_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ShiftOpenIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ShiftOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  current_shift_api_v1_pos_shifts_current_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ShiftOut'] | null
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_shift_api_v1_pos_shifts__shift_id__get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        shift_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ShiftOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  close_shift_api_v1_pos_shifts__shift_id__close_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        shift_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ShiftCloseIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ShiftOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  add_movement_api_v1_pos_shifts__shift_id__movements_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        shift_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MovementIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ShiftOut']
         }
       }
       /** @description Validation Error */

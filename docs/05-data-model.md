@@ -116,13 +116,17 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 
 | Table | Key columns | Notes |
 | --- | --- | --- |
-| `sales_documents` | tenant_id, outlet_id, channel_id, business_date, source (`pos` or `manual_day`), status, subtotal, discount, service_charge, tax, total, bom_snapshot_ref | One per order, or one per outlet-channel-day for manual entry |
+| `sales_documents` | tenant_id, outlet_id, channel_id, business_date, source (`pos` or `manual_day`), status, subtotal, discount, service_charge, tax, total, tip, rounding, cost | One per order, or one per outlet-channel-day for manual entry |
 | `sales_lines` | document_id, item_id, qty, unit_price, discount, tax, bom_id | Records the BOM version used |
-| `sales_modifier_lines` | line_id, modifier_id, price_delta | |
-| `payments` | document_id, method_id, amount, reference, paid_at | Many per document |
+| `sales_modifier_lines` | line_id, option_id, name, price_delta | Append-only |
+| `payments` | order_id, document_id, shift_id, method_code, kind, amount, tendered, change, reference, paid_at | Many per document; append-only. `amount` is what the tender pays of the bill; change comes only from cash |
+| `pos_orders` | tenant_id, outlet_id, channel_id, number, status (open, paid, cancelled, void), label, note, shift_id, document_id, paid_at, paid_by | Working state while serving; payment posts the sales document |
+| `pos_order_lines` | order_id, item_id, qty, unit_price (list price when added), note, status (new, sent), sent_at | Unsent lines can be changed or removed |
+| `pos_line_modifiers` | line_id, option_id, name, price_delta | Name and price as chosen |
 | `payment_methods` | tenant_id, code, name, kind, is_active | |
 | `sales_days` | tenant_id, outlet_id, business_date, status (open, locked), locked_by | |
-| `cash_shifts`, `cash_movements` | outlet, cashier, opened_at, closed_at, float, counted, expected | |
+| `cash_shifts` | outlet_id, cashier_id, status, opening_float, opened_at, closed_at, closed_by, expected (frozen on close), counted, note | One open shift per cashier and outlet |
+| `cash_movements` | shift_id, kind (in, out), amount, reason, created_by | Append-only |
 | `voids_refunds` | document_id, reason, approved_by, stock_effect | |
 | `customers` | tenant_id, name, phone, consent_at | Minimal data |
 

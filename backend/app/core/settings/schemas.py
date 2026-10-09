@@ -130,6 +130,14 @@ class PurchasingSettings(Strict):
     require_invoice_attachment: bool = False
 
 
+class PosSettings(Strict):
+    """FR-SAL-006, 009: how the cashier screen works for this business."""
+
+    require_shift: bool = True  # payments need an open cash shift
+    cash_rounding_step: int = Field(default=0, ge=0, le=100_000)  # 0 = off; e.g. 100 for Rp 100
+    tips_enabled: bool = False
+
+
 SETTINGS: dict[str, type[Strict]] = {
     "tax": TaxSettings,
     "service_charge": ServiceChargeSettings,
@@ -139,6 +147,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "stock": StockSettings,
     "purchasing": PurchasingSettings,
     "catalog": CatalogSettings,
+    "pos": PosSettings,
 }
 
 
@@ -153,3 +162,4 @@ class AllSettings(BaseModel):
     stock: StockSettings
     purchasing: PurchasingSettings
     catalog: CatalogSettings
+    pos: PosSettings

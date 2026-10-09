@@ -98,15 +98,21 @@ async def _replace_previous(db: AsyncSession, data: DayEntryIn, user_id: uuid.UU
     await db.flush()
 
 
-async def _consume(
-    db: AsyncSession, doc: SalesDocument, qty: dict[uuid.UUID, Decimal], user_id: uuid.UUID
+async def consume_for_sale(
+    db: AsyncSession,
+    doc: SalesDocument,
+    qty: dict[uuid.UUID, Decimal],
+    user_id: uuid.UUID,
+    doc_type: str = DOC,
 ) -> dict[uuid.UUID, uuid.UUID]:
+    """Take the recipes' ingredients (and any extra stocked items in `qty`) out of stock for
+    a posted sale; sets the document's cost. Returns the recipe version used per item."""
     taken, used = await consumption(db, qty, doc.business_date)
     items = await stock_items(db, taken.keys())
     outs = [OutLine(i, q) for i, q in taken.items() if i in items and items[i].is_stocked and q > 0]
     if outs:
         allowed = await negative_allowed(db, doc.tenant_id, "sale", confirmed=True)
-        p = Posting(doc.tenant_id, doc.outlet_id, user_id, DOC, doc.id, doc.business_date)
+        p = Posting(doc.tenant_id, doc.outlet_id, user_id, doc_type, doc.id, doc.business_date)
         result = await consume(db, p, "sale_consumption", outs, allow_negative=allowed)
         doc.cost = -sum(m.value for m in result.movements)
     return used
@@ -160,7 +166,7 @@ async def enter_day(
     qty: dict[uuid.UUID, Decimal] = {}
     for item_id, ln in rows:
         qty[item_id] = qty.get(item_id, Decimal(0)) + ln.qty
-    used = await _consume(db, doc, qty, user_id)
+    used = await consume_for_sale(db, doc, qty, user_id)
     db.add_all(
         SalesLine(
             tenant_id=tenant_id,

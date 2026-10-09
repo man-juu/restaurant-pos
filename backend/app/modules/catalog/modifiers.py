@@ -5,6 +5,7 @@ Options keep their id when a group is saved again, and options left out are swit
 rather than deleted, because sold order lines keep pointing at them (docs/05 2.6)."""
 
 import uuid
+from dataclasses import dataclass
 from decimal import Decimal
 from typing import Annotated
 
@@ -281,3 +282,60 @@ async def groups_for_items(
     for ln in links:
         out.setdefault(ln.item_id, []).append(groups[ln.group_id])
     return out
+
+
+@dataclass(frozen=True)
+class SaleOption:
+    id: uuid.UUID
+    group_id: uuid.UUID
+    name: str
+    price_delta: int
+    ingredient_item_id: uuid.UUID | None
+    ingredient_qty: Decimal | None
+
+
+@dataclass(frozen=True)
+class SaleGroup:
+    id: uuid.UUID
+    name: str
+    min_select: int
+    max_select: int
+    options: dict[uuid.UUID, SaleOption]
+
+
+async def sale_groups(
+    db: AsyncSession, item_ids: set[uuid.UUID]
+) -> dict[uuid.UUID, list[SaleGroup]]:
+    """For the POS: the active groups and options each menu item offers today."""
+    out: dict[uuid.UUID, list[SaleGroup]] = {}
+    for item_id, groups in (await groups_for_items(db, item_ids)).items():
+        out[item_id] = [
+            SaleGroup(
+                id=g.id,
+                name=g.name,
+                min_select=g.min_select,
+                max_select=g.max_select,
+                options={
+                    o.id: SaleOption(
+                        o.id, g.id, o.name, o.price_delta, o.ingredient_item_id, o.ingredient_qty
+                    )
+                    for o in g.options
+                    if o.is_active
+                },
+            )
+            for g in groups
+            if g.is_active
+        ]
+    return out
+
+
+async def option_ingredients(
+    db: AsyncSession, option_ids: set[uuid.UUID]
+) -> dict[uuid.UUID, tuple[uuid.UUID, Decimal]]:
+    """Ingredient change per option (item, base quantity), for options that have one. Reads
+    switched-off options too: a line sold before the switch keeps its recipe change."""
+    stmt = select(
+        ModifierOption.id, ModifierOption.ingredient_item_id, ModifierOption.ingredient_qty
+    ).where(ModifierOption.id.in_(option_ids), ModifierOption.ingredient_item_id.is_not(None))
+    rows = (await db.execute(stmt)).all()
+    return {r[0]: (r[1], r[2]) for r in rows if r[1] is not None and r[2] is not None}

@@ -23,6 +23,7 @@ from app.modules.catalog.costing import (
     unit_needs,
 )
 from app.modules.catalog.models import Item, Unit
+from app.modules.catalog.modifiers import SaleGroup, SaleOption, option_ingredients, sale_groups
 from app.modules.catalog.permissions import COST_VIEW
 from app.modules.catalog.platform_map import item_ids_by_code
 from app.modules.catalog.prices import channel_code, channel_names, prices_on, tenant_today
@@ -32,6 +33,8 @@ __all__ = [
     "COST_VIEW",
     "CostSource",
     "ItemLabel",
+    "SaleGroup",
+    "SaleOption",
     "StockItem",
     "base_factors",
     "channel_code",
@@ -44,8 +47,10 @@ __all__ = [
     "item_ids_by_sku",
     "item_names",
     "items_with_recipe",
+    "option_ingredients",
     "prices_on",
     "recipe_needs",
+    "sale_groups",
     "set_cost_source",
     "stock_items",
     "tenant_today",
@@ -65,6 +70,7 @@ class StockItem:
     tracking_mode: str = "exact"
     storage_type: str | None = None
     allergens: tuple[str, ...] = ()
+    is_available: bool = True  # FR-CAT-003: false = sold out
 
     @property
     def estimated(self) -> bool:
@@ -89,9 +95,24 @@ async def stock_items(db: AsyncSession, ids: Iterable[uuid.UUID]) -> dict[uuid.U
         Item.tracking_mode,
         Item.storage_type,
         Item.allergens,
+        Item.is_available,
     ).where(Item.id.in_(set(ids)))
     rows = (await db.execute(stmt)).all()
-    return {r.id: StockItem(*r[:-1], allergens=tuple(r.allergens or ())) for r in rows}
+    return {
+        r.id: StockItem(
+            r.id,
+            r.type,
+            r.base_unit_id,
+            r.is_stocked,
+            r.is_active,
+            r.shelf_life_days,
+            r.tracking_mode,
+            r.storage_type,
+            tuple(r.allergens or ()),
+            r.is_available,
+        )
+        for r in rows
+    }
 
 
 async def item_ids_by_sku(db: AsyncSession) -> dict[str, uuid.UUID]:

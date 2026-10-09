@@ -5,7 +5,7 @@ Order follows docs/08 section 4, with modifiers and outlet overrides first (move
 | # | Slice | Requirements | Status |
 | --- | --- | --- | --- |
 | 2a | Modifiers (groups, options, price delta, ingredient delta), availability flags | FR-CAT-003 | done 2026-10-09 |
-| 2b | POS orders, payments (split, change, tip, cash rounding), cash shifts; stock out on payment | FR-SAL-005, 006, 009 | |
+| 2b | POS orders, payments (split, change, tip, cash rounding), cash shifts; stock out on payment | FR-SAL-005, 006, 009 | backend done 2026-10-09 (screens in 2c) |
 | 2c | Cashier POS screen (touch-first, search, modifiers, notes, re-order), shift screen | FR-SAL-004 | |
 | 2d | Discounts with role limits, voids and refunds with approval and stock effect | FR-SAL-007, 008 | |
 | 2e | Floors, tables, sessions, move, merge, split bill, live occupancy | FR-TBL-001 to 004 | |

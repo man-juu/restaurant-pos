@@ -51,12 +51,14 @@ DEFAULTS: dict[str, dict[str, Any]] = {
                 "stock_count": {"prefix": "CNT", "padding": 5, "reset": "yearly"},
                 "adjustment": {"prefix": "ADJ", "padding": 5, "reset": "yearly"},
                 "sales_day": {"prefix": "SD", "padding": 5, "reset": "yearly"},
+                "pos_order": {"prefix": "POS", "padding": 6, "reset": "yearly"},
             }
         },
         "session": {"idle_minutes": 60},
         "stock": {**STOCK, "count_variance_alert": 200_000},  # Rp 200.000
         "purchasing": {"require_invoice_attachment": False},
         "catalog": {"target_food_cost_bp": 3500},  # 35 %, a common Indonesian target
+        "pos": {"require_shift": True, "cash_rounding_step": 0, "tips_enabled": False},
     }
 }
 
@@ -70,6 +72,7 @@ FALLBACK: dict[str, Any] = {
     "stock": STOCK,
     "purchasing": {"require_invoice_attachment": False},
     "catalog": {"target_food_cost_bp": None},
+    "pos": {"require_shift": True, "cash_rounding_step": 0, "tips_enabled": False},
 }
 
 
