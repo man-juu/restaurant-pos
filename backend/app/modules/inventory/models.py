@@ -57,6 +57,7 @@ class StockBatch(Base):
         _item_fk(),
         CheckConstraint("unit_cost >= 0", name="unit_cost_not_negative"),
         Index(None, "tenant_id", "outlet_id", "item_id", "expiry_date"),
+        Index(None, "tenant_id", "source_doc_type", "source_doc_id"),  # lot trace
     )
 
     id: Mapped[uuid.UUID] = _id()
@@ -91,6 +92,7 @@ class StockMovement(Base):
         CheckConstraint("unit_cost >= 0", name="unit_cost_not_negative"),
         Index(None, "tenant_id", "outlet_id", "item_id", "business_date"),
         Index(None, "tenant_id", "doc_type", "doc_id"),
+        Index(None, "tenant_id", "batch_id"),  # lot trace
     )
 
     id: Mapped[uuid.UUID] = _id()

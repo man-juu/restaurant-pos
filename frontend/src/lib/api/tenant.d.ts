@@ -1335,6 +1335,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/inventory/batches/{batch_id}/trace': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Trace Batch
+     * @description FR-INV-016: where a batch came from and where it went.
+     */
+    get: operations['trace_batch_api_v1_inventory_batches__batch_id__trace_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/inventory/counts': {
     parameters: {
       query?: never
@@ -1519,6 +1539,26 @@ export interface paths {
     get: operations['list_levels_api_v1_inventory_levels_get']
     /** Save Levels */
     put: operations['save_levels_api_v1_inventory_levels_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/lots': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Find Lots
+     * @description FR-INV-016: batches by lot code (prefix), at outlets the caller may see.
+     */
+    get: operations['find_lots_api_v1_inventory_lots_get']
+    put?: never
     post?: never
     delete?: never
     options?: never
@@ -6894,6 +6934,87 @@ export interface components {
        */
       status: 'new' | 'preparing' | 'ready' | 'bumped'
     }
+    /** Trace */
+    Trace: {
+      batch: components['schemas']['TraceBatch']
+      /** Descendants */
+      descendants: components['schemas']['TraceBatch'][]
+      /** Hidden */
+      hidden: number
+      /** Sources */
+      sources: components['schemas']['TraceBatch'][]
+      /** Uses */
+      uses: components['schemas']['TraceUse'][]
+    }
+    /** TraceBatch */
+    TraceBatch: {
+      /** Depth */
+      depth: number
+      /** Expiry Date */
+      expiry_date: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Lot Code */
+      lot_code: string | null
+      /** Name */
+      name: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /**
+       * Received At
+       * Format: date-time
+       */
+      received_at: string
+      /** Sku */
+      sku: string
+      /** Source Doc Type */
+      source_doc_type: string
+      /** Unit Code */
+      unit_code: string
+    }
+    /**
+     * TraceUse
+     * @description Stock taken out of a batch by one document (a sale, waste, production, transfer).
+     */
+    TraceUse: {
+      /**
+       * Batch Id
+       * Format: uuid
+       */
+      batch_id: string
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /**
+       * Doc Id
+       * Format: uuid
+       */
+      doc_id: string
+      /** Doc Type */
+      doc_type: string
+      /** Made */
+      made: string[]
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Qty */
+      qty: string
+    }
     /**
      * TransferApproveIn
      * @description The source may change quantities (0 drops a line); missing lines keep the request.
@@ -10221,6 +10342,39 @@ export interface operations {
       }
     }
   }
+  trace_batch_api_v1_inventory_batches__batch_id__trace_get: {
+    parameters: {
+      query?: {
+        lang?: string
+      }
+      header?: never
+      path: {
+        batch_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Trace']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   start_count_api_v1_inventory_counts_post: {
     parameters: {
       query?: never
@@ -10599,6 +10753,38 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['LevelOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  find_lots_api_v1_inventory_lots_get: {
+    parameters: {
+      query: {
+        lot: string
+        lang?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TraceBatch'][]
         }
       }
       /** @description Validation Error */

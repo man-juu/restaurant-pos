@@ -16,6 +16,20 @@ const rice = {
   is_active: true,
 }
 
+const sambal = {
+  id: 'b1',
+  item_id: 'i-sambal',
+  sku: 'SAMBAL',
+  name: 'Sambal',
+  unit_code: 'g',
+  outlet_id: 'o1',
+  lot_code: 'PRD-00001',
+  expiry_date: '2026-03-05',
+  received_at: '2026-03-02T08:00:00Z',
+  source_doc_type: 'production',
+  depth: 0,
+}
+
 /** Fake inventory API: posting opening stock fills the stock list. */
 async function mock(page: Page, permissions: string[]) {
   const posted: Body[] = []
@@ -33,6 +47,24 @@ async function mock(page: Page, permissions: string[]) {
     'GET /api/v1/catalog/units': () => units,
     'GET /api/v1/catalog/items': () => ({ items: [rice], next_cursor: null }),
     'GET /api/v1/inventory/stock': () => ({ items: stock, next_cursor: null }),
+    'GET /api/v1/inventory/lots': () => [sambal],
+    'GET /api/v1/inventory/batches/b1/trace': () => ({
+      batch: sambal,
+      sources: [{ ...sambal, id: 'b0', name: 'Chili', sku: 'CHILI', lot_code: 'C-7', depth: 1 }],
+      descendants: [],
+      uses: [
+        {
+          batch_id: 'b1',
+          doc_type: 'transfer',
+          doc_id: 'd9',
+          outlet_id: 'o1',
+          business_date: '2026-03-02',
+          qty: '300.0000',
+          made: [],
+        },
+      ],
+      hidden: 1,
+    }),
     'POST /api/v1/inventory/opening': (body) => {
       posted.push(body)
       stock.push({
@@ -125,4 +157,19 @@ test('staff without posting rights only see what is on hand', async ({ page }) =
   await expect(page.getByRole('tab', { name: 'On hand' })).toBeVisible()
   await expect(page.getByRole('tab', { name: 'Opening stock' })).toHaveCount(0)
   await expect(page.getByRole('tab', { name: 'Valuation' })).toHaveCount(0)
+})
+
+test('lot trace shows what a batch was made from and who used it (FR-INV-016)', async ({
+  page,
+}) => {
+  await mock(page, ['inventory.stock.view'])
+  await page.goto('/inventory')
+  await page.getByRole('button', { name: 'EN', exact: true }).click()
+  await page.getByRole('tab', { name: 'Lot trace' }).click()
+  await page.getByLabel('Lot code').fill('PRD')
+  await page.getByRole('button', { name: 'Find' }).click()
+  await page.getByRole('button', { name: /Sambal · PRD-00001/ }).click()
+  await expect(page.getByText('Chili · C-7')).toBeVisible()
+  await expect(page.getByText('Transfer · Dapur Pusat')).toBeVisible()
+  await expect(page.getByText('1 batch is at an outlet you cannot see.')).toBeVisible()
 })

@@ -700,7 +700,8 @@
       "adjustments": "Adjustments",
       "counts": "Stock counts",
       "levels": "Levels",
-      "producible": "Can make"
+      "producible": "Can make",
+      "trace": "Lot trace"
     },
     "empty": "No stock recorded at this outlet yet.",
     "negative": "Below zero: more was used than was recorded in",
@@ -811,6 +812,30 @@
       "help": "How many of each dish or prepared item the stock here can still make. The ingredient that runs out first is shown.",
       "empty": "No active recipes yet.",
       "limit": "Runs out first: {{name}}"
+    },
+    "trace": {
+      "help": "Type a lot code to find a batch, then see what it was made from, where it went and which documents used it.",
+      "lot": "Lot code",
+      "search": "Find",
+      "none": "No batch with this lot code at your outlets.",
+      "batchLine": "{{outlet}} · made {{made}} · use by {{expiry}}",
+      "sources": "Made from",
+      "went": "Went to",
+      "uses": "Used by",
+      "empty": "Nothing.",
+      "back": "Back to results",
+      "hidden_one": "{{count}} batch is at an outlet you cannot see.",
+      "hidden_other": "{{count}} batches are at outlets you cannot see.",
+      "doc": {
+        "opening_balance": "Opening stock",
+        "goods_receipt": "Goods receipt",
+        "production": "Production",
+        "transfer": "Transfer",
+        "pos_sale": "POS sale",
+        "sales_day": "Daily sales",
+        "pos_void": "Void",
+        "pos_refund": "Refund"
+      }
     }
   },
   "purchasing": {

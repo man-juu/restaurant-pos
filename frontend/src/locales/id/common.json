@@ -700,7 +700,8 @@
       "adjustments": "Penyesuaian",
       "counts": "Stok opname",
       "levels": "Level",
-      "producible": "Bisa dibuat"
+      "producible": "Bisa dibuat",
+      "trace": "Telusur lot"
     },
     "empty": "Belum ada stok tercatat di outlet ini.",
     "negative": "Di bawah nol: pemakaian melebihi stok yang tercatat masuk",
@@ -811,6 +812,30 @@
       "help": "Berapa banyak tiap menu atau bahan olahan yang masih bisa dibuat dari stok di sini. Bahan yang paling dulu habis ditampilkan.",
       "empty": "Belum ada resep aktif.",
       "limit": "Paling dulu habis: {{name}}"
+    },
+    "trace": {
+      "help": "Ketik kode lot untuk mencari batch, lalu lihat dibuat dari apa, dikirim ke mana dan dokumen apa yang memakainya.",
+      "lot": "Kode lot",
+      "search": "Cari",
+      "none": "Tidak ada batch dengan kode lot ini di outlet Anda.",
+      "batchLine": "{{outlet}} · dibuat {{made}} · gunakan sebelum {{expiry}}",
+      "sources": "Dibuat dari",
+      "went": "Dikirim ke",
+      "uses": "Dipakai oleh",
+      "empty": "Tidak ada.",
+      "back": "Kembali ke hasil",
+      "hidden_one": "{{count}} batch ada di outlet yang tidak bisa Anda lihat.",
+      "hidden_other": "{{count}} batch ada di outlet yang tidak bisa Anda lihat.",
+      "doc": {
+        "opening_balance": "Stok awal",
+        "goods_receipt": "Penerimaan barang",
+        "production": "Produksi",
+        "transfer": "Transfer",
+        "pos_sale": "Penjualan POS",
+        "sales_day": "Penjualan harian",
+        "pos_void": "Pembatalan",
+        "pos_refund": "Pengembalian dana"
+      }
     }
   },
   "purchasing": {

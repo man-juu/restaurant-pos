@@ -11,6 +11,7 @@ import { LevelsTab } from './LevelsTab'
 import { OpeningTab } from './OpeningTab'
 import { ProducibleTab } from './ProducibleTab'
 import { StockTab } from './StockTab'
+import { TraceTab } from './TraceTab'
 import { ValuationTab } from './ValuationTab'
 import { WasteTab } from './WasteTab'
 
@@ -67,6 +68,10 @@ const TABS: Record<
     render: (o, a) => (
       <LevelsTab key={o} outletId={o} canManage={a.has('inventory.level.manage')} />
     ),
+  },
+  trace: {
+    visible: () => true,
+    render: () => <TraceTab />,
   },
   valuation: {
     visible: (a) => a.showCost,

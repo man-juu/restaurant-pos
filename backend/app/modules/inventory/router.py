@@ -15,7 +15,7 @@ from app.core.idempotency import idempotency_key, remember, replay_or_none, requ
 from app.core.pagination import Page, PageParams, page_params
 from app.core.tenancy import tenant_session
 from app.modules.catalog.interface import COST_VIEW, tenant_today
-from app.modules.inventory import opening, queries
+from app.modules.inventory import opening, queries, trace
 from app.modules.inventory import permissions as perm
 from app.modules.inventory.schemas import (
     BatchOut,
@@ -120,3 +120,24 @@ async def reverse_opening(doc_id: uuid.UUID, request: Request, p: Post) -> Poste
         return await opening.reverse_opening(
             db, tenant_id=p.tenant_id, user_id=p.user_id, doc_id=doc_id
         )
+
+
+@router.get("/lots", response_model=list[trace.TraceBatch])
+async def find_lots(
+    lot: Annotated[str, Query(min_length=1, max_length=64)],
+    request: Request,
+    p: View,
+    lang: Lang = "en",
+) -> list[trace.TraceBatch]:
+    """FR-INV-016: batches by lot code (prefix), at outlets the caller may see."""
+    async with _db(request, p) as db:
+        return await trace.find_lots(db, p.tenant_id, lot.strip(), lang, p.can_access_outlet)
+
+
+@router.get("/batches/{batch_id}/trace", response_model=trace.Trace)
+async def trace_batch(
+    batch_id: uuid.UUID, request: Request, p: View, lang: Lang = "en"
+) -> trace.Trace:
+    """FR-INV-016: where a batch came from and where it went."""
+    async with _db(request, p) as db:
+        return await trace.trace(db, p.tenant_id, batch_id, lang, p.can_access_outlet)

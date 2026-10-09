@@ -8947,6 +8947,182 @@
         "title": "TicketOut",
         "type": "object"
       },
+      "Trace": {
+        "properties": {
+          "batch": {
+            "$ref": "#/components/schemas/TraceBatch"
+          },
+          "descendants": {
+            "items": {
+              "$ref": "#/components/schemas/TraceBatch"
+            },
+            "title": "Descendants",
+            "type": "array"
+          },
+          "hidden": {
+            "title": "Hidden",
+            "type": "integer"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/TraceBatch"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "uses": {
+            "items": {
+              "$ref": "#/components/schemas/TraceUse"
+            },
+            "title": "Uses",
+            "type": "array"
+          }
+        },
+        "required": [
+          "batch",
+          "sources",
+          "descendants",
+          "uses",
+          "hidden"
+        ],
+        "title": "Trace",
+        "type": "object"
+      },
+      "TraceBatch": {
+        "properties": {
+          "depth": {
+            "title": "Depth",
+            "type": "integer"
+          },
+          "expiry_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expiry Date"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "lot_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lot Code"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "received_at": {
+            "format": "date-time",
+            "title": "Received At",
+            "type": "string"
+          },
+          "sku": {
+            "title": "Sku",
+            "type": "string"
+          },
+          "source_doc_type": {
+            "title": "Source Doc Type",
+            "type": "string"
+          },
+          "unit_code": {
+            "title": "Unit Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "item_id",
+          "sku",
+          "name",
+          "unit_code",
+          "outlet_id",
+          "lot_code",
+          "expiry_date",
+          "received_at",
+          "source_doc_type",
+          "depth"
+        ],
+        "title": "TraceBatch",
+        "type": "object"
+      },
+      "TraceUse": {
+        "description": "Stock taken out of a batch by one document (a sale, waste, production, transfer).",
+        "properties": {
+          "batch_id": {
+            "format": "uuid",
+            "title": "Batch Id",
+            "type": "string"
+          },
+          "business_date": {
+            "format": "date",
+            "title": "Business Date",
+            "type": "string"
+          },
+          "doc_id": {
+            "format": "uuid",
+            "title": "Doc Id",
+            "type": "string"
+          },
+          "doc_type": {
+            "title": "Doc Type",
+            "type": "string"
+          },
+          "made": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Made",
+            "type": "array"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Qty",
+            "type": "string"
+          }
+        },
+        "required": [
+          "batch_id",
+          "doc_type",
+          "doc_id",
+          "outlet_id",
+          "business_date",
+          "qty",
+          "made"
+        ],
+        "title": "TraceUse",
+        "type": "object"
+      },
       "TransferApproveIn": {
         "additionalProperties": false,
         "description": "The source may change quantities (0 drops a line); missing lines keep the request.",
@@ -14669,6 +14845,61 @@
         ]
       }
     },
+    "/api/v1/inventory/batches/{batch_id}/trace": {
+      "get": {
+        "description": "FR-INV-016: where a batch came from and where it went.",
+        "operationId": "trace_batch_api_v1_inventory_batches__batch_id__trace_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "batch_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Batch Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Trace"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Trace Batch",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
     "/api/v1/inventory/counts": {
       "post": {
         "operationId": "start_count_api_v1_inventory_counts_post",
@@ -15313,6 +15544,66 @@
           }
         },
         "summary": "Save Levels",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/lots": {
+      "get": {
+        "description": "FR-INV-016: batches by lot code (prefix), at outlets the caller may see.",
+        "operationId": "find_lots_api_v1_inventory_lots_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "lot",
+            "required": true,
+            "schema": {
+              "maxLength": 64,
+              "minLength": 1,
+              "title": "Lot",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TraceBatch"
+                  },
+                  "title": "Response Find Lots Api V1 Inventory Lots Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Find Lots",
         "tags": [
           "inventory"
         ]
