@@ -58,12 +58,20 @@ async def _receipts(db: AsyncSession, data: VendorBillIn) -> list[uuid.UUID]:
     ids = list(dict.fromkeys(data.receipt_ids))
     if not ids and data.po_id:
         stmt = select(GoodsReceipt.id).where(
-            GoodsReceipt.po_id == data.po_id, GoodsReceipt.status == "posted"
+            GoodsReceipt.po_id == data.po_id,
+            GoodsReceipt.status == "posted",
+            GoodsReceipt.outlet_id == data.outlet_id,
         )
         ids = [i for i in await db.scalars(stmt) if not await _billed(db, i)]
     for rid in ids:
         r = await db.get(GoodsReceipt, rid)
-        if r is None or r.status != "posted" or r.vendor_id != data.vendor_id:
+        # Only this outlet's receipts: a user scoped to one outlet cannot claim another's.
+        if (
+            r is None
+            or r.status != "posted"
+            or r.vendor_id != data.vendor_id
+            or r.outlet_id != data.outlet_id
+        ):
             raise NotFoundError("receipt_not_found", details={"receipt_id": str(rid)})
         if await _billed(db, rid):
             raise ConflictError("receipt_already_billed", details={"receipt_id": str(rid)})
@@ -212,7 +220,13 @@ async def apply_credit(
 ) -> VendorBill:
     """FR-PUR-008: the vendor's credit note for a return reduces what this bill still owes."""
     credit = await db.get(VendorReturn, return_id, with_for_update=True)
-    if credit is None or credit.vendor_id != bill.vendor_id or credit.status != "posted":
+    # Same vendor and same outlet: one outlet cannot spend another outlet's credit.
+    if (
+        credit is None
+        or credit.vendor_id != bill.vendor_id
+        or credit.outlet_id != bill.outlet_id
+        or credit.status != "posted"
+    ):
         raise NotFoundError("return_not_found")
     if credit.credit_note_number is None:
         raise ConflictError("credit_note_missing")

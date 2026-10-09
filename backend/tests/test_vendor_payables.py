@@ -154,6 +154,11 @@ def test_fr_pur_008_return_credit_note_applied_to_a_bill(
     client.post(f"{P}/returns/{ret['id']}/credit-note", json=note, headers=m)
     used = client.post(f"{P}/bills/{bill['id']}/credits", json={"return_id": ret["id"]}, headers=m)
     assert used.json()["credited"] == 60000 and used.json()["balance"] == 180000
+    # Another outlet's receipt cannot be put on this outlet's bill.
+    elsewhere = {**body, "outlet_id": str(world["kitchen"])}
+    theirs = buy(client, m, elsewhere).json()
+    claim = bill_body(world, vendor, "INV-10", lines, receipt_ids=[theirs["id"]])
+    assert post(client, m, "/bills", claim).json()["code"] == "receipt_not_found"
     twice = client.post(f"{P}/bills/{bill['id']}/credits", json={"return_id": ret["id"]}, headers=m)
     assert twice.json()["code"] == "credit_already_applied"
     # A credited return can no longer be undone.
