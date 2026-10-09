@@ -1248,6 +1248,74 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/notifications': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Notifications */
+    get: operations['list_notifications_api_v1_notifications_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/notifications/read-all': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Mark All Read */
+    post: operations['mark_all_read_api_v1_notifications_read_all_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/notifications/unread-count': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Unread Count */
+    get: operations['unread_count_api_v1_notifications_unread_count_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/notifications/{notification_id}/read': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Mark Read */
+    post: operations['mark_read_api_v1_notifications__notification_id__read_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/outlets': {
     parameters: {
       query?: never
@@ -2926,6 +2994,29 @@ export interface components {
        */
       transfer: 'allow' | 'warn' | 'block'
     }
+    /** NotificationOut */
+    NotificationOut: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Kind */
+      kind: string
+      /** Link */
+      link: string | null
+      /** Params */
+      params: {
+        [key: string]: unknown
+      }
+      /** Read At */
+      read_at: string | null
+    }
     /** NumberingFormat */
     NumberingFormat: {
       /**
@@ -3780,6 +3871,11 @@ export interface components {
     }
     /** StockSettings */
     StockSettings: {
+      /**
+       * Expiry Warning Days
+       * @default 2
+       */
+      expiry_warning_days: number
       negative_stock?: components['schemas']['NegativeStockPolicy']
     }
     /** SubscriptionBanner */
@@ -4023,6 +4119,11 @@ export interface components {
       is_platform: boolean
       /** Name */
       name: string
+    }
+    /** UnreadOut */
+    UnreadOut: {
+      /** Unread */
+      unread: number
     }
     /** UploadRef */
     UploadRef: {
@@ -6787,6 +6888,93 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['Capabilities']
+        }
+      }
+    }
+  }
+  list_notifications_api_v1_notifications_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['NotificationOut'][]
+        }
+      }
+    }
+  }
+  mark_all_read_api_v1_notifications_read_all_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  unread_count_api_v1_notifications_unread_count_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UnreadOut']
+        }
+      }
+    }
+  }
+  mark_read_api_v1_notifications__notification_id__read_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        notification_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
         }
       }
     }

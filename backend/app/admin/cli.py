@@ -2,6 +2,7 @@
 
     python -m app.admin.cli create-admin you@example.com "Your Name" super_admin
     python -m app.admin.cli subscription-job
+    python -m app.admin.cli alerts-job
 
 The first super admin can only be created here: there is deliberately no sign-up endpoint.
 The daily subscription job is scheduled by the worker/cron in slice 0.8.
@@ -14,6 +15,7 @@ from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import create_async_engine
 
+from app.admin.alerts_job import active_tenants, run_alerts
 from app.admin.models import AdminUser
 from app.admin.service import run_subscription_job
 from app.core.config import get_settings
@@ -45,6 +47,18 @@ async def _job() -> None:
     print(f"Subscription job done: {len(changes)} state change(s).")
 
 
+async def _alerts() -> None:
+    settings = get_settings()
+    admin = create_async_engine(str(settings.admin_database_url))
+    async with create_sessionmaker(admin)() as db:
+        tenants = await active_tenants(db)
+    await admin.dispose()
+    engine = create_async_engine(str(settings.database_url))  # the app role: RLS applies
+    failed = await run_alerts(tenants, create_sessionmaker(engine))
+    await engine.dispose()
+    print(f"Alerts job done: {len(tenants)} tenant(s), {failed} failed.")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(prog="app.admin.cli")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -53,9 +67,12 @@ def main() -> None:
     create.add_argument("name")
     create.add_argument("role", choices=["super_admin", "support"])
     sub.add_parser("subscription-job")
+    sub.add_parser("alerts-job")
     args = parser.parse_args()
     if args.command == "create-admin":
         asyncio.run(_create_admin(args.email, args.name, args.role))
+    elif args.command == "alerts-job":
+        asyncio.run(_alerts())
     else:
         asyncio.run(_job())
 

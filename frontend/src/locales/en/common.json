@@ -308,7 +308,8 @@
         "allow": "Allow and flag for review",
         "warn": "Ask to confirm",
         "block": "Refuse"
-      }
+      },
+      "expiryDays": "Warn this many days before a batch expires (0 to 60)"
     },
     "purchasing": {
       "requireInvoice": "Require a photo of the supplier invoice on every purchase",
@@ -787,6 +788,24 @@
       "shipped": "On the way",
       "received": "Received",
       "cancelled": "Cancelled"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "bell_one": "{{count}} unread notification",
+    "bell_other": "{{count}} unread notifications",
+    "readAll": "Mark all as read",
+    "empty": "No notifications yet.",
+    "open": "Open",
+    "kinds": {
+      "negative_stock": "{{item}} is below zero: {{qty}} {{unit}}",
+      "below_reorder_point": "{{item}} is at {{qty}} {{unit}}, reorder point {{point}}",
+      "batch_near_expiry": "{{item}}: {{qty}} {{unit}} expires on {{expiry}}",
+      "expired_stock": "{{item}}: {{qty}} {{unit}} expired on {{expiry}}",
+      "low_days_of_inventory": "{{item}} is running low",
+      "count_variance": "Large count difference on {{item}}",
+      "food_cost_above_target": "Food cost of {{item}} is above target",
+      "approval_requested": "An approval is waiting for you"
     }
   }
 }

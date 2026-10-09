@@ -8,7 +8,8 @@ from typing import Any
 
 # FR-INV-006: sales may go negative (flagged), production and transfers ask first.
 STOCK: dict[str, Any] = {
-    "negative_stock": {"sale": "allow", "production": "warn", "transfer": "warn", "other": "block"}
+    "negative_stock": {"sale": "allow", "production": "warn", "transfer": "warn", "other": "block"},
+    "expiry_warning_days": 2,
 }
 
 DEFAULTS: dict[str, dict[str, Any]] = {

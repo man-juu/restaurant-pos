@@ -308,7 +308,8 @@
         "allow": "Izinkan dan tandai untuk ditinjau",
         "warn": "Minta konfirmasi",
         "block": "Tolak"
-      }
+      },
+      "expiryDays": "Peringatkan sekian hari sebelum batch kedaluwarsa (0 sampai 60)"
     },
     "purchasing": {
       "requireInvoice": "Wajibkan foto nota pemasok di setiap pembelian",
@@ -787,6 +788,24 @@
       "shipped": "Dalam perjalanan",
       "received": "Diterima",
       "cancelled": "Dibatalkan"
+    }
+  },
+  "notifications": {
+    "title": "Notifikasi",
+    "bell_one": "{{count}} notifikasi belum dibaca",
+    "bell_other": "{{count}} notifikasi belum dibaca",
+    "readAll": "Tandai semua sudah dibaca",
+    "empty": "Belum ada notifikasi.",
+    "open": "Buka",
+    "kinds": {
+      "negative_stock": "{{item}} di bawah nol: {{qty}} {{unit}}",
+      "below_reorder_point": "{{item}} tinggal {{qty}} {{unit}}, titik pesan ulang {{point}}",
+      "batch_near_expiry": "{{item}}: {{qty}} {{unit}} kedaluwarsa pada {{expiry}}",
+      "expired_stock": "{{item}}: {{qty}} {{unit}} sudah kedaluwarsa sejak {{expiry}}",
+      "low_days_of_inventory": "{{item}} hampir habis",
+      "count_variance": "Selisih hitung besar pada {{item}}",
+      "food_cost_above_target": "HPP {{item}} di atas target",
+      "approval_requested": "Ada persetujuan yang menunggu Anda"
     }
   }
 }

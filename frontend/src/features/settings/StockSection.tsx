@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { SelectInput } from '../../components/form'
+import { SelectInput, TextInput } from '../../components/form'
 import { Card } from '../../components/ui'
 import type { AllSettings } from '../../lib/api/types'
 import { useSaveSetting } from './api'
@@ -24,6 +24,8 @@ export function StockSection({ data, canEdit }: { data: AllSettings; canEdit: bo
   const { t } = useTranslation()
   const save = useSaveSetting('stock')
   const [policy, setPolicy] = useState(() => withDefaults(data.stock.negative_stock))
+  const [days, setDays] = useState(String(data.stock.expiry_warning_days ?? 2))
+  const daysOk = /^\d{1,2}$/.test(days) && Number(days) <= 60
 
   return (
     <Card className="flex flex-col gap-4">
@@ -43,9 +45,21 @@ export function StockSection({ data, canEdit }: { data: AllSettings; canEdit: bo
             ))}
           </SelectInput>
         ))}
+        <TextInput
+          label={t('settings.stock.expiryDays')}
+          inputMode="numeric"
+          value={days}
+          invalid={!daysOk}
+          onChange={(e) => setDays(e.target.value)}
+        />
       </fieldset>
       {canEdit && (
-        <SaveBar mutation={save} onSave={() => save.mutate({ negative_stock: policy })} />
+        <SaveBar
+          mutation={save}
+          onSave={() =>
+            daysOk && save.mutate({ negative_stock: policy, expiry_warning_days: Number(days) })
+          }
+        />
       )}
     </Card>
   )

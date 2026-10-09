@@ -77,7 +77,8 @@ services:
   # Background jobs. Until the Postgres job queue arrives, a daily loop runs the subscription job.
   worker:
     <<: *app
-    command: ["sh", "-c", "while true; do python -m app.admin.cli subscription-job; sleep 86400; done"]
+    # Alerts every 10 minutes; the subscription job once a day (every 144th round).
+    command: ["sh", "-c", "n=0; while true; do [ $((n % 144)) -eq 0 ] && python -m app.admin.cli subscription-job; python -m app.admin.cli alerts-job; n=$((n + 1)); sleep 600; done"]
     environment:
       <<: *api-env
       ADMIN_DATABASE_URL: postgresql+asyncpg://pos_admin:${ADMIN_DB_PASSWORD}@db:5432/${POSTGRES_DB:-pos}

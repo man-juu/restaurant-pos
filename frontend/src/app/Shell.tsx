@@ -7,6 +7,7 @@ import { NavLink, Navigate, Outlet } from 'react-router'
 import { InstallPrompt } from '../components/InstallPrompt'
 import { AppearanceMenu } from '../components/AppearanceMenu'
 import { LanguageSwitch } from '../components/LanguageSwitch'
+import { NotificationBell } from '../features/notifications/NotificationBell'
 import { Button, Logo } from '../components/ui'
 import type { Capabilities, SessionInfo } from '../lib/api/types'
 import { type NavItem, navItems } from './nav'
@@ -122,6 +123,7 @@ function TopBar({ session }: { session: SessionInfo }) {
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
       <div className="flex items-center gap-3">
+        <NotificationBell />
         <LanguageSwitch />
         <AppearanceMenu />
         <Button variant="ghost" onClick={() => logout.mutate()}>
