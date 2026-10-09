@@ -1,6 +1,6 @@
 # Phase 1 task list (back-office core)
 
-Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not merged) until the owner says so.
+Status as of 2026-10-09: **Phase 1 complete** (Gate 1 waits on the pilot: real data, seven days of use, VPS load test). Order follows docs/08 section 3. PR #1 stays open (not merged) until the owner says so.
 
 ## Done
 

@@ -212,7 +212,12 @@
     "price_missing": "Some items have no price on this channel for this day.",
     "unknown_platform_code": "Some platform codes are not mapped to items.",
     "reported_above_list": "The reported total is higher than the list total.",
-    "range_too_long": "Choose a period of at most one year."
+    "range_too_long": "Choose a period of at most one year.",
+    "modifier_group_not_found": "That modifier group no longer exists.",
+    "modifier_group_name_taken": "A modifier group with this name already exists.",
+    "option_not_found": "An option was removed by someone else. Reload and try again.",
+    "not_a_menu_item": "Only menu items can have modifiers.",
+    "duplicate_modifier_group": "A group is listed twice."
   },
   "appearance": {
     "open": "Appearance",
@@ -354,6 +359,7 @@
     "tabs": {
       "items": "Items",
       "categories": "Categories",
+      "modifiers": "Modifiers",
       "units": "Units",
       "channels": "Sales channels"
     },
@@ -565,6 +571,23 @@
       "remove": "Remove",
       "add": "Add a menu item",
       "save": "Save codes"
+    },
+    "modifiers": {
+      "help": "Choices on a menu item, like size, add-ons or spice level. An option can change the price and take more or less of an ingredient.",
+      "empty": "No modifier groups yet.",
+      "new": "New modifier group",
+      "name": "Group name",
+      "min": "Must pick at least",
+      "max": "Can pick at most",
+      "selectHelp": "0 = optional. For one required choice (like size) use 1 and 1.",
+      "addOption": "Add option",
+      "option": "Option",
+      "priceDelta": "Price change (can be negative)",
+      "ingredient": "Ingredient change (optional): search an ingredient",
+      "ingredientQty": "{{name}}: amount in base unit (negative = less)",
+      "removeIngredient": "No ingredient change",
+      "title": "Sale options",
+      "available": "Available for sale (untick when sold out)"
     }
   },
   "inventory": {

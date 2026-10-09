@@ -9,8 +9,9 @@ function fakeCatalog() {
   const channels: Record<string, unknown>[] = []
   const items: Record<string, unknown>[] = []
   const prices: Record<string, unknown>[] = []
+  const groups: Record<string, unknown>[] = []
   const posts: { path: string; body: Record<string, unknown> }[] = []
-  return { units, channels, items, prices, posts }
+  return { units, channels, items, prices, groups, posts }
 }
 
 type Fake = ReturnType<typeof fakeCatalog>
@@ -58,6 +59,11 @@ const ROUTES: Record<string, (fake: Fake, body: Body) => unknown> = {
   'PUT /api/v1/catalog/items/i1/photo': (f) => {
     f.items[0].photo_upload_id = 'up1'
     return { id: 'up1', content_type: 'image/webp', width: 1, height: 1, byte_size: 68 }
+  },
+  'GET /api/v1/catalog/modifier-groups': (f) => f.groups,
+  'POST /api/v1/catalog/modifier-groups': (f, b) => {
+    const options = (b.options as Body[]).map((o, i) => ({ ...o, id: `o${i}` }))
+    return add(f.groups, { ...b, id: `g${f.groups.length}`, options })
   },
   'GET /api/v1/catalog/imports': () => [],
   'POST /api/v1/catalog/imports/items/check': () => ({
@@ -182,6 +188,25 @@ test('manager adds a channel, an item and its dine-in price (FR-CAT-001, 004)', 
   await page.getByRole('button', { name: 'Use this photo' }).click()
   // The click only starts the request: wait until the fake API has received it.
   await expect.poll(() => fake.posts.at(-1)?.path).toBe('/api/v1/catalog/items/i1/photo/ai1')
+})
+
+test('manager adds a modifier group with a price change (FR-CAT-003)', async ({ page }) => {
+  const fake = await mock(page, EDIT)
+  await page.goto('/catalog')
+  await page.getByRole('button', { name: 'EN' }).click()
+  await page.getByRole('tab', { name: 'Modifiers' }).click()
+  await page.getByRole('button', { name: 'New modifier group' }).click()
+  await page.getByLabel('Group name').fill('Spice level')
+  await page.getByLabel('Option', { exact: true }).fill('Extra spicy')
+  await page.getByLabel('Price change (can be negative)').fill('2000')
+  await page.getByRole('button', { name: 'Save' }).click()
+  await expect(page.getByText('Extra spicy')).toBeVisible()
+  expect(fake.posts.at(-1)?.body).toMatchObject({
+    name: 'Spice level',
+    min_select: 0,
+    max_select: 1,
+    options: [{ name: 'Extra spicy', price_delta: 2000 }],
+  })
 })
 
 test('staff without edit rights see the catalog read-only', async ({ page }) => {

@@ -120,6 +120,7 @@ class ItemSummary(BaseModel):
     category_id: uuid.UUID | None
     base_unit_id: uuid.UUID
     is_active: bool
+    is_available: bool = True
     photo_upload_id: uuid.UUID | None = None
 
 

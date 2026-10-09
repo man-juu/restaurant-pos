@@ -5,6 +5,7 @@ import type { ItemOut } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
 import { useItem } from './api'
 import { ItemForm } from './ItemForm'
+import { ItemModifiersPanel } from './ItemModifiersPanel'
 import { PhotoPanel } from './PhotoPanel'
 import { PricesPanel } from './PricesPanel'
 import { RecipePanel } from './RecipePanel'
@@ -68,6 +69,7 @@ function ItemPanels({
         <RecipePanel item={item} canEdit={canEdit} currency={currency} />
       )}
       <PricesPanel itemId={item.id} canEdit={canEdit} currency={currency} />
+      {item.type === 'menu' && <ItemModifiersPanel item={item} canEdit={canEdit} />}
     </>
   )
 }

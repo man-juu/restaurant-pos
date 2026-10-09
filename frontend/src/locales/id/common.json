@@ -212,7 +212,12 @@
     "price_missing": "Beberapa barang belum punya harga di saluran ini pada tanggal ini.",
     "unknown_platform_code": "Beberapa kode platform belum dipetakan ke barang.",
     "reported_above_list": "Total yang dilaporkan lebih tinggi dari total harga daftar.",
-    "range_too_long": "Pilih periode paling lama satu tahun."
+    "range_too_long": "Pilih periode paling lama satu tahun.",
+    "modifier_group_not_found": "Grup modifier itu sudah tidak ada.",
+    "modifier_group_name_taken": "Grup modifier dengan nama ini sudah ada.",
+    "option_not_found": "Sebuah opsi dihapus orang lain. Muat ulang dan coba lagi.",
+    "not_a_menu_item": "Hanya menu yang bisa punya modifier.",
+    "duplicate_modifier_group": "Ada grup yang tercantum dua kali."
   },
   "appearance": {
     "open": "Tampilan",
@@ -354,6 +359,7 @@
     "tabs": {
       "items": "Item",
       "categories": "Kategori",
+      "modifiers": "Modifier",
       "units": "Satuan",
       "channels": "Kanal penjualan"
     },
@@ -565,6 +571,23 @@
       "remove": "Hapus",
       "add": "Tambah menu",
       "save": "Simpan kode"
+    },
+    "modifiers": {
+      "help": "Pilihan pada menu, seperti ukuran, tambahan atau level pedas. Opsi bisa mengubah harga dan menambah atau mengurangi bahan.",
+      "empty": "Belum ada grup modifier.",
+      "new": "Grup modifier baru",
+      "name": "Nama grup",
+      "min": "Minimal dipilih",
+      "max": "Maksimal dipilih",
+      "selectHelp": "0 = opsional. Untuk satu pilihan wajib (seperti ukuran) isi 1 dan 1.",
+      "addOption": "Tambah opsi",
+      "option": "Opsi",
+      "priceDelta": "Perubahan harga (boleh negatif)",
+      "ingredient": "Perubahan bahan (opsional): cari bahan",
+      "ingredientQty": "{{name}}: jumlah dalam satuan dasar (negatif = berkurang)",
+      "removeIngredient": "Tanpa perubahan bahan",
+      "title": "Opsi penjualan",
+      "available": "Tersedia untuk dijual (hapus centang jika habis)"
     }
   },
   "inventory": {

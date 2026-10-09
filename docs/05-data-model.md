@@ -55,9 +55,11 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | --- | --- | --- |
 | `units` | tenant_id, code, name, dimension (mass, volume, count) | Platform seeds g, kg, ml, l, pcs; tenants add more |
 | `item_categories` | tenant_id, parent_id, name | |
-| `items` | tenant_id, sku, type, category_id, base_unit_id, is_stocked, tracking_mode, standard_cost, target_food_cost_bp, shelf_life_days, storage_type, allergens, photo_upload_id, is_active | `type`: ingredient, semi_finished, menu. `tracking_mode`: exact, estimated, untracked (estimated never blocks a sale or raises negative-stock alerts). `standard_cost` numeric(18,6) per base unit, used only when no moving average exists |
+| `items` | tenant_id, sku, type, category_id, base_unit_id, is_stocked, tracking_mode, standard_cost, target_food_cost_bp, shelf_life_days, storage_type, allergens, photo_upload_id, is_available, is_active | `type`: ingredient, semi_finished, menu. `tracking_mode`: exact, estimated, untracked (estimated never blocks a sale or raises negative-stock alerts). `standard_cost` numeric(18,6) per base unit, used only when no moving average exists |
 | `item_unit_conversions` | tenant_id, item_id, unit_id, factor_to_base | Exact decimals |
-| `modifier_groups`, `modifiers` | tenant_id, item scope, price_delta, ingredient_delta (via BOM line) | |
+| `modifier_groups` | tenant_id, name, min_select, max_select, is_active | FR-CAT-003 |
+| `modifier_options` | tenant_id, group_id, name, price_delta, ingredient_item_id, ingredient_qty (base unit, negative = less), sort_order, is_active | Never deleted, only switched off (sold lines point at them) |
+| `item_modifier_groups` | tenant_id, item_id, group_id, sort_order | Menu items only |
 | `channels` | tenant_id, code, name, kind, platform | kind: dine_in, takeaway, platform, wholesale |
 | `item_prices` | tenant_id, item_id, channel_id, outlet_id (nullable), price, valid_from, valid_to | |
 | `boms` | tenant_id, item_id, version, yield_qty, yield_unit_id, valid_from, valid_to, status | One active BOM per item per date |

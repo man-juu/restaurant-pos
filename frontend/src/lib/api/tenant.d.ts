@@ -704,6 +704,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/catalog/items/{item_id}/availability': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Set Availability */
+    put: operations['set_availability_api_v1_catalog_items__item_id__availability_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/catalog/items/{item_id}/boms': {
     parameters: {
       query?: never
@@ -732,6 +749,24 @@ export interface paths {
     /** Item Costing */
     get: operations['item_costing_api_v1_catalog_items__item_id__costing_get']
     put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/items/{item_id}/modifier-groups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Item Groups */
+    get: operations['item_groups_api_v1_catalog_items__item_id__modifier_groups_get']
+    /** Set Item Groups */
+    put: operations['set_item_groups_api_v1_catalog_items__item_id__modifier_groups_put']
     post?: never
     delete?: never
     options?: never
@@ -792,6 +827,41 @@ export interface paths {
     get: operations['price_history_api_v1_catalog_items__item_id__prices_get']
     /** Set Price */
     put: operations['set_price_api_v1_catalog_items__item_id__prices_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/modifier-groups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Groups */
+    get: operations['list_groups_api_v1_catalog_modifier_groups_get']
+    put?: never
+    /** Create Group */
+    post: operations['create_group_api_v1_catalog_modifier_groups_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/modifier-groups/{group_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Group */
+    put: operations['update_group_api_v1_catalog_modifier_groups__group_id__put']
     post?: never
     delete?: never
     options?: never
@@ -2440,6 +2510,11 @@ export interface components {
       /** User Name */
       user_name: string | null
     }
+    /** AvailabilityIn */
+    AvailabilityIn: {
+      /** Is Available */
+      is_available: boolean
+    }
     /** BankDetails */
     BankDetails: {
       /** Bank Details */
@@ -2963,6 +3038,55 @@ export interface components {
       image: components['schemas']['UploadRef']
       usage: components['schemas']['AiUsage']
     }
+    /** GroupIn */
+    GroupIn: {
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Max Select
+       * @default 1
+       */
+      max_select: number
+      /**
+       * Min Select
+       * @default 0
+       */
+      min_select: number
+      /** Name */
+      name: string
+      /** Options */
+      options: components['schemas']['OptionIn'][]
+    }
+    /** GroupOut */
+    GroupOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Max Select
+       * @default 1
+       */
+      max_select: number
+      /**
+       * Min Select
+       * @default 0
+       */
+      min_select: number
+      /** Name */
+      name: string
+      /** Options */
+      options: components['schemas']['OptionOut'][]
+    }
     /** HTTPValidationError */
     HTTPValidationError: {
       /** Detail */
@@ -3039,6 +3163,11 @@ export interface components {
        */
       id: string
     }
+    /** ItemGroupsIn */
+    ItemGroupsIn: {
+      /** Group Ids */
+      group_ids: string[]
+    }
     /** ItemIn */
     ItemIn: {
       /** Allergens */
@@ -3097,6 +3226,11 @@ export interface components {
       id: string
       /** Is Active */
       is_active: boolean
+      /**
+       * Is Available
+       * @default true
+       */
+      is_available: boolean
       /** Is Stocked */
       is_stocked: boolean
       /** Name */
@@ -3144,6 +3278,11 @@ export interface components {
       id: string
       /** Is Active */
       is_active: boolean
+      /**
+       * Is Available
+       * @default true
+       */
+      is_available: boolean
       /** Name */
       name: string
       /** Photo Upload Id */
@@ -3461,6 +3600,51 @@ export interface components {
        * Format: uuid
        */
       unit_id: string
+    }
+    /** OptionIn */
+    OptionIn: {
+      /** Id */
+      id?: string | null
+      /** Ingredient Item Id */
+      ingredient_item_id?: string | null
+      /** Ingredient Qty */
+      ingredient_qty?: number | string | null
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /** Name */
+      name: string
+      /**
+       * Price Delta
+       * @default 0
+       */
+      price_delta: number
+    }
+    /** OptionOut */
+    OptionOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Ingredient Item Id */
+      ingredient_item_id?: string | null
+      /** Ingredient Qty */
+      ingredient_qty?: string | null
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /** Name */
+      name: string
+      /**
+       * Price Delta
+       * @default 0
+       */
+      price_delta: number
     }
     /** OrderIn */
     OrderIn: {
@@ -6329,6 +6513,39 @@ export interface operations {
       }
     }
   }
+  set_availability_api_v1_catalog_items__item_id__availability_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AvailabilityIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   list_versions_api_v1_catalog_items__item_id__boms_get: {
     parameters: {
       query?: never
@@ -6418,6 +6635,72 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['Costing']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  item_groups_api_v1_catalog_items__item_id__modifier_groups_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GroupOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  set_item_groups_api_v1_catalog_items__item_id__modifier_groups_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ItemGroupsIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GroupOut'][]
         }
       }
       /** @description Validation Error */
@@ -6576,6 +6859,94 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['PriceOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_groups_api_v1_catalog_modifier_groups_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GroupOut'][]
+        }
+      }
+    }
+  }
+  create_group_api_v1_catalog_modifier_groups_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GroupIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GroupOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_group_api_v1_catalog_modifier_groups__group_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        group_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GroupIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GroupOut']
         }
       }
       /** @description Validation Error */

@@ -13,6 +13,7 @@ const item: ItemOut = {
   category_id: null,
   base_unit_id: 'pcs',
   is_active: true,
+  is_available: true,
   is_stocked: false,
   tracking_mode: 'untracked',
   standard_cost: null,

@@ -92,6 +92,7 @@ Examples:
 | Permission | Meaning |
 | --- | --- |
 | `catalog.item.view` / `create` / `update` | See and edit items |
+| `catalog.item.availability` | Mark a menu item sold out or back on sale (manager, cashier, kitchen) |
 | `catalog.cost.view` | See item costs and margins |
 | `inventory.count.create` / `approve` | Enter and approve stock counts |
 | `inventory.adjustment.create` / `approve` | Manual adjustments |

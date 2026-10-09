@@ -8,9 +8,10 @@ import { CategoriesTab } from './CategoriesTab'
 import { ChannelsTab } from './ChannelsTab'
 import { ItemEditor } from './ItemEditor'
 import { ItemsTab } from './ItemsTab'
+import { ModifiersTab } from './ModifiersTab'
 import { UnitsTab } from './UnitsTab'
 
-const TABS = ['items', 'categories', 'units', 'channels'] as const
+const TABS = ['items', 'categories', 'modifiers', 'units', 'channels'] as const
 type Tab = (typeof TABS)[number]
 
 /** What the UI offers; the server checks every call again (CLAUDE.md rule 2). */
@@ -53,6 +54,7 @@ export function CatalogPage() {
           <ItemsTab canCreate={canCreate} onOpen={setEditing} onCreate={() => setEditing('new')} />
         )}
         {tab === 'categories' && <CategoriesTab canEdit={canEdit} />}
+        {tab === 'modifiers' && <ModifiersTab canEdit={canEdit} />}
         {tab === 'units' && <UnitsTab canEdit={canEdit} />}
         {tab === 'channels' && <ChannelsTab canEdit={canEdit} />}
       </div>

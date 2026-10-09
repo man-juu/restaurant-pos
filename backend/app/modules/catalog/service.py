@@ -182,6 +182,7 @@ def _summary(item: Item, name: str) -> ItemSummary:
         base_unit_id=item.base_unit_id,
         is_active=item.is_active,
         photo_upload_id=item.photo_upload_id,
+        is_available=item.is_available,
     )
 
 
