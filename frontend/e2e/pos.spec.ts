@@ -207,6 +207,10 @@ test('cashier opens a shift, sells with a modifier and gives change (FR-SAL-004 
   await expect(page.getByRole('status').getByText(/Change: .*17[.,]000/)).toBeVisible()
   await page.getByRole('button', { name: 'Confirm payment' }).click()
   await expect(page.getByText('POS-2026-000001 paid')).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Receipt PDF' })).toHaveAttribute(
+    'href',
+    '/api/v1/pos/orders/ord1/receipt/pdf?lang=en',
+  )
   expect(posts.find((p) => p.path.endsWith('/pay'))?.body).toEqual({
     tip: 0,
     payments: [{ method: 'cash', amount: 33000, tendered: 50000 }],

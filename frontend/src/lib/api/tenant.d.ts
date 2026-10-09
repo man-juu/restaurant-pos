@@ -1758,6 +1758,40 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/pos/orders/{order_id}/receipt': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Receipt */
+    get: operations['get_receipt_api_v1_pos_orders__order_id__receipt_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/orders/{order_id}/receipt/pdf': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Receipt Pdf */
+    get: operations['get_receipt_pdf_api_v1_pos_orders__order_id__receipt_pdf_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/pos/orders/{order_id}/refund': {
     parameters: {
       query?: never
@@ -3054,6 +3088,7 @@ export interface components {
       payment_methods: components['schemas']['PaymentMethodSettings']
       pos: components['schemas']['PosSettings']
       purchasing: components['schemas']['PurchasingSettings']
+      receipt: components['schemas']['ReceiptSettings']
       service_charge: components['schemas']['ServiceChargeSettings']
       session: components['schemas']['SessionSettings']
       stock: components['schemas']['StockSettings']
@@ -5174,6 +5209,21 @@ export interface components {
       /** Vendor Name */
       vendor_name?: string | null
     }
+    /** ReceiptLine */
+    ReceiptLine: {
+      /** Discount */
+      discount: number
+      /** Modifiers */
+      modifiers: string[]
+      /** Name */
+      name: string
+      /** Qty */
+      qty: string
+      /** Total */
+      total: number
+      /** Unit Price */
+      unit_price: number
+    }
     /** ReceiptLineOut */
     ReceiptLineOut: {
       /** Expiry Date */
@@ -5230,6 +5280,39 @@ export interface components {
       vendor_id: string | null
       /** Vendor Name */
       vendor_name: string | null
+    }
+    /** ReceiptPayment */
+    ReceiptPayment: {
+      /** Amount */
+      amount: number
+      /** Change */
+      change: number
+      /** Method */
+      method: string
+      /** Tendered */
+      tendered: number | null
+    }
+    /**
+     * ReceiptSettings
+     * @description FR-SAL-010: what the printed receipt says around the sale, and the paper width.
+     */
+    ReceiptSettings: {
+      /**
+       * Footer
+       * @default
+       */
+      footer: string
+      /**
+       * Header
+       * @default
+       */
+      header: string
+      /**
+       * Paper Mm
+       * @default 58
+       * @enum {integer}
+       */
+      paper_mm: 58 | 80
     }
     /**
      * ReceiveIn
@@ -5372,6 +5455,49 @@ export interface components {
       name: string
       /** Template Key */
       template_key: string | null
+    }
+    /** SaleReceiptOut */
+    SaleReceiptOut: {
+      /** Address */
+      address: string | null
+      /** At */
+      at: string
+      /** Business */
+      business: string
+      /** Cashier */
+      cashier: string
+      /** Discount */
+      discount: number
+      /** Footer */
+      footer: string
+      /** Header */
+      header: string
+      /** Label */
+      label: string | null
+      /** Lines */
+      lines: components['schemas']['ReceiptLine'][]
+      /** Number */
+      number: string
+      /** Outlet */
+      outlet: string
+      /** Paid */
+      paid: boolean
+      /** Paper Mm */
+      paper_mm: number
+      /** Payments */
+      payments: components['schemas']['ReceiptPayment'][]
+      /** Rounding */
+      rounding: number
+      /** Service Charge */
+      service_charge: number
+      /** Subtotal */
+      subtotal: number
+      /** Tax */
+      tax: number
+      /** Tip */
+      tip: number
+      /** Total */
+      total: number
     }
     /** SalesDocOut */
     SalesDocOut: {
@@ -10254,6 +10380,72 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_receipt_api_v1_pos_orders__order_id__receipt_get: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SaleReceiptOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_receipt_pdf_api_v1_pos_orders__order_id__receipt_pdf_get: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
         }
       }
       /** @description Validation Error */

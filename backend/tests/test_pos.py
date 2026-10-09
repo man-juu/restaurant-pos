@@ -256,3 +256,32 @@ def test_fr_sal_004_menu_for_the_till_and_nav(
     # Waiters get the till but not the daily sales entry.
     nav = client.get("/api/v1/me/capabilities", headers=h).json()["nav"]
     assert "pos" in nav and "sales" not in nav
+
+
+def test_fr_sal_010_receipt_json_and_pdf(
+    client: TestClient, world: dict[str, Any], menu: dict[str, Any]
+) -> None:
+    h = login(client, world["cashier_a"])
+    client.post(
+        f"{POS}/shifts", json={"outlet_id": str(world["shop"]), "opening_float": 0}, headers=h
+    )
+    order = new_order(client, h, world, menu)
+    post(client, h, f"/orders/{order['id']}/lines", {"item_id": menu["nasi"]})
+    bill = client.get(f"{POS}/orders/{order['id']}/receipt", headers=h).json()
+    assert bill["paid"] is False and bill["total"] == 27_500  # pre-bill to check
+    pay = {"payments": [{"method": "cash", "amount": 27_500, "tendered": 50_000}]}
+    assert post(client, h, f"/orders/{order['id']}/pay", pay).status_code == 200
+    r = client.get(f"{POS}/orders/{order['id']}/receipt", headers=h).json()
+    assert (r["paid"], r["number"], r["label"], r["footer"]) == (
+        True,
+        order["number"],
+        "Table 4",
+        "Terima kasih!",
+    )
+    assert r["payments"] == [
+        {"method": "Tunai", "amount": 27_500, "tendered": 50_000, "change": 22_500}
+    ]
+    pdf = client.get(f"{POS}/orders/{order['id']}/receipt/pdf", headers=h)
+    assert pdf.headers["content-type"] == "application/pdf" and pdf.content.startswith(b"%PDF")
+    b = login(client, world["manager_b"])
+    assert client.get(f"{POS}/orders/{order['id']}/receipt", headers=b).status_code == 404

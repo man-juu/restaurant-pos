@@ -9,6 +9,7 @@ import { errorMessage } from '../../lib/errors'
 import { useOutlets } from '../../lib/session'
 import { useNow } from '../tables/useFloorView'
 import { useStations, useTickets } from './kitchenApi'
+import { KitchenPrinter } from './KitchenPrinter'
 import { StationSetup } from './StationSetup'
 import { TicketCard } from './TicketCard'
 
@@ -60,6 +61,7 @@ export function KitchenPage() {
         </SelectInput>
         <CheckInput label={t('kitchen.recentlyBumped')} checked={recall} onChange={setRecall} />
       </div>
+      <KitchenPrinter tickets={tickets.data ?? []} />
       {tickets.error && <Alert>{errorMessage(tickets.error, t)}</Alert>}
       {tickets.isSuccess && tickets.data.length === 0 && (
         <p className="text-ink-soft">{t('kitchen.empty')}</p>

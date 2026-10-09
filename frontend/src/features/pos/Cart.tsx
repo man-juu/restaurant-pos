@@ -7,6 +7,7 @@ import { errorMessage } from '../../lib/errors'
 import { formatMoney, intlLocale } from '../../lib/format'
 import { CartLine, VoidLineDialog } from './CartLine'
 import { DiscountDialog } from './DiscountDialog'
+import { PrintButtons } from './PrintButtons'
 import { useOrderStep } from './posApi'
 import type { TillRights } from './Till'
 
@@ -46,6 +47,7 @@ export function Cart({
         ))}
       </ul>
       <Totals order={order} money={money} />
+      {order.lines.length > 0 && <PrintButtons orderId={order.id} currency={currency} />}
       <CartActions order={order} currency={currency} can={can} onPay={onPay} onClose={onClose} />
     </Card>
   )

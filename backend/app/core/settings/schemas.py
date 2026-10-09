@@ -148,6 +148,14 @@ class KitchenSettings(Strict):
     recall_minutes: int = Field(default=30, ge=1, le=24 * 60)
 
 
+class ReceiptSettings(Strict):
+    """FR-SAL-010: what the printed receipt says around the sale, and the paper width."""
+
+    header: str = Field(default="", max_length=300)  # e.g. tax id, phone, Instagram
+    footer: str = Field(default="", max_length=300)  # e.g. "Terima kasih!"
+    paper_mm: Literal[58, 80] = 58  # most Bluetooth printers in Indonesia are 58 mm
+
+
 SETTINGS: dict[str, type[Strict]] = {
     "tax": TaxSettings,
     "service_charge": ServiceChargeSettings,
@@ -159,6 +167,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "catalog": CatalogSettings,
     "pos": PosSettings,
     "kitchen": KitchenSettings,
+    "receipt": ReceiptSettings,
 }
 
 
@@ -175,3 +184,4 @@ class AllSettings(BaseModel):
     catalog: CatalogSettings
     pos: PosSettings
     kitchen: KitchenSettings
+    receipt: ReceiptSettings

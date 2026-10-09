@@ -275,6 +275,9 @@
           "purchasing": {
             "$ref": "#/components/schemas/PurchasingSettings"
           },
+          "receipt": {
+            "$ref": "#/components/schemas/ReceiptSettings"
+          },
           "service_charge": {
             "$ref": "#/components/schemas/ServiceChargeSettings"
           },
@@ -298,7 +301,8 @@
           "purchasing",
           "catalog",
           "pos",
-          "kitchen"
+          "kitchen",
+          "receipt"
         ],
         "title": "AllSettings",
         "type": "object"
@@ -5827,6 +5831,48 @@
         "title": "QuickPurchaseIn",
         "type": "object"
       },
+      "ReceiptLine": {
+        "properties": {
+          "discount": {
+            "title": "Discount",
+            "type": "integer"
+          },
+          "modifiers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Modifiers",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Qty",
+            "type": "string"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "unit_price": {
+            "title": "Unit Price",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "qty",
+          "unit_price",
+          "total",
+          "modifiers",
+          "discount"
+        ],
+        "title": "ReceiptLine",
+        "type": "object"
+      },
       "ReceiptLineOut": {
         "properties": {
           "expiry_date": {
@@ -5993,6 +6039,70 @@
           "lines"
         ],
         "title": "ReceiptOut",
+        "type": "object"
+      },
+      "ReceiptPayment": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "integer"
+          },
+          "change": {
+            "title": "Change",
+            "type": "integer"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "tendered": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tendered"
+          }
+        },
+        "required": [
+          "method",
+          "amount",
+          "tendered",
+          "change"
+        ],
+        "title": "ReceiptPayment",
+        "type": "object"
+      },
+      "ReceiptSettings": {
+        "additionalProperties": false,
+        "description": "FR-SAL-010: what the printed receipt says around the sale, and the paper width.",
+        "properties": {
+          "footer": {
+            "default": "",
+            "maxLength": 300,
+            "title": "Footer",
+            "type": "string"
+          },
+          "header": {
+            "default": "",
+            "maxLength": 300,
+            "title": "Header",
+            "type": "string"
+          },
+          "paper_mm": {
+            "default": 58,
+            "enum": [
+              58,
+              80
+            ],
+            "title": "Paper Mm",
+            "type": "integer"
+          }
+        },
+        "title": "ReceiptSettings",
         "type": "object"
       },
       "ReceiveIn": {
@@ -6394,6 +6504,134 @@
           "template_key"
         ],
         "title": "RoleOut",
+        "type": "object"
+      },
+      "SaleReceiptOut": {
+        "properties": {
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "at": {
+            "title": "At",
+            "type": "string"
+          },
+          "business": {
+            "title": "Business",
+            "type": "string"
+          },
+          "cashier": {
+            "title": "Cashier",
+            "type": "string"
+          },
+          "discount": {
+            "title": "Discount",
+            "type": "integer"
+          },
+          "footer": {
+            "title": "Footer",
+            "type": "string"
+          },
+          "header": {
+            "title": "Header",
+            "type": "string"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/ReceiptLine"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "outlet": {
+            "title": "Outlet",
+            "type": "string"
+          },
+          "paid": {
+            "title": "Paid",
+            "type": "boolean"
+          },
+          "paper_mm": {
+            "title": "Paper Mm",
+            "type": "integer"
+          },
+          "payments": {
+            "items": {
+              "$ref": "#/components/schemas/ReceiptPayment"
+            },
+            "title": "Payments",
+            "type": "array"
+          },
+          "rounding": {
+            "title": "Rounding",
+            "type": "integer"
+          },
+          "service_charge": {
+            "title": "Service Charge",
+            "type": "integer"
+          },
+          "subtotal": {
+            "title": "Subtotal",
+            "type": "integer"
+          },
+          "tax": {
+            "title": "Tax",
+            "type": "integer"
+          },
+          "tip": {
+            "title": "Tip",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "business",
+          "outlet",
+          "address",
+          "header",
+          "footer",
+          "paper_mm",
+          "number",
+          "label",
+          "at",
+          "cashier",
+          "paid",
+          "lines",
+          "subtotal",
+          "discount",
+          "service_charge",
+          "tax",
+          "rounding",
+          "tip",
+          "total",
+          "payments"
+        ],
+        "title": "SaleReceiptOut",
         "type": "object"
       },
       "SalesDocOut": {
@@ -15474,6 +15712,118 @@
           }
         },
         "summary": "Pay Order",
+        "tags": [
+          "pos"
+        ]
+      }
+    },
+    "/api/v1/pos/orders/{order_id}/receipt": {
+      "get": {
+        "operationId": "get_receipt_api_v1_pos_orders__order_id__receipt_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "id",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleReceiptOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Receipt",
+        "tags": [
+          "pos"
+        ]
+      }
+    },
+    "/api/v1/pos/orders/{order_id}/receipt/pdf": {
+      "get": {
+        "operationId": "get_receipt_pdf_api_v1_pos_orders__order_id__receipt_pdf_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "id",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Receipt Pdf",
         "tags": [
           "pos"
         ]

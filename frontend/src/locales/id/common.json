@@ -297,6 +297,7 @@
       "payments": "Metode pembayaran",
       "pos": "Kasir",
       "kitchen": "Dapur",
+      "receipt": "Struk",
       "numbering": "Penomoran",
       "approvals": "Persetujuan",
       "limits": "Batas",
@@ -405,6 +406,13 @@
     "kitchen": {
       "late": "Tiket terlambat setelah (menit)",
       "recall": "Tiket selesai bisa dipanggil lagi selama (menit)"
+    },
+    "receipt": {
+      "header": "Teks di atas (alamat, NPWP, telepon)",
+      "footer": "Teks di bawah (terima kasih, Wi-Fi, media sosial)",
+      "paper": "Lebar kertas printer",
+      "help": "Dipakai di struk cetak dan struk PDF.",
+      "mm": "{{mm}} mm"
     }
   },
   "catalog": {
@@ -1218,6 +1226,26 @@
     "setup": "Stasiun",
     "stationName": "Nama stasiun (mis. Grill, Minuman)",
     "default": "Stasiun utama (mendapat semua yang tidak diambil stasiun lain)",
-    "addStation": "Tambah stasiun"
+    "addStation": "Tambah stasiun",
+    "autoPrint": "Cetak tiket baru otomatis"
+  },
+  "receipt": {
+    "cashier": "Kasir",
+    "bill": "TAGIHAN (belum dibayar)",
+    "subtotal": "Subtotal",
+    "discount": "Diskon",
+    "service": "Layanan",
+    "tax": "Pajak",
+    "rounding": "Pembulatan",
+    "tip": "Tip",
+    "total": "TOTAL",
+    "change": "Kembali",
+    "void": "BATAL",
+    "connect": "Hubungkan printer",
+    "connected": "Printer: {{printer}}",
+    "print": "Cetak ({{printer}})",
+    "pdf": "Struk PDF",
+    "noBluetooth": "Cetak Bluetooth perlu Chrome di Android atau komputer.",
+    "failed": "Gagal mencetak. Pastikan printer menyala dan dekat, lalu coba lagi."
   }
 }

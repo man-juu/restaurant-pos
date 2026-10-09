@@ -7,6 +7,7 @@ import { errorMessage } from '../../lib/errors'
 import { formatMoney, intlLocale } from '../../lib/format'
 import { Cart } from './Cart'
 import { PayDialog } from './PayDialog'
+import { PrintButtons } from './PrintButtons'
 import { RefundDialog } from './RefundDialog'
 import { useOrder } from './posApi'
 import type { TillProps } from './Till'
@@ -75,6 +76,7 @@ function PaidCard({
           </li>
         ))}
       </ul>
+      <PrintButtons orderId={order.id} currency={currency} />
       <Button onClick={onNext}>{t('pos.nextOrder')}</Button>
       {can.refund && <RefundArea order={order} methods={methods} money={money} />}
     </Card>

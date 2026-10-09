@@ -10,7 +10,7 @@ Order follows docs/08 section 4, with modifiers and outlet overrides first (move
 | 2d | Discounts with role limits, voids and refunds with approval and stock effect | FR-SAL-007, 008 | done 2026-10-09 (partial refunds later) |
 | 2e | Floors, tables, sessions, move, merge, split bill, live occupancy | FR-TBL-001 to 004 | done 2026-10-09 |
 | 2f | Kitchen display, stations per category, bump and recall, late highlight, tickets | FR-KDS-001 to 004 | done 2026-10-09 (station ticket printing with 2g) |
-| 2g | Receipts PDF, Bluetooth thermal printing (Web Bluetooth, ESC/POS) | FR-SAL-010 | |
+| 2g | Receipts PDF, Bluetooth thermal printing (Web Bluetooth, ESC/POS) | FR-SAL-010 | done 2026-10-09 (Bluetooth via Web Bluetooth; network and USB printers later) |
 | 2h | Registered devices and PIN sign-in | FR-IDN-004 | |
 | 2i | Combos and bundles, per-outlet overrides | FR-CAT-011, FR-TEN-011 | |
 | 2j | Finance-lite (accounts, expenses, petty cash, P&L), tax report, sales by staff | FR-FIN-001, 008, FR-RPT-012 | |

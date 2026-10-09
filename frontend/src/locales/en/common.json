@@ -297,6 +297,7 @@
       "payments": "Payment methods",
       "pos": "Cashier",
       "kitchen": "Kitchen",
+      "receipt": "Receipt",
       "numbering": "Numbering",
       "approvals": "Approvals",
       "limits": "Limits",
@@ -405,6 +406,13 @@
     "kitchen": {
       "late": "Ticket is late after (minutes)",
       "recall": "Bumped tickets can be recalled for (minutes)"
+    },
+    "receipt": {
+      "header": "Lines above the sale (address, tax number, phone)",
+      "footer": "Lines below the sale (thank you, Wi-Fi, social media)",
+      "paper": "Printer paper width",
+      "help": "Used on printed receipts and the receipt PDF.",
+      "mm": "{{mm}} mm"
     }
   },
   "catalog": {
@@ -1218,6 +1226,26 @@
     "setup": "Stations",
     "stationName": "Station name (e.g. Grill, Drinks)",
     "default": "Default station (gets everything not claimed by another)",
-    "addStation": "Add station"
+    "addStation": "Add station",
+    "autoPrint": "Print new tickets automatically"
+  },
+  "receipt": {
+    "cashier": "Cashier",
+    "bill": "BILL (not paid)",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "service": "Service",
+    "tax": "Tax",
+    "rounding": "Rounding",
+    "tip": "Tip",
+    "total": "TOTAL",
+    "change": "Change",
+    "void": "VOID",
+    "connect": "Connect printer",
+    "connected": "Printer: {{printer}}",
+    "print": "Print ({{printer}})",
+    "pdf": "Receipt PDF",
+    "noBluetooth": "Bluetooth printing needs Chrome on Android or a computer.",
+    "failed": "Printing failed. Check the printer is on and close by, then try again."
   }
 }

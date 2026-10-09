@@ -64,6 +64,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
             "tips_enabled": False,
             "void_stock_effect": "waste",
         },
+        "receipt": {"header": "", "footer": "Terima kasih!", "paper_mm": 58},
     }
 }
 
@@ -84,6 +85,7 @@ FALLBACK: dict[str, Any] = {
         "void_stock_effect": "waste",
     },
     "kitchen": {"late_minutes": 15, "recall_minutes": 30},
+    "receipt": {"header": "", "footer": "", "paper_mm": 58},
 }
 
 
