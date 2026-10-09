@@ -10,6 +10,7 @@ import { Alert, Button, Field, Logo } from '../../components/ui'
 import { errorMessage } from '../../lib/errors'
 import { useAppearance } from '../../lib/theme'
 import { useLogin, useSession, useThisDevice } from '../../lib/session'
+import { GoogleSignIn } from './GoogleSignIn'
 import { EnrollStep, RecoveryCodes, VerifyStep } from './MfaSteps'
 import { PinStep } from './PinStep'
 
@@ -98,6 +99,7 @@ function PasswordStep() {
       onSubmit={form.handleSubmit((values) => login.mutate(values))}
       noValidate
     >
+      <GoogleSignIn />
       {login.error && <Alert>{errorMessage(login.error, t)}</Alert>}
       <Field
         label={t('auth.email')}

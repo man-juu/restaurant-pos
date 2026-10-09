@@ -35,7 +35,13 @@
     "working": "Please wait…",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
-    "otherAccount": "Use a different account"
+    "otherAccount": "Use a different account",
+    "google": {
+      "button": "Sign in with Google",
+      "or": "or with email and password",
+      "failed": "Could not sign in with Google. Please try again.",
+      "noAccount": "This Google account is not invited to any business. Ask the owner to invite this email."
+    }
   },
   "nav": {
     "dashboard": "Dashboard",

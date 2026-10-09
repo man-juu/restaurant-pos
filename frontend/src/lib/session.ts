@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ApiError, request, setCsrfToken } from './api/client'
 import type {
   ThisDeviceOut,
+  Providers,
   Capabilities,
   MfaSetupOut,
   OutletOut,
@@ -61,6 +62,14 @@ export const useThisDevice = () =>
     queryFn: () => request<ThisDeviceOut>('GET', '/api/v1/auth/device'),
     retry: false,
     staleTime: 60_000,
+  })
+
+/** Extra sign-in buttons the server has switched on (ADR 0.57). */
+export const useProviders = () =>
+  useQuery({
+    queryKey: ['auth-providers'],
+    queryFn: () => request<Providers>('GET', '/api/v1/auth/providers'),
+    staleTime: 5 * 60_000,
   })
 
 export const useVerifyMfa = () =>

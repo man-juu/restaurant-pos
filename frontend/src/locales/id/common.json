@@ -35,7 +35,13 @@
     "working": "Mohon tunggu…",
     "showPassword": "Tampilkan kata sandi",
     "hidePassword": "Sembunyikan kata sandi",
-    "otherAccount": "Gunakan akun lain"
+    "otherAccount": "Gunakan akun lain",
+    "google": {
+      "button": "Masuk dengan Google",
+      "or": "atau dengan email dan kata sandi",
+      "failed": "Tidak bisa masuk dengan Google. Silakan coba lagi.",
+      "noAccount": "Akun Google ini belum diundang ke bisnis mana pun. Minta pemilik mengundang email ini."
+    }
   },
   "nav": {
     "dashboard": "Dasbor",

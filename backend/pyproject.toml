@@ -17,6 +17,8 @@ dependencies = [
     "et-xmlfile==2.0.0",  # openpyxl dependency, pinned
     "reportlab==5.0.1",  # purchase order and delivery note PDFs
     "charset-normalizer==3.5.2",  # reportlab dependency, pinned
+    "authlib==1.8.0",  # Sign in with Google: PKCE (ADR 0.57)
+    "joserfc==1.7.5",  # authlib dependency, pinned; verifies Google's signed ID token
 ]
 
 [project.optional-dependencies]
@@ -66,7 +68,7 @@ strict = true
 packages = ["app", "tests"]
 
 [[tool.mypy.overrides]]
-module = ["openpyxl", "openpyxl.*", "reportlab", "reportlab.*"]  # no bundled types; avoids another stub dependency
+module = ["openpyxl", "openpyxl.*", "reportlab", "reportlab.*", "authlib", "authlib.*"]  # no bundled types; avoids another stub dependency
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

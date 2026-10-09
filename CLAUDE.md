@@ -27,7 +27,7 @@ Check the approval table in `docs/README.md`. If any document is still **Draft**
 
 ## Stack (decided)
 
-- Backend: Python 3.12+, FastAPI, Pydantic v2, SQLAlchemy 2 (async, asyncpg), Alembic, PostgreSQL, argon2-cffi, cryptography. Jobs: Postgres-backed queue (no Redis at launch, ADR-005).
+- Backend: Python 3.12+, FastAPI, Pydantic v2, SQLAlchemy 2 (async, asyncpg), Alembic, PostgreSQL, argon2-cffi, cryptography, authlib (Sign in with Google, ADR 0.57). Jobs: Postgres-backed queue (no Redis at launch, ADR-005).
 - Frontend: React + TypeScript + Vite, React Router, Tailwind + Radix/shadcn-style components, TanStack Query, React Hook Form + Zod, i18next, PWA. API client generated from OpenAPI.
 - Run: Docker Compose; Caddy serves the built PWA and proxies the API. One small VPS, Cloudflare in front.
 - Quality: ruff, mypy, import-linter, pytest (+ Hypothesis), ESLint, `tsc`, Vitest, Playwright, k6.

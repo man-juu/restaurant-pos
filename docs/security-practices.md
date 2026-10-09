@@ -194,3 +194,10 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - Devices and PINs (2h, self-reviewed): device token hashed, cookie `__Host-` + httpOnly + Secure + SameSite=Strict; PIN only on a registered device after a full sign-in there, never for 2FA roles (tested), 5 wrong tries lock 15 min (tested), 20 per device; unknown or not-allowed users take the same Argon2 time; failures audited for real staff accounts only (no foreign keys to made-up ids); revoked devices and suspended tenants stop at once; the definer function returns only the matching device.
 - Combos and outlet overrides (2i): outlet prices and outlet sold-out switches check outlet scope (tested: a cashier of one outlet cannot switch another); combo parts must be the tenant's menu items (RLS lookup, tested).
 - Finance (2j): expenses need an idempotency key (tested), outlet scope on expenses and reports, transfers append-only; cashiers get 403 on finance (tested); sales by staff needs its own permission (tested). Flaky PIN e2e fixed (two language buttons during the login redirect).
+
+## Sign in with Google (2026-10-09, ADR 0.57)
+
+- Abuse checked: login CSRF (random `state` compared in constant time), ID token replay (`nonce`), code interception (PKCE S256), forged or foreign tokens (signature, issuer, audience, expiry), unverified Google emails, open redirect (we redirect only to our own `/login`), account creation by strangers (none: the email must be an active member).
+- 2FA is not bypassed: roles that require it get the code step after Google.
+- Tests: `backend/tests/test_google_login.py` covers each refusal with real signature checks.
+- Secrets: client ID and secret only in the server `.env`; never logged.

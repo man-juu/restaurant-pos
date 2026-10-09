@@ -52,6 +52,14 @@ class Settings(BaseModel):
     ai_neurons_per_image: int = Field(default=60, ge=1)  # flux-1-schnell 1024 px, 4 steps ~ 57.6
     ai_tenant_daily_images: int = Field(default=10, ge=0, le=500)
 
+    # Sign in with Google (ADR 0.57). Off unless both are set; free, no billing account needed.
+    google_client_id: str = ""
+    google_client_secret: str = ""
+
+    @property
+    def google_enabled(self) -> bool:
+        return bool(self.google_client_id and self.google_client_secret)
+
     @property
     def ai_enabled(self) -> bool:
         return bool(self.ai_cf_account_id and self.ai_cf_api_token)

@@ -131,6 +131,40 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/auth/google/callback': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Google Callback */
+    get: operations['google_callback_api_v1_auth_google_callback_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/auth/google/start': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Google Start */
+    get: operations['google_start_api_v1_auth_google_start_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/auth/invitations/accept': {
     parameters: {
       query?: never
@@ -299,6 +333,26 @@ export interface paths {
     put?: never
     /** Pin Login */
     post: operations['pin_login_api_v1_auth_pin_login_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/auth/providers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Providers
+     * @description Which extra sign-in buttons the login page shows.
+     */
+    get: operations['providers_api_v1_auth_providers_get']
+    put?: never
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -5778,6 +5832,11 @@ export interface components {
       /** Tax Collected */
       tax_collected: number
     }
+    /** Providers */
+    Providers: {
+      /** Google */
+      google: boolean
+    }
     /**
      * PurchasingSettings
      * @description FR-PUR-011: supplier invoice photo on receipts, optional unless the tenant requires it.
@@ -7598,6 +7657,58 @@ export interface operations {
       }
     }
   }
+  google_callback_api_v1_auth_google_callback_get: {
+    parameters: {
+      query?: {
+        code?: string | null
+        state?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  google_start_api_v1_auth_google_start_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+    }
+  }
   accept_invitation_api_v1_auth_invitations_accept_post: {
     parameters: {
       query?: never
@@ -7859,6 +7970,26 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  providers_api_v1_auth_providers_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Providers']
         }
       }
     }
