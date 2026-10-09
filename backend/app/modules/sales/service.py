@@ -132,12 +132,15 @@ async def enter_day(
     totals = calculate(
         [subtotal - discount], tax=tax, service_charge=sc, channel=code, outlet_id=data.outlet_id
     )
+    # Lock order for every posting: number counter first, then stock rows. Taking the
+    # counter after reversing old stock let two entries deadlock (found by the load test).
+    number = await settings.allocate_number(
+        db, tenant_id=tenant_id, doc_type=DOC, on=data.business_date
+    )
     await _replace_previous(db, data, user_id)
     doc = SalesDocument(
         tenant_id=tenant_id,
-        number=await settings.allocate_number(
-            db, tenant_id=tenant_id, doc_type=DOC, on=data.business_date
-        ),
+        number=number,
         outlet_id=data.outlet_id,
         channel_id=data.channel_id,
         business_date=data.business_date,

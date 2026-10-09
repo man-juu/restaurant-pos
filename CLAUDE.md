@@ -63,6 +63,7 @@ alembic upgrade head                # uses MIGRATION_DATABASE_URL (owner role)
 python -m app.admin.cli create-admin you@example.com "Name" super_admin   # first platform admin
 python -m app.admin.cli subscription-job                                  # daily job (worker container runs it)
 python -m app.admin.cli alerts-job                                        # stock alerts (worker runs it every 10 minutes)
+python -m app.admin.cli invariants-job                                    # nightly ledger checks I-1 to I-4 (worker runs it)
 python -m app.admin.cli sync-roles                                        # new module permissions for existing tenants (prod migrate runs it)
 
 # frontend/ (first: npm ci)

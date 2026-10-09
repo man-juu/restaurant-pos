@@ -163,3 +163,41 @@ def test_transfer_permissions_and_isolation(
         f"{T}/{t['id']}/receive", json={"business_date": "2026-03-02"}, headers=kitchen
     )
     assert rec.status_code == 404
+
+
+def test_docs05_ledger_invariants_hold_and_catch_a_broken_balance(
+    client: TestClient, world: dict[str, Any], items: dict[str, str], settings: Any
+) -> None:
+    import asyncio
+
+    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+    from app.admin.alerts_job import run_invariants
+    from tests.test_purchasing import tenant_sql
+
+    shop, kitchen = login(client, world["store_shop"]), None
+    t = ask(client, shop, world, [{"item_id": items["rice"], "qty": "1000"}]).json()
+    kitchen = login(client, world["store_kitchen"])
+    client.post(f"{T}/{t['id']}/approve", json={}, headers=kitchen)
+    client.post(f"{T}/{t['id']}/ship", json={"business_date": "2026-03-02"}, headers=kitchen)
+    shop = login(client, world["store_shop"])
+    client.post(f"{T}/{t['id']}/receive", json={"business_date": "2026-03-02"}, headers=shop)
+
+    def check() -> Any:
+        async def go() -> Any:
+            engine = create_async_engine(str(settings.database_url))
+            try:
+                return await run_invariants([world["a"]], async_sessionmaker(engine))
+            finally:
+                await engine.dispose()
+
+        return asyncio.run(go())
+
+    assert check() == {}
+    # Corrupt one cached balance (only possible with the owner role): I-1 must notice.
+    tenant_sql(
+        world["a"],
+        "UPDATE stock_balances SET qty = qty + 1 WHERE item_id = :i",
+        {"i": items["rice"]},
+    )
+    assert "I-1 balances = movements" in check()[world["a"]]

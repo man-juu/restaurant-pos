@@ -3,6 +3,7 @@
     python -m app.admin.cli create-admin you@example.com "Your Name" super_admin
     python -m app.admin.cli subscription-job
     python -m app.admin.cli alerts-job
+    python -m app.admin.cli invariants-job   # nightly ledger checks (docs/05 I-1 to I-4)
     python -m app.admin.cli sync-roles   # after a release with new modules or permissions
 
 The first super admin can only be created here: there is deliberately no sign-up endpoint.
@@ -16,7 +17,7 @@ from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from app.admin.alerts_job import active_tenants, record_failures, run_alerts
+from app.admin.alerts_job import active_tenants, record_failures, run_alerts, run_invariants
 from app.admin.models import AdminUser
 from app.admin.service import run_subscription_job, sync_roles
 from app.core.config import get_settings
@@ -48,21 +49,21 @@ async def _job() -> None:
     print(f"Subscription job done: {len(changes)} state change(s).")
 
 
-async def _alerts() -> None:
+async def _scan(job: str) -> None:
+    """List tenants with the platform role, run the job as the app role, record failures."""
     settings = get_settings()
     admin = create_async_engine(str(settings.admin_database_url))
     async with create_sessionmaker(admin)() as db:
         tenants = await active_tenants(db)
-    await admin.dispose()
     engine = create_async_engine(str(settings.database_url))  # the app role: RLS applies
-    failed = await run_alerts(tenants, create_sessionmaker(engine))
+    run = run_alerts if job == "alerts" else run_invariants
+    failed = await run(tenants, create_sessionmaker(engine))
     await engine.dispose()
     if failed:
-        admin = create_async_engine(str(settings.admin_database_url))
         async with create_sessionmaker(admin)() as db, db.begin():
-            await record_failures(db, "alerts", failed)
-        await admin.dispose()
-    print(f"Alerts job done: {len(tenants)} tenant(s), {len(failed)} failed.")
+            await record_failures(db, job, failed)
+    await admin.dispose()
+    print(f"{job} job done: {len(tenants)} tenant(s), {len(failed)} with problems.")
 
 
 async def _sync_roles() -> None:
@@ -84,12 +85,15 @@ def main() -> None:
     create.add_argument("role", choices=["super_admin", "support"])
     sub.add_parser("subscription-job")
     sub.add_parser("alerts-job")
+    sub.add_parser("invariants-job")
     sub.add_parser("sync-roles")
     args = parser.parse_args()
     if args.command == "create-admin":
         asyncio.run(_create_admin(args.email, args.name, args.role))
     elif args.command == "alerts-job":
-        asyncio.run(_alerts())
+        asyncio.run(_scan("alerts"))
+    elif args.command == "invariants-job":
+        asyncio.run(_scan("invariants"))
     elif args.command == "sync-roles":
         asyncio.run(_sync_roles())
     else:
