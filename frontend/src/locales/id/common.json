@@ -1046,7 +1046,8 @@
     "labels": {
       "copies": "Label",
       "print": "Cetak {{count}} label"
-    }
+    },
+    "sheet": "Cetak lembar persiapan (PDF)"
   },
   "transfers": {
     "title": "Transfer",

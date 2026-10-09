@@ -61,3 +61,5 @@ export const prepPdfUrl = (outletId: string, on: string, lang: string) =>
 
 export const labelsUrl = (id: string, copies: number, lang: string) =>
   `${BASE}/${id}/labels?copies=${copies}&lang=${lang.slice(0, 2)}`
+
+export const sheetUrl = (id: string, lang: string) => `${BASE}/${id}/sheet?lang=${lang.slice(0, 2)}`

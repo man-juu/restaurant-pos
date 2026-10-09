@@ -1046,7 +1046,8 @@
     "labels": {
       "copies": "Labels",
       "print": "Print {{count}} label(s)"
-    }
+    },
+    "sheet": "Print prep sheet (PDF)"
   },
   "transfers": {
     "title": "Transfers",

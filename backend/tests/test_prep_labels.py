@@ -58,6 +58,9 @@ def test_fr_prd_007_labels_for_completed_production_only(
     assert labels.content.count(b"/Type /Page\n") + labels.content.count(b"/Type /Page ") >= 3
     too_many = client.get(f"{PRD}/{order['id']}/labels?copies=500", headers=cook)
     assert too_many.status_code == 422
+    # FR-PRD-006: the cook's prep sheet with the scaled recipe.
+    sheet = client.get(f"{PRD}/{order['id']}/sheet?lang=id", headers=cook)
+    assert sheet.status_code == 200 and sheet.content.startswith(b"%PDF")
 
 
 def test_levels_scope_and_permissions(

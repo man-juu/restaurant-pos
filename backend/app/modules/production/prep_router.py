@@ -12,7 +12,7 @@ from app.core.errors import ConflictError
 from app.core.models import Tenant
 from app.core.tenancy import tenant_session
 from app.modules.catalog.interface import item_names, stock_items
-from app.modules.production import pdf, prep, service
+from app.modules.production import pdf, prep, service, sheet_pdf
 from app.modules.production import permissions as perm
 from app.modules.production.schemas import PrepRow
 
@@ -84,3 +84,13 @@ async def labels(
         language=lang,
     )
     return _pdf(await pdf.labels(label, copies), f"labels-{order.number}")
+
+
+@router.get("/orders/{order_id}/sheet")
+async def prep_sheet(order_id: uuid.UUID, request: Request, p: View, lang: Lang = "en") -> Response:
+    """FR-PRD-006: the cook's sheet for one production order, ingredients scaled."""
+    async with _db(request, p) as db:
+        order = await service.get_order(db, order_id)
+        p.require_outlet(order.outlet_id)
+        out = await service.order_out(db, order, lang)
+    return _pdf(await sheet_pdf.sheet(out, lang), f"prep-{out.number}")
