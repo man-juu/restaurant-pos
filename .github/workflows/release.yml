@@ -21,7 +21,7 @@ jobs:
         env:
           TAG: ${{ github.ref_name }}
         run: echo "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
       - name: Only release commits that are on main (reviewed and CI-green)
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - name: Deploy to staging
         env:
           SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}

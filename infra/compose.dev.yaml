@@ -3,7 +3,7 @@ name: restaurant-pos
 
 services:
   db:
-    image: postgres:17-alpine
+    image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-pos}
       POSTGRES_USER: ${POSTGRES_USER:-pos_owner}
@@ -11,6 +11,7 @@ services:
       APP_DB_PASSWORD: ${APP_DB_PASSWORD:-dev-only-app-password}
       READONLY_DB_PASSWORD: ${READONLY_DB_PASSWORD:-dev-only-readonly-password}
       ADMIN_DB_PASSWORD: ${ADMIN_DB_PASSWORD:-dev-only-admin-password}
+      BACKUP_DB_PASSWORD: ${BACKUP_DB_PASSWORD:-dev-only-backup-password}
     ports: ["127.0.0.1:5432:5432"] # bound to localhost only
     volumes:
       - db-data:/var/lib/postgresql/data

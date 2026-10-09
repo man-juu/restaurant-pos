@@ -35,9 +35,9 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 ## Cross-cutting follow-ups
 
 - [x] Permission backfill: `sync-roles` command, run by the production migrate step (docs/09 0.43).
-- Local dev database: document the non-Docker setup (roles, grants) in the README, or always use `docker compose`.
-- Pin base images and GitHub Actions by digest; Dependabot (from docs/security-practices.md open items).
-- Dedicated backup database role instead of the owner role.
+- [x] Local dev without Docker documented (docs/runbooks/local-dev.md).
+- [x] GitHub Actions pinned by commit; node, postgres and caddy images pinned by digest; Dependabot with a 7-day cooldown. python:3.12-slim digest still to pin (Docker Hub rate limit at the time).
+- [x] Dedicated read-only backup role `pos_backup` (pg_read_all_data + BYPASSRLS); runbook covers existing databases.
 - [x] Tracking modes (exact/estimated/untracked), set on hand, standard cost (docs/09 0.31)
 - [x] Cognitive complexity (complexipy, eslint-plugin-sonarjs) and file-size limits added with owner approval.
 - Settings screen in the screen previews artifact.

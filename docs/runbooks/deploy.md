@@ -21,3 +21,9 @@ Migrations are expand-then-contract, so an older release runs on the newer schem
 ## Check what is running
 
 `cat /opt/restaurant-pos/.deployed-prod` and `docker compose -p pos-prod -f /opt/restaurant-pos/compose.prod.yaml ps`.
+
+## One-time steps for servers set up before 2026-10-09
+
+1. Add `BACKUP_DB_PASSWORD=<openssl rand -hex 24>` to `/etc/restaurant-pos/<env>.env` (the compose file now refuses to start without it).
+2. Create the read-only backup role once (command in `backup-restore.md`, "Database created before 2026-10-09").
+3. Deploy as usual. The migrate step now also runs `python -m app.admin.cli sync-roles`, so existing businesses get the permissions of modules released since they were created.

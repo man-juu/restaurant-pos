@@ -64,6 +64,7 @@ POSTGRES_PASSWORD=<openssl rand -hex 24>
 APP_DB_PASSWORD=<openssl rand -hex 24>
 READONLY_DB_PASSWORD=<openssl rand -hex 24>
 ADMIN_DB_PASSWORD=<openssl rand -hex 24>
+BACKUP_DB_PASSWORD=<openssl rand -hex 24>
 SECRET_ENCRYPTION_KEY=<openssl rand -base64 32>      # losing it disables everyone's 2FA
 BACKUP_S3_ENDPOINT=https://<object-storage-endpoint>
 BACKUP_S3_BUCKET=<bucket>

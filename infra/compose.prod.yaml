@@ -24,7 +24,7 @@ x-app: &app
 
 services:
   db:
-    image: postgres:17-alpine
+    image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-pos}
@@ -33,6 +33,7 @@ services:
       APP_DB_PASSWORD: ${APP_DB_PASSWORD:?set APP_DB_PASSWORD}
       READONLY_DB_PASSWORD: ${READONLY_DB_PASSWORD:?set READONLY_DB_PASSWORD}
       ADMIN_DB_PASSWORD: ${ADMIN_DB_PASSWORD:?set ADMIN_DB_PASSWORD}
+      BACKUP_DB_PASSWORD: ${BACKUP_DB_PASSWORD:?set BACKUP_DB_PASSWORD}
     command: ["postgres", "-c", "shared_buffers=${PG_SHARED_BUFFERS:-512MB}", "-c", "max_connections=60"]
     volumes:
       - db-data:/var/lib/postgresql/data
@@ -116,8 +117,9 @@ services:
     restart: unless-stopped
     environment:
       PGHOST: db
-      PGUSER: ${POSTGRES_USER:-pos_owner}
-      PGPASSWORD: ${POSTGRES_PASSWORD}
+      # Read-only backup role (no writes possible from this container).
+      PGUSER: pos_backup
+      PGPASSWORD: ${BACKUP_DB_PASSWORD}
       PGDATABASE: ${POSTGRES_DB:-pos}
       BACKUP_S3_ENDPOINT: ${BACKUP_S3_ENDPOINT:-}
       BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:-}

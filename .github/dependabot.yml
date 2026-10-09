@@ -1,0 +1,24 @@
+# Dependency updates (docs/security-practices.md: supply chain). Each update waits 7 days
+# after release (cooldown), like the npm and pip cooling-off rule, and arrives as a PR that
+# must pass CI; nothing is merged automatically.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly }
+    cooldown: { default-days: 7 }
+  - package-ecosystem: pip
+    directory: /backend
+    schedule: { interval: weekly }
+    cooldown: { default-days: 7 }
+    open-pull-requests-limit: 5
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule: { interval: weekly }
+    cooldown: { default-days: 7 }
+    open-pull-requests-limit: 5
+  - package-ecosystem: docker
+    directories: [/backend, /frontend, /infra/web, /infra/backup]
+    schedule: { interval: weekly }
+    cooldown: { default-days: 7 }
+  # The compose files pin postgres by digest too; update them with the backup image's digest.

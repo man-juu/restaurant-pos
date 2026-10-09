@@ -8,6 +8,9 @@
 - **Required:** turn on bucket **versioning** (and object lock if offered). Choose a storage provider that supports versioning.
 - Alert if no new backup appears for 26 hours (`monitoring.md`).
 - The last 3 encrypted files also stay on the server for quick restores.
+- The dump runs as `pos_backup`: it can read every table of every tenant (`pg_read_all_data` plus BYPASSRLS, so the dump is complete) but cannot change anything. Restores use the owner role.
+- **Database created before 2026-10-09** (the role is made by `infra/db/init` only on a new volume): create it once as the owner, with the password from `prod.env`:
+  `docker compose -p pos-prod --env-file /etc/restaurant-pos/prod.env -f /opt/restaurant-pos/compose.prod.yaml exec db psql -U pos_owner -d pos -c "CREATE ROLE pos_backup LOGIN NOSUPERUSER BYPASSRLS PASSWORD '<BACKUP_DB_PASSWORD>'; GRANT pg_read_all_data TO pos_backup;"`
 
 ## Monthly restore drill (required)
 
