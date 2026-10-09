@@ -36,9 +36,25 @@ services:
       READONLY_DB_PASSWORD: ${READONLY_DB_PASSWORD:?set READONLY_DB_PASSWORD}
       ADMIN_DB_PASSWORD: ${ADMIN_DB_PASSWORD:?set ADMIN_DB_PASSWORD}
       BACKUP_DB_PASSWORD: ${BACKUP_DB_PASSWORD:?set BACKUP_DB_PASSWORD}
-    command: ["postgres", "-c", "shared_buffers=${PG_SHARED_BUFFERS:-512MB}", "-c", "max_connections=60"]
+    # WAL archiving (ADR 0.60): each finished segment is copied into /wal-archive (via a .tmp
+    # name, so the shipper never reads half a file); the backup container encrypts and uploads
+    # it. archive_timeout bounds data loss to PG_ARCHIVE_TIMEOUT seconds on a quiet day.
+    entrypoint: ["sh", "-c", "mkdir -p /wal-archive && chown postgres:postgres /wal-archive && exec docker-entrypoint.sh \"$$@\"", "--"]
+    command:
+      - postgres
+      - -c
+      - shared_buffers=${PG_SHARED_BUFFERS:-512MB}
+      - -c
+      - max_connections=60
+      - -c
+      - archive_mode=${PG_ARCHIVE_MODE:-on}
+      - -c
+      - archive_command=test ! -f /wal-archive/%f && cp %p /wal-archive/%f.tmp && mv /wal-archive/%f.tmp /wal-archive/%f
+      - -c
+      - archive_timeout=${PG_ARCHIVE_TIMEOUT:-300}
     volumes:
       - db-data:/var/lib/postgresql/data
+      - wal-archive:/wal-archive
       - ./db/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
@@ -130,10 +146,12 @@ services:
       BACKUP_S3_SECRET_KEY: ${BACKUP_S3_SECRET_KEY:-}
       BACKUP_PREFIX: ${BACKUP_PREFIX:-prod}
       BACKUP_HOUR_UTC: ${BACKUP_HOUR_UTC:-19}
+      WAL_ARCHIVE: ${PG_ARCHIVE_MODE:-on}
     volumes:
       # The owner's PUBLIC backup key only; the private key never lives on the server.
       - /etc/restaurant-pos/backup-public-key.asc:/keys/public-key.asc:ro
       - backup-local:/var/backups/pos
+      - wal-archive:/wal-archive
       - uploads:/var/lib/pos/uploads:ro
     networks: [internal]
     depends_on:
@@ -151,4 +169,5 @@ volumes:
   caddy-data: {}
   caddy-config: {}
   backup-local: {}
+  wal-archive: {}  # finished WAL segments waiting to be shipped (ADR 0.60)
   uploads: {}

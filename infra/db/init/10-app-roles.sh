@@ -9,6 +9,9 @@ CREATE ROLE pos_readonly LOGIN NOSUPERUSER NOBYPASSRLS PASSWORD '${READONLY_DB_P
 CREATE ROLE pos_admin LOGIN NOSUPERUSER NOBYPASSRLS PASSWORD '${ADMIN_DB_PASSWORD}';
 -- Backups only: reads every table (also future ones) through pg_read_all_data and must see
 -- every tenant (BYPASSRLS), but cannot write anything. Restores use the owner role.
-CREATE ROLE pos_backup LOGIN NOSUPERUSER BYPASSRLS PASSWORD '${BACKUP_DB_PASSWORD}';
+-- REPLICATION: weekly physical base backups for point-in-time recovery (ADR 0.60).
+CREATE ROLE pos_backup LOGIN NOSUPERUSER BYPASSRLS REPLICATION PASSWORD '${BACKUP_DB_PASSWORD}';
 GRANT pg_read_all_data TO pos_backup;
 SQL
+# pg_basebackup connects with the replication protocol, which "host all all" does not cover.
+echo "host replication pos_backup all scram-sha-256" >> "$PGDATA/pg_hba.conf"

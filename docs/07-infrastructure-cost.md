@@ -96,7 +96,7 @@ flowchart LR
 
 | Aspect | Launch | From Phase 2 |
 | --- | --- | --- |
-| Method | Nightly logical dump, encrypted, uploaded off-server | Add continuous WAL archiving |
+| Method | Nightly logical dump, encrypted, uploaded off-server | Add continuous WAL archiving (done: segment shipping every minute, `archive_timeout` 5 min, weekly base backup; ADR 0.60) |
 | Recovery point objective | Up to 24 h | 5 to 15 min |
 | Retention | 7 daily, 4 weekly, 6 monthly | Same plus WAL window |
 | Location | Different provider or account than the VPS | Same |
