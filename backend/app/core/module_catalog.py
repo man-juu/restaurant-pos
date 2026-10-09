@@ -12,7 +12,7 @@ OPTIONAL_MODULES: dict[str, tuple[str, ...]] = {
     "sales": ("inventory",),
     "tables": ("sales",),
     "kitchen": ("sales",),
-    "finance": (),
+    "finance": ("sales",),  # profit and loss reads sales (docs/09 0.55)
     "reports": (),
     "notifications": (),
 }

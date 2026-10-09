@@ -43,7 +43,7 @@ test('on a registered till, staff sign in with their PIN (FR-IDN-004)', async ({
     return route.fulfill({ status: 404, json: { code: 'not_found' } })
   })
   await page.goto('/login')
-  await page.getByRole('button', { name: 'EN' }).click()
+  await page.getByRole('button', { name: 'EN' }).first().click()
   await expect(page.getByText('This till: Front till. Tap your name.')).toBeVisible()
   await page.getByRole('button', { name: 'Sari' }).click()
   for (const digit of ['1', '2', '3', '4'])

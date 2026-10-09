@@ -52,6 +52,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
                 "adjustment": {"prefix": "ADJ", "padding": 5, "reset": "yearly"},
                 "sales_day": {"prefix": "SD", "padding": 5, "reset": "yearly"},
                 "pos_order": {"prefix": "POS", "padding": 6, "reset": "yearly"},
+                "expense": {"prefix": "EXP", "padding": 5, "reset": "yearly"},
             }
         },
         "session": {"idle_minutes": 60},

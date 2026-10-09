@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.sales import orders
 from app.modules.sales.events import LINES_SENT, LINES_VOIDED, ORDER_CLOSED, ORDER_PAID
 from app.modules.sales.models import PosLineModifier, PosOrder, PosOrderLine
+from app.modules.sales.money_reports import PeriodTotals, period_totals
 from app.modules.sales.pos_schemas import PosOrderCreateIn
 
 __all__ = [
@@ -22,10 +23,12 @@ __all__ = [
     "ORDER_PAID",
     "LineDetail",
     "OrderState",
+    "PeriodTotals",
     "line_details",
     "move_lines",
     "open_order",
     "order_states",
+    "period_totals",
 ]
 
 

@@ -16,6 +16,7 @@ import app.core.notifications.models
 import app.core.settings.models
 import app.core.uploads.models
 import app.modules.catalog.models
+import app.modules.finance.models
 import app.modules.inventory.doc_models
 import app.modules.inventory.models
 import app.modules.kitchen.models

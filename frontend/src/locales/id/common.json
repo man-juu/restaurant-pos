@@ -53,7 +53,8 @@
     "audit": "Log audit",
     "pos": "Kasir",
     "tables": "Meja",
-    "kitchen": "Dapur"
+    "kitchen": "Dapur",
+    "finance": "Keuangan"
   },
   "shell": {
     "business": "Usaha",
@@ -260,7 +261,11 @@
     "device_not_found": "Browser ini bukan perangkat terdaftar.",
     "pin_not_found": "Orang itu belum punya PIN.",
     "invalid_combo": "Paket tidak boleh berisi menu yang sama dua kali atau dirinya sendiri.",
-    "combo_in_combo": "Paket tidak boleh berisi paket lain."
+    "combo_in_combo": "Paket tidak boleh berisi paket lain.",
+    "account_not_found": "Akun itu tidak aktif.",
+    "account_name_taken": "Akun dengan nama ini sudah ada.",
+    "same_account": "Pilih dua akun yang berbeda.",
+    "expense_not_found": "Pengeluaran itu sudah tidak ada."
   },
   "appearance": {
     "open": "Tampilan",
@@ -1037,7 +1042,13 @@
       "receipts": "Penerimaan",
       "date": "Tanggal",
       "vendor": "Vendor",
-      "unit_cost": "Biaya per satuan"
+      "unit_cost": "Biaya per satuan",
+      "sales": "Penjualan",
+      "service_charge": "Biaya layanan",
+      "tax": "Pajak",
+      "staff": "Staf",
+      "orders": "Pesanan",
+      "average_order": "Rata-rata pesanan"
     },
     "names": {
       "salesDaily": "Penjualan per hari",
@@ -1052,7 +1063,9 @@
       "stockExpiry": "Stok hampir kedaluwarsa",
       "stockVariance": "Varians stok",
       "purchasesByVendor": "Pembelian per vendor",
-      "purchasesByItem": "Pembelian per barang"
+      "purchasesByItem": "Pembelian per barang",
+      "taxCollected": "Pajak terpungut (PBJT/PB1)",
+      "salesByStaff": "Penjualan per staf"
     },
     "weekdays": {
       "1": "Senin",
@@ -1288,5 +1301,46 @@
     "registered": "Perangkat ini terdaftar.",
     "revoke": "Hapus",
     "revoked": "Dihapus"
+  },
+  "finance": {
+    "title": "Keuangan",
+    "tabs": {
+      "pl": "Laba rugi",
+      "expenses": "Pengeluaran",
+      "accounts": "Kas dan bank"
+    },
+    "pl": {
+      "netSales": "Penjualan bersih",
+      "service": "Biaya layanan",
+      "revenue": "Pendapatan",
+      "cost": "HPP",
+      "gross": "Laba kotor",
+      "expenses": "Total pengeluaran",
+      "net": "Laba bersih",
+      "taxNote": "Pajak terpungut untuk daerah (bukan pendapatan): {{amount}}"
+    },
+    "amount": "Jumlah",
+    "category": "Kategori",
+    "paidFrom": "Dibayar dari",
+    "date": "Tanggal",
+    "payee": "Dibayar ke (opsional)",
+    "addExpense": "Catat pengeluaran",
+    "reverse": "Batalkan",
+    "reversed": "Dibatalkan",
+    "kinds": {
+      "cash": "Kas",
+      "bank": "Bank",
+      "petty_cash": "Kas kecil"
+    },
+    "choose": "Pilih",
+    "from": "Dari",
+    "to": "Ke",
+    "move": "Pindahkan uang",
+    "accountName": "Nama akun",
+    "kind": "Jenis",
+    "addAccount": "Tambah akun",
+    "categoriesList": "Kategori pengeluaran: {{names}}",
+    "categoryName": "Kategori baru",
+    "addCategory": "Tambah kategori"
   }
 }

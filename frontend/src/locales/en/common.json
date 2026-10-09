@@ -53,7 +53,8 @@
     "audit": "Audit log",
     "pos": "Cashier",
     "tables": "Tables",
-    "kitchen": "Kitchen"
+    "kitchen": "Kitchen",
+    "finance": "Finance"
   },
   "shell": {
     "business": "Business",
@@ -260,7 +261,11 @@
     "device_not_found": "This browser is not a registered device.",
     "pin_not_found": "That person has no PIN.",
     "invalid_combo": "A combo cannot list an item twice or contain itself.",
-    "combo_in_combo": "A combo cannot contain another combo."
+    "combo_in_combo": "A combo cannot contain another combo.",
+    "account_not_found": "That account is not active.",
+    "account_name_taken": "An account with this name exists.",
+    "same_account": "Choose two different accounts.",
+    "expense_not_found": "That expense no longer exists."
   },
   "appearance": {
     "open": "Appearance",
@@ -1037,7 +1042,13 @@
       "receipts": "Receipts",
       "date": "Date",
       "vendor": "Vendor",
-      "unit_cost": "Unit cost"
+      "unit_cost": "Unit cost",
+      "sales": "Sales",
+      "service_charge": "Service charge",
+      "tax": "Tax",
+      "staff": "Staff",
+      "orders": "Orders",
+      "average_order": "Average order"
     },
     "names": {
       "salesDaily": "Sales per day",
@@ -1052,7 +1063,9 @@
       "stockExpiry": "Expiring stock",
       "stockVariance": "Stock variance",
       "purchasesByVendor": "Purchases by vendor",
-      "purchasesByItem": "Purchases by item"
+      "purchasesByItem": "Purchases by item",
+      "taxCollected": "Tax collected (PBJT/PB1)",
+      "salesByStaff": "Sales by staff"
     },
     "weekdays": {
       "1": "Monday",
@@ -1288,5 +1301,46 @@
     "registered": "This device is registered.",
     "revoke": "Remove",
     "revoked": "Removed"
+  },
+  "finance": {
+    "title": "Finance",
+    "tabs": {
+      "pl": "Profit and loss",
+      "expenses": "Expenses",
+      "accounts": "Cash and bank"
+    },
+    "pl": {
+      "netSales": "Net sales",
+      "service": "Service charge",
+      "revenue": "Revenue",
+      "cost": "Cost of sales (HPP)",
+      "gross": "Gross profit",
+      "expenses": "Total expenses",
+      "net": "Net profit",
+      "taxNote": "Tax collected for the region (not revenue): {{amount}}"
+    },
+    "amount": "Amount",
+    "category": "Category",
+    "paidFrom": "Paid from",
+    "date": "Date",
+    "payee": "Paid to (optional)",
+    "addExpense": "Record expense",
+    "reverse": "Reverse",
+    "reversed": "Reversed",
+    "kinds": {
+      "cash": "Cash",
+      "bank": "Bank",
+      "petty_cash": "Petty cash"
+    },
+    "choose": "Choose",
+    "from": "From",
+    "to": "To",
+    "move": "Move money",
+    "accountName": "Account name",
+    "kind": "Type",
+    "addAccount": "Add account",
+    "categoriesList": "Expense categories: {{names}}",
+    "categoryName": "New category",
+    "addCategory": "Add category"
   }
 }

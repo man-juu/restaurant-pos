@@ -39,6 +39,9 @@ const TablesPage = lazy(() =>
 const KitchenPage = lazy(() =>
   import('../features/kitchen/KitchenPage').then((m) => ({ default: m.KitchenPage })),
 )
+const FinancePage = lazy(() =>
+  import('../features/finance/FinancePage').then((m) => ({ default: m.FinancePage })),
+)
 const SalesPage = lazy(() =>
   import('../features/sales/SalesPage').then((m) => ({ default: m.SalesPage })),
 )
@@ -76,6 +79,7 @@ export const routes = [
       { path: 'pos', element: page(<PosPage />) },
       { path: 'tables', element: page(<TablesPage />) },
       { path: 'kitchen', element: page(<KitchenPage />) },
+      { path: 'finance', element: page(<FinancePage />) },
       { path: 'sales', element: page(<SalesPage />) },
       { path: 'reports', element: page(<ReportsPage />) },
       { path: 'audit', element: page(<AuditPage />) },

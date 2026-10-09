@@ -1071,6 +1071,148 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/finance/accounts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Accounts */
+    get: operations['accounts_api_v1_finance_accounts_get']
+    put?: never
+    /** Create Account */
+    post: operations['create_account_api_v1_finance_accounts_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/accounts/{account_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Account */
+    put: operations['update_account_api_v1_finance_accounts__account_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/categories': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Categories */
+    get: operations['categories_api_v1_finance_categories_get']
+    put?: never
+    /** Create Category */
+    post: operations['create_category_api_v1_finance_categories_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/categories/{category_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Category */
+    put: operations['update_category_api_v1_finance_categories__category_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/expenses': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Expenses */
+    get: operations['expenses_api_v1_finance_expenses_get']
+    put?: never
+    /** Add Expense */
+    post: operations['add_expense_api_v1_finance_expenses_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/expenses/{expense_id}/reverse': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reverse Expense */
+    post: operations['reverse_expense_api_v1_finance_expenses__expense_id__reverse_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/profit-loss': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Profit Loss
+     * @description FR-FIN-001: sales, HPP and expenses per outlet and period.
+     */
+    get: operations['profit_loss_api_v1_finance_profit_loss_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/transfers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Transfer */
+    post: operations['transfer_api_v1_finance_transfers_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/inventory/adjustments': {
     parameters: {
       query?: never
@@ -2728,6 +2870,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/sales/reports/staff': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Staff
+     * @description FR-RPT-012: sales by staff member, only with sales.staff.view.
+     */
+    get: operations['staff_api_v1_sales_reports_staff_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/sales/reports/summary': {
     parameters: {
       query?: never
@@ -2737,6 +2899,26 @@ export interface paths {
     }
     /** Summary */
     get: operations['summary_api_v1_sales_reports_summary_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/reports/tax': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Tax
+     * @description FR-FIN-008: tax collected per outlet and day.
+     */
+    get: operations['tax_api_v1_sales_reports_tax_get']
     put?: never
     post?: never
     delete?: never
@@ -3961,6 +4143,105 @@ export interface components {
       /** Unit Price */
       unit_price?: number | null
     }
+    /** ExpenseCategoryIn */
+    ExpenseCategoryIn: {
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /** Name */
+      name: string
+    }
+    /** ExpenseCategoryOut */
+    ExpenseCategoryOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /** Name */
+      name: string
+    }
+    /** ExpenseIn */
+    ExpenseIn: {
+      /**
+       * Account Id
+       * Format: uuid
+       */
+      account_id: string
+      /** Amount */
+      amount: number
+      /**
+       * Category Id
+       * Format: uuid
+       */
+      category_id: string
+      /** Note */
+      note?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Payee */
+      payee?: string | null
+      /**
+       * Spent On
+       * Format: date
+       */
+      spent_on: string
+      /** Upload Id */
+      upload_id?: string | null
+    }
+    /** ExpenseOut */
+    ExpenseOut: {
+      /**
+       * Account Id
+       * Format: uuid
+       */
+      account_id: string
+      /** Amount */
+      amount: number
+      /**
+       * Category Id
+       * Format: uuid
+       */
+      category_id: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Note */
+      note?: string | null
+      /** Number */
+      number: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Payee */
+      payee?: string | null
+      /**
+       * Spent On
+       * Format: date
+       */
+      spent_on: string
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'posted' | 'reversed'
+      /** Upload Id */
+      upload_id?: string | null
+    }
     /** FloorIn */
     FloorIn: {
       /**
@@ -4484,6 +4765,57 @@ export interface components {
       otpauth_uri: string
       /** Secret */
       secret: string
+    }
+    /** MoneyAccountIn */
+    MoneyAccountIn: {
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'cash' | 'bank' | 'petty_cash'
+      /** Name */
+      name: string
+      /**
+       * Opening Balance
+       * @default 0
+       */
+      opening_balance: number
+      /** Outlet Id */
+      outlet_id?: string | null
+    }
+    /** MoneyAccountOut */
+    MoneyAccountOut: {
+      /** Balance */
+      balance: number
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'cash' | 'bank' | 'petty_cash'
+      /** Name */
+      name: string
+      /**
+       * Opening Balance
+       * @default 0
+       */
+      opening_balance: number
+      /** Outlet Id */
+      outlet_id?: string | null
     }
     /** MoveIn */
     MoveIn: {
@@ -5404,6 +5736,29 @@ export interface components {
       item_id: string
       /** Qty */
       qty: number | string
+    }
+    /** ProfitLossOut */
+    ProfitLossOut: {
+      /** Cost Of Sales */
+      cost_of_sales: number
+      /** Expenses */
+      expenses: {
+        [key: string]: number
+      }
+      /** Expenses Total */
+      expenses_total: number
+      /** Gross Profit */
+      gross_profit: number
+      /** Net Profit */
+      net_profit: number
+      /** Net Sales */
+      net_sales: number
+      /** Revenue */
+      revenue: number
+      /** Service Charge */
+      service_charge: number
+      /** Tax Collected */
+      tax_collected: number
     }
     /**
      * PurchasingSettings
@@ -6469,6 +6824,28 @@ export interface components {
     TransferApproveIn: {
       /** Lines */
       lines?: components['schemas']['ApproveLine'][]
+    }
+    /** TransferIn */
+    TransferIn: {
+      /** Amount */
+      amount: number
+      /**
+       * From Account Id
+       * Format: uuid
+       */
+      from_account_id: string
+      /**
+       * Moved On
+       * Format: date
+       */
+      moved_on: string
+      /** Note */
+      note?: string | null
+      /**
+       * To Account Id
+       * Format: uuid
+       */
+      to_account_id: string
     }
     /** TransferLineOut */
     TransferLineOut: {
@@ -9210,6 +9587,348 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  accounts_api_v1_finance_accounts_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MoneyAccountOut'][]
+        }
+      }
+    }
+  }
+  create_account_api_v1_finance_accounts_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MoneyAccountIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MoneyAccountOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_account_api_v1_finance_accounts__account_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        account_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MoneyAccountIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MoneyAccountOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  categories_api_v1_finance_categories_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExpenseCategoryOut'][]
+        }
+      }
+    }
+  }
+  create_category_api_v1_finance_categories_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ExpenseCategoryIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExpenseCategoryOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_category_api_v1_finance_categories__category_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        category_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ExpenseCategoryIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExpenseCategoryOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  expenses_api_v1_finance_expenses_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        date_from: string
+        date_to: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExpenseOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  add_expense_api_v1_finance_expenses_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ExpenseIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExpenseOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reverse_expense_api_v1_finance_expenses__expense_id__reverse_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        expense_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExpenseOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  profit_loss_api_v1_finance_profit_loss_get: {
+    parameters: {
+      query: {
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProfitLossOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  transfer_api_v1_finance_transfers_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TransferIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MoneyAccountOut'][]
+        }
       }
       /** @description Validation Error */
       422: {
@@ -12689,10 +13408,78 @@ export interface operations {
       }
     }
   }
+  staff_api_v1_sales_reports_staff_get: {
+    parameters: {
+      query: {
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Report']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   summary_api_v1_sales_reports_summary_get: {
     parameters: {
       query: {
         grain?: 'day' | 'week' | 'month'
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Report']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  tax_api_v1_sales_reports_tax_get: {
+    parameters: {
+      query: {
         from: string
         to: string
         outlet_id?: string | null

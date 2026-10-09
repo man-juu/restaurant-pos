@@ -50,6 +50,16 @@ export const REPORTS: ReportDef[] = [
     params: { by: 'weekday' },
   },
   {
+    key: 'taxCollected',
+    path: '/api/v1/sales/reports/tax',
+    permission: 'sales.report.view',
+  },
+  {
+    key: 'salesByStaff',
+    path: '/api/v1/sales/reports/staff',
+    permission: 'sales.staff.view',
+  },
+  {
     key: 'stockMovements',
     path: '/api/v1/inventory/reports/movements',
     permission: 'inventory.report.view',

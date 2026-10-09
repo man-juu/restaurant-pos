@@ -161,7 +161,10 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `journal_lines` | entry_id, account_id, debit, credit, outlet_id, memo | Constraint: entry debits equal credits |
 | `posting_rules` | tenant_id, event_type, debit_account, credit_account, conditions | Configurable mapping |
 | `accounting_periods` | tenant_id, year, month, status (open, closed) | |
-| `bank_accounts`, `expenses`, `expense_categories` | | Finance-lite (Phase 2) |
+| `money_accounts` | name, kind (cash, bank, petty_cash), outlet_id, opening_balance, is_active | Finance-lite (FR-FIN-001) |
+| `expense_categories` | name, is_active | |
+| `expenses` | number, outlet_id, account_id, category_id, spent_on, amount, payee, note, upload_id, status (posted, reversed) | Reversed, never deleted |
+| `money_transfers` | from_account_id, to_account_id, amount, moved_on, note | Append-only |
 | `platform_settlements` | tenant_id, channel_id, period, gross, commission, payout, status | |
 
 ## 3. Ledger rules (inventory)
