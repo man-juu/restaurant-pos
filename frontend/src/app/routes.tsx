@@ -35,6 +35,9 @@ const NotificationsPage = lazy(() =>
 const SalesPage = lazy(() =>
   import('../features/sales/SalesPage').then((m) => ({ default: m.SalesPage })),
 )
+const ReportsPage = lazy(() =>
+  import('../features/reports/ReportsPage').then((m) => ({ default: m.ReportsPage })),
+)
 const InventoryPage = lazy(() =>
   import('../features/inventory/InventoryPage').then((m) => ({ default: m.InventoryPage })),
 )
@@ -61,6 +64,7 @@ export const routes = [
       { path: 'transfers', element: page(<TransfersPage />) },
       { path: 'notifications', element: page(<NotificationsPage />) },
       { path: 'sales', element: page(<SalesPage />) },
+      { path: 'reports', element: page(<ReportsPage />) },
       // Module pages arrive with their modules (Phase 1); nav entries come from capabilities.
       { path: '*', element: <DashboardPage /> },
     ],

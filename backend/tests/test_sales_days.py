@@ -176,3 +176,30 @@ def test_sales_entry_errors_scope_and_isolation(
     assert enter(client, h, elsewhere).status_code == 404  # not this cashier's outlet
     other = login(client, world["manager_b"])
     assert client.get(f"{S}/{world['shop']}/{DAY}", headers=other).status_code == 404
+
+
+R = "/api/v1/sales/reports"
+
+
+def test_fr_rpt_001_to_003_011_sales_reports(
+    client: TestClient, world: dict[str, Any], menu: dict[str, Any]
+) -> None:
+    h = login(client, world["cashier_a"])
+    assert enter(client, h, entry(world, menu, "10", reported_total=225_000)).status_code == 201
+    assert client.get(f"{R}/summary?from={DAY}&to={DAY}", headers=h).status_code == 403
+    m = login(client, world["manager_a"])
+    summary = client.get(f"{R}/summary?from={DAY}&to={DAY}&grain=day", headers=m).json()
+    [row] = summary["rows"]
+    assert row["net_sales"] == 225_000 and row["discount"] == 25_000 and row["entries"] == 1
+    assert row["food_cost"] == 10 * (200 * 14 + 2200 + 30 * 60) and row["food_cost_pct"]
+    assert summary["totals"]["best_days"] == [{"date": DAY, "net_sales": 225_000}]
+    assert summary["totals"]["previous_net_sales"] == 0
+    items = client.get(f"{R}/breakdown?from={DAY}&to={DAY}&by=item", headers=m).json()
+    [nasi] = items["rows"]
+    assert nasi["qty"] == "10" and nasi["net_sales"] == 225_000 and nasi["margin"] > 0
+    by_channel = client.get(f"{R}/breakdown?from={DAY}&to={DAY}&by=channel", headers=m).json()
+    assert by_channel["rows"][0]["name"] == "GoFood"
+    csv = client.get(f"{R}/breakdown?from={DAY}&to={DAY}&by=weekday&format=csv", headers=m)
+    assert csv.status_code == 200 and csv.headers["content-type"].startswith("text/csv")
+    too_long = client.get(f"{R}/summary?from=2025-01-01&to=2026-03-05", headers=m)
+    assert too_long.status_code == 422 and too_long.json()["code"] == "range_too_long"

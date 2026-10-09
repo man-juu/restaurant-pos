@@ -28,7 +28,7 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 | 10 | 1h Transfers with approval, delivery note, discrepancies (done 2026-10-08) | FR-TRF-001 to 004 | |
 | 12 | 1j Stock levels, DOI, alerts, reorder suggestions, producible quantity, notification center (parts 1 and 2a done 2026-10-09: stock alerts, notification center, alerts job, days left, producible, reorder suggestions to draft PO, low-days alert; part 2b: approval and count-variance notifications; part 2c: food-cost alert; slice done) | FR-INV-010 to 013, 020, FR-NTF-001 to 003 | |
 | 13 | 1k Manual daily sales entry, recipe consumption, day lock, platform item mapping (done 2026-10-09) | FR-SAL-001 to 003, FR-CAT-010 | |
-| 14 | 1l Reports and variance | FR-RPT-001 to 006, 010, 011, FR-INV-015 | |
+| 14 | 1l Reports and variance (done 2026-10-09, see 0.42) | FR-RPT-001 to 006, 010, 011, FR-INV-015 | |
 | 15 | 1m Admin usage, feature flags, audit filters/export, subscription notices | FR-ADM-004, 006, FR-AUD-004, FR-SUB-006 | |
 | 16 | 1n Load test (k6), full security review, pilot | Gate 1 | |
 

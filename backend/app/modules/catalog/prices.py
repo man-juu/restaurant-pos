@@ -257,3 +257,7 @@ async def channel_code(db: AsyncSession, channel_id: uuid.UUID) -> str:
     """Code of an active channel of this tenant (service charge rules name channels by code)."""
     channel = await _visible_channel(db, channel_id)
     return channel.code
+
+
+async def channel_names(db: AsyncSession) -> dict[uuid.UUID, str]:
+    return {row[0]: row[1] for row in (await db.execute(select(Channel.id, Channel.name))).all()}

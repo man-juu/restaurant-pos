@@ -252,3 +252,35 @@ def test_fr_cat_012_food_cost_alert_only_to_cost_viewers(
     ]
     assert note["params"]["channel"] == "Dine-in" and note["params"]["target"] == "30.0"
     assert float(note["params"]["pct"]) > 30 and note["params"]["cause"]
+
+
+def test_fr_rpt_004_fr_inv_015_stock_reports(
+    client: TestClient, world: dict[str, Any], stock: dict[str, Any]
+) -> None:
+    """The fixture wasted 7 kg rice over the last week; a count then finds 500 g less."""
+    h = login(client, world["kitchen_a"])
+    today = date.today().isoformat()
+    body = {
+        "outlet_id": str(world["shop"]),
+        "business_date": today,
+        "count_type": "spot",
+        "item_ids": [stock["rice"]],
+    }
+    count = client.post(f"{API}/counts", json=body, headers=h).json()
+    line = {"item_id": stock["rice"], "counted_qty": "9500"}
+    client.put(f"{API}/counts/{count['id']}/lines", json={"lines": [line]}, headers=h)
+    client.post(f"{API}/counts/{count['id']}/submit", headers=h)
+    m = login(client, world["manager_a"])
+    since = (date.today() - timedelta(days=30)).isoformat()
+    span = f"from={since}&to={today}"
+    waste = client.get(f"{API}/reports/waste?{span}", headers=m).json()
+    assert waste["rows"][0]["qty"] == "7000" and waste["rows"][0]["reason"] == "spoilage"
+    assert waste["totals"]["value"] == 7000 * 14
+    variance = client.get(f"{API}/reports/variance?{span}", headers=m).json()
+    [rice] = variance["rows"]
+    assert rice["count_difference"] == "-500" and rice["waste"] == "7000"
+    assert rice["variance_value"] == -500 * 14
+    moves = client.get(f"{API}/reports/movements?{span}&format=xlsx", headers=m)
+    assert moves.status_code == 200 and moves.content[:2] == b"PK"
+    k = login(client, world["kitchen_a"])  # the kitchen role has no report permission
+    assert client.get(f"{API}/reports/expiry?{span}", headers=k).status_code == 403

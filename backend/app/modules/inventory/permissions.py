@@ -6,6 +6,7 @@ COUNT_APPROVE = "inventory.count.approve"
 ADJUSTMENT_CREATE = "inventory.adjustment.create"
 ADJUSTMENT_APPROVE = "inventory.adjustment.approve"  # also reverses a waste log
 LEVEL_MANAGE = "inventory.level.manage"  # par, min, reorder point, max per outlet
+REPORT_VIEW = "inventory.report.view"  # docs/03 "Reports (own scope)"
 
 ALL = (
     STOCK_VIEW,
@@ -16,6 +17,7 @@ ALL = (
     ADJUSTMENT_CREATE,
     ADJUSTMENT_APPROVE,
     LEVEL_MANAGE,
+    REPORT_VIEW,
 )
 
 # docs/03 section 4: stock screens follow "Reports (own scope)" plus the roles that count and
@@ -31,10 +33,11 @@ ROLE_TEMPLATES: dict[str, tuple[str, ...]] = {
         COUNT_APPROVE,
         ADJUSTMENT_APPROVE,
         LEVEL_MANAGE,
+        REPORT_VIEW,
     ),
-    "warehouse": (*_FLOOR, OPENING_POST, ADJUSTMENT_CREATE, LEVEL_MANAGE),
+    "warehouse": (*_FLOOR, OPENING_POST, ADJUSTMENT_CREATE, LEVEL_MANAGE, REPORT_VIEW),
     "kitchen": _FLOOR,
-    "purchaser": (STOCK_VIEW,),
-    "accountant": (STOCK_VIEW,),
-    "viewer": (STOCK_VIEW,),
+    "purchaser": (STOCK_VIEW, REPORT_VIEW),
+    "accountant": (STOCK_VIEW, REPORT_VIEW),
+    "viewer": (STOCK_VIEW, REPORT_VIEW),
 }

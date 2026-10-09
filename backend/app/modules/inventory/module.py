@@ -8,6 +8,7 @@ from app.modules.inventory.import_router import router as import_router
 from app.modules.inventory.level_router import router as level_router
 from app.modules.inventory.planning_router import router as planning_router
 from app.modules.inventory.queries import tenant_unit_costs
+from app.modules.inventory.report_router import router as report_router
 from app.modules.inventory.router import router
 
 # Recipe costing (FR-CAT-007) uses the moving average costs kept here.
@@ -18,7 +19,7 @@ register_scanner(scan_stock)
 MANIFEST = ModuleManifest(
     name="inventory",
     depends_on=("catalog",),
-    routers=(router, doc_router, import_router, level_router, planning_router),
+    routers=(router, doc_router, import_router, level_router, planning_router, report_router),
     permissions=permissions.ALL,
     role_templates=permissions.ROLE_TEMPLATES,
     nav=("inventory",),

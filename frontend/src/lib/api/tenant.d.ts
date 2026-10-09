@@ -1141,6 +1141,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/inventory/reports/{kind}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Stock Report */
+    get: operations['stock_report_api_v1_inventory_reports__kind__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/inventory/stock': {
     parameters: {
       query?: never
@@ -1740,6 +1757,40 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/purchasing/reports/price-trend': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Price Trend */
+    get: operations['price_trend_api_v1_purchasing_reports_price_trend_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/reports/purchases': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Purchases */
+    get: operations['purchases_api_v1_purchasing_reports_purchases_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/purchasing/vendors': {
     parameters: {
       query?: never
@@ -1895,6 +1946,40 @@ export interface paths {
     put?: never
     /** Reopen Day */
     post: operations['reopen_day_api_v1_sales_days__outlet_id___on__reopen_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/reports/breakdown': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Breakdown */
+    get: operations['breakdown_api_v1_sales_reports_breakdown_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/reports/summary': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Summary */
+    get: operations['summary_api_v1_sales_reports_summary_get']
+    put?: never
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -3927,6 +4012,27 @@ export interface components {
     RecoveryCodesOut: {
       /** Recovery Codes */
       recovery_codes: string[]
+    }
+    /** Report */
+    Report: {
+      /** Columns */
+      columns: string[]
+      /**
+       * Computed At
+       * Format: date-time
+       */
+      computed_at: string
+      /** Rows */
+      rows: {
+        [key: string]: unknown
+      }[]
+      /**
+       * Totals
+       * @default {}
+       */
+      totals: {
+        [key: string]: unknown
+      }
     }
     /** RequestLine */
     RequestLine: {
@@ -7099,6 +7205,43 @@ export interface operations {
       }
     }
   }
+  stock_report_api_v1_inventory_reports__kind__get: {
+    parameters: {
+      query: {
+        lang?: 'en' | 'id'
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path: {
+        kind: 'movements' | 'waste' | 'expiry' | 'variance'
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Report']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   stock_api_v1_inventory_stock_get: {
     parameters: {
       query: {
@@ -8237,6 +8380,77 @@ export interface operations {
       }
     }
   }
+  price_trend_api_v1_purchasing_reports_price_trend_get: {
+    parameters: {
+      query: {
+        item_id: string
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Report']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  purchases_api_v1_purchasing_reports_purchases_get: {
+    parameters: {
+      query: {
+        by?: 'vendor' | 'item'
+        lang?: 'en' | 'id'
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Report']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   list_vendors_api_v1_purchasing_vendors_get: {
     parameters: {
       query?: {
@@ -8575,6 +8789,77 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['DayOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  breakdown_api_v1_sales_reports_breakdown_get: {
+    parameters: {
+      query: {
+        by?: 'outlet' | 'channel' | 'item' | 'category' | 'weekday'
+        lang?: 'en' | 'id'
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Report']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  summary_api_v1_sales_reports_summary_get: {
+    parameters: {
+      query: {
+        grain?: 'day' | 'week' | 'month'
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Report']
         }
       }
       /** @description Validation Error */

@@ -12,6 +12,9 @@ export function navItems(caps: Capabilities | undefined): NavItem[] {
   if (caps.permissions.includes('tenant.outlet.view'))
     items.push({ key: 'outlets', to: '/outlets' })
   for (const key of caps.nav) items.push({ key, to: `/${key}` })
+  // Reports collect each module's report permission (FR-RPT-006): one entry if any applies.
+  if (caps.permissions.some((p) => p.endsWith('.report.view')))
+    items.push({ key: 'reports', to: '/reports' })
   if (caps.permissions.includes('tenant.settings.view'))
     items.push({ key: 'settings', to: '/settings' })
   return items

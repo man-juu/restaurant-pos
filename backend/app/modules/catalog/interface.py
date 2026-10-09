@@ -11,10 +11,11 @@ from dataclasses import dataclass
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.catalog.boms import ItemLabel, item_names
+from app.modules.catalog.boms import ItemLabel, item_categories, item_names
 from app.modules.catalog.costing import (
     CostSource,
     consumption,
+    costing,
     explode,
     items_with_recipe,
     recipe_needs,
@@ -24,7 +25,7 @@ from app.modules.catalog.costing import (
 from app.modules.catalog.models import Item, Unit
 from app.modules.catalog.permissions import COST_VIEW
 from app.modules.catalog.platform_map import item_ids_by_code
-from app.modules.catalog.prices import channel_code, prices_on, tenant_today
+from app.modules.catalog.prices import channel_code, channel_names, prices_on, tenant_today
 from app.modules.catalog.units import base_factors
 
 __all__ = [
@@ -34,8 +35,11 @@ __all__ = [
     "StockItem",
     "base_factors",
     "channel_code",
+    "channel_names",
     "consumption",
+    "costing",
     "explode",
+    "item_categories",
     "item_ids_by_code",
     "item_ids_by_sku",
     "item_names",

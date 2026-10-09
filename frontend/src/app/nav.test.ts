@@ -22,4 +22,12 @@ describe('capability-driven navigation (FR-TEN-003)', () => {
     const full = caps({ permissions: ['tenant.outlet.view'], nav: ['inventory'] })
     expect(navItems(full).map((i) => i.key)).toEqual(['dashboard', 'outlets', 'inventory'])
   })
+
+  it('adds one Reports entry when any report permission applies (FR-RPT-006)', () => {
+    const reader = caps({
+      permissions: ['sales.report.view', 'inventory.report.view'],
+      nav: ['sales'],
+    })
+    expect(navItems(reader).map((i) => i.key)).toEqual(['dashboard', 'sales', 'reports'])
+  })
 })

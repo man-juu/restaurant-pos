@@ -172,3 +172,33 @@ def test_scope_permissions_and_isolation(
     foreign = buy(client, hb, purchase(world, items, u))
     assert foreign.status_code in (403, 404, 422)  # another tenant's outlet and items
     assert h  # manager_a session was used above
+
+
+def test_fr_rpt_005_purchase_reports(
+    client: TestClient, world: dict[str, Any], items: dict[str, str]
+) -> None:
+    h = login(client, world["manager_a"])
+    kg = units(client)["kg"]
+    vendor = client.post(f"{P}/vendors", json={"name": "CV Segar"}, headers=h).json()
+    for day, paid in (("2026-03-01", 140_000), ("2026-03-08", 150_000)):
+        body = {
+            "outlet_id": str(world["shop"]),
+            "vendor_id": vendor["id"],
+            "business_date": day,
+            "lines": [{"item_id": items["rice"], "qty": "10", "unit_id": kg, "line_total": paid}],
+        }
+        assert buy(client, h, body).status_code == 201
+    span = "from=2026-03-01&to=2026-03-31"
+    by_vendor = client.get(f"{P}/reports/purchases?{span}&by=vendor", headers=h).json()
+    assert by_vendor["rows"] == [{"name": "CV Segar", "receipts": 2, "total": 290_000}]
+    trend = client.get(f"{P}/reports/price-trend?{span}&item_id={items['rice']}", headers=h).json()
+    assert [r["unit_cost"] for r in trend["rows"]] == ["14", "15"]
+    store = login(client, world["store_a"])  # kitchen-only storekeeper: shop is out of scope
+    assert (
+        client.get(
+            f"{P}/reports/purchases?{span}&outlet_id={world['shop']}", headers=store
+        ).status_code
+        == 404
+    )
+    cashier = login(client, world["cashier_a"])
+    assert client.get(f"{P}/reports/purchases?{span}", headers=cashier).status_code == 403

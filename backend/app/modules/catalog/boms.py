@@ -23,7 +23,7 @@ from sqlalchemy.orm import aliased
 from app.core import audit
 from app.core.errors import ConflictError, NotFoundError
 from app.core.models import Tenant
-from app.modules.catalog.models import Bom, BomLine, Item, ItemTranslation, Unit
+from app.modules.catalog.models import Bom, BomLine, Item, ItemCategory, ItemTranslation, Unit
 from app.modules.catalog.schemas import (
     BomIn,
     BomLineOut,
@@ -277,3 +277,15 @@ async def activate(
     await db.flush()
     await _audit(db, bom, user_id, "activate", {"valid_from": valid_from.isoformat()})
     return _summary(bom)
+
+
+async def item_categories(
+    db: AsyncSession, ids: Iterable[uuid.UUID]
+) -> dict[uuid.UUID, tuple[uuid.UUID | None, str | None]]:
+    """Item -> (category id, category name) for reports grouped by category."""
+    stmt = (
+        select(Item.id, Item.category_id, ItemCategory.name)
+        .outerjoin(ItemCategory, ItemCategory.id == Item.category_id)
+        .where(Item.id.in_(set(ids)))
+    )
+    return {i: (c, n) for i, c, n in (await db.execute(stmt)).all()}
