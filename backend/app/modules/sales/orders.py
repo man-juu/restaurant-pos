@@ -31,7 +31,7 @@ from app.modules.catalog.interface import (
 )
 from app.modules.inventory.interface import visible_outlet
 from app.modules.sales.discounts import discount_amount
-from app.modules.sales.events import ORDER_CLOSED
+from app.modules.sales.events import LINES_SENT, ORDER_CLOSED
 from app.modules.sales.models import PosLineModifier, PosOrder, PosOrderLine
 from app.modules.sales.pos_schemas import (
     PosLineIn,
@@ -182,13 +182,24 @@ async def send(db: AsyncSession, order: PosOrder, user_id: uuid.UUID) -> int:
             )
         )
     )
-    now = datetime.now(UTC)
-    for line in lines:
-        line.status, line.sent_at = "sent", now
-    await db.flush()
+    await mark_sent(db, order, lines, user_id)
     if lines:
         await _audit(db, order, user_id, "send", {"lines": len(lines)})
     return len(lines)
+
+
+async def mark_sent(
+    db: AsyncSession, order: PosOrder, lines: list[PosOrderLine], user_id: uuid.UUID
+) -> None:
+    """New lines go to the kitchen: status "sent" and the kitchen hears of them."""
+    fresh = [ln for ln in lines if ln.status == "new"]
+    if not fresh:
+        return
+    now = datetime.now(UTC)
+    for line in fresh:
+        line.status, line.sent_at = "sent", now
+    await db.flush()
+    await announce(db, order, user_id, LINES_SENT, line_ids=[ln.id for ln in fresh])
 
 
 async def cancel(db: AsyncSession, order: PosOrder, user_id: uuid.UUID) -> None:
@@ -319,9 +330,21 @@ async def _audit(
     )
 
 
-async def announce(db: AsyncSession, order: PosOrder, user_id: uuid.UUID, name: str) -> None:
+async def announce(
+    db: AsyncSession,
+    order: PosOrder,
+    user_id: uuid.UUID,
+    name: str,
+    line_ids: list[uuid.UUID] | None = None,
+) -> None:
     """Tell other modules (tables, kitchen) in the same transaction (app/core/events.py)."""
-    data = {"order_id": order.id, "outlet_id": order.outlet_id, "status": order.status}
+    data: dict[str, object] = {
+        "order_id": order.id,
+        "outlet_id": order.outlet_id,
+        "status": order.status,
+    }
+    if line_ids is not None:
+        data["line_ids"] = line_ids
     await publish(db, Event(name, order.tenant_id, user_id, data))
 
 

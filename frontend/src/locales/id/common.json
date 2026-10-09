@@ -52,7 +52,8 @@
     "catalog": "Katalog",
     "audit": "Log audit",
     "pos": "Kasir",
-    "tables": "Meja"
+    "tables": "Meja",
+    "kitchen": "Dapur"
   },
   "shell": {
     "business": "Usaha",
@@ -250,7 +251,11 @@
     "orders_not_compatible": "Tagihan itu tidak bisa digabung.",
     "floor_not_found": "Lantai itu sudah tidak ada.",
     "table_not_found": "Meja itu sudah tidak ada.",
-    "session_not_found": "Tamu itu sudah pergi."
+    "session_not_found": "Tamu itu sudah pergi.",
+    "ticket_not_found": "Tiket itu sudah tidak ada.",
+    "recall_too_late": "Sudah terlambat untuk memanggil tiket ini.",
+    "station_name_taken": "Stasiun dengan nama ini sudah ada.",
+    "station_not_found": "Stasiun itu sudah tidak ada."
   },
   "appearance": {
     "open": "Tampilan",
@@ -291,6 +296,7 @@
       "service": "Biaya layanan",
       "payments": "Metode pembayaran",
       "pos": "Kasir",
+      "kitchen": "Dapur",
       "numbering": "Penomoran",
       "approvals": "Persetujuan",
       "limits": "Batas",
@@ -395,6 +401,10 @@
     "limits": {
       "help": "Diskon terbesar yang boleh diberikan tiap peran, dalam persen. Kosongkan jika tanpa batas. Diskon lebih besar perlu orang yang batasnya mencukupi.",
       "discount": "{{role}}: diskon maks. %"
+    },
+    "kitchen": {
+      "late": "Tiket terlambat setelah (menit)",
+      "recall": "Tiket selesai bisa dipanggil lagi selama (menit)"
     }
   },
   "catalog": {
@@ -1185,5 +1195,29 @@
     "tableName": "Nama meja",
     "capacity": "Kursi",
     "addTable": "Tambah meja"
+  },
+  "kitchen": {
+    "title": "Dapur",
+    "station": "Stasiun",
+    "allStations": "Semua stasiun",
+    "recentlyBumped": "Baru selesai (untuk dipanggil lagi)",
+    "empty": "Belum ada yang perlu dimasak.",
+    "minutes_one": "{{count}} mnt",
+    "minutes_other": "{{count}} mnt",
+    "columns": {
+      "new": "Baru",
+      "preparing": "Dimasak",
+      "ready": "Siap"
+    },
+    "actions": {
+      "start": "Mulai",
+      "ready": "Siap",
+      "bump": "Selesai (diantar)",
+      "recall": "Panggil lagi"
+    },
+    "setup": "Stasiun",
+    "stationName": "Nama stasiun (mis. Grill, Minuman)",
+    "default": "Stasiun utama (mendapat semua yang tidak diambil stasiun lain)",
+    "addStation": "Tambah stasiun"
   }
 }

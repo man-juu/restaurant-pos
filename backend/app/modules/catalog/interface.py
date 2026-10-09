@@ -26,7 +26,13 @@ from app.modules.catalog.models import Item, Unit
 from app.modules.catalog.modifiers import SaleGroup, SaleOption, option_ingredients, sale_groups
 from app.modules.catalog.permissions import COST_VIEW
 from app.modules.catalog.platform_map import item_ids_by_code
-from app.modules.catalog.prices import channel_code, channel_names, prices_on, tenant_today
+from app.modules.catalog.prices import (
+    channel_code,
+    channel_info,
+    channel_names,
+    prices_on,
+    tenant_today,
+)
 from app.modules.catalog.units import base_factors
 
 __all__ = [
@@ -38,6 +44,7 @@ __all__ = [
     "StockItem",
     "base_factors",
     "channel_code",
+    "channel_info",
     "channel_names",
     "consumption",
     "costing",

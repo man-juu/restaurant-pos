@@ -141,6 +141,13 @@ class PosSettings(Strict):
     void_stock_effect: Literal["waste", "none"] = "waste"
 
 
+class KitchenSettings(Strict):
+    """FR-KDS-004: when a ticket counts as late, and how long a bumped one can be recalled."""
+
+    late_minutes: int = Field(default=15, ge=1, le=240)
+    recall_minutes: int = Field(default=30, ge=1, le=24 * 60)
+
+
 SETTINGS: dict[str, type[Strict]] = {
     "tax": TaxSettings,
     "service_charge": ServiceChargeSettings,
@@ -151,6 +158,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "purchasing": PurchasingSettings,
     "catalog": CatalogSettings,
     "pos": PosSettings,
+    "kitchen": KitchenSettings,
 }
 
 
@@ -166,3 +174,4 @@ class AllSettings(BaseModel):
     purchasing: PurchasingSettings
     catalog: CatalogSettings
     pos: PosSettings
+    kitchen: KitchenSettings

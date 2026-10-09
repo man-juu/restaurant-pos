@@ -260,6 +260,9 @@
           "catalog": {
             "$ref": "#/components/schemas/CatalogSettings"
           },
+          "kitchen": {
+            "$ref": "#/components/schemas/KitchenSettings"
+          },
           "numbering": {
             "$ref": "#/components/schemas/NumberingSettings"
           },
@@ -294,7 +297,8 @@
           "stock",
           "purchasing",
           "catalog",
-          "pos"
+          "pos",
+          "kitchen"
         ],
         "title": "AllSettings",
         "type": "object"
@@ -2829,6 +2833,28 @@
           "version"
         ],
         "title": "ItemUpdate",
+        "type": "object"
+      },
+      "KitchenSettings": {
+        "additionalProperties": false,
+        "description": "FR-KDS-004: when a ticket counts as late, and how long a bumped one can be recalled.",
+        "properties": {
+          "late_minutes": {
+            "default": 15,
+            "maximum": 240.0,
+            "minimum": 1.0,
+            "title": "Late Minutes",
+            "type": "integer"
+          },
+          "recall_minutes": {
+            "default": 30,
+            "maximum": 1440.0,
+            "minimum": 1.0,
+            "title": "Recall Minutes",
+            "type": "integer"
+          }
+        },
+        "title": "KitchenSettings",
         "type": "object"
       },
       "LevelIn": {
@@ -6942,6 +6968,94 @@
         "title": "SplitIn",
         "type": "object"
       },
+      "StationIn": {
+        "additionalProperties": false,
+        "properties": {
+          "category_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 100,
+            "title": "Category Ids",
+            "type": "array"
+          },
+          "is_active": {
+            "default": true,
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "is_default": {
+            "default": false,
+            "title": "Is Default",
+            "type": "boolean"
+          },
+          "name": {
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "name"
+        ],
+        "title": "StationIn",
+        "type": "object"
+      },
+      "StationOut": {
+        "additionalProperties": false,
+        "properties": {
+          "category_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 100,
+            "title": "Category Ids",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_active": {
+            "default": true,
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "is_default": {
+            "default": false,
+            "title": "Is Default",
+            "type": "boolean"
+          },
+          "name": {
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "name",
+          "id"
+        ],
+        "title": "StationOut",
+        "type": "object"
+      },
       "StatusIn": {
         "additionalProperties": false,
         "properties": {
@@ -7661,6 +7775,187 @@
           "name"
         ],
         "title": "TenantOption",
+        "type": "object"
+      },
+      "TicketItemOut": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "modifiers": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Modifiers"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Qty",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "void"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "qty",
+          "modifiers",
+          "note",
+          "status"
+        ],
+        "title": "TicketItemOut",
+        "type": "object"
+      },
+      "TicketOut": {
+        "properties": {
+          "bumped_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bumped At"
+          },
+          "channel_name": {
+            "title": "Channel Name",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TicketItemOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "late": {
+            "title": "Late",
+            "type": "boolean"
+          },
+          "order_id": {
+            "format": "uuid",
+            "title": "Order Id",
+            "type": "string"
+          },
+          "order_number": {
+            "title": "Order Number",
+            "type": "string"
+          },
+          "platform": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Platform"
+          },
+          "ready_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ready At"
+          },
+          "station_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Station Id"
+          },
+          "status": {
+            "enum": [
+              "new",
+              "preparing",
+              "ready",
+              "bumped"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "station_id",
+          "order_id",
+          "order_number",
+          "label",
+          "channel_name",
+          "platform",
+          "status",
+          "created_at",
+          "ready_at",
+          "bumped_at",
+          "late",
+          "items"
+        ],
+        "title": "TicketOut",
         "type": "object"
       },
       "TransferApproveIn": {
@@ -13832,6 +14127,270 @@
         "summary": "Create Invitation",
         "tags": [
           "invitations"
+        ]
+      }
+    },
+    "/api/v1/kitchen/stations": {
+      "get": {
+        "operationId": "list_stations_api_v1_kitchen_stations_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/StationOut"
+                  },
+                  "title": "Response List Stations Api V1 Kitchen Stations Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Stations",
+        "tags": [
+          "kitchen"
+        ]
+      },
+      "post": {
+        "operationId": "create_station_api_v1_kitchen_stations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StationIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Station",
+        "tags": [
+          "kitchen"
+        ]
+      }
+    },
+    "/api/v1/kitchen/stations/{station_id}": {
+      "put": {
+        "operationId": "update_station_api_v1_kitchen_stations__station_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "station_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Station Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StationIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Station",
+        "tags": [
+          "kitchen"
+        ]
+      }
+    },
+    "/api/v1/kitchen/tickets": {
+      "get": {
+        "operationId": "list_tickets_api_v1_kitchen_tickets_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "station_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Station Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bumped",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Bumped",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TicketOut"
+                  },
+                  "title": "Response List Tickets Api V1 Kitchen Tickets Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Tickets",
+        "tags": [
+          "kitchen"
+        ]
+      }
+    },
+    "/api/v1/kitchen/tickets/{ticket_id}/{action}": {
+      "post": {
+        "operationId": "ticket_step_api_v1_kitchen_tickets__ticket_id___action__post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ticket_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Ticket Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "action",
+            "required": true,
+            "schema": {
+              "enum": [
+                "start",
+                "ready",
+                "bump",
+                "recall"
+              ],
+              "title": "Action",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ticket Step",
+        "tags": [
+          "kitchen"
         ]
       }
     },

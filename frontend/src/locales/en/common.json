@@ -52,7 +52,8 @@
     "catalog": "Catalog",
     "audit": "Audit log",
     "pos": "Cashier",
-    "tables": "Tables"
+    "tables": "Tables",
+    "kitchen": "Kitchen"
   },
   "shell": {
     "business": "Business",
@@ -250,7 +251,11 @@
     "orders_not_compatible": "Those bills cannot be combined.",
     "floor_not_found": "That floor no longer exists.",
     "table_not_found": "That table no longer exists.",
-    "session_not_found": "Those guests already left."
+    "session_not_found": "Those guests already left.",
+    "ticket_not_found": "That ticket no longer exists.",
+    "recall_too_late": "Too late to recall this ticket.",
+    "station_name_taken": "A station with this name exists.",
+    "station_not_found": "That station no longer exists."
   },
   "appearance": {
     "open": "Appearance",
@@ -291,6 +296,7 @@
       "service": "Service charge",
       "payments": "Payment methods",
       "pos": "Cashier",
+      "kitchen": "Kitchen",
       "numbering": "Numbering",
       "approvals": "Approvals",
       "limits": "Limits",
@@ -395,6 +401,10 @@
     "limits": {
       "help": "The biggest discount each role may give, in percent. Leave empty for no limit. A bigger discount needs someone whose limit covers it.",
       "discount": "{{role}}: max discount %"
+    },
+    "kitchen": {
+      "late": "Ticket is late after (minutes)",
+      "recall": "Bumped tickets can be recalled for (minutes)"
     }
   },
   "catalog": {
@@ -1185,5 +1195,29 @@
     "tableName": "Table name",
     "capacity": "Seats",
     "addTable": "Add table"
+  },
+  "kitchen": {
+    "title": "Kitchen",
+    "station": "Station",
+    "allStations": "All stations",
+    "recentlyBumped": "Recently bumped (to recall)",
+    "empty": "Nothing to cook right now.",
+    "minutes_one": "{{count}} min",
+    "minutes_other": "{{count}} min",
+    "columns": {
+      "new": "New",
+      "preparing": "Preparing",
+      "ready": "Ready"
+    },
+    "actions": {
+      "start": "Start",
+      "ready": "Ready",
+      "bump": "Bump (served)",
+      "recall": "Recall"
+    },
+    "setup": "Stations",
+    "stationName": "Station name (e.g. Grill, Drinks)",
+    "default": "Default station (gets everything not claimed by another)",
+    "addStation": "Add station"
   }
 }

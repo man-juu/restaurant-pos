@@ -13,7 +13,7 @@ from app.core.settings.schemas import PosSettings
 from app.modules.catalog.interface import tenant_today
 from app.modules.inventory.interface import Posting
 from app.modules.sales.discounts import open_line
-from app.modules.sales.events import ORDER_CLOSED
+from app.modules.sales.events import LINES_VOIDED, ORDER_CLOSED
 from app.modules.sales.models import PosLineModifier, PosOrder, PosOrderLine
 from app.modules.sales.orders import _audit, announce, require_open
 from app.modules.sales.payments import option_changes, stock_quantities
@@ -58,6 +58,7 @@ async def void_line(
     await db.flush()
     waste = await _write_off(db, order, [line], user_id)
     await _audit(db, order, user_id, "void_line", {"reason": reason, "waste_value": waste})
+    await announce(db, order, user_id, LINES_VOIDED, line_ids=[line.id])
 
 
 async def void_order(db: AsyncSession, order: PosOrder, *, user_id: uuid.UUID, reason: str) -> None:
@@ -83,4 +84,5 @@ async def void_order(db: AsyncSession, order: PosOrder, *, user_id: uuid.UUID, r
         "void",
         {"reason": reason, "lines": len(lines), "waste_value": waste},
     )
+    await announce(db, order, user_id, LINES_VOIDED, line_ids=[ln.id for ln in sent])
     await announce(db, order, user_id, ORDER_CLOSED)

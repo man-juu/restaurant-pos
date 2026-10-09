@@ -141,6 +141,14 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `table_session_orders` | session_id, order_id (POS orders of the party) |
 | `reservations` | outlet, customer_id, party_size, starts_at, duration_min, status, notes, table_ids |
 
+### 2.7a Kitchen
+
+| Table | Key columns |
+| --- | --- |
+| `kitchen_stations` | outlet_id, name, category_ids, is_default, is_active |
+| `kitchen_tickets` | outlet_id, station_id, order_id, order_number, label, channel_name, platform, status (new, preparing, ready, bumped), created_at, started_at, ready_at, bumped_at |
+| `kitchen_ticket_items` | ticket_id, line_id, name, qty, modifiers, note, status (active, void) |
+
 ### 2.8 Finance
 
 | Table | Key columns | Notes |

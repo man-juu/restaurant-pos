@@ -83,6 +83,7 @@ FALLBACK: dict[str, Any] = {
         "tips_enabled": False,
         "void_stock_effect": "waste",
     },
+    "kitchen": {"late_minutes": 15, "recall_minutes": 30},
 }
 
 

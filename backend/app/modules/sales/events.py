@@ -7,3 +7,5 @@ outlet_id, status.
 
 ORDER_PAID = "sales.order.paid"
 ORDER_CLOSED = "sales.order.closed"
+LINES_SENT = "sales.lines.sent"  # Data: order_id, outlet_id, line_ids (to the kitchen)
+LINES_VOIDED = "sales.lines.voided"  # Data: order_id, outlet_id, line_ids

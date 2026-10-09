@@ -1407,6 +1407,75 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/kitchen/stations': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Stations */
+    get: operations['list_stations_api_v1_kitchen_stations_get']
+    put?: never
+    /** Create Station */
+    post: operations['create_station_api_v1_kitchen_stations_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/kitchen/stations/{station_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Station */
+    put: operations['update_station_api_v1_kitchen_stations__station_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/kitchen/tickets': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Tickets */
+    get: operations['list_tickets_api_v1_kitchen_tickets_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/kitchen/tickets/{ticket_id}/{action}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Ticket Step */
+    post: operations['ticket_step_api_v1_kitchen_tickets__ticket_id___action__post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/me/capabilities': {
     parameters: {
       query?: never
@@ -2980,6 +3049,7 @@ export interface components {
      */
     AllSettings: {
       catalog: components['schemas']['CatalogSettings']
+      kitchen: components['schemas']['KitchenSettings']
       numbering: components['schemas']['NumberingSettings']
       payment_methods: components['schemas']['PaymentMethodSettings']
       pos: components['schemas']['PosSettings']
@@ -3974,6 +4044,22 @@ export interface components {
       type: 'ingredient' | 'semi_finished' | 'menu'
       /** Version */
       version: number
+    }
+    /**
+     * KitchenSettings
+     * @description FR-KDS-004: when a ticket counts as late, and how long a bumped one can be recalled.
+     */
+    KitchenSettings: {
+      /**
+       * Late Minutes
+       * @default 15
+       */
+      late_minutes: number
+      /**
+       * Recall Minutes
+       * @default 30
+       */
+      recall_minutes: number
     }
     /**
      * LevelIn
@@ -5545,6 +5631,55 @@ export interface components {
       /** Line Ids */
       line_ids: string[]
     }
+    /** StationIn */
+    StationIn: {
+      /** Category Ids */
+      category_ids?: string[]
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Is Default
+       * @default false
+       */
+      is_default: boolean
+      /** Name */
+      name: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
+    /** StationOut */
+    StationOut: {
+      /** Category Ids */
+      category_ids?: string[]
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Is Default
+       * @default false
+       */
+      is_default: boolean
+      /** Name */
+      name: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
     /** StatusIn */
     StatusIn: {
       /**
@@ -5850,6 +5985,68 @@ export interface components {
       id: string
       /** Name */
       name: string
+    }
+    /** TicketItemOut */
+    TicketItemOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Modifiers */
+      modifiers: string | null
+      /** Name */
+      name: string
+      /** Note */
+      note: string | null
+      /** Qty */
+      qty: string
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'active' | 'void'
+    }
+    /** TicketOut */
+    TicketOut: {
+      /** Bumped At */
+      bumped_at: string | null
+      /** Channel Name */
+      channel_name: string
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Items */
+      items: components['schemas']['TicketItemOut'][]
+      /** Label */
+      label: string | null
+      /** Late */
+      late: boolean
+      /**
+       * Order Id
+       * Format: uuid
+       */
+      order_id: string
+      /** Order Number */
+      order_number: string
+      /** Platform */
+      platform: string | null
+      /** Ready At */
+      ready_at: string | null
+      /** Station Id */
+      station_id: string | null
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'new' | 'preparing' | 'ready' | 'bumped'
     }
     /**
      * TransferApproveIn
@@ -9273,6 +9470,168 @@ export interface operations {
         content: {
           'application/json': components['schemas']['InvitationOut']
         }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_stations_api_v1_kitchen_stations_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StationOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_station_api_v1_kitchen_stations_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StationIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StationOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_station_api_v1_kitchen_stations__station_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        station_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StationIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StationOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_tickets_api_v1_kitchen_tickets_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        station_id?: string | null
+        bumped?: boolean
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TicketOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  ticket_step_api_v1_kitchen_tickets__ticket_id___action__post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        ticket_id: string
+        action: 'start' | 'ready' | 'bump' | 'recall'
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Validation Error */
       422: {

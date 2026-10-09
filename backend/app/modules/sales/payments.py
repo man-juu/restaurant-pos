@@ -26,7 +26,7 @@ from app.modules.sales.models import (
     SalesLine,
     SalesModifierLine,
 )
-from app.modules.sales.orders import _audit, announce, lines_of, require_open, totals
+from app.modules.sales.orders import _audit, announce, lines_of, mark_sent, require_open, totals
 from app.modules.sales.pos_schemas import PosLineOut, PosPayIn, PosPaymentIn
 from app.modules.sales.service import consume_for_sale, get_day
 from app.modules.sales.shifts import current_shift
@@ -207,9 +207,7 @@ async def pay(
     ]
     db.add_all(payments)
     now = datetime.now(UTC)
-    for row in rows:
-        if row.status == "new":  # paid before it was sent: the kitchen still makes it
-            row.status, row.sent_at = "sent", now
+    await mark_sent(db, order, rows, user_id)  # paid before it was sent: still made
     order.status, order.document_id, order.paid_at, order.paid_by = "paid", doc.id, now, user_id
     order.shift_id = shift.id if shift else None
     await db.flush()
