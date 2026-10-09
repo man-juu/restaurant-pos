@@ -6,6 +6,7 @@ from app.modules.catalog.bom_router import router as bom_router
 from app.modules.catalog.food_cost import scan_food_cost
 from app.modules.catalog.import_router import router as import_router
 from app.modules.catalog.modifiers import router as modifier_router
+from app.modules.catalog.outlet_menu import router as outlet_menu_router
 from app.modules.catalog.photos import router as photo_router
 from app.modules.catalog.platform_map import router as map_router
 from app.modules.catalog.pos_menu import router as menu_router
@@ -26,6 +27,7 @@ MANIFEST = ModuleManifest(
         map_router,
         modifier_router,
         menu_router,
+        outlet_menu_router,
     ),
     permissions=permissions.ALL,
     role_templates=permissions.ROLE_TEMPLATES,

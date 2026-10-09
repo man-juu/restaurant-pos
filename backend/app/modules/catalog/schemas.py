@@ -169,12 +169,14 @@ class PriceIn(Strict):
     valid_from: date
     # Strict: a JSON integer only; never coerce "25000" or 1.5 into money.
     price: int = Field(ge=0, le=MAX_PRICE, strict=True)
+    outlet_id: uuid.UUID | None = None  # FR-TEN-011: this outlet only; None = every outlet
 
 
 class PriceOut(BaseModel):
     id: uuid.UUID
     item_id: uuid.UUID
     channel_id: uuid.UUID
+    outlet_id: uuid.UUID | None = None
     valid_from: date
     price: int
 

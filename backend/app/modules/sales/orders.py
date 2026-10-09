@@ -26,6 +26,7 @@ from app.modules.catalog.interface import (
     item_names,
     prices_on,
     sale_groups,
+    sold_out_at,
     stock_items,
     tenant_today,
 )
@@ -109,10 +110,10 @@ async def add_line(
     item = (await stock_items(db, {data.item_id})).get(data.item_id)
     if item is None or not item.is_active or item.type != "menu":
         raise NotFoundError("item_not_found")
-    if not item.is_available:
+    if not item.is_available or await sold_out_at(db, order.outlet_id, {item.id}):
         raise ConflictError("item_sold_out")
     today = await tenant_today(db, order.tenant_id)
-    price = (await prices_on(db, order.channel_id, {item.id}, today)).get(item.id)
+    price = (await prices_on(db, order.channel_id, {item.id}, today, order.outlet_id)).get(item.id)
     if price is None:
         raise ConflictError("price_missing", details={"item_ids": [str(item.id)]})
     groups = (await sale_groups(db, {item.id})).get(item.id, [])

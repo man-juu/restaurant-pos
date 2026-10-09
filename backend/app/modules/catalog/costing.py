@@ -246,9 +246,11 @@ async def consumption(
     that are not stocked themselves (a menu item, a sauce made to order); a stocked item
     (sambal made in the central kitchen) is taken as it is. Returns (base quantity per
     stocked item, recipe id used per expanded item)."""
+    from app.modules.catalog.outlet_menu import expand_combos  # combos first (FR-CAT-011)
+
     taken: dict[uuid.UUID, Decimal] = defaultdict(Decimal)
     used: dict[uuid.UUID, uuid.UUID] = {}
-    frontier = dict(quantities)
+    frontier = await expand_combos(db, dict(quantities))
     for _ in range(MAX_DEPTH + 1):
         if not frontier:
             return dict(taken), used

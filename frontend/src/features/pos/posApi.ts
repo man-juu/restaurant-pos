@@ -16,13 +16,13 @@ const POS = '/api/v1/pos'
 const lang2 = (lang: string) => lang.slice(0, 2)
 const keyed = (key: string) => ({ 'Idempotency-Key': key })
 
-export const useMenu = (channelId: string, lang: string) =>
+export const useMenu = (channelId: string, lang: string, outletId = '') =>
   useQuery({
-    queryKey: ['pos-menu', channelId, lang2(lang)],
+    queryKey: ['pos-menu', channelId, lang2(lang), outletId],
     queryFn: () =>
       request<MenuItemOut[]>(
         'GET',
-        `/api/v1/catalog/menu?channel_id=${channelId}&lang=${lang2(lang)}`,
+        `/api/v1/catalog/menu?channel_id=${channelId}&lang=${lang2(lang)}${outletId ? `&outlet_id=${outletId}` : ''}`,
       ),
     enabled: Boolean(channelId),
     staleTime: 60_000, // docs/04: the till keeps the menu cached and refreshes it

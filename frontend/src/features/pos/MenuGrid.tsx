@@ -13,15 +13,17 @@ import { useMenu } from './posApi'
 /** FR-SAL-004: touch-first menu with category chips and search; sold-out items are greyed. */
 export function MenuGrid({
   channelId,
+  outletId,
   currency,
   onPick,
 }: {
   channelId: string
+  outletId: string
   currency: string
   onPick: (item: MenuItemOut) => void
 }) {
   const { t, i18n } = useTranslation()
-  const menu = useMenu(channelId, i18n.language)
+  const menu = useMenu(channelId, i18n.language, outletId)
   const categories = useCategories().data ?? []
   const [q, setQ] = useState('')
   const [category, setCategory] = useState('')

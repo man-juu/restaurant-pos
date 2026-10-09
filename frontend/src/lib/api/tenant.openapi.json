@@ -1295,6 +1295,100 @@
         "title": "CodeRequest",
         "type": "object"
       },
+      "ComboIn": {
+        "additionalProperties": false,
+        "properties": {
+          "parts": {
+            "items": {
+              "$ref": "#/components/schemas/ComboPart-Input"
+            },
+            "maxItems": 20,
+            "title": "Parts",
+            "type": "array"
+          }
+        },
+        "required": [
+          "parts"
+        ],
+        "title": "ComboIn",
+        "type": "object"
+      },
+      "ComboLine": {
+        "properties": {
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Qty",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "name",
+          "qty"
+        ],
+        "title": "ComboLine",
+        "type": "object"
+      },
+      "ComboPart-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "qty": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 100.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+                "type": "string"
+              }
+            ],
+            "default": "1",
+            "title": "Qty"
+          }
+        },
+        "required": [
+          "item_id"
+        ],
+        "title": "ComboPart",
+        "type": "object"
+      },
+      "ComboPart-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "qty": {
+            "default": "1",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+            "title": "Qty",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id"
+        ],
+        "title": "ComboPart",
+        "type": "object"
+      },
       "ConversionIn": {
         "additionalProperties": false,
         "properties": {
@@ -3351,6 +3445,14 @@
             ],
             "title": "Category Id"
           },
+          "combo": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ComboLine"
+            },
+            "title": "Combo",
+            "type": "array"
+          },
           "id": {
             "format": "uuid",
             "title": "Id",
@@ -4115,6 +4217,20 @@
           "lines"
         ],
         "title": "OrderOut",
+        "type": "object"
+      },
+      "OutletAvailabilityIn": {
+        "additionalProperties": false,
+        "properties": {
+          "is_available": {
+            "title": "Is Available",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "is_available"
+        ],
+        "title": "OutletAvailabilityIn",
         "type": "object"
       },
       "OutletOut": {
@@ -5269,6 +5385,18 @@
             "title": "Channel Id",
             "type": "string"
           },
+          "outlet_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outlet Id"
+          },
           "price": {
             "maximum": 1000000000000.0,
             "minimum": 0.0,
@@ -5305,6 +5433,18 @@
             "format": "uuid",
             "title": "Item Id",
             "type": "string"
+          },
+          "outlet_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outlet Id"
           },
           "price": {
             "title": "Price",
@@ -12142,6 +12282,108 @@
         ]
       }
     },
+    "/api/v1/catalog/items/{item_id}/combo": {
+      "get": {
+        "operationId": "get_combo_api_v1_catalog_items__item_id__combo_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ComboPart-Output"
+                  },
+                  "title": "Response Get Combo Api V1 Catalog Items  Item Id  Combo Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Combo",
+        "tags": [
+          "catalog"
+        ]
+      },
+      "put": {
+        "operationId": "set_combo_api_v1_catalog_items__item_id__combo_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ComboIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ComboPart-Output"
+                  },
+                  "title": "Response Set Combo Api V1 Catalog Items  Item Id  Combo Put",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Combo",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
     "/api/v1/catalog/items/{item_id}/costing": {
       "get": {
         "operationId": "item_costing_api_v1_catalog_items__item_id__costing_get",
@@ -12310,6 +12552,62 @@
           }
         },
         "summary": "Set Item Groups",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/items/{item_id}/outlets/{outlet_id}/availability": {
+      "put": {
+        "operationId": "set_outlet_availability_api_v1_catalog_items__item_id__outlets__outlet_id__availability_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OutletAvailabilityIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Outlet Availability",
         "tags": [
           "catalog"
         ]
@@ -12547,6 +12845,7 @@
     },
     "/api/v1/catalog/menu": {
       "get": {
+        "description": "With an outlet: its own prices and sold-out switches (FR-TEN-011).",
         "operationId": "menu_api_v1_catalog_menu_get",
         "parameters": [
           {
@@ -12571,6 +12870,23 @@
               ],
               "title": "Lang",
               "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Outlet Id"
             }
           }
         ],

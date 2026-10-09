@@ -12,7 +12,7 @@ Order follows docs/08 section 4, with modifiers and outlet overrides first (move
 | 2f | Kitchen display, stations per category, bump and recall, late highlight, tickets | FR-KDS-001 to 004 | done 2026-10-09 (station ticket printing with 2g) |
 | 2g | Receipts PDF, Bluetooth thermal printing (Web Bluetooth, ESC/POS) | FR-SAL-010 | done 2026-10-09 (Bluetooth via Web Bluetooth; network and USB printers later) |
 | 2h | Registered devices and PIN sign-in | FR-IDN-004 | done 2026-10-09 |
-| 2i | Combos and bundles, per-outlet overrides | FR-CAT-011, FR-TEN-011 | |
+| 2i | Combos and bundles, per-outlet overrides | FR-CAT-011, FR-TEN-011 | done 2026-10-09 |
 | 2j | Finance-lite (accounts, expenses, petty cash, P&L), tax report, sales by staff | FR-FIN-001, 008, FR-RPT-012 | |
 | 2k | Lot traceability, vendor returns and credit notes, vendor bills with three-way match, prep sheets PDF | FR-INV-016, FR-PUR-008, 009, FR-PRD-006 | |
 | 2l | WAL archiving, POS load test, security review (Gate 2 needs an independent pentest) | Gate 2 | |

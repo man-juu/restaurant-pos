@@ -71,7 +71,11 @@ async def _prices(
     db: AsyncSession, data: DayEntryIn, rows: list[tuple[uuid.UUID, EntryLine]]
 ) -> list[int]:
     want = {i for i, ln in rows if ln.unit_price is None}
-    listed = await prices_on(db, data.channel_id, want, data.business_date) if want else {}
+    listed = (
+        await prices_on(db, data.channel_id, want, data.business_date, data.outlet_id)
+        if want
+        else {}
+    )
     if missing := want - listed.keys():
         raise ConflictError("price_missing", details={"item_ids": sorted(map(str, missing))})
     return [ln.unit_price if ln.unit_price is not None else listed[i] for i, ln in rows]

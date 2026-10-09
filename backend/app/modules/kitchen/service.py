@@ -5,7 +5,8 @@ ticket and checks its status, so two screens cannot bump the same ticket twice."
 import uuid
 from collections import defaultdict
 from datetime import UTC, datetime, timedelta
-from typing import cast
+from decimal import Decimal
+from typing import Any, cast
 
 from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
@@ -17,7 +18,7 @@ from app.core.events import Event
 from app.core.models import Tenant
 from app.core.settings import service as settings
 from app.core.settings.schemas import KitchenSettings
-from app.modules.catalog.interface import channel_info, item_categories, item_names
+from app.modules.catalog.interface import channel_info, combo_parts, item_categories, item_names
 from app.modules.inventory.interface import visible_outlet
 from app.modules.kitchen.models import KitchenStation, KitchenTicket, KitchenTicketItem
 from app.modules.kitchen.schemas import StationIn, TicketItemOut, TicketOut
@@ -56,7 +57,9 @@ async def on_lines_sent(db: AsyncSession, event: Event) -> None:
     )
     categories = await item_categories(db, {ln.item_id for ln in lines})
     language = await db.scalar(select(Tenant.language).where(Tenant.id == event.tenant_id))
-    names = await item_names(db, event.tenant_id, language or "en", {ln.item_id for ln in lines})
+    parts = await combo_parts(db, {ln.item_id for ln in lines})
+    wanted = {ln.item_id for ln in lines} | {c for ps in parts.values() for c, _ in ps}
+    names = await item_names(db, event.tenant_id, language or "en", wanted)
     channel, kind, platform = await channel_info(db, first.channel_id)
     by_station: dict[uuid.UUID | None, list[LineDetail]] = defaultdict(list)
     for ln in lines:
@@ -81,7 +84,7 @@ async def on_lines_sent(db: AsyncSession, event: Event) -> None:
                 line_id=ln.id,
                 name=names[ln.item_id].name if ln.item_id in names else "",
                 qty=ln.qty,
-                modifiers=", ".join(ln.modifiers) or None,
+                modifiers=_details(ln, parts, names) or None,
                 note=ln.note,
             )
             for ln in group
@@ -207,3 +210,15 @@ async def tickets_out(
         )
         for t in tickets
     ]
+
+
+def _details(
+    ln: LineDetail,
+    parts: dict[uuid.UUID, list[tuple[uuid.UUID, Decimal]]],
+    names: dict[uuid.UUID, Any],
+) -> str:
+    """Combo contents first (FR-CAT-011), then the chosen options."""
+    combo = [
+        f"{q.normalize():f} x {names[c].name}" for c, q in parts.get(ln.item_id, []) if c in names
+    ]
+    return ", ".join([*combo, *ln.modifiers])

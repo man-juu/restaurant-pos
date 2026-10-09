@@ -4,6 +4,7 @@ import { Alert, Button } from '../../components/ui'
 import type { ItemOut } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
 import { useItem } from './api'
+import { ComboPanel } from './ComboPanel'
 import { ItemForm } from './ItemForm'
 import { ItemModifiersPanel } from './ItemModifiersPanel'
 import { PhotoPanel } from './PhotoPanel'
@@ -70,6 +71,7 @@ function ItemPanels({
       )}
       <PricesPanel itemId={item.id} canEdit={canEdit} currency={currency} />
       {item.type === 'menu' && <ItemModifiersPanel item={item} canEdit={canEdit} />}
+      {item.type === 'menu' && <ComboPanel itemId={item.id} canEdit={canEdit} />}
     </>
   )
 }

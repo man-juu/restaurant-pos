@@ -5,6 +5,7 @@ import { SelectInput, TextInput } from '../../components/form'
 import { Alert, Button, Card } from '../../components/ui'
 import type { ChannelOut, PriceOut } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
+import { useOutlets } from '../../lib/session'
 import { formatDate, formatMoney, intlLocale } from '../../lib/format'
 import { parseMoney } from '../../lib/money'
 import { SaveBar } from '../settings/shared'
@@ -69,7 +70,7 @@ function PriceList({
             className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-line px-3 py-2"
           >
             <span>
-              <b>{name(p.channel_id)}</b>{' '}
+              <b>{name(p.channel_id)}</b> {p.outlet_id && <OutletName id={p.outlet_id} />}
               <span className="text-ink-soft">
                 {t('catalog.prices.from', { date: formatDate(p.valid_from, locale) })}
               </span>
@@ -111,6 +112,8 @@ function PriceForm({
   const [channelId, setChannelId] = useState(channels[0].id)
   const [from, setFrom] = useState(todayIso)
   const [amount, setAmount] = useState('')
+  const [outletId, setOutletId] = useState('')
+  const outlets = (useOutlets().data ?? []).filter((o) => o.is_active)
   const minor = parseMoney(amount, currency)
 
   return (
@@ -123,6 +126,18 @@ function PriceForm({
         {channels.map((c) => (
           <option key={c.id} value={c.id}>
             {c.name}
+          </option>
+        ))}
+      </SelectInput>
+      <SelectInput
+        label={t('catalog.prices.outlet')}
+        value={outletId}
+        onChange={(e) => setOutletId(e.target.value)}
+      >
+        <option value="">{t('catalog.prices.allOutlets')}</option>
+        {outlets.map((o) => (
+          <option key={o.id} value={o.id}>
+            {o.name}
           </option>
         ))}
       </SelectInput>
@@ -145,10 +160,24 @@ function PriceForm({
           disabled={minor === null || !from}
           onSave={() =>
             minor !== null &&
-            setPrice.mutate({ channel_id: channelId, valid_from: from, price: minor })
+            setPrice.mutate({
+              channel_id: channelId,
+              valid_from: from,
+              price: minor,
+              outlet_id: outletId || null,
+            })
           }
         />
       </div>
     </div>
+  )
+}
+
+/** FR-TEN-011: a price that applies to one outlet only. */
+function OutletName({ id }: { id: string }) {
+  const { t } = useTranslation()
+  const name = useOutlets().data?.find((o) => o.id === id)?.name ?? '…'
+  return (
+    <span className="text-sm text-accent">{t('catalog.prices.onlyAt', { outlet: name })} </span>
   )
 }

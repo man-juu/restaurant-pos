@@ -214,6 +214,8 @@ async def price_history(item_id: uuid.UUID, request: Request, p: View) -> list[P
 @router.put("/items/{item_id}/prices", response_model=PriceOut)
 async def set_price(item_id: uuid.UUID, body: PriceIn, request: Request, p: Update) -> PriceOut:
     # PUT keyed by (channel, start date) is naturally idempotent: a retry saves the same row.
+    if body.outlet_id is not None:
+        p.require_outlet(body.outlet_id)
     async with _db(request, p) as db:
         return await prices.set_price(
             db, tenant_id=p.tenant_id, user_id=p.user_id, item_id=item_id, data=body

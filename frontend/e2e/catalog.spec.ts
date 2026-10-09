@@ -167,7 +167,7 @@ test('manager adds a channel, an item and its dine-in price (FR-CAT-001, 004)', 
   await expect(page.getByText(/25[.,]000/).first()).toBeVisible()
   expect(fake.posts.at(-1)).toEqual({
     path: '/api/v1/catalog/items/i1/prices',
-    body: { channel_id: 'c0', valid_from: '2026-01-01', price: 25000 },
+    body: { channel_id: 'c0', valid_from: '2026-01-01', price: 25000, outlet_id: null },
   })
 
   // Optional photo: choose a file, the item now shows it.

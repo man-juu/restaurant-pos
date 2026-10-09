@@ -68,6 +68,7 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `bom_lines` | bom_id, component_item_id, qty, unit_id, waste_pct | Cycle check on write |
 | `platform_item_map` | tenant_id, channel_id, platform_code, item_id | FR-CAT-010 |
 | `outlet_item_overrides` | tenant_id, outlet_id, item_id, is_available, note | FR-TEN-011; price overrides live in `item_prices` |
+| `combo_components` | combo_item_id, component_item_id, qty, sort_order | FR-CAT-011; menu items only, one level |
 | `item_translations` | item_id, language, name, description | |
 
 ### 2.2a Files and imports (core)

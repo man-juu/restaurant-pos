@@ -57,7 +57,12 @@ export function Till(props: TillProps) {
   const error = create.error ?? add.error
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_400px]">
-      <MenuGrid channelId={props.channelId} currency={props.currency} onPick={pick} />
+      <MenuGrid
+        channelId={props.channelId}
+        outletId={props.outletId}
+        currency={props.currency}
+        onPick={pick}
+      />
       <div className="flex flex-col gap-3 lg:sticky lg:top-4 lg:self-start">
         {error ? <Alert>{errorMessage(error, t)}</Alert> : null}
         {orderId ? (

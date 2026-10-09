@@ -7,6 +7,7 @@ import type { ItemOut } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
 import { useCapabilities } from '../../lib/session'
 import { SaveBar } from '../settings/shared'
+import { OutletAvailability } from './OutletAvailability'
 import {
   useItemModifierGroups,
   useModifierGroups,
@@ -30,6 +31,7 @@ export function ItemModifiersPanel({ item, canEdit }: { item: ItemOut; canEdit: 
         onChange={(v) => availability.mutate(v)}
       />
       {availability.error ? <Alert>{errorMessage(availability.error, t)}</Alert> : null}
+      <OutletAvailability itemId={item.id} canToggle={canToggle} />
       <GroupPicker itemId={item.id} canEdit={canEdit} />
     </Card>
   )

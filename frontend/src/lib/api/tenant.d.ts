@@ -776,6 +776,24 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/catalog/items/{item_id}/combo': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Combo */
+    get: operations['get_combo_api_v1_catalog_items__item_id__combo_get']
+    /** Set Combo */
+    put: operations['set_combo_api_v1_catalog_items__item_id__combo_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/catalog/items/{item_id}/costing': {
     parameters: {
       query?: never
@@ -804,6 +822,23 @@ export interface paths {
     get: operations['item_groups_api_v1_catalog_items__item_id__modifier_groups_get']
     /** Set Item Groups */
     put: operations['set_item_groups_api_v1_catalog_items__item_id__modifier_groups_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/catalog/items/{item_id}/outlets/{outlet_id}/availability': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Set Outlet Availability */
+    put: operations['set_outlet_availability_api_v1_catalog_items__item_id__outlets__outlet_id__availability_put']
     post?: never
     delete?: never
     options?: never
@@ -878,7 +913,10 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    /** Menu */
+    /**
+     * Menu
+     * @description With an outlet: its own prices and sold-out switches (FR-TEN-011).
+     */
     get: operations['menu_api_v1_catalog_menu_get']
     put?: never
     post?: never
@@ -3622,6 +3660,49 @@ export interface components {
       /** Code */
       code: string
     }
+    /** ComboIn */
+    ComboIn: {
+      /** Parts */
+      parts: components['schemas']['ComboPart-Input'][]
+    }
+    /** ComboLine */
+    ComboLine: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Name */
+      name: string
+      /** Qty */
+      qty: string
+    }
+    /** ComboPart */
+    'ComboPart-Input': {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /**
+       * Qty
+       * @default 1
+       */
+      qty: number | string
+    }
+    /** ComboPart */
+    'ComboPart-Output': {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /**
+       * Qty
+       * @default 1
+       */
+      qty: string
+    }
     /** ConversionIn */
     ConversionIn: {
       /** Factor To Base */
@@ -4367,6 +4448,11 @@ export interface components {
       /** Category Id */
       category_id: string | null
       /**
+       * Combo
+       * @default []
+       */
+      combo: components['schemas']['ComboLine'][]
+      /**
        * Id
        * Format: uuid
        */
@@ -4684,6 +4770,11 @@ export interface components {
        * Format: uuid
        */
       vendor_id: string
+    }
+    /** OutletAvailabilityIn */
+    OutletAvailabilityIn: {
+      /** Is Available */
+      is_available: boolean
     }
     /** OutletOut */
     OutletOut: {
@@ -5118,6 +5209,8 @@ export interface components {
        * Format: uuid
        */
       channel_id: string
+      /** Outlet Id */
+      outlet_id?: string | null
       /** Price */
       price: number
       /**
@@ -5143,6 +5236,8 @@ export interface components {
        * Format: uuid
        */
       item_id: string
+      /** Outlet Id */
+      outlet_id?: string | null
       /** Price */
       price: number
       /**
@@ -8431,6 +8526,72 @@ export interface operations {
       }
     }
   }
+  get_combo_api_v1_catalog_items__item_id__combo_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ComboPart-Output'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  set_combo_api_v1_catalog_items__item_id__combo_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ComboIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ComboPart-Output'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   item_costing_api_v1_catalog_items__item_id__costing_get: {
     parameters: {
       query?: {
@@ -8519,6 +8680,40 @@ export interface operations {
         content: {
           'application/json': components['schemas']['GroupOut'][]
         }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  set_outlet_availability_api_v1_catalog_items__item_id__outlets__outlet_id__availability_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+        outlet_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OutletAvailabilityIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Validation Error */
       422: {
@@ -8694,6 +8889,7 @@ export interface operations {
       query: {
         channel_id: string
         lang?: 'en' | 'id'
+        outlet_id?: string | null
       }
       header?: never
       path?: never

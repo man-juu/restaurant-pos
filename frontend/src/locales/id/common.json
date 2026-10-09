@@ -258,7 +258,9 @@
     "station_not_found": "Stasiun itu sudah tidak ada.",
     "pin_not_allowed": "Pemilik dan wakil pemilik selalu masuk dengan kata sandi dan 2FA.",
     "device_not_found": "Browser ini bukan perangkat terdaftar.",
-    "pin_not_found": "Orang itu belum punya PIN."
+    "pin_not_found": "Orang itu belum punya PIN.",
+    "invalid_combo": "Paket tidak boleh berisi menu yang sama dua kali atau dirinya sendiri.",
+    "combo_in_combo": "Paket tidak boleh berisi paket lain."
   },
   "appearance": {
     "open": "Tampilan",
@@ -503,7 +505,10 @@
       "from": "mulai {{date}}",
       "channel": "Kanal",
       "startDate": "Tanggal mulai",
-      "amount": "Harga ({{currency}})"
+      "amount": "Harga ({{currency}})",
+      "outlet": "Outlet",
+      "allOutlets": "Semua outlet",
+      "onlyAt": "hanya di {{outlet}}"
     },
     "categories": {
       "empty": "Belum ada kategori.",
@@ -657,7 +662,15 @@
       "ingredientQty": "{{name}}: jumlah dalam satuan dasar (negatif = berkurang)",
       "removeIngredient": "Tanpa perubahan bahan",
       "title": "Opsi penjualan",
-      "available": "Tersedia untuk dijual (hapus centang jika habis)"
+      "available": "Tersedia untuk dijual (hapus centang jika habis)",
+      "perOutlet": "Tersedia di tiap outlet"
+    },
+    "combo": {
+      "title": "Paket",
+      "help": "Jadikan paket: daftar menu yang termasuk. Harga paket sendiri berlaku; stok diambil untuk tiap menu di dalamnya.",
+      "part": "Menu {{n}}",
+      "remove": "Hapus",
+      "add": "Tambah menu ke paket"
     }
   },
   "inventory": {

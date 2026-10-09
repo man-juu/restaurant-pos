@@ -24,6 +24,7 @@ from app.modules.catalog.costing import (
 )
 from app.modules.catalog.models import Item, Unit
 from app.modules.catalog.modifiers import SaleGroup, SaleOption, option_ingredients, sale_groups
+from app.modules.catalog.outlet_menu import combo_parts, sold_out_at
 from app.modules.catalog.permissions import COST_VIEW
 from app.modules.catalog.platform_map import item_ids_by_code
 from app.modules.catalog.prices import (
@@ -46,6 +47,7 @@ __all__ = [
     "channel_code",
     "channel_info",
     "channel_names",
+    "combo_parts",
     "consumption",
     "costing",
     "explode",
@@ -59,6 +61,7 @@ __all__ = [
     "recipe_needs",
     "sale_groups",
     "set_cost_source",
+    "sold_out_at",
     "stock_items",
     "tenant_today",
     "unit_ids_by_code",

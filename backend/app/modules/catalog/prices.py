@@ -18,7 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import audit
 from app.core.errors import ConflictError, NotFoundError
-from app.core.models import Tenant
+from app.core.models import Outlet, Tenant
 from app.core.pagination import PageParams, paginate
 from app.modules.catalog.models import Channel, Item, ItemPrice
 from app.modules.catalog.schemas import ChannelIn, EffectivePrice, PriceIn, PriceOut
@@ -91,6 +91,7 @@ def _price_out(row: ItemPrice) -> PriceOut:
         id=row.id,
         item_id=row.item_id,
         channel_id=row.channel_id,
+        outlet_id=row.outlet_id,
         valid_from=row.valid_from,
         price=row.price,
     )
@@ -109,7 +110,7 @@ async def price_history(db: AsyncSession, item_id: uuid.UUID) -> list[PriceOut]:
         raise NotFoundError("item_not_found")
     stmt = (
         select(ItemPrice)
-        .where(ItemPrice.item_id == item_id, ItemPrice.outlet_id.is_(None))
+        .where(ItemPrice.item_id == item_id)
         .order_by(ItemPrice.valid_from.desc(), ItemPrice.channel_id)
         .limit(HISTORY_LIMIT)
     )
@@ -128,12 +129,19 @@ async def set_price(
     if await db.get(Item, item_id) is None:
         raise NotFoundError("item_not_found")
     await _visible_channel(db, data.channel_id)
+    if data.outlet_id is not None and await db.get(Outlet, data.outlet_id) is None:
+        raise NotFoundError("outlet_not_found")
+    outlet = (
+        ItemPrice.outlet_id.is_(None)
+        if data.outlet_id is None
+        else ItemPrice.outlet_id == data.outlet_id
+    )
     row = await db.scalar(
         select(ItemPrice)
         .where(
             ItemPrice.item_id == item_id,
             ItemPrice.channel_id == data.channel_id,
-            ItemPrice.outlet_id.is_(None),
+            outlet,
             ItemPrice.valid_from == data.valid_from,
         )
         .with_for_update()
@@ -160,6 +168,7 @@ async def set_price(
         target_id=item_id,
         summary={
             "channel_id": str(data.channel_id),
+            "outlet_id": str(data.outlet_id) if data.outlet_id else None,
             "valid_from": data.valid_from.isoformat(),
             "before": before,
             "after": data.price,
@@ -234,23 +243,36 @@ async def effective_prices(
     return [EffectivePrice(item_id=i, valid_from=v, price=p) for i, v, p in rows], cursor
 
 
-async def prices_on(
-    db: AsyncSession, channel_id: uuid.UUID, ids: set[uuid.UUID], on: date
-) -> dict[uuid.UUID, int]:
-    """List price of each item on the channel on a date (items without one are absent)."""
-    stmt = (
+def _latest(channel_id: uuid.UUID, ids: set[uuid.UUID], on: date, outlet: Any) -> Any:
+    return (
         select(ItemPrice.item_id, ItemPrice.price)
         .where(
             ItemPrice.channel_id == channel_id,
             ItemPrice.item_id.in_(ids),
-            ItemPrice.outlet_id.is_(None),
+            outlet,
             ItemPrice.valid_from <= on,
             or_(ItemPrice.valid_to.is_(None), ItemPrice.valid_to >= on),
         )
         .order_by(ItemPrice.item_id, ItemPrice.valid_from.desc())
         .ext(distinct_on(ItemPrice.item_id))
     )
-    return {row[0]: row[1] for row in (await db.execute(stmt)).all()}
+
+
+async def prices_on(
+    db: AsyncSession,
+    channel_id: uuid.UUID,
+    ids: set[uuid.UUID],
+    on: date,
+    outlet_id: uuid.UUID | None = None,
+) -> dict[uuid.UUID, int]:
+    """Price of each item on the channel on a date (items without one are absent). With an
+    outlet, that outlet's own price wins over the shared one (FR-TEN-011)."""
+    shared = _latest(channel_id, ids, on, ItemPrice.outlet_id.is_(None))
+    out = {row[0]: row[1] for row in (await db.execute(shared)).all()}
+    if outlet_id is not None and ids:
+        own = _latest(channel_id, ids, on, ItemPrice.outlet_id == outlet_id)
+        out.update({row[0]: row[1] for row in (await db.execute(own)).all()})
+    return out
 
 
 async def channel_code(db: AsyncSession, channel_id: uuid.UUID) -> str:

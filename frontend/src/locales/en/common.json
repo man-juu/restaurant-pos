@@ -258,7 +258,9 @@
     "station_not_found": "That station no longer exists.",
     "pin_not_allowed": "Owners and co-owners always sign in with password and 2FA.",
     "device_not_found": "This browser is not a registered device.",
-    "pin_not_found": "That person has no PIN."
+    "pin_not_found": "That person has no PIN.",
+    "invalid_combo": "A combo cannot list an item twice or contain itself.",
+    "combo_in_combo": "A combo cannot contain another combo."
   },
   "appearance": {
     "open": "Appearance",
@@ -503,7 +505,10 @@
       "from": "from {{date}}",
       "channel": "Channel",
       "startDate": "Start date",
-      "amount": "Price ({{currency}})"
+      "amount": "Price ({{currency}})",
+      "outlet": "Outlet",
+      "allOutlets": "All outlets",
+      "onlyAt": "only at {{outlet}}"
     },
     "categories": {
       "empty": "No categories yet.",
@@ -657,7 +662,15 @@
       "ingredientQty": "{{name}}: amount in base unit (negative = less)",
       "removeIngredient": "No ingredient change",
       "title": "Sale options",
-      "available": "Available for sale (untick when sold out)"
+      "available": "Available for sale (untick when sold out)",
+      "perOutlet": "Available at each outlet"
+    },
+    "combo": {
+      "title": "Combo",
+      "help": "Make this a combo: list the menu items it includes. Its own price applies; stock is taken for each item in it.",
+      "part": "Item {{n}}",
+      "remove": "Remove",
+      "add": "Add a menu item to the combo"
     }
   },
   "inventory": {
