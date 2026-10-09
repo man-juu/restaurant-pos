@@ -66,12 +66,16 @@ class PosLineOut(BaseModel):
     unit_price: int  # list price plus modifier changes
     modifiers: list[PosModifierOut]
     line_total: int
+    discount: int = 0  # FR-SAL-007, already rounded
+    discount_reason: str | None = None
     note: str | None
-    status: Literal["new", "sent"]
+    status: Literal["new", "sent", "void"]
+    void_reason: str | None = None
 
 
 class PosTotalsOut(BaseModel):
-    subtotal: int
+    subtotal: int  # lines at their prices
+    discount: int = 0
     service_charge: int
     tax: int
     total: int
@@ -89,7 +93,7 @@ class PosPaymentOut(BaseModel):
 class PosOrderOut(BaseModel):
     id: uuid.UUID
     number: str
-    status: Literal["open", "paid", "cancelled", "void"]
+    status: Literal["open", "paid", "cancelled", "void", "refunded"]
     outlet_id: uuid.UUID
     channel_id: uuid.UUID
     label: str | None
@@ -102,6 +106,10 @@ class PosOrderOut(BaseModel):
     tip: int = 0
     rounding: int = 0
     payments: list[PosPaymentOut] = Field(default_factory=list)
+    discount_kind: Literal["percent", "amount"] | None = None
+    discount_value: int | None = None
+    discount_reason: str | None = None
+    refund: "RefundOut | None" = None
 
 
 class PosOrderSummary(BaseModel):
@@ -150,7 +158,8 @@ class ShiftOut(BaseModel):
     cash_sales: int  # cash kept from sales (after change)
     cash_in: int
     cash_out: int
-    expected: int  # opening float + cash sales + in - out
+    cash_refunds: int = 0  # FR-SAL-008, paid back in cash from this drawer
+    expected: int  # opening float + cash sales + in - out - refunds
     counted: int | None
     variance: int | None  # counted - expected, once closed
     by_method: dict[str, int]  # what was paid per method in this shift
@@ -163,3 +172,35 @@ class ShiftFilter(BaseModel):
     outlet_id: uuid.UUID
     date_from: date
     date_to: date
+
+
+class DiscountIn(In):
+    """FR-SAL-007: percent in basis points (1000 = 10 %) or an amount in minor units."""
+
+    kind: Literal["percent", "amount"]
+    value: Annotated[int, Field(gt=0, le=10**12)]
+    reason: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=200)]
+
+
+class VoidIn(In):
+    reason: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=200)]
+
+
+class RefundIn(In):
+    reason: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=200)]
+    stock_effect: Literal["return", "waste"]
+    method: Code  # how the money goes back
+
+
+class RefundOut(BaseModel):
+    id: uuid.UUID
+    status: Literal["requested", "done", "rejected"]
+    reason: str
+    stock_effect: str
+    amount: int
+    method: str
+    created_by: uuid.UUID | None
+    decided_by: uuid.UUID | None
+
+
+PosOrderOut.model_rebuild()

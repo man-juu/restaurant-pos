@@ -6,7 +6,12 @@ import { useChannels } from '../catalog/api'
 import { useSettings } from '../settings/api'
 import { useCurrentShift } from './posApi'
 
-const DEFAULT_POS: PosSettings = { require_shift: true, cash_rounding_step: 0, tips_enabled: false }
+const DEFAULT_POS: PosSettings = {
+  require_shift: true,
+  cash_rounding_step: 0,
+  tips_enabled: false,
+  void_stock_effect: 'waste',
+}
 
 /** A pick that falls back to the first option until the user chooses. */
 function usePick(first: string | undefined) {
@@ -32,15 +37,21 @@ function useTillSettings() {
  * checks permissions, outlet scope and the shift rule again on every call. */
 export function useTillContext(caps?: Capabilities) {
   const permissions = caps?.permissions ?? []
-  const canPay = permissions.includes('sales.order.pay')
+  const has = (code: string) => permissions.includes(code)
+  const can = {
+    pay: has('sales.order.pay'),
+    discount: has('sales.discount.apply'),
+    void: has('sales.order.void'),
+    refund: has('sales.order.refund'),
+  }
   const place = usePlace()
   const { pos, methods } = useTillSettings()
-  const shift = useCurrentShift(place.outletId, permissions.includes('sales.shift.open'))
+  const shift = useCurrentShift(place.outletId, has('sales.shift.open'))
   // Payments need an open shift unless the business switched that off (FR-SAL-009).
-  const needsShift = canPay && pos.require_shift !== false && shift.isSuccess && !shift.data
+  const needsShift = can.pay && pos.require_shift !== false && shift.isSuccess && !shift.data
   return {
     ...place,
-    canPay,
+    can,
     currency: caps?.currency ?? 'IDR',
     pos,
     methods,

@@ -120,14 +120,14 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `sales_lines` | document_id, item_id, qty, unit_price, discount, tax, bom_id | Records the BOM version used |
 | `sales_modifier_lines` | line_id, option_id, name, price_delta | Append-only |
 | `payments` | order_id, document_id, shift_id, method_code, kind, amount, tendered, change, reference, paid_at | Many per document; append-only. `amount` is what the tender pays of the bill; change comes only from cash |
-| `pos_orders` | tenant_id, outlet_id, channel_id, number, status (open, paid, cancelled, void), label, note, shift_id, document_id, paid_at, paid_by | Working state while serving; payment posts the sales document |
-| `pos_order_lines` | order_id, item_id, qty, unit_price (list price when added), note, status (new, sent), sent_at | Unsent lines can be changed or removed |
+| `pos_orders` | tenant_id, outlet_id, channel_id, number, status (open, paid, cancelled, void, refunded), label, note, shift_id, document_id, paid_at, paid_by, discount_kind, discount_value, discount_reason, discount_by | Working state while serving; payment posts the sales document |
+| `pos_order_lines` | order_id, item_id, qty, unit_price (list price when added), note, status (new, sent, void), sent_at, discount_kind, discount_value, discount_reason, discount_by, void_reason, voided_by | Unsent lines can be changed or removed |
 | `pos_line_modifiers` | line_id, option_id, name, price_delta | Name and price as chosen |
 | `payment_methods` | tenant_id, code, name, kind, is_active | |
 | `sales_days` | tenant_id, outlet_id, business_date, status (open, locked), locked_by | |
 | `cash_shifts` | outlet_id, cashier_id, status, opening_float, opened_at, closed_at, closed_by, expected (frozen on close), counted, note | One open shift per cashier and outlet |
 | `cash_movements` | shift_id, kind (in, out), amount, reason, created_by | Append-only |
-| `voids_refunds` | document_id, reason, approved_by, stock_effect | |
+| `sales_refunds` | order_id, document_id, outlet_id, status (requested, done, rejected), reason, stock_effect (return, waste), amount, method_code, method_kind, shift_id, created_by, decided_by | One live refund per order (docs/05 `voids_refunds`) |
 | `customers` | tenant_id, name, phone, consent_at | Minimal data |
 
 ### 2.7 Tables and reservations

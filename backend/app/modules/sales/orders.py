@@ -6,6 +6,7 @@ Prices come from the channel's list price today plus the chosen options; the ser
 out every total, the client only shows them."""
 
 import uuid
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from decimal import ROUND_HALF_UP, Decimal
 from typing import cast
@@ -28,6 +29,7 @@ from app.modules.catalog.interface import (
     tenant_today,
 )
 from app.modules.inventory.interface import visible_outlet
+from app.modules.sales.discounts import discount_amount
 from app.modules.sales.models import PosLineModifier, PosOrder, PosOrderLine
 from app.modules.sales.pos_schemas import (
     PosLineIn,
@@ -229,31 +231,48 @@ async def lines_of(db: AsyncSession, order: PosOrder, language: str) -> list[Pos
                 unit_price=unit,
                 modifiers=mods.get(ln.id, []),
                 line_total=line_total(ln.qty, unit),
+                discount=0
+                if ln.status == "void"
+                else discount_amount(line_total(ln.qty, unit), ln.discount_kind, ln.discount_value),
+                discount_reason=ln.discount_reason,
                 note=ln.note,
                 status=ln.status,  # type: ignore[arg-type]
+                void_reason=ln.void_reason,
             )
         )
     return out
 
 
-async def totals(db: AsyncSession, order: PosOrder, lines: list[PosLineOut]) -> Totals:
+@dataclass(frozen=True)
+class OrderTotals:
+    gross: int  # live lines at their prices (with modifiers)
+    discount: int  # line discounts plus the order discount (FR-SAL-007)
+    taxed: Totals  # service charge and taxes on what is left (docs/05 section 6)
+
+
+async def totals(db: AsyncSession, order: PosOrder, lines: list[PosLineOut]) -> OrderTotals:
+    live = [ln for ln in lines if ln.status != "void"]
+    gross = sum(ln.line_total for ln in live)
+    net = gross - sum(ln.discount for ln in live)
+    order_discount = discount_amount(net, order.discount_kind, order.discount_value)
     tax = cast(TaxSettings, await settings.get_setting(db, order.tenant_id, "tax"))
     sc = cast(
         ServiceChargeSettings, await settings.get_setting(db, order.tenant_id, "service_charge")
     )
     code = await channel_code(db, order.channel_id)
-    return calculate(
-        [ln.line_total for ln in lines],
-        tax=tax,
-        service_charge=sc,
-        channel=code,
-        outlet_id=order.outlet_id,
+    taxed = calculate(
+        [net - order_discount], tax=tax, service_charge=sc, channel=code, outlet_id=order.outlet_id
     )
+    return OrderTotals(gross, gross - net + order_discount, taxed)
 
 
-def totals_out(t: Totals) -> PosTotalsOut:
+def totals_out(t: OrderTotals) -> PosTotalsOut:
     return PosTotalsOut(
-        subtotal=t.gross_lines, service_charge=t.service_charge, tax=t.tax_total, total=t.total
+        subtotal=t.gross,
+        discount=t.discount,
+        service_charge=t.taxed.service_charge,
+        tax=t.taxed.tax_total,
+        total=t.taxed.total,
     )
 
 
@@ -272,6 +291,9 @@ async def order_out(db: AsyncSession, order: PosOrder, language: str) -> PosOrde
         lines=lines,
         totals=totals_out(await totals(db, order, lines)),
         document_id=order.document_id,
+        discount_kind=order.discount_kind,  # type: ignore[arg-type]
+        discount_value=order.discount_value,
+        discount_reason=order.discount_reason,
     )
 
 

@@ -9,6 +9,7 @@ import { useSettings } from './api'
 import { ApprovalsSection } from './ApprovalsSection'
 import { NumberingSection, PaymentsSection, ServiceSection } from './ChargesSections'
 import { CatalogSection } from './CatalogSection'
+import { LimitsSection } from './LimitsSection'
 import { PosSection } from './PosSection'
 import { PurchasingSection } from './PurchasingSection'
 import { StockSection } from './StockSection'
@@ -24,6 +25,7 @@ const SECTIONS = {
   pos: (p: Props) => <PosSection {...p} />,
   numbering: (p: Props) => <NumberingSection data={p.data} />,
   approvals: (p: Props) => <ApprovalsSection canEdit={p.canEdit} />,
+  limits: (p: Props) => <LimitsSection canEdit={p.canEdit} />,
   stock: (p: Props) => <StockSection {...p} />,
   purchasing: (p: Props) => <PurchasingSection {...p} />,
   catalog: (p: Props) => <CatalogSection {...p} />,

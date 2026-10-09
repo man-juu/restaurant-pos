@@ -1,6 +1,6 @@
 """Cash shifts (FR-SAL-009): a cashier opens a drawer with a float, records cash put in or
 taken out, and closes with a count. Expected cash = float + cash kept from sales + cash in -
-cash out; the variance is counted - expected. Closing freezes the figures."""
+cash out - cash refunds; the variance is counted - expected. Closing freezes the figures."""
 
 import uuid
 from datetime import UTC, date, datetime, time, timedelta
@@ -14,7 +14,7 @@ from app.core import audit
 from app.core.errors import ConflictError, NotFoundError
 from app.core.models import User
 from app.modules.inventory.interface import visible_outlet
-from app.modules.sales.models import CashMovement, CashShift, Payment, PosOrder
+from app.modules.sales.models import CashMovement, CashShift, Payment, PosOrder, SalesRefund
 from app.modules.sales.pos_schemas import (
     MovementIn,
     MovementOut,
@@ -105,6 +105,16 @@ async def _figures(db: AsyncSession, shift: CashShift) -> dict[str, object]:
         )
         or 0
     )
+    cash_refunds = int(
+        await db.scalar(
+            select(func.coalesce(func.sum(SalesRefund.amount), 0)).where(
+                SalesRefund.shift_id == shift.id,
+                SalesRefund.method_kind == "cash",
+                SalesRefund.status == "done",
+            )
+        )
+        or 0
+    )
     moves = list(
         await db.scalars(
             select(CashMovement)
@@ -122,7 +132,8 @@ async def _figures(db: AsyncSession, shift: CashShift) -> dict[str, object]:
         "cash_sales": cash_sales,
         "cash_in": cash_in,
         "cash_out": cash_out,
-        "expected": shift.opening_float + cash_sales + cash_in - cash_out,
+        "cash_refunds": cash_refunds,
+        "expected": shift.opening_float + cash_sales + cash_in - cash_out - cash_refunds,
         "orders": int(orders or 0),
         "movements": [
             MovementOut(kind=m.kind, amount=m.amount, reason=m.reason, created_at=m.created_at)
@@ -166,6 +177,7 @@ async def shift_out(db: AsyncSession, shift: CashShift) -> ShiftOut:
         cash_sales=cast(int, figures["cash_sales"]),
         cash_in=cast(int, figures["cash_in"]),
         cash_out=cast(int, figures["cash_out"]),
+        cash_refunds=cast(int, figures["cash_refunds"]),
         expected=expected,
         counted=shift.counted,
         variance=None if shift.counted is None else shift.counted - expected,

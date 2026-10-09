@@ -136,6 +136,9 @@ class PosSettings(Strict):
     require_shift: bool = True  # payments need an open cash shift
     cash_rounding_step: int = Field(default=0, ge=0, le=100_000)  # 0 = off; e.g. 100 for Rp 100
     tips_enabled: bool = False
+    # FR-SAL-008: a voided line that was already sent was cooked: write its ingredients off as
+    # waste, or not (when the kitchen reuses it).
+    void_stock_effect: Literal["waste", "none"] = "waste"
 
 
 SETTINGS: dict[str, type[Strict]] = {

@@ -103,7 +103,13 @@ def test_fr_sal_005_006_order_totals_payment_and_stock(
     [ln] = out["lines"]
     assert (ln["unit_price"], ln["line_total"], ln["status"]) == (30_000, 60_000, "new")
     # PBJT 10 % from the Indonesian defaults; service charge is off by default.
-    assert out["totals"] == {"subtotal": 60_000, "service_charge": 0, "tax": 6_000, "total": 66_000}
+    assert out["totals"] == {
+        "subtotal": 60_000,
+        "discount": 0,
+        "service_charge": 0,
+        "tax": 6_000,
+        "total": 66_000,
+    }
 
     pay = {
         "payments": [

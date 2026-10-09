@@ -25,6 +25,10 @@ class ModuleManifest:
     # Default grants per role template key (docs/03 section 4), e.g. {"manager": ("x.y.view",)}.
     # Owner and co-owner get every permission automatically.
     role_templates: dict[str, tuple[str, ...]] = field(default_factory=dict)
+    # docs/03 rule 7: permissions that carry a per-role limit, with its unit ("bp" = basis
+    # points of a percentage, "amount" = minor units), and default limits per template.
+    limit_units: dict[str, str] = field(default_factory=dict)
+    role_limits: dict[str, dict[str, int]] = field(default_factory=dict)
     nav: tuple[str, ...] = ()  # navigation entry keys for /me/capabilities
     # Optional: an entry shown only with this permission (default: any of the module's).
     nav_permissions: dict[str, str] = field(default_factory=dict)

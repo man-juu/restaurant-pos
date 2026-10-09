@@ -5,6 +5,7 @@ from fastapi import FastAPI
 
 import app.modules
 from app.core import audit_router, health, tenant_router
+from app.core.access import limits_router
 from app.core.access.permissions import build_registry
 from app.core.access.policy import assert_all_routes_declared, include
 from app.core.config import Settings, get_settings
@@ -64,6 +65,7 @@ def create_app(
         uploads_router.router,
         notifications_router.router,
         audit_router.router,
+        limits_router.router,
     ):
         include(api, router)
     mount(api, api.state.modules, include)

@@ -233,7 +233,14 @@
     "line_not_found": "That line no longer exists.",
     "payment_method_not_found": "That payment method is not active.",
     "shift_not_found": "That shift does not exist.",
-    "invalid_range": "Choose a shorter date range."
+    "invalid_range": "Choose a shorter date range.",
+    "limit_exceeded": "That is more than your role allows. Ask someone with a higher limit.",
+    "discount_too_large": "The discount is larger than the amount.",
+    "refund_exists": "A refund for this order is already waiting or done.",
+    "refund_not_found": "That refund no longer exists.",
+    "not_a_limited_permission": "That permission has no limit.",
+    "limit_above_100_percent": "A limit cannot be above 100 %.",
+    "role_lacks_permission": "That role does not have this permission."
   },
   "appearance": {
     "open": "Appearance",
@@ -276,6 +283,7 @@
       "pos": "Cashier",
       "numbering": "Numbering",
       "approvals": "Approvals",
+      "limits": "Limits",
       "stock": "Stock",
       "purchasing": "Purchasing",
       "catalog": "Food cost"
@@ -369,7 +377,14 @@
       "requireShift": "Payments need an open cash shift",
       "tips": "Allow tips",
       "roundingStep": "Round cash bills to (0 = off, e.g. 100)",
-      "help": "Rounding applies only when the whole bill is paid in cash; the difference is recorded on the sale. Tips are kept apart from sales."
+      "help": "Rounding applies only when the whole bill is paid in cash; the difference is recorded on the sale. Tips are kept apart from sales.",
+      "voidEffect": "When a cooked item is voided",
+      "voidWaste": "Write its ingredients off as waste",
+      "voidNone": "Do nothing (the kitchen reuses it)"
+    },
+    "limits": {
+      "help": "The biggest discount each role may give, in percent. Leave empty for no limit. A bigger discount needs someone whose limit covers it.",
+      "discount": "{{role}}: max discount %"
     }
   },
   "catalog": {
@@ -1063,7 +1078,8 @@
     "status": {
       "paid": "{{number}} paid",
       "cancelled": "{{number}} cancelled",
-      "void": "{{number}} voided"
+      "void": "{{number}} voided",
+      "refunded": "{{number}} refunded"
     },
     "shift": {
       "button": "Cash drawer",
@@ -1087,6 +1103,36 @@
       "counted": "Cash counted",
       "close": "Close shift",
       "done": "Done"
+    },
+    "applyDiscount": "Apply discount",
+    "approve": "Approve",
+    "reject": "Reject",
+    "discount": "Discount",
+    "discountKind": "Discount type",
+    "discountOrder": "Discount the order",
+    "discountLine": "Discount this item",
+    "percent": "Percent",
+    "percentValue": "Percent off (e.g. 10)",
+    "amountValue": "Amount off",
+    "lineDiscount": "Discount −{{amount}}",
+    "reason": "Reason",
+    "reasonHelp": "Write a short reason. It is kept in the audit log.",
+    "refund": "Refund",
+    "refundAsk": "Ask for refund",
+    "refundMethod": "Pay back by",
+    "refundTitle": "Refund this order",
+    "refundsWaiting": "Refunds waiting for approval",
+    "stockEffect": "The food",
+    "stockReturn": "Goes back to stock (not made or untouched)",
+    "stockWaste": "Is written off as waste",
+    "void": "Void",
+    "voidOrder": "Void the order",
+    "voidLine": "Void this item",
+    "voided": "Voided: {{reason}}",
+    "refundStatus": {
+      "requested": "Refund of {{amount}} is waiting for a manager.",
+      "done": "Refunded {{amount}}.",
+      "rejected": "The refund was rejected."
     }
   }
 }

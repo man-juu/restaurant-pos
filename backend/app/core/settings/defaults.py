@@ -58,7 +58,12 @@ DEFAULTS: dict[str, dict[str, Any]] = {
         "stock": {**STOCK, "count_variance_alert": 200_000},  # Rp 200.000
         "purchasing": {"require_invoice_attachment": False},
         "catalog": {"target_food_cost_bp": 3500},  # 35 %, a common Indonesian target
-        "pos": {"require_shift": True, "cash_rounding_step": 0, "tips_enabled": False},
+        "pos": {
+            "require_shift": True,
+            "cash_rounding_step": 0,
+            "tips_enabled": False,
+            "void_stock_effect": "waste",
+        },
     }
 }
 
@@ -72,7 +77,12 @@ FALLBACK: dict[str, Any] = {
     "stock": STOCK,
     "purchasing": {"require_invoice_attachment": False},
     "catalog": {"target_food_cost_bp": None},
-    "pos": {"require_shift": True, "cash_rounding_step": 0, "tips_enabled": False},
+    "pos": {
+        "require_shift": True,
+        "cash_rounding_step": 0,
+        "tips_enabled": False,
+        "void_stock_effect": "waste",
+    },
 }
 
 

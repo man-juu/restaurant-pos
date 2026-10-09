@@ -21,7 +21,14 @@ from app.core.idempotency import (
 from app.core.tenancy import tenant_session
 from app.modules.sales import orders, payments
 from app.modules.sales import permissions as perm
-from app.modules.sales.models import Payment, PosLineModifier, PosOrder, PosOrderLine, SalesDocument
+from app.modules.sales.models import (
+    Payment,
+    PosLineModifier,
+    PosOrder,
+    PosOrderLine,
+    SalesDocument,
+    SalesRefund,
+)
 from app.modules.sales.pos_schemas import (
     PosLineIn,
     PosLineUpdateIn,
@@ -31,6 +38,7 @@ from app.modules.sales.pos_schemas import (
     PosPayIn,
     PosPaymentOut,
 )
+from app.modules.sales.refunds import refund_out
 
 router = APIRouter(prefix="/api/v1/pos/orders", tags=["pos"])
 
@@ -56,6 +64,13 @@ async def full_out(db: AsyncSession, order: PosOrder, lang: str) -> PosOrderOut:
     out = await orders.order_out(db, order, lang)
     if order.document_id is None:
         return out
+    latest = await db.scalar(
+        select(SalesRefund)
+        .where(SalesRefund.order_id == order.id)
+        .order_by(SalesRefund.created_at.desc())
+        .limit(1)
+    )
+    out.refund = refund_out(latest) if latest else None
     doc = await db.get(SalesDocument, order.document_id)
     rows = await db.scalars(
         select(Payment).where(Payment.document_id == order.document_id).order_by(Payment.paid_at)
@@ -98,7 +113,7 @@ async def list_orders(
     outlet_id: uuid.UUID,
     request: Request,
     p: Take,
-    status: Literal["open", "paid", "cancelled", "void"] = "open",
+    status: Literal["open", "paid", "cancelled", "void", "refunded"] = "open",
 ) -> list[PosOrderSummary]:
     p.require_outlet(outlet_id)
     async with _db(request, p) as db:

@@ -98,6 +98,24 @@ async def _replace_previous(db: AsyncSession, data: DayEntryIn, user_id: uuid.UU
     await db.flush()
 
 
+async def take_stock(
+    db: AsyncSession,
+    p: Posting,
+    qty: dict[uuid.UUID, Decimal],
+    movement_type: str = "sale_consumption",
+) -> tuple[int, dict[uuid.UUID, uuid.UUID]]:
+    """Take the recipes' ingredients (and any extra stocked items in `qty`) out of stock.
+    Returns (stock value taken, recipe version used per item)."""
+    taken, used = await consumption(db, qty, p.business_date)
+    items = await stock_items(db, taken.keys())
+    outs = [OutLine(i, q) for i, q in taken.items() if i in items and items[i].is_stocked and q > 0]
+    if not outs:
+        return 0, used
+    allowed = await negative_allowed(db, p.tenant_id, "sale", confirmed=True)
+    result = await consume(db, p, movement_type, outs, allow_negative=allowed)
+    return -sum(m.value for m in result.movements), used
+
+
 async def consume_for_sale(
     db: AsyncSession,
     doc: SalesDocument,
@@ -105,16 +123,10 @@ async def consume_for_sale(
     user_id: uuid.UUID,
     doc_type: str = DOC,
 ) -> dict[uuid.UUID, uuid.UUID]:
-    """Take the recipes' ingredients (and any extra stocked items in `qty`) out of stock for
-    a posted sale; sets the document's cost. Returns the recipe version used per item."""
-    taken, used = await consumption(db, qty, doc.business_date)
-    items = await stock_items(db, taken.keys())
-    outs = [OutLine(i, q) for i, q in taken.items() if i in items and items[i].is_stocked and q > 0]
-    if outs:
-        allowed = await negative_allowed(db, doc.tenant_id, "sale", confirmed=True)
-        p = Posting(doc.tenant_id, doc.outlet_id, user_id, doc_type, doc.id, doc.business_date)
-        result = await consume(db, p, "sale_consumption", outs, allow_negative=allowed)
-        doc.cost = -sum(m.value for m in result.movements)
+    """Stock out for a posted sale; sets the document's cost."""
+    p = Posting(doc.tenant_id, doc.outlet_id, user_id, doc_type, doc.id, doc.business_date)
+    cost, used = await take_stock(db, p, qty)
+    doc.cost = cost
     return used
 
 

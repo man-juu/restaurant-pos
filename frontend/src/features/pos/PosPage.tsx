@@ -5,6 +5,8 @@ import { useOutletContext } from 'react-router'
 import { SelectInput } from '../../components/form'
 import { Button } from '../../components/ui'
 import type { Capabilities } from '../../lib/api/types'
+import { useSession } from '../../lib/session'
+import { RefundApprovals } from './RefundApprovals'
 import { ShiftOpen, ShiftSummary } from './ShiftPanel'
 import { Till } from './Till'
 import { type TillContext, useTillContext } from './useTillContext'
@@ -14,6 +16,7 @@ export function PosPage() {
   const { t } = useTranslation()
   const { caps } = useOutletContext<{ caps?: Capabilities }>()
   const till = useTillContext(caps)
+  const userId = useSession().data?.user.id
   const [showShift, setShowShift] = useState(false)
   const ready = !till.needsShift && till.outletId !== '' && till.channelId !== ''
   return (
@@ -31,15 +34,14 @@ export function PosPage() {
           </Button>
         )}
       </div>
-      {till.shift && showShift && <ShiftSummary shift={till.shift} currency={till.currency} />}
-      {till.needsShift && <ShiftOpen outletId={till.outletId} currency={till.currency} />}
+      <TopPanels till={till} showShift={showShift} userId={userId} />
       {ready && (
         <Till
           key={`${till.outletId}-${till.channelId}`}
           outletId={till.outletId}
           channelId={till.channelId}
           currency={till.currency}
-          canPay={till.canPay}
+          can={till.can}
           methods={till.methods}
           pos={till.pos}
         />
@@ -74,6 +76,27 @@ function Pickers({ till }: { till: TillContext }) {
           </option>
         ))}
       </SelectInput>
+    </>
+  )
+}
+
+/** Above the till: the drawer when asked for, refunds to approve, opening a shift. */
+function TopPanels({
+  till,
+  showShift,
+  userId,
+}: {
+  till: TillContext
+  showShift: boolean
+  userId?: string
+}) {
+  return (
+    <>
+      {till.shift && showShift && <ShiftSummary shift={till.shift} currency={till.currency} />}
+      {till.can.refund && till.outletId !== '' && (
+        <RefundApprovals outletId={till.outletId} currency={till.currency} userId={userId} />
+      )}
+      {till.needsShift && <ShiftOpen outletId={till.outletId} currency={till.currency} />}
     </>
   )
 }

@@ -52,7 +52,8 @@ function fakeTill() {
   const lines: Body[] = []
   const order = () => {
     const subtotal = lines.reduce((s, l) => s + (l.line_total as number), 0)
-    const tax = Math.round(subtotal / 10)
+    const discount = lines.reduce((s, l) => s + ((l.discount as number) ?? 0), 0)
+    const tax = Math.round((subtotal - discount) / 10)
     return {
       id: 'ord1',
       number: 'POS-2026-000001',
@@ -64,7 +65,7 @@ function fakeTill() {
       created_at: '2026-10-09T10:00:00Z',
       paid_at: null,
       lines,
-      totals: { subtotal, service_charge: 0, tax, total: subtotal + tax },
+      totals: { subtotal, discount, service_charge: 0, tax, total: subtotal - discount + tax },
       payments: state.paid ? (state.paid.payments as Body[]) : [],
     }
   }
@@ -137,6 +138,12 @@ function routeTill(fake: ReturnType<typeof fakeTill>, method: string, path: stri
         note: body.note,
         status: 'new',
       })
+      return fake.order()
+    },
+    'PUT /api/v1/pos/orders/ord1/lines/l0/discount': () => {
+      fake.lines[0].discount = Math.round(
+        ((fake.lines[0].line_total as number) * (body.value as number)) / 10000,
+      )
       return fake.order()
     },
     'POST /api/v1/pos/orders/ord1/pay': () => {
@@ -214,4 +221,22 @@ test('a waiter takes orders but sees no pay button', async ({ page }) => {
   await page.getByRole('button', { name: 'Add to order' }).click()
   await expect(page.getByRole('button', { name: 'Send to kitchen' })).toBeEnabled()
   await expect(page.getByRole('button', { name: 'Pay', exact: true })).toHaveCount(0)
+})
+
+test('cashier gives a 10 % discount with a reason (FR-SAL-007)', async ({ page }) => {
+  const posts = await mock(page, [...CASHIER, 'sales.discount.apply'])
+  await page.goto('/pos')
+  await page.getByRole('button', { name: 'EN' }).click()
+  await page.getByLabel('Opening cash').fill('0')
+  await page.getByRole('button', { name: 'Open shift' }).click()
+  await page.getByRole('button', { name: /Fried rice/ }).click()
+  await page.getByRole('button', { name: 'Add to order' }).click()
+  await page.getByRole('button', { name: 'Discount', exact: true }).click()
+  await page.getByLabel('Percent off (e.g. 10)').fill('10')
+  const apply = page.getByRole('button', { name: 'Apply discount' })
+  await expect(apply).toBeDisabled() // a reason is required
+  await page.getByLabel('Reason').fill('Regular customer')
+  await apply.click()
+  await expect(page.getByText(/Discount −.*2[.,]500/)).toBeVisible()
+  expect(posts.at(-1)?.body).toEqual({ kind: 'percent', value: 1000, reason: 'Regular customer' })
 })

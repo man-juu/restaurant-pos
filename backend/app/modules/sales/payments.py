@@ -67,7 +67,7 @@ def _tenders(
     return out
 
 
-def _stock_quantities(
+def stock_quantities(
     lines: list[PosOrderLine], mods: list[tuple[uuid.UUID, Decimal, Decimal]]
 ) -> dict[uuid.UUID, Decimal]:
     """Menu items to expand by recipe, plus each option's ingredient change times the line
@@ -80,7 +80,7 @@ def _stock_quantities(
     return qty
 
 
-async def _option_ingredients(
+async def option_changes(
     db: AsyncSession, lines: list[PosOrderLine]
 ) -> list[tuple[uuid.UUID, Decimal, Decimal]]:
     by_line = {ln.id: ln for ln in lines}
@@ -113,11 +113,11 @@ async def _post_document(
         business_date=today,
         source="pos",
         status="posted",
-        subtotal=t.gross_lines,
-        discount=0,
-        service_charge=t.service_charge,
-        tax=t.tax_total,
-        total=t.total,
+        subtotal=t.gross,
+        discount=t.discount,
+        service_charge=t.taxed.service_charge,
+        tax=t.taxed.tax_total,
+        total=t.taxed.total,
         tip=tip,
         rounding=rounding,
         cost=0,
@@ -166,7 +166,7 @@ async def pay(
     shift = await current_shift(db, order.outlet_id, user_id)
     if shift is None and pos.require_shift:
         raise ConflictError("shift_required")
-    lines = await lines_of(db, order, language)
+    lines = [ln for ln in await lines_of(db, order, language) if ln.status != "void"]
     if not lines:
         raise ConflictError("order_empty")
     methods = await _methods(db, order.tenant_id)
@@ -174,11 +174,18 @@ async def pay(
     all_cash = all(
         methods.get(p.method) and methods[p.method].kind == "cash" for p in data.payments
     )
-    rounding = cash_rounding(t.total, pos.cash_rounding_step) if all_cash else 0
-    tenders = _tenders(data.payments, methods, t.total + rounding + data.tip)
+    total = t.taxed.total
+    rounding = cash_rounding(total, pos.cash_rounding_step) if all_cash else 0
+    tenders = _tenders(data.payments, methods, total + rounding + data.tip)
     doc = await _post_document(db, order, user_id, lines, data.tip, rounding)
-    rows = list(await db.scalars(select(PosOrderLine).where(PosOrderLine.order_id == order.id)))
-    qty = _stock_quantities(rows, await _option_ingredients(db, rows))
+    rows = list(
+        await db.scalars(
+            select(PosOrderLine).where(
+                PosOrderLine.order_id == order.id, PosOrderLine.status != "void"
+            )
+        )
+    )
+    qty = stock_quantities(rows, await option_changes(db, rows))
     used = await consume_for_sale(db, doc, qty, user_id, DOC)
     await _post_lines(db, doc, lines, used)
     payments = [

@@ -99,6 +99,8 @@ Examples:
 | `purchasing.order.create` / `approve` | Purchase orders |
 | `sales.order.create` / `void` / `refund` | POS orders |
 | `sales.order.pay` | Take payment for a POS order (waiters take orders without it) |
+| `sales.discount.apply` | Discounts up to the role's limit (default cashier 10 %, manager 50 %; Settings > Limits) |
+| `sales.order.void` / `sales.order.refund` | Void with a reason; ask for or approve a refund (approval rule "refund", default manager) |
 | `sales.shift.open` / `sales.shift.view` | Own cash shift; review every shift's expected cash and variance |
 | `sales.discount.apply` | Discounts (with a per-role maximum percentage) |
 | `sales.day.lock` | Lock a sales day |

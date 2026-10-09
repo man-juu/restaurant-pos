@@ -91,6 +91,9 @@ class Registry:
     permissions: frozenset[str]
     templates: dict[str, frozenset[str]]  # template key -> granted permission codes
     template_info: dict[str, RoleTemplate]
+    limit_units: dict[str, str] = field(default_factory=dict)  # permission -> "bp" | "amount"
+    # template key -> permission -> default limit (absent: no limit)
+    default_limits: dict[str, dict[str, int]] = field(default_factory=dict)
 
     def module_of(self, permission: str) -> str:
         return permission.split(".", 1)[0]
@@ -137,4 +140,11 @@ def build_registry(manifests: Iterable[ModuleManifest]) -> Registry:
     info = {t.key: t for t in _CORE_TEMPLATES}
     _check_template_keys(manifests, info)
     templates = {t.key: _template_grants(t, manifests, codes) for t in _CORE_TEMPLATES}
-    return Registry(frozenset(codes), templates, info)
+    units = {code: unit for m in manifests for code, unit in m.limit_units.items()}
+    limits: dict[str, dict[str, int]] = {}
+    for m in manifests:
+        for key, values in m.role_limits.items():
+            if unknown := values.keys() - units.keys():
+                raise PermissionError_(f"{m.name}: limits on {sorted(unknown)} have no unit")
+            limits.setdefault(key, {}).update(values)
+    return Registry(frozenset(codes), templates, info, units, limits)

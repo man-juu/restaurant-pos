@@ -10,11 +10,19 @@ import { OpenOrders } from './OpenOrders'
 import { OrderView } from './OrderView'
 import { useAddLine, useCreateOrder } from './posApi'
 
+/** What this person may do at the till (the server checks every call again). */
+export interface TillRights {
+  pay: boolean
+  discount: boolean
+  void: boolean
+  refund: boolean
+}
+
 export interface TillProps {
   outletId: string
   channelId: string
   currency: string
-  canPay: boolean
+  can: TillRights
   methods: PaymentMethod[]
   pos: PosSettings
 }

@@ -7,6 +7,7 @@ import { errorMessage } from '../../lib/errors'
 import { formatMoney, intlLocale } from '../../lib/format'
 import { Cart } from './Cart'
 import { PayDialog } from './PayDialog'
+import { RefundDialog } from './RefundDialog'
 import { useOrder } from './posApi'
 import type { TillProps } from './Till'
 
@@ -22,13 +23,13 @@ export function OrderView({
   if (order.error) return <Alert>{errorMessage(order.error, t)}</Alert>
   if (!order.data) return null
   if (order.data.status !== 'open')
-    return <PaidCard order={order.data} currency={props.currency} onNext={onClose} />
+    return <PaidCard {...props} order={order.data} onNext={onClose} />
   return (
     <>
       <Cart
         order={order.data}
         currency={props.currency}
-        canPay={props.canPay}
+        can={props.can}
         onPay={() => setPaying(true)}
         onClose={onClose}
       />
@@ -49,15 +50,14 @@ export function OrderView({
 function PaidCard({
   order,
   currency,
+  can,
+  methods,
   onNext,
-}: {
-  order: PosOrderOut
-  currency: string
-  onNext: () => void
-}) {
+}: TillProps & { order: PosOrderOut; onNext: () => void }) {
   const { t, i18n } = useTranslation()
   const money = (v: number) => formatMoney(v, currency, intlLocale(i18n.language))
-  const change = (order.payments ?? []).reduce((sum, p) => sum + p.change, 0)
+  const payments = order.payments ?? []
+  const change = payments.reduce((sum, p) => sum + p.change, 0)
   return (
     <Card className="flex flex-col gap-3">
       <h2 className="font-display text-xl font-bold">
@@ -69,13 +69,55 @@ function PaidCard({
         </p>
       )}
       <ul className="text-sm">
-        {(order.payments ?? []).map((p, i) => (
+        {payments.map((p, i) => (
           <li key={i}>
             {p.method}: {money(p.amount)}
           </li>
         ))}
       </ul>
       <Button onClick={onNext}>{t('pos.nextOrder')}</Button>
+      {can.refund && <RefundArea order={order} methods={methods} money={money} />}
     </Card>
   )
 }
+
+/** The refund's state, or the button to ask for one (FR-SAL-008). */
+function RefundArea({
+  order,
+  methods,
+  money,
+}: {
+  order: PosOrderOut
+  methods: TillProps['methods']
+  money: (v: number) => string
+}) {
+  const { t } = useTranslation()
+  const [open, setOpen] = useState(false)
+  const refund = order.refund
+  const mayAsk = order.status === 'paid' && (!refund || refund.status === 'rejected')
+  return (
+    <>
+      {refund && (
+        <p className="text-sm">
+          {t(`pos.refundStatus.${refund.status}`, { amount: money(refund.amount) })}
+        </p>
+      )}
+      {mayAsk && (
+        <Button variant="ghost" onClick={() => setOpen(true)}>
+          {t('pos.refund')}
+        </Button>
+      )}
+      {open && (
+        <RefundDialog
+          orderId={order.id}
+          methods={methods}
+          defaultMethod={firstMethod(order, methods)}
+          onClose={() => setOpen(false)}
+        />
+      )}
+    </>
+  )
+}
+
+const firstMethod = (order: PosOrderOut, methods: TillProps['methods']) =>
+  order.payments?.[0]?.method ?? methods[0]?.code ?? 'cash'

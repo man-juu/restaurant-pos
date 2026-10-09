@@ -2,10 +2,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { request } from '../../lib/api/client'
 import type {
+  DiscountIn,
   MenuItemOut,
   PosOrderOut,
   PosOrderSummary,
   PosPayIn,
+  RefundIn,
+  RefundOut,
   ShiftOut,
 } from '../../lib/api/types'
 
@@ -160,4 +163,52 @@ export const useCloseShift = (shiftId: string) =>
 export function useForgetShift() {
   const client = useQueryClient()
   return (outletId: string) => client.setQueryData(['pos-shift', outletId], null)
+}
+
+export const useDiscount = (orderId: string, lang: string) =>
+  useOrderChange(lang, ({ lineId, body }: { lineId?: string; body: DiscountIn | null }) => {
+    const path = lineId ? `lines/${lineId}/discount` : 'discount'
+    const url = `${POS}/orders/${orderId}/${path}?lang=${lang2(lang)}`
+    return body ? request<PosOrderOut>('PUT', url, body) : request<PosOrderOut>('DELETE', url)
+  })
+
+export const useVoid = (orderId: string, lang: string) =>
+  useOrderChange(lang, ({ lineId, reason }: { lineId?: string; reason: string }) =>
+    request<PosOrderOut>(
+      'POST',
+      `${POS}/orders/${orderId}/${lineId ? `lines/${lineId}/void` : 'void'}?lang=${lang2(lang)}`,
+      { reason },
+    ),
+  )
+
+export const useRefund = (orderId: string, lang: string) =>
+  useOrderChange(lang, ({ body, key }: { body: RefundIn; key: string }) =>
+    request<PosOrderOut>(
+      'POST',
+      `${POS}/orders/${orderId}/refund?lang=${lang2(lang)}`,
+      body,
+      keyed(key),
+    ),
+  )
+
+export const usePendingRefunds = (outletId: string, enabled: boolean) =>
+  useQuery({
+    queryKey: ['pos-refunds', outletId],
+    queryFn: () => request<RefundOut[]>('GET', `${POS}/refunds?outlet_id=${outletId}`),
+    enabled: enabled && Boolean(outletId),
+    refetchInterval: 30_000,
+  })
+
+export function useDecideRefund() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, decision }: { id: string; decision: 'approve' | 'reject' }) =>
+      request<RefundOut>('POST', `${POS}/refunds/${id}/${decision}`),
+    onSuccess: () =>
+      Promise.all(
+        ['pos-refunds', 'pos-order', 'pos-shift'].map((key) =>
+          client.invalidateQueries({ queryKey: [key] }),
+        ),
+      ),
+  })
 }

@@ -28,8 +28,11 @@ DAY_STATUSES = ("open", "locked")
 DOC_STATUSES = ("posted", "replaced", "reversed")
 SOURCES = ("manual_day", "pos")
 SHIFT_STATUSES = ("open", "closed")
-ORDER_STATUSES = ("open", "paid", "cancelled", "void")
-LINE_STATUSES = ("new", "sent")
+ORDER_STATUSES = ("open", "paid", "cancelled", "void", "refunded")
+LINE_STATUSES = ("new", "sent", "void")
+DISCOUNT_KINDS = ("percent", "amount")
+REFUND_STATUSES = ("requested", "done", "rejected")
+STOCK_EFFECTS = ("return", "waste")
 
 
 def _fk(column: str, table: str) -> ForeignKeyConstraint:
@@ -205,6 +208,12 @@ class PosOrder(Base):
         _fk("shift_id", "cash_shifts"),
         _fk("document_id", "sales_documents"),
         _check_in("status", ORDER_STATUSES),
+        CheckConstraint(
+            "(discount_kind IS NULL) = (discount_value IS NULL)"
+            " AND (discount_kind IS NULL OR discount_kind IN ('percent', 'amount'))"
+            " AND (discount_value IS NULL OR discount_value > 0)",
+            name="discount",
+        ),
         Index(None, "tenant_id", "outlet_id", "status"),
     )
 
@@ -222,6 +231,11 @@ class PosOrder(Base):
     created_at: Mapped[datetime] = _created_at()
     paid_at: Mapped[datetime | None] = mapped_column()
     paid_by: Mapped[uuid.UUID | None] = mapped_column()
+    # FR-SAL-007: one discount on the whole order (percent in basis points, or an amount).
+    discount_kind: Mapped[str | None] = mapped_column(Text)
+    discount_value: Mapped[int | None] = mapped_column(BigInteger)
+    discount_reason: Mapped[str | None] = mapped_column(String(200))
+    discount_by: Mapped[uuid.UUID | None] = mapped_column()
 
 
 class PosOrderLine(Base):
@@ -232,6 +246,12 @@ class PosOrderLine(Base):
         _fk("item_id", "items"),
         _check_in("status", LINE_STATUSES),
         CheckConstraint("qty > 0", name="qty"),
+        CheckConstraint(
+            "(discount_kind IS NULL) = (discount_value IS NULL)"
+            " AND (discount_kind IS NULL OR discount_kind IN ('percent', 'amount'))"
+            " AND (discount_value IS NULL OR discount_value > 0)",
+            name="discount",
+        ),
         Index(None, "tenant_id", "order_id"),
     )
 
@@ -246,6 +266,12 @@ class PosOrderLine(Base):
     sent_at: Mapped[datetime | None] = mapped_column()
     created_by: Mapped[uuid.UUID] = mapped_column()
     created_at: Mapped[datetime] = _created_at()
+    discount_kind: Mapped[str | None] = mapped_column(Text)
+    discount_value: Mapped[int | None] = mapped_column(BigInteger)
+    discount_reason: Mapped[str | None] = mapped_column(String(200))
+    discount_by: Mapped[uuid.UUID | None] = mapped_column()
+    void_reason: Mapped[str | None] = mapped_column(String(200))  # FR-SAL-008
+    voided_by: Mapped[uuid.UUID | None] = mapped_column()
 
 
 class PosLineModifier(Base):
@@ -289,3 +315,48 @@ class Payment(Base):
     reference: Mapped[str | None] = mapped_column(String(100))
     paid_at: Mapped[datetime] = _created_at()
     created_by: Mapped[uuid.UUID] = mapped_column()
+
+
+class SalesRefund(Base):
+    """FR-SAL-008: giving the money back for a paid order (docs/05 `voids_refunds`). Needs
+    approval by rule (by default a manager, never the person who asked); once done, the
+    sale is reversed and the stock comes back or is written off as waste."""
+
+    __tablename__ = "sales_refunds"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        _fk("order_id", "pos_orders"),
+        _fk("document_id", "sales_documents"),
+        _fk("shift_id", "cash_shifts"),
+        _fk("outlet_id", "outlets"),
+        _check_in("status", REFUND_STATUSES),
+        _check_in("stock_effect", STOCK_EFFECTS),
+        CheckConstraint("amount > 0", name="amount"),
+        # One live refund per order: a second request waits for the first to be decided.
+        Index(
+            "uq_sales_refunds_live",
+            "tenant_id",
+            "order_id",
+            unique=True,
+            postgresql_where=text("status <> 'rejected'"),
+        ),
+        Index(None, "tenant_id", "shift_id"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    order_id: Mapped[uuid.UUID] = mapped_column()
+    document_id: Mapped[uuid.UUID] = mapped_column()
+    outlet_id: Mapped[uuid.UUID] = mapped_column()
+    status: Mapped[str] = mapped_column(Text, server_default="requested")
+    reason: Mapped[str] = mapped_column(String(200))
+    stock_effect: Mapped[str] = mapped_column(Text)
+    amount: Mapped[int] = mapped_column(BigInteger)  # everything the customer paid
+    method_code: Mapped[str] = mapped_column(String(40))
+    method_kind: Mapped[str] = mapped_column(Text)
+    shift_id: Mapped[uuid.UUID | None] = mapped_column()  # drawer the cash came out of
+    created_by: Mapped[uuid.UUID | None] = mapped_column()
+    created_at: Mapped[datetime] = _created_at()
+    submitted_at: Mapped[datetime | None] = mapped_column()
+    decided_by: Mapped[uuid.UUID | None] = mapped_column()
+    decided_at: Mapped[datetime | None] = mapped_column()

@@ -1690,6 +1690,39 @@
         "title": "DecisionIn",
         "type": "object"
       },
+      "DiscountIn": {
+        "additionalProperties": false,
+        "description": "FR-SAL-007: percent in basis points (1000 = 10 %) or an amount in minor units.",
+        "properties": {
+          "kind": {
+            "enum": [
+              "percent",
+              "amount"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "reason": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          },
+          "value": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 1000000000000.0,
+            "title": "Value",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "kind",
+          "value",
+          "reason"
+        ],
+        "title": "DiscountIn",
+        "type": "object"
+      },
       "DocLine": {
         "properties": {
           "counted_qty": {
@@ -2966,6 +2999,63 @@
         "title": "LevelsIn",
         "type": "object"
       },
+      "LimitOut": {
+        "properties": {
+          "permission": {
+            "title": "Permission",
+            "type": "string"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "permission",
+          "unit",
+          "value"
+        ],
+        "title": "LimitOut",
+        "type": "object"
+      },
+      "LimitsIn": {
+        "additionalProperties": false,
+        "properties": {
+          "limits": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000000.0,
+                  "minimum": 0.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "maxProperties": 20,
+            "title": "Limits",
+            "type": "object"
+          }
+        },
+        "required": [
+          "limits"
+        ],
+        "title": "LimitsIn",
+        "type": "object"
+      },
       "LoginRequest": {
         "properties": {
           "email": {
@@ -4199,6 +4289,22 @@
       },
       "PosLineOut": {
         "properties": {
+          "discount": {
+            "default": 0,
+            "title": "Discount",
+            "type": "integer"
+          },
+          "discount_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discount Reason"
+          },
           "id": {
             "format": "uuid",
             "title": "Id",
@@ -4243,7 +4349,8 @@
           "status": {
             "enum": [
               "new",
-              "sent"
+              "sent",
+              "void"
             ],
             "title": "Status",
             "type": "string"
@@ -4251,6 +4358,17 @@
           "unit_price": {
             "title": "Unit Price",
             "type": "integer"
+          },
+          "void_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Void Reason"
           }
         },
         "required": [
@@ -4385,6 +4503,43 @@
             "title": "Created At",
             "type": "string"
           },
+          "discount_kind": {
+            "anyOf": [
+              {
+                "enum": [
+                  "percent",
+                  "amount"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discount Kind"
+          },
+          "discount_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discount Reason"
+          },
+          "discount_value": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discount Value"
+          },
           "document_id": {
             "anyOf": [
               {
@@ -4459,6 +4614,16 @@
             "title": "Payments",
             "type": "array"
           },
+          "refund": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RefundOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "rounding": {
             "default": 0,
             "title": "Rounding",
@@ -4469,7 +4634,8 @@
               "open",
               "paid",
               "cancelled",
-              "void"
+              "void",
+              "refunded"
             ],
             "title": "Status",
             "type": "string"
@@ -4702,6 +4868,15 @@
             "default": false,
             "title": "Tips Enabled",
             "type": "boolean"
+          },
+          "void_stock_effect": {
+            "default": "waste",
+            "enum": [
+              "waste",
+              "none"
+            ],
+            "title": "Void Stock Effect",
+            "type": "string"
           }
         },
         "title": "PosSettings",
@@ -4709,6 +4884,11 @@
       },
       "PosTotalsOut": {
         "properties": {
+          "discount": {
+            "default": 0,
+            "title": "Discount",
+            "type": "integer"
+          },
           "service_charge": {
             "title": "Service Charge",
             "type": "integer"
@@ -5861,6 +6041,107 @@
         "title": "RecoveryCodesOut",
         "type": "object"
       },
+      "RefundIn": {
+        "additionalProperties": false,
+        "properties": {
+          "method": {
+            "pattern": "^[a-z0-9_]{1,40}$",
+            "title": "Method",
+            "type": "string"
+          },
+          "reason": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          },
+          "stock_effect": {
+            "enum": [
+              "return",
+              "waste"
+            ],
+            "title": "Stock Effect",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason",
+          "stock_effect",
+          "method"
+        ],
+        "title": "RefundIn",
+        "type": "object"
+      },
+      "RefundOut": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "integer"
+          },
+          "created_by": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created By"
+          },
+          "decided_by": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided By"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "requested",
+              "done",
+              "rejected"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "stock_effect": {
+            "title": "Stock Effect",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "reason",
+          "stock_effect",
+          "amount",
+          "method",
+          "created_by",
+          "decided_by"
+        ],
+        "title": "RefundOut",
+        "type": "object"
+      },
       "Report": {
         "properties": {
           "columns": {
@@ -5925,6 +6206,33 @@
           "qty"
         ],
         "title": "RequestLine",
+        "type": "object"
+      },
+      "RoleLimitsOut": {
+        "properties": {
+          "limits": {
+            "items": {
+              "$ref": "#/components/schemas/LimitOut"
+            },
+            "title": "Limits",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "role_id": {
+            "format": "uuid",
+            "title": "Role Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role_id",
+          "name",
+          "limits"
+        ],
+        "title": "RoleLimitsOut",
         "type": "object"
       },
       "RoleOut": {
@@ -6351,6 +6659,11 @@
           },
           "cash_out": {
             "title": "Cash Out",
+            "type": "integer"
+          },
+          "cash_refunds": {
+            "default": 0,
+            "title": "Cash Refunds",
             "type": "integer"
           },
           "cash_sales": {
@@ -7984,6 +8297,22 @@
           "is_active"
         ],
         "title": "VendorOut",
+        "type": "object"
+      },
+      "VoidIn": {
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "VoidIn",
         "type": "object"
       },
       "WasteIn": {
@@ -13330,7 +13659,8 @@
                 "open",
                 "paid",
                 "cancelled",
-                "void"
+                "void",
+                "refunded"
               ],
               "title": "Status",
               "type": "string"
@@ -13549,6 +13879,128 @@
           }
         },
         "summary": "Cancel Order",
+        "tags": [
+          "pos"
+        ]
+      }
+    },
+    "/api/v1/pos/orders/{order_id}/discount": {
+      "delete": {
+        "operationId": "remove_order_discount_api_v1_pos_orders__order_id__discount_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosOrderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Remove Order Discount",
+        "tags": [
+          "pos"
+        ]
+      },
+      "put": {
+        "operationId": "order_discount_api_v1_pos_orders__order_id__discount_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiscountIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosOrderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Order Discount",
         "tags": [
           "pos"
         ]
@@ -13779,6 +14231,225 @@
         ]
       }
     },
+    "/api/v1/pos/orders/{order_id}/lines/{line_id}/discount": {
+      "delete": {
+        "operationId": "remove_line_discount_api_v1_pos_orders__order_id__lines__line_id__discount_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "line_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Line Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosOrderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Remove Line Discount",
+        "tags": [
+          "pos"
+        ]
+      },
+      "put": {
+        "operationId": "line_discount_api_v1_pos_orders__order_id__lines__line_id__discount_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "line_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Line Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiscountIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosOrderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Line Discount",
+        "tags": [
+          "pos"
+        ]
+      }
+    },
+    "/api/v1/pos/orders/{order_id}/lines/{line_id}/void": {
+      "post": {
+        "operationId": "void_line_api_v1_pos_orders__order_id__lines__line_id__void_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "line_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Line Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoidIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosOrderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Void Line",
+        "tags": [
+          "pos"
+        ]
+      }
+    },
     "/api/v1/pos/orders/{order_id}/pay": {
       "post": {
         "operationId": "pay_order_api_v1_pos_orders__order_id__pay_post",
@@ -13862,6 +14533,89 @@
         ]
       }
     },
+    "/api/v1/pos/orders/{order_id}/refund": {
+      "post": {
+        "operationId": "refund_order_api_v1_pos_orders__order_id__refund_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefundIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosOrderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Refund Order",
+        "tags": [
+          "pos"
+        ]
+      }
+    },
     "/api/v1/pos/orders/{order_id}/send": {
       "post": {
         "operationId": "send_order_api_v1_pos_orders__order_id__send_post",
@@ -13914,6 +14668,192 @@
           }
         },
         "summary": "Send Order",
+        "tags": [
+          "pos"
+        ]
+      }
+    },
+    "/api/v1/pos/orders/{order_id}/void": {
+      "post": {
+        "operationId": "void_order_api_v1_pos_orders__order_id__void_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoidIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosOrderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Void Order",
+        "tags": [
+          "pos"
+        ]
+      }
+    },
+    "/api/v1/pos/refunds": {
+      "get": {
+        "description": "Refunds waiting for a decision (or decided ones) at an outlet.",
+        "operationId": "list_refunds_api_v1_pos_refunds_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "default": "requested",
+              "enum": [
+                "requested",
+                "done",
+                "rejected"
+              ],
+              "title": "Status",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RefundOut"
+                  },
+                  "title": "Response List Refunds Api V1 Pos Refunds Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Refunds",
+        "tags": [
+          "pos"
+        ]
+      }
+    },
+    "/api/v1/pos/refunds/{refund_id}/{decision}": {
+      "post": {
+        "operationId": "decide_refund_api_v1_pos_refunds__refund_id___decision__post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "refund_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Refund Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "decision",
+            "required": true,
+            "schema": {
+              "enum": [
+                "approve",
+                "reject"
+              ],
+              "title": "Decision",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefundOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Decide Refund",
         "tags": [
           "pos"
         ]
@@ -15917,6 +16857,88 @@
         "summary": "Add Vendor Item",
         "tags": [
           "purchasing"
+        ]
+      }
+    },
+    "/api/v1/role-limits": {
+      "get": {
+        "operationId": "list_limits_api_v1_role_limits_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RoleLimitsOut"
+                  },
+                  "title": "Response List Limits Api V1 Role Limits Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Limits",
+        "tags": [
+          "roles"
+        ]
+      }
+    },
+    "/api/v1/role-limits/{role_id}": {
+      "put": {
+        "operationId": "set_limits_api_v1_role_limits__role_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "role_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Role Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LimitsIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RoleLimitsOut"
+                  },
+                  "title": "Response Set Limits Api V1 Role Limits  Role Id  Put",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Limits",
+        "tags": [
+          "roles"
         ]
       }
     },

@@ -233,7 +233,14 @@
     "line_not_found": "Baris itu sudah tidak ada.",
     "payment_method_not_found": "Metode pembayaran itu tidak aktif.",
     "shift_not_found": "Shift itu tidak ada.",
-    "invalid_range": "Pilih rentang tanggal yang lebih pendek."
+    "invalid_range": "Pilih rentang tanggal yang lebih pendek.",
+    "limit_exceeded": "Melebihi batas peran Anda. Minta orang dengan batas lebih tinggi.",
+    "discount_too_large": "Diskon lebih besar dari jumlahnya.",
+    "refund_exists": "Refund untuk pesanan ini sudah diajukan atau selesai.",
+    "refund_not_found": "Refund itu sudah tidak ada.",
+    "not_a_limited_permission": "Izin itu tidak punya batas.",
+    "limit_above_100_percent": "Batas tidak boleh di atas 100 %.",
+    "role_lacks_permission": "Peran itu tidak punya izin ini."
   },
   "appearance": {
     "open": "Tampilan",
@@ -276,6 +283,7 @@
       "pos": "Kasir",
       "numbering": "Penomoran",
       "approvals": "Persetujuan",
+      "limits": "Batas",
       "stock": "Stok",
       "purchasing": "Pembelian",
       "catalog": "HPP"
@@ -369,7 +377,14 @@
       "requireShift": "Pembayaran perlu shift kas yang terbuka",
       "tips": "Izinkan tip",
       "roundingStep": "Bulatkan tagihan tunai ke (0 = mati, mis. 100)",
-      "help": "Pembulatan hanya berlaku jika seluruh tagihan dibayar tunai; selisihnya dicatat pada penjualan. Tip dicatat terpisah dari penjualan."
+      "help": "Pembulatan hanya berlaku jika seluruh tagihan dibayar tunai; selisihnya dicatat pada penjualan. Tip dicatat terpisah dari penjualan.",
+      "voidEffect": "Saat item yang sudah dimasak di-void",
+      "voidWaste": "Catat bahannya sebagai waste",
+      "voidNone": "Tidak ada (dapur memakainya lagi)"
+    },
+    "limits": {
+      "help": "Diskon terbesar yang boleh diberikan tiap peran, dalam persen. Kosongkan jika tanpa batas. Diskon lebih besar perlu orang yang batasnya mencukupi.",
+      "discount": "{{role}}: diskon maks. %"
     }
   },
   "catalog": {
@@ -1063,7 +1078,8 @@
     "status": {
       "paid": "{{number}} lunas",
       "cancelled": "{{number}} dibatalkan",
-      "void": "{{number}} di-void"
+      "void": "{{number}} di-void",
+      "refunded": "{{number}} di-refund"
     },
     "shift": {
       "button": "Laci kas",
@@ -1087,6 +1103,36 @@
       "counted": "Uang dihitung",
       "close": "Tutup shift",
       "done": "Selesai"
+    },
+    "applyDiscount": "Terapkan diskon",
+    "approve": "Setujui",
+    "reject": "Tolak",
+    "discount": "Diskon",
+    "discountKind": "Jenis diskon",
+    "discountOrder": "Diskon pesanan",
+    "discountLine": "Diskon item ini",
+    "percent": "Persen",
+    "percentValue": "Potongan persen (mis. 10)",
+    "amountValue": "Potongan nominal",
+    "lineDiscount": "Diskon −{{amount}}",
+    "reason": "Alasan",
+    "reasonHelp": "Tulis alasan singkat. Disimpan di log audit.",
+    "refund": "Refund",
+    "refundAsk": "Ajukan refund",
+    "refundMethod": "Dikembalikan lewat",
+    "refundTitle": "Refund pesanan ini",
+    "refundsWaiting": "Refund menunggu persetujuan",
+    "stockEffect": "Makanannya",
+    "stockReturn": "Kembali ke stok (belum dibuat atau utuh)",
+    "stockWaste": "Dicatat sebagai waste",
+    "void": "Void",
+    "voidOrder": "Void pesanan",
+    "voidLine": "Void item ini",
+    "voided": "Di-void: {{reason}}",
+    "refundStatus": {
+      "requested": "Refund {{amount}} menunggu manajer.",
+      "done": "Sudah di-refund {{amount}}.",
+      "rejected": "Refund ditolak."
     }
   }
 }

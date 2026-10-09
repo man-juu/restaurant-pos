@@ -1584,6 +1584,24 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/pos/orders/{order_id}/discount': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Order Discount */
+    put: operations['order_discount_api_v1_pos_orders__order_id__discount_put']
+    post?: never
+    /** Remove Order Discount */
+    delete: operations['remove_order_discount_api_v1_pos_orders__order_id__discount_delete']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/pos/orders/{order_id}/lines': {
     parameters: {
       query?: never
@@ -1619,6 +1637,41 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/pos/orders/{order_id}/lines/{line_id}/discount': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Line Discount */
+    put: operations['line_discount_api_v1_pos_orders__order_id__lines__line_id__discount_put']
+    post?: never
+    /** Remove Line Discount */
+    delete: operations['remove_line_discount_api_v1_pos_orders__order_id__lines__line_id__discount_delete']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/orders/{order_id}/lines/{line_id}/void': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Void Line */
+    post: operations['void_line_api_v1_pos_orders__order_id__lines__line_id__void_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/pos/orders/{order_id}/pay': {
     parameters: {
       query?: never
@@ -1636,6 +1689,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/pos/orders/{order_id}/refund': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Refund Order */
+    post: operations['refund_order_api_v1_pos_orders__order_id__refund_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/pos/orders/{order_id}/send': {
     parameters: {
       query?: never
@@ -1647,6 +1717,60 @@ export interface paths {
     put?: never
     /** Send Order */
     post: operations['send_order_api_v1_pos_orders__order_id__send_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/orders/{order_id}/void': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Void Order */
+    post: operations['void_order_api_v1_pos_orders__order_id__void_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/refunds': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List Refunds
+     * @description Refunds waiting for a decision (or decided ones) at an outlet.
+     */
+    get: operations['list_refunds_api_v1_pos_refunds_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/refunds/{refund_id}/{decision}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Decide Refund */
+    post: operations['decide_refund_api_v1_pos_refunds__refund_id___decision__post']
     delete?: never
     options?: never
     head?: never
@@ -2189,6 +2313,40 @@ export interface paths {
     put?: never
     /** Add Vendor Item */
     post: operations['add_vendor_item_api_v1_purchasing_vendors__vendor_id__items_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/role-limits': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Limits */
+    get: operations['list_limits_api_v1_role_limits_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/role-limits/{role_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Set Limits */
+    put: operations['set_limits_api_v1_role_limits__role_id__put']
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -3202,6 +3360,21 @@ export interface components {
       /** Approve */
       approve: boolean
     }
+    /**
+     * DiscountIn
+     * @description FR-SAL-007: percent in basis points (1000 = 10 %) or an amount in minor units.
+     */
+    DiscountIn: {
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'percent' | 'amount'
+      /** Reason */
+      reason: string
+      /** Value */
+      value: number
+    }
     /** DocLine */
     DocLine: {
       /** Counted Qty */
@@ -3625,6 +3798,22 @@ export interface components {
        * Format: uuid
        */
       outlet_id: string
+    }
+    /** LimitOut */
+    LimitOut: {
+      /** Permission */
+      permission: string
+      /** Unit */
+      unit: string
+      /** Value */
+      value: number | null
+    }
+    /** LimitsIn */
+    LimitsIn: {
+      /** Limits */
+      limits: {
+        [key: string]: number | null
+      }
     }
     /** LoginRequest */
     LoginRequest: {
@@ -4101,6 +4290,13 @@ export interface components {
     /** PosLineOut */
     PosLineOut: {
       /**
+       * Discount
+       * @default 0
+       */
+      discount: number
+      /** Discount Reason */
+      discount_reason?: string | null
+      /**
        * Id
        * Format: uuid
        */
@@ -4124,9 +4320,11 @@ export interface components {
        * Status
        * @enum {string}
        */
-      status: 'new' | 'sent'
+      status: 'new' | 'sent' | 'void'
       /** Unit Price */
       unit_price: number
+      /** Void Reason */
+      void_reason?: string | null
     }
     /** PosLineUpdateIn */
     PosLineUpdateIn: {
@@ -4176,6 +4374,12 @@ export interface components {
        * Format: date-time
        */
       created_at: string
+      /** Discount Kind */
+      discount_kind?: ('percent' | 'amount') | null
+      /** Discount Reason */
+      discount_reason?: string | null
+      /** Discount Value */
+      discount_value?: number | null
       /** Document Id */
       document_id?: string | null
       /**
@@ -4200,6 +4404,7 @@ export interface components {
       paid_at: string | null
       /** Payments */
       payments?: components['schemas']['PosPaymentOut'][]
+      refund?: components['schemas']['RefundOut'] | null
       /**
        * Rounding
        * @default 0
@@ -4209,7 +4414,7 @@ export interface components {
        * Status
        * @enum {string}
        */
-      status: 'open' | 'paid' | 'cancelled' | 'void'
+      status: 'open' | 'paid' | 'cancelled' | 'void' | 'refunded'
       /**
        * Tip
        * @default 0
@@ -4301,9 +4506,20 @@ export interface components {
        * @default false
        */
       tips_enabled: boolean
+      /**
+       * Void Stock Effect
+       * @default waste
+       * @enum {string}
+       */
+      void_stock_effect: 'waste' | 'none'
     }
     /** PosTotalsOut */
     PosTotalsOut: {
+      /**
+       * Discount
+       * @default 0
+       */
+      discount: number
       /** Service Charge */
       service_charge: number
       /** Subtotal */
@@ -4726,6 +4942,43 @@ export interface components {
       /** Recovery Codes */
       recovery_codes: string[]
     }
+    /** RefundIn */
+    RefundIn: {
+      /** Method */
+      method: string
+      /** Reason */
+      reason: string
+      /**
+       * Stock Effect
+       * @enum {string}
+       */
+      stock_effect: 'return' | 'waste'
+    }
+    /** RefundOut */
+    RefundOut: {
+      /** Amount */
+      amount: number
+      /** Created By */
+      created_by: string | null
+      /** Decided By */
+      decided_by: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Method */
+      method: string
+      /** Reason */
+      reason: string
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'requested' | 'done' | 'rejected'
+      /** Stock Effect */
+      stock_effect: string
+    }
     /** Report */
     Report: {
       /** Columns */
@@ -4756,6 +5009,18 @@ export interface components {
       item_id: string
       /** Qty */
       qty: number | string
+    }
+    /** RoleLimitsOut */
+    RoleLimitsOut: {
+      /** Limits */
+      limits: components['schemas']['LimitOut'][]
+      /** Name */
+      name: string
+      /**
+       * Role Id
+       * Format: uuid
+       */
+      role_id: string
     }
     /** RoleOut */
     RoleOut: {
@@ -4953,6 +5218,11 @@ export interface components {
       cash_in: number
       /** Cash Out */
       cash_out: number
+      /**
+       * Cash Refunds
+       * @default 0
+       */
+      cash_refunds: number
       /** Cash Sales */
       cash_sales: number
       /**
@@ -5569,6 +5839,11 @@ export interface components {
       phone: string | null
       /** Tax Id */
       tax_id: string | null
+    }
+    /** VoidIn */
+    VoidIn: {
+      /** Reason */
+      reason: string
     }
     /** WasteIn */
     WasteIn: {
@@ -8777,7 +9052,7 @@ export interface operations {
     parameters: {
       query: {
         outlet_id: string
-        status?: 'open' | 'paid' | 'cancelled' | 'void'
+        status?: 'open' | 'paid' | 'cancelled' | 'void' | 'refunded'
       }
       header?: never
       path?: never
@@ -8876,6 +9151,76 @@ export interface operations {
     }
   }
   cancel_order_api_v1_pos_orders__order_id__cancel_post: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  order_discount_api_v1_pos_orders__order_id__discount_put: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DiscountIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  remove_order_discount_api_v1_pos_orders__order_id__discount_delete: {
     parameters: {
       query?: {
         lang?: 'en' | 'id'
@@ -9019,6 +9364,116 @@ export interface operations {
       }
     }
   }
+  line_discount_api_v1_pos_orders__order_id__lines__line_id__discount_put: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+        line_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DiscountIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  remove_line_discount_api_v1_pos_orders__order_id__lines__line_id__discount_delete: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+        line_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  void_line_api_v1_pos_orders__order_id__lines__line_id__void_post: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+        line_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VoidIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   pay_order_api_v1_pos_orders__order_id__pay_post: {
     parameters: {
       query?: {
@@ -9035,6 +9490,45 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['PosPayIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  refund_order_api_v1_pos_orders__order_id__refund_post: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RefundIn']
       }
     }
     responses: {
@@ -9078,6 +9572,107 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  void_order_api_v1_pos_orders__order_id__void_post: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        order_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VoidIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PosOrderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_refunds_api_v1_pos_refunds_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        status?: 'requested' | 'done' | 'rejected'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RefundOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  decide_refund_api_v1_pos_refunds__refund_id___decision__post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        refund_id: string
+        decision: 'approve' | 'reject'
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RefundOut']
         }
       }
       /** @description Validation Error */
@@ -10287,6 +10882,61 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['VendorItemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_limits_api_v1_role_limits_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RoleLimitsOut'][]
+        }
+      }
+    }
+  }
+  set_limits_api_v1_role_limits__role_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        role_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LimitsIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RoleLimitsOut'][]
         }
       }
       /** @description Validation Error */

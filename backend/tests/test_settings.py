@@ -218,7 +218,11 @@ def test_fr_ten_007_approval_rules(client: TestClient, world: dict[str, object])
     )
     assert bad.status_code == 422, bad.text
     assert bad.json()["code"] == "invalid_reference"
-    assert len(client.get("/api/v1/approval-rules").json()) == 2
+    rules = client.get("/api/v1/approval-rules").json()
+    assert len([r for r in rules if r["document_type"] == "purchase_order"]) == 2
+    # docs/03 section 7 default seeded with the roles: a manager approves refunds.
+    [refund] = [r for r in rules if r["document_type"] == "refund"]
+    assert (refund["min_amount"], refund["approver_role_id"]) == (0, str(roles["manager"]))
 
 
 # --- Numbering (FR-TEN-009) ------------------------------------------------------------------
