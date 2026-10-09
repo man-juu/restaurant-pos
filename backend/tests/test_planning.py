@@ -168,3 +168,36 @@ def test_fr_inv_012_low_days_alert(
     scan(settings, world["a"])
     kinds = [n["kind"] for n in client.get("/api/v1/notifications", headers=h).json()]
     assert "low_days_of_inventory" in kinds
+
+
+def test_fr_inv_012_large_count_difference_alerts_managers(
+    client: TestClient, world: dict[str, Any], stock: dict[str, Any]
+) -> None:
+    # The tenant alerts from Rp 100.000 (the Indonesian default is Rp 200.000).
+    tenant_sql(
+        world["a"],
+        "INSERT INTO tenant_settings (tenant_id, key, value) VALUES (:t, 'stock', :v) "
+        "ON CONFLICT (tenant_id, key) DO UPDATE SET value = EXCLUDED.value",
+        {"t": world["a"], "v": '{"count_variance_alert": 100000}'},
+    )
+    h = login(client, world["kitchen_a"])
+    body = {
+        "outlet_id": str(world["shop"]),
+        "business_date": date.today().isoformat(),
+        "count_type": "spot",
+        "item_ids": [stock["rice"]],
+    }
+    count = client.post(f"{API}/counts", json=body, headers=h).json()
+    line = {"item_id": stock["rice"], "counted_qty": "0"}
+    assert (
+        client.put(
+            f"{API}/counts/{count['id']}/lines", json={"lines": [line]}, headers=h
+        ).status_code
+        == 200
+    )
+    assert client.post(f"{API}/counts/{count['id']}/submit", headers=h).status_code == 200
+    m = login(client, world["manager_a"])
+    notes = client.get("/api/v1/notifications", headers=m).json()
+    # 10 kg rice at Rp 14 per g = Rp 140.000 missing: above the threshold.
+    [alert] = [n for n in notes if n["kind"] == "count_variance"]
+    assert alert["params"] == {"number": count["number"], "amount": 140000}

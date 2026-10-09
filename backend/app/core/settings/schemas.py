@@ -114,6 +114,8 @@ class StockSettings(Strict):
     expiry_warning_days: int = Field(default=2, ge=0, le=60)
     # FR-INV-012: alert when stock lasts fewer days than this at the recent pace (0 = off).
     low_days_alert: int = Field(default=2, ge=0, le=60)
+    # FR-INV-012: alert when a count's difference is worth at least this (minor units, 0 = off).
+    count_variance_alert: int = Field(default=0, ge=0, le=10**12)
 
 
 class PurchasingSettings(Strict):

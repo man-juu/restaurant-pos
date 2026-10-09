@@ -9,12 +9,16 @@ Stock found to be missing is real, so a loss may take the balance below zero.
 
 import uuid
 from decimal import Decimal
+from typing import cast
 
 from sqlalchemy import func, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import audit
 from app.core.errors import AppError, NotFoundError
+from app.core.notifications.service import notify, recipients
+from app.core.settings import service as settings
+from app.core.settings.schemas import StockSettings
 from app.modules.catalog.interface import stock_items
 from app.modules.inventory import flow
 from app.modules.inventory.doc_models import StockCount, StockCountLine
@@ -155,12 +159,24 @@ async def _post(db: AsyncSession, count: StockCount, user_id: uuid.UUID) -> None
     flow.mark_decided(count, "posted", user_id)
 
 
+async def _big_variance(db: AsyncSession, count: StockCount, amount: int) -> None:
+    """FR-INV-012: a count whose difference is worth at least the tenant's threshold."""
+    stock = cast(StockSettings, await settings.get_setting(db, count.tenant_id, "stock"))
+    if stock.count_variance_alert and amount >= stock.count_variance_alert:
+        users = await recipients(db, "count_variance", count.outlet_id)
+        params = {"number": count.number, "amount": amount}
+        await notify(db, count.tenant_id, users, "count_variance", params, "/inventory")
+
+
 async def submit_count(db: AsyncSession, *, user_id: uuid.UUID, count_id: uuid.UUID) -> StockCount:
     count = await _count(db, count_id)
     flow.ensure_status(count, "draft")
     amount = await flow.value_of(db, count.outlet_id, await _variances(db, count))
     flow.mark_submitted(count)
-    if not await flow.approvers_needed(db, "count", count, amount):
+    await _big_variance(db, count, amount)
+    if not await flow.request_approval(
+        db, "count", count, amount, number=count.number, link="/inventory"
+    ):
         await _post(db, count, user_id)
     await _audit(db, count, user_id, "submit")
     return count

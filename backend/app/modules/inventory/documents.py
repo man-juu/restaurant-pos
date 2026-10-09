@@ -181,7 +181,8 @@ async def submit_adjustment(
     flow.ensure_status(adj, "draft")
     amount = await flow.value_of(db, adj.outlet_id, await _adjustment_change(db, adj))
     flow.mark_submitted(adj)
-    if not await flow.approvers_needed(db, "adjustment", adj, amount):
+    link = "/inventory"
+    if not await flow.request_approval(db, "adjustment", adj, amount, number=adj.number, link=link):
         await _post_adjustment(db, adj, user_id)  # no rule applies: posted at once
     await _audit(db, adj, user_id, "adjustment.submit", amount=amount)
     return adj

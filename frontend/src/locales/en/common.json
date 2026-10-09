@@ -310,7 +310,8 @@
         "block": "Refuse"
       },
       "expiryDays": "Warn this many days before a batch expires (0 to 60)",
-      "lowDays": "Alert when stock lasts fewer days than this (0 turns it off)"
+      "lowDays": "Alert when stock lasts fewer days than this (0 turns it off)",
+      "countVariance": "Alert when a count's difference is worth at least (0 turns it off)"
     },
     "purchasing": {
       "requireInvoice": "Require a photo of the supplier invoice on every purchase",
@@ -821,9 +822,9 @@
       "batch_near_expiry": "{{item}}: {{qty}} {{unit}} expires on {{expiry}}",
       "expired_stock": "{{item}}: {{qty}} {{unit}} expired on {{expiry}}",
       "low_days_of_inventory": "{{item}} is running low",
-      "count_variance": "Large count difference on {{item}}",
+      "count_variance": "Count {{number}} differs by {{amount}} (at average cost)",
       "food_cost_above_target": "Food cost of {{item}} is above target",
-      "approval_requested": "An approval is waiting for you"
+      "approval_requested": "{{number}} is waiting for your approval"
     }
   }
 }

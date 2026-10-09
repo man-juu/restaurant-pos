@@ -3928,6 +3928,11 @@ export interface components {
     /** StockSettings */
     StockSettings: {
       /**
+       * Count Variance Alert
+       * @default 0
+       */
+      count_variance_alert: number
+      /**
        * Expiry Warning Days
        * @default 2
        */

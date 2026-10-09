@@ -97,6 +97,7 @@ def test_fr_ten_007_order_above_threshold_needs_another_approver(
         "VALUES (gen_random_uuid(), :t, 'purchase_order', 1000000, :r)",
         {"t": world["a"], "r": roles[0][0]},
     )
+    _, other = add_member(world["a"], roles[0][0], HASH)  # a second manager can approve
     h = login(client, world["manager_a"])
     po = order(client, h, world, items)
     po = client.post(f"{P}/orders/{po['id']}/submit", headers=h).json()
@@ -105,10 +106,14 @@ def test_fr_ten_007_order_above_threshold_needs_another_approver(
     assert own.status_code == 403  # never your own request (docs/03 rule 1)
     early = receive(client, h, po, [{"po_line_id": po["lines"][0]["id"], "qty": "1"}])
     assert early.status_code == 409  # not approved yet
-    _, other = add_member(world["a"], roles[0][0], HASH)
     h2 = login(client, other)
+    # FR-NTF-002: the other manager was told; the requester was not.
+    [note] = client.get("/api/v1/notifications", headers=h2).json()
+    assert note["kind"] == "approval_requested" and note["params"]["number"] == po["number"]
     ok = client.post(f"{P}/orders/{po['id']}/decide", json={"approve": True}, headers=h2)
     assert ok.status_code == 200 and ok.json()["status"] == "approved"
+    h = login(client, world["manager_a"])
+    assert client.get("/api/v1/notifications", headers=h).json() == []
 
 
 def test_fr_pur_010_pdf_and_scope(

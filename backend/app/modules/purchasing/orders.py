@@ -15,6 +15,7 @@ from app.core.approvals import (
     ensure_status,
     mark_decided,
     mark_submitted,
+    request_approval,
 )
 from app.core.errors import ConflictError, NotFoundError
 from app.core.settings import service as settings
@@ -110,7 +111,7 @@ async def submit(db: AsyncSession, *, user_id: uuid.UUID, po_id: uuid.UUID) -> P
     po.number = await settings.allocate_number(
         db, tenant_id=po.tenant_id, doc_type=DOC, on=po.order_date
     )
-    if await approvers_needed(db, DOC, po, po.total):
+    if await request_approval(db, DOC, po, po.total, number=po.number, link="/purchasing"):
         mark_submitted(po)
     else:  # no rule for this amount: approved at once (tenant setting decides)
         mark_submitted(po)

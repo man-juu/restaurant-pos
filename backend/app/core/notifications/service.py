@@ -44,6 +44,26 @@ class Condition:
         return ":".join(str(x or "-") for x in (self.outlet_id, self.item_id, self.batch_id))
 
 
+async def members(
+    db: AsyncSession,
+    outlet_id: uuid.UUID | None,
+    *,
+    role_ids: set[uuid.UUID],
+    user_ids: set[uuid.UUID] | None = None,
+) -> set[uuid.UUID]:
+    """Active members with one of the roles (or listed by user) who can see the outlet."""
+    stmt = select(Membership.user_id).where(
+        Membership.status == "active",
+        or_(Membership.role_id.in_(role_ids), Membership.user_id.in_(user_ids or set())),
+    )
+    if outlet_id is not None:
+        sees = exists().where(
+            MembershipOutlet.membership_id == Membership.id, MembershipOutlet.outlet_id == outlet_id
+        )
+        stmt = stmt.where(or_(Membership.scope == "all", sees))
+    return set(await db.scalars(stmt))
+
+
 async def recipients(
     db: AsyncSession, alert_type: str, outlet_id: uuid.UUID | None
 ) -> set[uuid.UUID]:
@@ -61,16 +81,35 @@ async def recipients(
             Role.template_key.in_(DEFAULT_ROLES), Role.tenant_id.is_not(None)
         )
         role_ids = set(await db.scalars(stmt))
-    members = select(Membership.user_id).where(
-        Membership.status == "active",
-        or_(Membership.role_id.in_(role_ids), Membership.user_id.in_(user_ids)),
+    return await members(db, outlet_id, role_ids=role_ids, user_ids=user_ids)
+
+
+async def notify(
+    db: AsyncSession,
+    tenant_id: uuid.UUID,
+    users: set[uuid.UUID],
+    kind: str,
+    params: dict[str, Any],
+    link: str | None,
+    alert_id: uuid.UUID | None = None,
+) -> None:
+    """One notification per user (events such as an approval request, or a new alert)."""
+    if not users:
+        return
+    await db.execute(
+        insert(Notification),
+        [
+            {
+                "tenant_id": tenant_id,
+                "user_id": u,
+                "alert_id": alert_id,
+                "kind": kind,
+                "params": params,
+                "link": link,
+            }
+            for u in users
+        ],
     )
-    if outlet_id is not None:
-        sees = exists().where(
-            MembershipOutlet.membership_id == Membership.id, MembershipOutlet.outlet_id == outlet_id
-        )
-        members = members.where(or_(Membership.scope == "all", sees))
-    return set(await db.scalars(members))
 
 
 async def sync(
@@ -101,21 +140,7 @@ async def sync(
         db.add(alert)
         await db.flush()
         users = await recipients(db, alert_type, c.outlet_id)
-        if users:
-            await db.execute(
-                insert(Notification),
-                [
-                    {
-                        "tenant_id": tenant_id,
-                        "user_id": u,
-                        "alert_id": alert.id,
-                        "kind": alert_type,
-                        "params": c.details,
-                        "link": c.link,
-                    }
-                    for u in users
-                ],
-            )
+        await notify(db, tenant_id, users, alert_type, c.details, c.link, alert.id)
     return len(new), len(gone)
 
 

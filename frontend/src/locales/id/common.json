@@ -310,7 +310,8 @@
         "block": "Tolak"
       },
       "expiryDays": "Peringatkan sekian hari sebelum batch kedaluwarsa (0 sampai 60)",
-      "lowDays": "Peringatkan jika stok cukup kurang dari sekian hari (0 untuk mematikan)"
+      "lowDays": "Peringatkan jika stok cukup kurang dari sekian hari (0 untuk mematikan)",
+      "countVariance": "Peringatkan jika selisih hitung bernilai minimal (0 untuk mematikan)"
     },
     "purchasing": {
       "requireInvoice": "Wajibkan foto nota pemasok di setiap pembelian",
@@ -821,9 +822,9 @@
       "batch_near_expiry": "{{item}}: {{qty}} {{unit}} kedaluwarsa pada {{expiry}}",
       "expired_stock": "{{item}}: {{qty}} {{unit}} sudah kedaluwarsa sejak {{expiry}}",
       "low_days_of_inventory": "{{item}} hampir habis",
-      "count_variance": "Selisih hitung besar pada {{item}}",
+      "count_variance": "Hitung {{number}} selisih senilai {{amount}} (biaya rata-rata)",
       "food_cost_above_target": "HPP {{item}} di atas target",
-      "approval_requested": "Ada persetujuan yang menunggu Anda"
+      "approval_requested": "{{number}} menunggu persetujuan Anda"
     }
   }
 }

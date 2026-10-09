@@ -15,6 +15,7 @@ from app.core.approvals import (
     ensure_status,
     mark_decided,
     mark_submitted,
+    request_approval,
 )
 from app.core.settings.service import allocate_number
 from app.modules.catalog.interface import base_factors
@@ -31,6 +32,7 @@ __all__ = [
     "mark_decided",
     "mark_submitted",
     "next_number",
+    "request_approval",
     "to_base",
     "value_of",
 ]

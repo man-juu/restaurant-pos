@@ -5030,6 +5030,13 @@
       "StockSettings": {
         "additionalProperties": false,
         "properties": {
+          "count_variance_alert": {
+            "default": 0,
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Count Variance Alert",
+            "type": "integer"
+          },
           "expiry_warning_days": {
             "default": 2,
             "maximum": 60.0,

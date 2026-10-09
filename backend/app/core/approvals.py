@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import AppError, ConflictError, ForbiddenError
 from app.core.models import Role
+from app.core.notifications.service import members, notify
 from app.core.settings.service import required_approver_roles
 
 
@@ -62,6 +63,25 @@ async def approvers_needed(
     return await required_approver_roles(
         db, document_type=document_type, outlet_id=doc.outlet_id, amount=amount
     )
+
+
+async def request_approval(
+    db: AsyncSession,
+    document_type: str,
+    doc: FlowDoc,
+    amount: int,
+    *,
+    number: str | None,
+    link: str,
+) -> set[uuid.UUID]:
+    """The approver roles for this document; if any, tell those approvers who can see the
+    outlet (FR-NTF-002), never the person who asked (docs/03 rule 1)."""
+    roles = await approvers_needed(db, document_type, doc, amount)
+    if roles:
+        users = await members(db, doc.outlet_id, role_ids=roles) - {doc.created_by}
+        params = {"document": document_type, "number": number or "", "amount": amount}
+        await notify(db, doc.tenant_id, users, "approval_requested", params, link)
+    return roles
 
 
 async def ensure_may_decide(

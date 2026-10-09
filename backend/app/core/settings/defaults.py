@@ -54,7 +54,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
             }
         },
         "session": {"idle_minutes": 60},
-        "stock": STOCK,
+        "stock": {**STOCK, "count_variance_alert": 200_000},  # Rp 200.000
         "purchasing": {"require_invoice_attachment": False},
     }
 }
