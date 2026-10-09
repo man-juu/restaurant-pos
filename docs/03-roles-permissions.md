@@ -98,6 +98,7 @@ Examples:
 | `inventory.adjustment.create` / `approve` | Manual adjustments |
 | `purchasing.order.create` / `approve` | Purchase orders |
 | `sales.order.create` / `void` / `refund` | POS orders |
+| `tables.table.view` / `tables.table.setup` / `tables.session.manage` | See the floor; set up floors and tables (manager); seat, move, merge, split, mark clean (manager, cashier, waiter) |
 | `sales.order.pay` | Take payment for a POS order (waiters take orders without it) |
 | `sales.discount.apply` | Discounts up to the role's limit (default cashier 10 %, manager 50 %; Settings > Limits) |
 | `sales.order.void` / `sales.order.refund` | Void with a reason; ask for or approve a refund (approval rule "refund", default manager) |

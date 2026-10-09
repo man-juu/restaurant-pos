@@ -21,11 +21,10 @@ from app.core.idempotency import (
 from app.core.tenancy import tenant_session
 from app.modules.sales import orders, payments
 from app.modules.sales import permissions as perm
+from app.modules.sales.interface import order_states
 from app.modules.sales.models import (
     Payment,
-    PosLineModifier,
     PosOrder,
-    PosOrderLine,
     SalesDocument,
     SalesRefund,
 )
@@ -124,7 +123,7 @@ async def list_orders(
             .limit(200)
         )
         found = list(await db.scalars(stmt))
-        subtotals, counts = await _subtotals(db, [o.id for o in found])
+        states = await order_states(db, {o.id for o in found})
         return [
             PosOrderSummary(
                 id=o.id,
@@ -133,31 +132,11 @@ async def list_orders(
                 label=o.label,
                 channel_id=o.channel_id,
                 created_at=o.created_at,
-                total=subtotals.get(o.id, 0),
-                lines=counts.get(o.id, 0),
+                total=states[o.id].subtotal,
+                lines=states[o.id].lines,
             )
             for o in found
         ]
-
-
-async def _subtotals(
-    db: AsyncSession, ids: list[uuid.UUID]
-) -> tuple[dict[uuid.UUID, int], dict[uuid.UUID, int]]:
-    """Line totals per order (before service charge and tax), in two queries."""
-    lines = list(await db.scalars(select(PosOrderLine).where(PosOrderLine.order_id.in_(ids))))
-    deltas: dict[uuid.UUID, int] = {}
-    stmt = select(PosLineModifier.line_id, PosLineModifier.price_delta).where(
-        PosLineModifier.line_id.in_([ln.id for ln in lines])
-    )
-    for line_id, delta in (await db.execute(stmt)).all():
-        deltas[line_id] = deltas.get(line_id, 0) + delta
-    totals: dict[uuid.UUID, int] = {}
-    counts: dict[uuid.UUID, int] = {}
-    for ln in lines:
-        value = orders.line_total(ln.qty, ln.unit_price + deltas.get(ln.id, 0))
-        totals[ln.order_id] = totals.get(ln.order_id, 0) + value
-        counts[ln.order_id] = counts.get(ln.order_id, 0) + 1
-    return totals, counts
 
 
 @router.post("", response_model=PosOrderOut, status_code=201)

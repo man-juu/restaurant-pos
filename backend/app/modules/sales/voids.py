@@ -13,8 +13,9 @@ from app.core.settings.schemas import PosSettings
 from app.modules.catalog.interface import tenant_today
 from app.modules.inventory.interface import Posting
 from app.modules.sales.discounts import open_line
+from app.modules.sales.events import ORDER_CLOSED
 from app.modules.sales.models import PosLineModifier, PosOrder, PosOrderLine
-from app.modules.sales.orders import _audit, require_open
+from app.modules.sales.orders import _audit, announce, require_open
 from app.modules.sales.payments import option_changes, stock_quantities
 from app.modules.sales.service import take_stock
 
@@ -82,3 +83,4 @@ async def void_order(db: AsyncSession, order: PosOrder, *, user_id: uuid.UUID, r
         "void",
         {"reason": reason, "lines": len(lines), "waste_value": waste},
     )
+    await announce(db, order, user_id, ORDER_CLOSED)

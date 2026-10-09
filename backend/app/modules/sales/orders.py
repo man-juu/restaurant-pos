@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import audit
 from app.core.errors import ConflictError, NotFoundError
+from app.core.events import Event, publish
 from app.core.settings import service as settings
 from app.core.settings.pricing import Totals, calculate
 from app.core.settings.schemas import ServiceChargeSettings, TaxSettings
@@ -30,6 +31,7 @@ from app.modules.catalog.interface import (
 )
 from app.modules.inventory.interface import visible_outlet
 from app.modules.sales.discounts import discount_amount
+from app.modules.sales.events import ORDER_CLOSED
 from app.modules.sales.models import PosLineModifier, PosOrder, PosOrderLine
 from app.modules.sales.pos_schemas import (
     PosLineIn,
@@ -202,6 +204,7 @@ async def cancel(db: AsyncSession, order: PosOrder, user_id: uuid.UUID) -> None:
     order.status = "cancelled"
     await db.flush()
     await _audit(db, order, user_id, "cancel")
+    await announce(db, order, user_id, ORDER_CLOSED)
 
 
 async def lines_of(db: AsyncSession, order: PosOrder, language: str) -> list[PosLineOut]:
@@ -314,3 +317,40 @@ async def _audit(
         target_id=order.id,
         summary={"number": order.number, **(extra or {})},
     )
+
+
+async def announce(db: AsyncSession, order: PosOrder, user_id: uuid.UUID, name: str) -> None:
+    """Tell other modules (tables, kitchen) in the same transaction (app/core/events.py)."""
+    data = {"order_id": order.id, "outlet_id": order.outlet_id, "status": order.status}
+    await publish(db, Event(name, order.tenant_id, user_id, data))
+
+
+async def move_lines(
+    db: AsyncSession,
+    src: PosOrder,
+    dst: PosOrder,
+    line_ids: list[uuid.UUID],
+    user_id: uuid.UUID,
+) -> int:
+    """FR-TBL-003 split bill by item: lines go to another open order of the same outlet and
+    channel (the price stays as it was; nothing is posted until each order is paid)."""
+    require_open(src)
+    require_open(dst)
+    if src.id == dst.id or (src.outlet_id, src.channel_id) != (dst.outlet_id, dst.channel_id):
+        raise ConflictError("orders_not_compatible")
+    rows = list(
+        await db.scalars(
+            select(PosOrderLine).where(
+                PosOrderLine.id.in_(line_ids),
+                PosOrderLine.order_id == src.id,
+                PosOrderLine.status != "void",
+            )
+        )
+    )
+    if len(rows) != len(set(line_ids)):
+        raise NotFoundError("line_not_found")
+    for row in rows:
+        row.order_id = dst.id
+    await db.flush()
+    await _audit(db, src, user_id, "move_lines", {"to": dst.number, "lines": len(rows)})
+    return len(rows)

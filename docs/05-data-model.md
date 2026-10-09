@@ -134,8 +134,11 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 
 | Table | Key columns |
 | --- | --- |
-| `floors`, `tables` | outlet, name, capacity, x, y, status |
-| `table_sessions` | table_id(s), opened_at, closed_at, party_size, sales_document_id |
+| `floors` | outlet_id, name, sort_order, is_active |
+| `dining_tables` | outlet_id, floor_id, name, capacity, x, y, status (available, occupied, reserved, needs_cleaning), is_active |
+| `table_sessions` | outlet_id, channel_id, status, party_size, opened_by, opened_at, closed_at, merged_into |
+| `table_session_tables` | session_id, table_id, active (one active session per table) |
+| `table_session_orders` | session_id, order_id (POS orders of the party) |
 | `reservations` | outlet, customer_id, party_size, starts_at, duration_min, status, notes, table_ids |
 
 ### 2.8 Finance

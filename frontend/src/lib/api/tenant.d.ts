@@ -2509,6 +2509,198 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/tables': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List Tables
+     * @description FR-TBL-004: every table with its party, time seated and open amount.
+     */
+    get: operations['list_tables_api_v1_tables_get']
+    put?: never
+    /** Create Table */
+    post: operations['create_table_api_v1_tables_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/tables/floors': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Floors */
+    get: operations['list_floors_api_v1_tables_floors_get']
+    put?: never
+    /** Create Floor */
+    post: operations['create_floor_api_v1_tables_floors_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/tables/floors/{floor_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Floor */
+    put: operations['update_floor_api_v1_tables_floors__floor_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/tables/sessions/{session_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Session */
+    get: operations['get_session_api_v1_tables_sessions__session_id__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/tables/sessions/{session_id}/merge': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Merge */
+    post: operations['merge_api_v1_tables_sessions__session_id__merge_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/tables/sessions/{session_id}/move': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Move */
+    post: operations['move_api_v1_tables_sessions__session_id__move_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/tables/sessions/{session_id}/orders': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** New Bill */
+    post: operations['new_bill_api_v1_tables_sessions__session_id__orders_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/tables/sessions/{session_id}/split': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Split */
+    post: operations['split_api_v1_tables_sessions__session_id__split_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/tables/{table_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Table */
+    put: operations['update_table_api_v1_tables__table_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/tables/{table_id}/seat': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Seat */
+    post: operations['seat_api_v1_tables__table_id__seat_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/tables/{table_id}/status': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Set Status */
+    put: operations['set_status_api_v1_tables__table_id__status_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/transfers': {
     parameters: {
       query?: never
@@ -3426,6 +3618,51 @@ export interface components {
       /** Unit Price */
       unit_price?: number | null
     }
+    /** FloorIn */
+    FloorIn: {
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /** Name */
+      name: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /**
+       * Sort Order
+       * @default 0
+       */
+      sort_order: number
+    }
+    /** FloorOut */
+    FloorOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /** Name */
+      name: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /**
+       * Sort Order
+       * @default 0
+       */
+      sort_order: number
+    }
     /** GenerateIn */
     GenerateIn: {
       /** Prompt */
@@ -3869,12 +4106,28 @@ export interface components {
       /** Sku */
       sku: string
     }
+    /** MergeIn */
+    MergeIn: {
+      /**
+       * Session Id
+       * Format: uuid
+       */
+      session_id: string
+    }
     /** MfaSetupOut */
     MfaSetupOut: {
       /** Otpauth Uri */
       otpauth_uri: string
       /** Secret */
       secret: string
+    }
+    /** MoveIn */
+    MoveIn: {
+      /**
+       * To Table Id
+       * Format: uuid
+       */
+      to_table_id: string
     }
     /** MovementIn */
     MovementIn: {
@@ -5099,6 +5352,19 @@ export interface components {
       /** Unit Price */
       unit_price: number
     }
+    /** SeatIn */
+    SeatIn: {
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /**
+       * Party Size
+       * @default 2
+       */
+      party_size: number
+    }
     /** ServiceChargeSettings */
     ServiceChargeSettings: {
       /**
@@ -5269,6 +5535,24 @@ export interface components {
       /** Variance */
       variance: number | null
     }
+    /** SplitIn */
+    SplitIn: {
+      /**
+       * From Order Id
+       * Format: uuid
+       */
+      from_order_id: string
+      /** Line Ids */
+      line_ids: string[]
+    }
+    /** StatusIn */
+    StatusIn: {
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'available' | 'reserved' | 'needs_cleaning'
+    }
     /** StockDocument */
     StockDocument: {
       /**
@@ -5409,6 +5693,117 @@ export interface components {
        * Format: uuid
        */
       tenant_id: string
+    }
+    /** TableBillOut */
+    TableBillOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Lines */
+      lines: number
+      /** Number */
+      number: string
+      /** Status */
+      status: string
+      /** Subtotal */
+      subtotal: number
+    }
+    /** TableIn */
+    TableIn: {
+      /**
+       * Capacity
+       * @default 4
+       */
+      capacity: number
+      /**
+       * Floor Id
+       * Format: uuid
+       */
+      floor_id: string
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /** Name */
+      name: string
+      /**
+       * X
+       * @default 0
+       */
+      x: number
+      /**
+       * Y
+       * @default 0
+       */
+      y: number
+    }
+    /** TableOut */
+    TableOut: {
+      /** Capacity */
+      capacity: number
+      /**
+       * Floor Id
+       * Format: uuid
+       */
+      floor_id: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Is Active */
+      is_active: boolean
+      /** Name */
+      name: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      session?: components['schemas']['TableSessionOut'] | null
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'available' | 'occupied' | 'reserved' | 'needs_cleaning'
+      /** X */
+      x: number
+      /** Y */
+      y: number
+    }
+    /** TableSessionOut */
+    TableSessionOut: {
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Open Amount */
+      open_amount: number
+      /**
+       * Opened At
+       * Format: date-time
+       */
+      opened_at: string
+      /** Orders */
+      orders: components['schemas']['TableBillOut'][]
+      /** Party Size */
+      party_size: number
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'open' | 'closed'
+      /** Table Ids */
+      table_ids: string[]
     }
     /** TaxRule */
     TaxRule: {
@@ -11222,6 +11617,441 @@ export interface operations {
           'application/json': {
             [key: string]: unknown
           }
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_tables_api_v1_tables_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_table_api_v1_tables_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TableIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_floors_api_v1_tables_floors_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['FloorOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_floor_api_v1_tables_floors_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FloorIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['FloorOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_floor_api_v1_tables_floors__floor_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        floor_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FloorIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['FloorOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_session_api_v1_tables_sessions__session_id__get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        session_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableSessionOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  merge_api_v1_tables_sessions__session_id__merge_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        session_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MergeIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableSessionOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  move_api_v1_tables_sessions__session_id__move_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        session_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MoveIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableSessionOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  new_bill_api_v1_tables_sessions__session_id__orders_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        session_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableSessionOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  split_api_v1_tables_sessions__session_id__split_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        session_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SplitIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableSessionOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_table_api_v1_tables__table_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        table_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TableIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  seat_api_v1_tables__table_id__seat_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        table_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SeatIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableSessionOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  set_status_api_v1_tables__table_id__status_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        table_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StatusIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableOut'][]
         }
       }
       /** @description Validation Error */

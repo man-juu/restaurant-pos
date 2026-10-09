@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
 import { Alert } from '../../components/ui'
@@ -31,7 +32,9 @@ export interface TillProps {
  * order open starts one, so the cashier never has to press "new order" first. */
 export function Till(props: TillProps) {
   const { t, i18n } = useTranslation()
-  const [orderId, setOrderId] = useState<string>()
+  // A table's bill opens straight on the till (/pos?order=..., FR-TBL-002).
+  const [params] = useSearchParams()
+  const [orderId, setOrderId] = useState<string | undefined>(params.get('order') ?? undefined)
   const [choosing, setChoosing] = useState<MenuItemOut>()
   const create = useCreateOrder(i18n.language)
   const add = useAddLine(i18n.language)

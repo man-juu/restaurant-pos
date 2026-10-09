@@ -80,6 +80,11 @@ const STATE_STYLES: Record<string, string> = {
   requested: 'bg-warn-surface text-warn',
   shipped: 'bg-alert-surface text-alert',
   completed: 'bg-good-surface text-good',
+  available: 'bg-good-surface text-good',
+  occupied: 'bg-alert-surface text-alert',
+  reserved: 'bg-warn-surface text-warn',
+  needs_cleaning: 'bg-raised text-ink-soft',
+  sent: 'bg-warn-surface text-warn',
 }
 
 export function StateBadge({ state, label }: { state: string; label: string }) {

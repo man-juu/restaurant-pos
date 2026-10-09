@@ -33,6 +33,9 @@ const NotificationsPage = lazy(() =>
   })),
 )
 const PosPage = lazy(() => import('../features/pos/PosPage').then((m) => ({ default: m.PosPage })))
+const TablesPage = lazy(() =>
+  import('../features/tables/TablesPage').then((m) => ({ default: m.TablesPage })),
+)
 const SalesPage = lazy(() =>
   import('../features/sales/SalesPage').then((m) => ({ default: m.SalesPage })),
 )
@@ -68,6 +71,7 @@ export const routes = [
       { path: 'transfers', element: page(<TransfersPage />) },
       { path: 'notifications', element: page(<NotificationsPage />) },
       { path: 'pos', element: page(<PosPage />) },
+      { path: 'tables', element: page(<TablesPage />) },
       { path: 'sales', element: page(<SalesPage />) },
       { path: 'reports', element: page(<ReportsPage />) },
       { path: 'audit', element: page(<AuditPage />) },

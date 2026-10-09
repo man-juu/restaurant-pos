@@ -41,7 +41,7 @@ infra/     compose files, Caddyfile, deploy and backup scripts
 docs/      specs, ADRs, runbooks, task briefs
 ```
 
-Each backend module has `models.py, schemas.py, service.py, router.py, events.py, permissions.py, module.py`.
+Each backend module has `models.py, schemas.py, service.py, router.py, events.py, permissions.py, module.py`. Other modules use a module only through its `interface.py`; cross-module reactions go through in-transaction events (`app/core/events.py`).
 
 ## Commands
 

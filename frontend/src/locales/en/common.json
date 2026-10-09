@@ -51,7 +51,8 @@
     "settings": "Settings",
     "catalog": "Catalog",
     "audit": "Audit log",
-    "pos": "Cashier"
+    "pos": "Cashier",
+    "tables": "Tables"
   },
   "shell": {
     "business": "Business",
@@ -240,7 +241,16 @@
     "refund_not_found": "That refund no longer exists.",
     "not_a_limited_permission": "That permission has no limit.",
     "limit_above_100_percent": "A limit cannot be above 100 %.",
-    "role_lacks_permission": "That role does not have this permission."
+    "role_lacks_permission": "That role does not have this permission.",
+    "table_not_free": "That table is not free.",
+    "table_occupied": "Guests are seated at that table.",
+    "floor_name_taken": "A floor with this name exists.",
+    "table_name_taken": "A table with this name exists.",
+    "sessions_not_compatible": "Those tables cannot be joined.",
+    "orders_not_compatible": "Those bills cannot be combined.",
+    "floor_not_found": "That floor no longer exists.",
+    "table_not_found": "That table no longer exists.",
+    "session_not_found": "Those guests already left."
   },
   "appearance": {
     "open": "Appearance",
@@ -1133,6 +1143,47 @@
       "requested": "Refund of {{amount}} is waiting for a manager.",
       "done": "Refunded {{amount}}.",
       "rejected": "The refund was rejected."
+    },
+    "orderStatus": {
+      "open": "open",
+      "paid": "paid",
+      "cancelled": "cancelled",
+      "void": "voided",
+      "refunded": "refunded"
     }
+  },
+  "tables": {
+    "title": "Tables",
+    "floor": "Floor",
+    "empty": "No tables on this floor yet.",
+    "seats_one": "{{count}} seat",
+    "seats_other": "{{count}} seats",
+    "seated": "{{party}} guests · {{minutes}} min",
+    "status": {
+      "available": "Free",
+      "occupied": "Seated",
+      "reserved": "Reserved",
+      "needs_cleaning": "Needs cleaning"
+    },
+    "openOnTill": "Open on till",
+    "markClean": "Mark clean",
+    "reserve": "Mark reserved",
+    "unreserve": "Free the reservation",
+    "party": "Guests",
+    "seat": "Seat guests",
+    "otherTable": "Other table",
+    "choose": "Choose a table",
+    "move": "Move here",
+    "merge": "Join that party",
+    "newBill": "New bill",
+    "split": "Split items",
+    "fromBill": "From bill",
+    "splitConfirm": "Move ticked items to a new bill",
+    "setup": "Set up floors and tables",
+    "floorName": "Floor or area name",
+    "addFloor": "Add floor",
+    "tableName": "Table name",
+    "capacity": "Seats",
+    "addTable": "Add table"
   }
 }

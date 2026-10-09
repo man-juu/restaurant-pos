@@ -51,7 +51,8 @@
     "settings": "Pengaturan",
     "catalog": "Katalog",
     "audit": "Log audit",
-    "pos": "Kasir"
+    "pos": "Kasir",
+    "tables": "Meja"
   },
   "shell": {
     "business": "Usaha",
@@ -240,7 +241,16 @@
     "refund_not_found": "Refund itu sudah tidak ada.",
     "not_a_limited_permission": "Izin itu tidak punya batas.",
     "limit_above_100_percent": "Batas tidak boleh di atas 100 %.",
-    "role_lacks_permission": "Peran itu tidak punya izin ini."
+    "role_lacks_permission": "Peran itu tidak punya izin ini.",
+    "table_not_free": "Meja itu tidak kosong.",
+    "table_occupied": "Ada tamu di meja itu.",
+    "floor_name_taken": "Lantai dengan nama ini sudah ada.",
+    "table_name_taken": "Meja dengan nama ini sudah ada.",
+    "sessions_not_compatible": "Meja itu tidak bisa digabung.",
+    "orders_not_compatible": "Tagihan itu tidak bisa digabung.",
+    "floor_not_found": "Lantai itu sudah tidak ada.",
+    "table_not_found": "Meja itu sudah tidak ada.",
+    "session_not_found": "Tamu itu sudah pergi."
   },
   "appearance": {
     "open": "Tampilan",
@@ -1133,6 +1143,47 @@
       "requested": "Refund {{amount}} menunggu manajer.",
       "done": "Sudah di-refund {{amount}}.",
       "rejected": "Refund ditolak."
+    },
+    "orderStatus": {
+      "open": "terbuka",
+      "paid": "lunas",
+      "cancelled": "dibatalkan",
+      "void": "di-void",
+      "refunded": "di-refund"
     }
+  },
+  "tables": {
+    "title": "Meja",
+    "floor": "Lantai",
+    "empty": "Belum ada meja di lantai ini.",
+    "seats_one": "{{count}} kursi",
+    "seats_other": "{{count}} kursi",
+    "seated": "{{party}} tamu · {{minutes}} mnt",
+    "status": {
+      "available": "Kosong",
+      "occupied": "Terisi",
+      "reserved": "Dipesan",
+      "needs_cleaning": "Perlu dibersihkan"
+    },
+    "openOnTill": "Buka di kasir",
+    "markClean": "Tandai bersih",
+    "reserve": "Tandai dipesan",
+    "unreserve": "Batalkan pesanan meja",
+    "party": "Jumlah tamu",
+    "seat": "Dudukkan tamu",
+    "otherTable": "Meja lain",
+    "choose": "Pilih meja",
+    "move": "Pindah ke sini",
+    "merge": "Gabung dengan tamu itu",
+    "newBill": "Tagihan baru",
+    "split": "Pisah item",
+    "fromBill": "Dari tagihan",
+    "splitConfirm": "Pindahkan item tercentang ke tagihan baru",
+    "setup": "Atur lantai dan meja",
+    "floorName": "Nama lantai atau area",
+    "addFloor": "Tambah lantai",
+    "tableName": "Nama meja",
+    "capacity": "Kursi",
+    "addTable": "Tambah meja"
   }
 }

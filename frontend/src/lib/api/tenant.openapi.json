@@ -1887,6 +1887,80 @@
         "title": "EntryLine",
         "type": "object"
       },
+      "FloorIn": {
+        "additionalProperties": false,
+        "properties": {
+          "is_active": {
+            "default": true,
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "sort_order": {
+            "default": 0,
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "Sort Order",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "name"
+        ],
+        "title": "FloorIn",
+        "type": "object"
+      },
+      "FloorOut": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_active": {
+            "default": true,
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "sort_order": {
+            "default": 0,
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "Sort Order",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "name",
+          "id"
+        ],
+        "title": "FloorOut",
+        "type": "object"
+      },
       "GenerateIn": {
         "properties": {
           "prompt": {
@@ -3209,6 +3283,21 @@
         "title": "MenuItemOut",
         "type": "object"
       },
+      "MergeIn": {
+        "additionalProperties": false,
+        "properties": {
+          "session_id": {
+            "format": "uuid",
+            "title": "Session Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id"
+        ],
+        "title": "MergeIn",
+        "type": "object"
+      },
       "MfaSetupOut": {
         "properties": {
           "otpauth_uri": {
@@ -3225,6 +3314,21 @@
           "otpauth_uri"
         ],
         "title": "MfaSetupOut",
+        "type": "object"
+      },
+      "MoveIn": {
+        "additionalProperties": false,
+        "properties": {
+          "to_table_id": {
+            "format": "uuid",
+            "title": "To Table Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "to_table_id"
+        ],
+        "title": "MoveIn",
         "type": "object"
       },
       "MovementIn": {
@@ -6401,6 +6505,28 @@
         "title": "SalesLineOut",
         "type": "object"
       },
+      "SeatIn": {
+        "additionalProperties": false,
+        "properties": {
+          "channel_id": {
+            "format": "uuid",
+            "title": "Channel Id",
+            "type": "string"
+          },
+          "party_size": {
+            "default": 2,
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Party Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "channel_id"
+        ],
+        "title": "SeatIn",
+        "type": "object"
+      },
       "ServiceChargeSettings": {
         "additionalProperties": false,
         "properties": {
@@ -6790,6 +6916,51 @@
         "title": "ShiftOut",
         "type": "object"
       },
+      "SplitIn": {
+        "additionalProperties": false,
+        "properties": {
+          "from_order_id": {
+            "format": "uuid",
+            "title": "From Order Id",
+            "type": "string"
+          },
+          "line_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "title": "Line Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "from_order_id",
+          "line_ids"
+        ],
+        "title": "SplitIn",
+        "type": "object"
+      },
+      "StatusIn": {
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "enum": [
+              "available",
+              "reserved",
+              "needs_cleaning"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "StatusIn",
+        "type": "object"
+      },
       "StockDocument": {
         "properties": {
           "blind": {
@@ -7174,6 +7345,222 @@
           "tenant_id"
         ],
         "title": "SwitchTenantRequest",
+        "type": "object"
+      },
+      "TableBillOut": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "lines": {
+            "title": "Lines",
+            "type": "integer"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "subtotal": {
+            "title": "Subtotal",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "status",
+          "subtotal",
+          "lines"
+        ],
+        "title": "TableBillOut",
+        "type": "object"
+      },
+      "TableIn": {
+        "additionalProperties": false,
+        "properties": {
+          "capacity": {
+            "default": 4,
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Capacity",
+            "type": "integer"
+          },
+          "floor_id": {
+            "format": "uuid",
+            "title": "Floor Id",
+            "type": "string"
+          },
+          "is_active": {
+            "default": true,
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "name": {
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "x": {
+            "default": 0,
+            "maximum": 50.0,
+            "minimum": 0.0,
+            "title": "X",
+            "type": "integer"
+          },
+          "y": {
+            "default": 0,
+            "maximum": 50.0,
+            "minimum": 0.0,
+            "title": "Y",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "floor_id",
+          "name"
+        ],
+        "title": "TableIn",
+        "type": "object"
+      },
+      "TableOut": {
+        "properties": {
+          "capacity": {
+            "title": "Capacity",
+            "type": "integer"
+          },
+          "floor_id": {
+            "format": "uuid",
+            "title": "Floor Id",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "session": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TableSessionOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "enum": [
+              "available",
+              "occupied",
+              "reserved",
+              "needs_cleaning"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "x": {
+            "title": "X",
+            "type": "integer"
+          },
+          "y": {
+            "title": "Y",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "outlet_id",
+          "floor_id",
+          "name",
+          "capacity",
+          "x",
+          "y",
+          "status",
+          "is_active"
+        ],
+        "title": "TableOut",
+        "type": "object"
+      },
+      "TableSessionOut": {
+        "properties": {
+          "channel_id": {
+            "format": "uuid",
+            "title": "Channel Id",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "open_amount": {
+            "title": "Open Amount",
+            "type": "integer"
+          },
+          "opened_at": {
+            "format": "date-time",
+            "title": "Opened At",
+            "type": "string"
+          },
+          "orders": {
+            "items": {
+              "$ref": "#/components/schemas/TableBillOut"
+            },
+            "title": "Orders",
+            "type": "array"
+          },
+          "party_size": {
+            "title": "Party Size",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "closed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "table_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Table Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "party_size",
+          "opened_at",
+          "channel_id",
+          "table_ids",
+          "orders",
+          "open_amount"
+        ],
+        "title": "TableSessionOut",
         "type": "object"
       },
       "TaxRule": {
@@ -17504,6 +17891,648 @@
         "summary": "Put Setting",
         "tags": [
           "settings"
+        ]
+      }
+    },
+    "/api/v1/tables": {
+      "get": {
+        "description": "FR-TBL-004: every table with its party, time seated and open amount.",
+        "operationId": "list_tables_api_v1_tables_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TableOut"
+                  },
+                  "title": "Response List Tables Api V1 Tables Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Tables",
+        "tags": [
+          "tables"
+        ]
+      },
+      "post": {
+        "operationId": "create_table_api_v1_tables_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TableIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TableOut"
+                  },
+                  "title": "Response Create Table Api V1 Tables Post",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Table",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/tables/floors": {
+      "get": {
+        "operationId": "list_floors_api_v1_tables_floors_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FloorOut"
+                  },
+                  "title": "Response List Floors Api V1 Tables Floors Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Floors",
+        "tags": [
+          "tables"
+        ]
+      },
+      "post": {
+        "operationId": "create_floor_api_v1_tables_floors_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FloorIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FloorOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Floor",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/tables/floors/{floor_id}": {
+      "put": {
+        "operationId": "update_floor_api_v1_tables_floors__floor_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "floor_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Floor Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FloorIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FloorOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Floor",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/tables/sessions/{session_id}": {
+      "get": {
+        "operationId": "get_session_api_v1_tables_sessions__session_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TableSessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Session",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/tables/sessions/{session_id}/merge": {
+      "post": {
+        "operationId": "merge_api_v1_tables_sessions__session_id__merge_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MergeIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TableSessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Merge",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/tables/sessions/{session_id}/move": {
+      "post": {
+        "operationId": "move_api_v1_tables_sessions__session_id__move_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MoveIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TableSessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Move",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/tables/sessions/{session_id}/orders": {
+      "post": {
+        "operationId": "new_bill_api_v1_tables_sessions__session_id__orders_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TableSessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "New Bill",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/tables/sessions/{session_id}/split": {
+      "post": {
+        "operationId": "split_api_v1_tables_sessions__session_id__split_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SplitIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TableSessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Split",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/tables/{table_id}": {
+      "put": {
+        "operationId": "update_table_api_v1_tables__table_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "table_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Table Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TableIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TableOut"
+                  },
+                  "title": "Response Update Table Api V1 Tables  Table Id  Put",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Table",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/tables/{table_id}/seat": {
+      "post": {
+        "operationId": "seat_api_v1_tables__table_id__seat_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "table_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Table Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeatIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TableSessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Seat",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/tables/{table_id}/status": {
+      "put": {
+        "operationId": "set_status_api_v1_tables__table_id__status_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "table_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Table Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatusIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TableOut"
+                  },
+                  "title": "Response Set Status Api V1 Tables  Table Id  Status Put",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Status",
+        "tags": [
+          "tables"
         ]
       }
     },

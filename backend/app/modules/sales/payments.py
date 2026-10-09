@@ -16,6 +16,7 @@ from app.core.settings import service as settings
 from app.core.settings.pricing import round_half_up_div
 from app.core.settings.schemas import PaymentMethod, PaymentMethodSettings, PosSettings
 from app.modules.catalog.interface import option_ingredients, tenant_today
+from app.modules.sales.events import ORDER_PAID
 from app.modules.sales.models import (
     Payment,
     PosLineModifier,
@@ -25,7 +26,7 @@ from app.modules.sales.models import (
     SalesLine,
     SalesModifierLine,
 )
-from app.modules.sales.orders import _audit, lines_of, require_open, totals
+from app.modules.sales.orders import _audit, announce, lines_of, require_open, totals
 from app.modules.sales.pos_schemas import PosLineOut, PosPayIn, PosPaymentIn
 from app.modules.sales.service import consume_for_sale, get_day
 from app.modules.sales.shifts import current_shift
@@ -213,4 +214,5 @@ async def pay(
     order.shift_id = shift.id if shift else None
     await db.flush()
     await _audit(db, order, user_id, "pay", {"total": doc.total, "tip": data.tip})
+    await announce(db, order, user_id, ORDER_PAID)
     return doc, payments
