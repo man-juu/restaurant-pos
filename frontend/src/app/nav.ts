@@ -15,6 +15,7 @@ export function navItems(caps: Capabilities | undefined): NavItem[] {
   // Reports collect each module's report permission (FR-RPT-006): one entry if any applies.
   if (caps.permissions.some((p) => p.endsWith('.report.view')))
     items.push({ key: 'reports', to: '/reports' })
+  if (caps.permissions.includes('audit.log.view')) items.push({ key: 'audit', to: '/audit' })
   if (caps.permissions.includes('tenant.settings.view'))
     items.push({ key: 'settings', to: '/settings' })
   return items

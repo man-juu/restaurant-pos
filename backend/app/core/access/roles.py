@@ -2,7 +2,7 @@
 
 import uuid
 
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.access.permissions import Registry
@@ -35,3 +35,30 @@ async def create_tenant_roles(
                 [{"tenant_id": tenant_id, "role_id": role_id, "permission_code": c} for c in codes],
             )
     return ids
+
+
+async def sync_new_permissions(db: AsyncSession, tenant_id: uuid.UUID, registry: Registry) -> int:
+    """Grant permissions that are new to this tenant (a module released after it was created)
+    to its template roles, as the template says. A permission any of the tenant's roles
+    already holds is not new, so a default the owner removed is never granted again.
+    Returns the number of grants added."""
+    held = set(
+        await db.scalars(
+            select(RolePermission.permission_code).where(RolePermission.tenant_id == tenant_id)
+        )
+    )
+    roles = (
+        await db.execute(
+            select(Role.id, Role.template_key).where(
+                Role.tenant_id == tenant_id, Role.template_key.is_not(None)
+            )
+        )
+    ).all()
+    rows = [
+        {"tenant_id": tenant_id, "role_id": role_id, "permission_code": code}
+        for role_id, key in roles
+        for code in sorted(registry.templates.get(key or "", frozenset()) - held)
+    ]
+    if rows:
+        await db.execute(insert(RolePermission), rows)
+    return len(rows)

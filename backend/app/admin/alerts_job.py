@@ -9,6 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 import app.modules
+from app.admin.models import JobFailure
 from app.core.models import Subscription, Tenant
 from app.core.modules import discover
 from app.core.notifications.service import run_scanners
@@ -28,14 +29,21 @@ async def active_tenants(admin_db: AsyncSession) -> list[uuid.UUID]:
 
 async def run_alerts(
     tenant_ids: list[uuid.UUID], app_maker: async_sessionmaker[AsyncSession]
-) -> int:
+) -> dict[uuid.UUID, str]:
+    """Returns the tenants that failed, with the error type (the caller records them)."""
     discover(app.modules)  # importing the modules registers their scanners
-    failed = 0
+    failed: dict[uuid.UUID, str] = {}
     for tenant_id in tenant_ids:
         try:
             async with tenant_session(app_maker, tenant_id) as db:
                 await run_scanners(db, tenant_id)
-        except Exception:  # one tenant's problem must not stop the others
-            failed += 1
+        except Exception as err:  # one tenant's problem must not stop the others
+            failed[tenant_id] = type(err).__name__
             log.exception("alerts job failed for a tenant", extra={"tenant_id": str(tenant_id)})
     return failed
+
+
+async def record_failures(admin_db: AsyncSession, job: str, failed: dict[uuid.UUID, str]) -> None:
+    """FR-ADM-004: what the usage overview counts. Error type only, no data."""
+    admin_db.add_all(JobFailure(job=job, tenant_id=t, error=e[:200]) for t, e in failed.items())
+    await admin_db.flush()

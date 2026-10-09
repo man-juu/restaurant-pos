@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 import app.admin.models
 import app.core.ai.models
+import app.core.flags
 import app.core.imports.models
 import app.core.notifications.models
 import app.core.settings.models

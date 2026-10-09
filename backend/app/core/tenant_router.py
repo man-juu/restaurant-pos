@@ -12,6 +12,7 @@ from app.core.access.permissions import Registry
 from app.core.access.policy import Principal, require, require_member
 from app.core.access.subscription import days_left
 from app.core.errors import NotFoundError
+from app.core.flags import overrides_subquery, resolve
 from app.core.models import Outlet, Role, Tenant
 from app.core.tenancy import tenant_session
 
@@ -39,6 +40,7 @@ class Capabilities(BaseModel):
     modules: list[str]
     subscription: SubscriptionBanner
     nav: list[str]
+    flags: list[str] = []  # FR-ADM-006: feature flags on for this tenant
     # Formatting defaults for the UI (FR-X-002): money in this currency's minor units, and
     # names fall back to the tenant's default language.
     currency: str
@@ -114,9 +116,12 @@ async def capabilities(
     async with tenant_session(request.app.state.sessionmaker, p.tenant_id, p.user_id) as db:
         tenant = (
             await db.execute(
-                select(Tenant.currency, Tenant.language).where(Tenant.id == p.tenant_id)
+                select(Tenant.currency, Tenant.language, overrides_subquery()).where(
+                    Tenant.id == p.tenant_id
+                )
             )
         ).one()
+        flags = sorted(resolve(tenant[2] or {}))
     return Capabilities(
         currency=tenant.currency,
         language=tenant.language,
@@ -132,4 +137,5 @@ async def capabilities(
             else None,
         ),
         nav=nav,
+        flags=flags,
     )

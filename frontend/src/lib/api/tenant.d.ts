@@ -74,6 +74,43 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/audit': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Audit */
+    get: operations['list_audit_api_v1_audit_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/audit/export': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Export Audit
+     * @description FR-AUD-004: a date range is required and capped, so an export stays bounded.
+     */
+    get: operations['export_audit_api_v1_audit_export_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/auth/invitations/accept': {
     parameters: {
       query?: never
@@ -2372,6 +2409,37 @@ export interface components {
       /** Qty */
       qty: number | string
     }
+    /** AuditRow */
+    AuditRow: {
+      /** Action */
+      action: string
+      /** Actor Type */
+      actor_type: string
+      /**
+       * At
+       * Format: date-time
+       */
+      at: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Outlet Id */
+      outlet_id: string | null
+      /** Summary */
+      summary: {
+        [key: string]: unknown
+      }
+      /** Target Id */
+      target_id: string | null
+      /** Target Type */
+      target_type: string | null
+      /** User Id */
+      user_id: string | null
+      /** User Name */
+      user_name: string | null
+    }
     /** BankDetails */
     BankDetails: {
       /** Bank Details */
@@ -2527,6 +2595,11 @@ export interface components {
       all_outlets: boolean
       /** Currency */
       currency: string
+      /**
+       * Flags
+       * @default []
+       */
+      flags: string[]
       /** Language */
       language: string
       /** Modules */
@@ -3506,6 +3579,13 @@ export interface components {
       timezone: string
       /** Type */
       type: string
+    }
+    /** Page[AuditRow] */
+    Page_AuditRow_: {
+      /** Items */
+      items: components['schemas']['AuditRow'][]
+      /** Next Cursor */
+      next_cursor: string | null
     }
     /** Page[EffectivePrice] */
     Page_EffectivePrice_: {
@@ -4972,6 +5052,82 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_audit_api_v1_audit_get: {
+    parameters: {
+      query?: {
+        limit?: number
+        cursor?: string | null
+        sort?: string | null
+        from?: string | null
+        to?: string | null
+        user_id?: string | null
+        action?: string | null
+        target_type?: string | null
+        target_id?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Page_AuditRow_']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  export_audit_api_v1_audit_export_get: {
+    parameters: {
+      query?: {
+        format?: 'csv' | 'xlsx'
+        from?: string | null
+        to?: string | null
+        user_id?: string | null
+        action?: string | null
+        target_type?: string | null
+        target_id?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
       }
       /** @description Validation Error */
       422: {

@@ -58,6 +58,24 @@
         "title": "Created",
         "type": "object"
       },
+      "FlagsIn": {
+        "additionalProperties": false,
+        "properties": {
+          "flags": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "maxProperties": 50,
+            "title": "Flags",
+            "type": "object"
+          }
+        },
+        "required": [
+          "flags"
+        ],
+        "title": "FlagsIn",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -450,6 +468,55 @@
           }
         },
         "title": "TenantUpdate",
+        "type": "object"
+      },
+      "Usage": {
+        "properties": {
+          "active_users": {
+            "title": "Active Users",
+            "type": "integer"
+          },
+          "flags": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "title": "Flags",
+            "type": "object"
+          },
+          "job_failures_7d": {
+            "title": "Job Failures 7D",
+            "type": "integer"
+          },
+          "last_activity": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Activity"
+          },
+          "outlets": {
+            "title": "Outlets",
+            "type": "integer"
+          },
+          "storage_bytes": {
+            "title": "Storage Bytes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "outlets",
+          "active_users",
+          "last_activity",
+          "storage_bytes",
+          "job_failures_7d",
+          "flags"
+        ],
+        "title": "Usage",
         "type": "object"
       },
       "ValidationError": {
@@ -946,6 +1013,63 @@
         ]
       }
     },
+    "/admin-api/tenants/{tenant_id}/flags": {
+      "put": {
+        "operationId": "set_flags_admin_api_tenants__tenant_id__flags_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlagsIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "boolean"
+                  },
+                  "title": "Response Set Flags Admin Api Tenants  Tenant Id  Flags Put",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Flags",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/admin-api/tenants/{tenant_id}/impersonations": {
       "post": {
         "operationId": "impersonate_admin_api_tenants__tenant_id__impersonations_post",
@@ -1132,6 +1256,49 @@
           }
         },
         "summary": "Put Subscription",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin-api/tenants/{tenant_id}/usage": {
+      "get": {
+        "operationId": "usage_admin_api_tenants__tenant_id__usage_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Usage",
         "tags": [
           "admin"
         ]

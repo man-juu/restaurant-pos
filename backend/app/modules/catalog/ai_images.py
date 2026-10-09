@@ -10,6 +10,7 @@ from app.core import audit
 from app.core.access.policy import Principal, require
 from app.core.ai import provider
 from app.core.ai import service as ai
+from app.core.flags import flag_on
 from app.core.tenancy import tenant_session
 from app.core.uploads import service as uploads
 from app.modules.catalog import permissions as perm
@@ -43,13 +44,18 @@ def _db(request: Request, p: Principal):  # type: ignore[no-untyped-def]
 @router.get("/usage", response_model=ai.AiUsage)
 async def get_usage(request: Request, p: Update) -> ai.AiUsage:
     async with _db(request, p) as db:
-        return await ai.usage(db, request.app.state.settings)
+        usage = await ai.usage(db, request.app.state.settings)
+        if not await flag_on(db, "ai_images"):  # FR-ADM-006: off for this tenant
+            usage = usage.model_copy(update={"enabled": False, "remaining": 0})
+        return usage
 
 
 @router.post("", response_model=GenerateOut)
 async def generate(body: GenerateIn, request: Request, p: Update) -> GenerateOut:
     settings = request.app.state.settings
     async with _db(request, p) as db:  # committed before the slow call: the slot is taken
+        if not await flag_on(db, "ai_images"):
+            raise ai.AiDisabled()
         reservation = await ai.reserve(
             db, settings, tenant_id=p.tenant_id, user_id=p.user_id, prompt=body.prompt
         )

@@ -16,13 +16,23 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.admin.models import Impersonation
 from app.admin.security import AdminContext
-from app.core.access.permissions import Registry
-from app.core.access.roles import create_tenant_roles
+from app.core.access.permissions import Registry, build_registry
+from app.core.access.roles import create_tenant_roles, sync_new_permissions
 from app.core.access.subscription import SubscriptionInfo, effective_state
 from app.core.identity import service as identity
 from app.core.logging import request_id_var
-from app.core.models import AuditLog, Invitation, Subscription, Tenant, TenantModule
+from app.core.models import (
+    AuditLog,
+    Invitation,
+    Membership,
+    Role,
+    Subscription,
+    Tenant,
+    TenantModule,
+)
 from app.core.module_catalog import PROFILE_DEFAULTS, validate_module_set
+from app.core.modules import discover
+from app.core.notifications.models import Notification
 
 
 async def audit_admin(
@@ -193,5 +203,46 @@ async def run_subscription_job(db: AsyncSession, now: datetime) -> list[tuple[uu
                 "subscription.state_changed",
                 {"from": sub.last_state, "to": state, "at": now.isoformat()},
             )
+            await _notify_owners(db, sub.tenant_id, state)
             sub.last_state = state
     return changes
+
+
+async def _notify_owners(db: AsyncSession, tenant_id: uuid.UUID, state: str) -> None:
+    """FR-SUB-006: owners and co-owners see the new subscription state in the app."""
+    stmt = (
+        select(Membership.user_id)
+        .join(Role, Role.id == Membership.role_id)
+        .where(
+            Membership.tenant_id == tenant_id,
+            Membership.status == "active",
+            Role.template_key.in_(("owner", "co_owner")),
+        )
+    )
+    users = set(await db.scalars(stmt))
+    if users:
+        await db.execute(
+            insert(Notification),
+            [
+                {
+                    "tenant_id": tenant_id,
+                    "user_id": u,
+                    "kind": "subscription_state",
+                    "params": {"state": state},
+                    "link": "/settings",
+                }
+                for u in users
+            ],
+        )
+
+
+async def sync_roles(db: AsyncSession) -> int:
+    """`sync-roles` command: new module permissions for every existing tenant (see
+    app.core.access.roles.sync_new_permissions for why removed defaults stay removed)."""
+    import app.modules  # the module registry, as the API builds it
+
+    registry = build_registry(discover(app.modules))
+    added = 0
+    for tenant_id in list(await db.scalars(select(Tenant.id))):
+        added += await sync_new_permissions(db, tenant_id, registry)
+    return added

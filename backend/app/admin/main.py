@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import create_async_engine
 
 import app.modules
-from app.admin import router, security
+from app.admin import router, security, usage
 from app.core.access.permissions import build_registry
 from app.core.access.policy import assert_all_routes_declared, include
 from app.core.config import Settings, get_settings
@@ -54,7 +54,7 @@ def create_admin_app(settings: Settings | None = None) -> FastAPI:
     api.state.permission_registry = build_registry(discover(app.modules))
     register_error_handlers(api)
     api.add_middleware(RequestContextMiddleware)
-    for r in (health_router, security.router, router.router):
+    for r in (health_router, security.router, router.router, usage.router):
         include(api, r)
     assert_all_routes_declared(api, api.state.permission_registry)
     return api

@@ -49,7 +49,8 @@
     "users": "Pengguna dan peran",
     "main": "Utama",
     "settings": "Pengaturan",
-    "catalog": "Katalog"
+    "catalog": "Katalog",
+    "audit": "Log audit"
   },
   "shell": {
     "business": "Usaha",
@@ -90,7 +91,22 @@
     "subscription": "Langganan",
     "modules": "Modul",
     "status": "Status",
-    "none": "Belum ada usaha."
+    "none": "Belum ada usaha.",
+    "usage": {
+      "title": "Pemakaian",
+      "outlets_one": "{{count}} outlet",
+      "outlets_other": "{{count}} outlet",
+      "users_one": "{{count}} pengguna aktif",
+      "users_other": "{{count}} pengguna aktif",
+      "last": "Aktivitas terakhir: {{at}}",
+      "storage": "Penyimpanan: {{mb}} MB",
+      "failures_one": "{{count}} kegagalan job dalam 7 hari",
+      "failures_other": "{{count}} kegagalan job dalam 7 hari"
+    },
+    "flags": {
+      "ai_images": "Gambar AI gratis",
+      "reports_export": "Unduhan laporan (CSV, Excel)"
+    }
   },
   "states": {
     "free": "Gratis",
@@ -843,7 +859,8 @@
       "low_days_of_inventory": "{{item}} hampir habis",
       "count_variance": "Hitung {{number}} selisih senilai {{amount}} (biaya rata-rata)",
       "food_cost_above_target": "{{item}}: HPP {{pct}} % di {{channel}}, target {{target}} %. Biaya terbesar: {{cause}}",
-      "approval_requested": "{{number}} menunggu persetujuan Anda"
+      "approval_requested": "{{number}} menunggu persetujuan Anda",
+      "subscription_state": "Status langganan Anda sekarang: {{state}}"
     }
   },
   "sales": {
@@ -942,5 +959,15 @@
     },
     "csv": "Unduh CSV",
     "excel": "Unduh Excel"
+  },
+  "audit": {
+    "title": "Log audit",
+    "action": "Aksi diawali (mis. purchasing.)",
+    "more": "Tampilkan lagi",
+    "actor": {
+      "user": "Pengguna",
+      "admin": "Dukungan platform",
+      "system": "Sistem"
+    }
   }
 }

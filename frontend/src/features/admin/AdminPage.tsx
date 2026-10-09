@@ -8,6 +8,7 @@ import { Alert, Button, Card, Field, Logo, StateBadge } from '../../components/u
 import { ApiError, request, setCsrfToken } from '../../lib/api/client'
 import type { AdminSessionOut, TenantOut } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
+import { TenantUsage } from './TenantUsage'
 
 /** Minimal platform admin UI (slice 0.6/0.7): sign-in with mandatory 2FA and the tenant list.
  *  Talks to the separate admin API (/admin-api, its own cookie and database role). */
@@ -148,6 +149,7 @@ function AdminSignIn({
 
 function Tenants() {
   const { t } = useTranslation()
+  const [open, setOpen] = useState<string>()
   const tenants = useQuery({
     queryKey: ['admin-tenants'],
     queryFn: () => request<TenantOut[]>('GET', '/admin-api/tenants'),
@@ -173,7 +175,11 @@ function Tenants() {
               const state = tenant.subscription_state ?? 'unknown'
               return (
                 <tr key={tenant.id} className="border-t border-line">
-                  <td className="px-5 py-3.5 font-bold">{tenant.name}</td>
+                  <td className="px-5 py-3.5 font-bold">
+                    <button type="button" className="underline" onClick={() => setOpen(tenant.id)}>
+                      {tenant.name}
+                    </button>
+                  </td>
                   <td className="px-3 py-3.5 text-ink-soft">{t(`profiles.${tenant.profile}`)}</td>
                   <td className="px-3 py-3.5">
                     <StateBadge state={state} label={t(`states.${state}`)} />
@@ -186,6 +192,11 @@ function Tenants() {
           </tbody>
         </table>
       </div>
+      {open && (
+        <div className="p-5">
+          <TenantUsage key={open} tenantId={open} />
+        </div>
+      )}
     </Card>
   )
 }

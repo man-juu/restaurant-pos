@@ -20,8 +20,8 @@ N = "/api/v1/notifications"
 LEVELS = "/api/v1/inventory/levels"
 
 
-def scan(settings: Settings, *tenants: Any) -> int:
-    async def go() -> int:
+def scan(settings: Settings, *tenants: Any) -> Any:
+    async def go() -> Any:
         engine = create_async_engine(str(settings.database_url))
         try:
             return await run_alerts(
@@ -48,7 +48,7 @@ def test_fr_inv_012_alerts_open_once_notify_and_resolve(
     m = login(client, world["manager_a"])
     # The kitchen holds beef that expired on 1 April and 20 kg rice; reorder rice at 30 kg.
     reorder_at(client, m, world["kitchen"], items["rice"], "30000")
-    assert scan(settings, world["a"]) == 0
+    assert scan(settings, world["a"]) == {}
     assert kinds(client, m) == ["below_reorder_point", "expired_stock"]
     [low] = [n for n in client.get(N, headers=m).json() if n["kind"] == "below_reorder_point"]
     assert low["params"]["item"] and low["params"]["qty"] == "20000" and low["link"] == "/inventory"

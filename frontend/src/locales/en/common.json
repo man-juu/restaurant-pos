@@ -49,7 +49,8 @@
     "users": "Users and roles",
     "main": "Main",
     "settings": "Settings",
-    "catalog": "Catalog"
+    "catalog": "Catalog",
+    "audit": "Audit log"
   },
   "shell": {
     "business": "Business",
@@ -90,7 +91,22 @@
     "subscription": "Subscription",
     "modules": "Modules",
     "status": "Status",
-    "none": "No businesses yet."
+    "none": "No businesses yet.",
+    "usage": {
+      "title": "Usage",
+      "outlets_one": "{{count}} outlet",
+      "outlets_other": "{{count}} outlets",
+      "users_one": "{{count}} active user",
+      "users_other": "{{count}} active users",
+      "last": "Last activity: {{at}}",
+      "storage": "Storage: {{mb}} MB",
+      "failures_one": "{{count}} job failure in 7 days",
+      "failures_other": "{{count}} job failures in 7 days"
+    },
+    "flags": {
+      "ai_images": "Free AI images",
+      "reports_export": "Report downloads (CSV, Excel)"
+    }
   },
   "states": {
     "free": "Free",
@@ -843,7 +859,8 @@
       "low_days_of_inventory": "{{item}} is running low",
       "count_variance": "Count {{number}} differs by {{amount}} (at average cost)",
       "food_cost_above_target": "{{item}}: food cost {{pct}} % on {{channel}}, target {{target}} %. Biggest cost: {{cause}}",
-      "approval_requested": "{{number}} is waiting for your approval"
+      "approval_requested": "{{number}} is waiting for your approval",
+      "subscription_state": "Your subscription is now: {{state}}"
     }
   },
   "sales": {
@@ -942,5 +959,15 @@
     },
     "csv": "Download CSV",
     "excel": "Download Excel"
+  },
+  "audit": {
+    "title": "Audit log",
+    "action": "Action starts with (e.g. purchasing.)",
+    "more": "Show more",
+    "actor": {
+      "user": "A user",
+      "admin": "Platform support",
+      "system": "System"
+    }
   }
 }

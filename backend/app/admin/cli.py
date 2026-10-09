@@ -3,6 +3,7 @@
     python -m app.admin.cli create-admin you@example.com "Your Name" super_admin
     python -m app.admin.cli subscription-job
     python -m app.admin.cli alerts-job
+    python -m app.admin.cli sync-roles   # after a release with new modules or permissions
 
 The first super admin can only be created here: there is deliberately no sign-up endpoint.
 The daily subscription job is scheduled by the worker/cron in slice 0.8.
@@ -15,9 +16,9 @@ from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from app.admin.alerts_job import active_tenants, run_alerts
+from app.admin.alerts_job import active_tenants, record_failures, run_alerts
 from app.admin.models import AdminUser
-from app.admin.service import run_subscription_job
+from app.admin.service import run_subscription_job, sync_roles
 from app.core.config import get_settings
 from app.core.db import create_sessionmaker
 from app.core.identity.passwords import hash_password, validate_new_password
@@ -56,7 +57,22 @@ async def _alerts() -> None:
     engine = create_async_engine(str(settings.database_url))  # the app role: RLS applies
     failed = await run_alerts(tenants, create_sessionmaker(engine))
     await engine.dispose()
-    print(f"Alerts job done: {len(tenants)} tenant(s), {failed} failed.")
+    if failed:
+        admin = create_async_engine(str(settings.admin_database_url))
+        async with create_sessionmaker(admin)() as db, db.begin():
+            await record_failures(db, "alerts", failed)
+        await admin.dispose()
+    print(f"Alerts job done: {len(tenants)} tenant(s), {len(failed)} failed.")
+
+
+async def _sync_roles() -> None:
+    """Give existing tenants the permissions of modules released after they were created."""
+    settings = get_settings()
+    engine = create_async_engine(str(settings.admin_database_url))
+    async with create_sessionmaker(engine)() as db, db.begin():
+        added = await sync_roles(db)
+    await engine.dispose()
+    print(f"Role sync done: {added} permission grant(s) added.")
 
 
 def main() -> None:
@@ -68,11 +84,14 @@ def main() -> None:
     create.add_argument("role", choices=["super_admin", "support"])
     sub.add_parser("subscription-job")
     sub.add_parser("alerts-job")
+    sub.add_parser("sync-roles")
     args = parser.parse_args()
     if args.command == "create-admin":
         asyncio.run(_create_admin(args.email, args.name, args.role))
     elif args.command == "alerts-job":
         asyncio.run(_alerts())
+    elif args.command == "sync-roles":
+        asyncio.run(_sync_roles())
     else:
         asyncio.run(_job())
 

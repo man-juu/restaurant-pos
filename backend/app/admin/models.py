@@ -66,3 +66,17 @@ class Impersonation(Base):
     started_at: Mapped[datetime] = mapped_column(server_default=func.now())
     expires_at: Mapped[datetime] = mapped_column()
     ended_at: Mapped[datetime | None] = mapped_column()
+
+
+class JobFailure(Base):
+    """FR-ADM-004: a background job that failed for a tenant (platform table, admin only).
+    The message is the exception type only: never tenant data or secrets."""
+
+    __tablename__ = "job_failures"
+    __table_args__ = (Index(None, "tenant_id", "at"),)
+
+    id: Mapped[uuid.UUID] = _id()
+    job: Mapped[str] = mapped_column(String(60))
+    tenant_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("tenants.id"))
+    error: Mapped[str] = mapped_column(String(200))
+    at: Mapped[datetime] = _created_at()

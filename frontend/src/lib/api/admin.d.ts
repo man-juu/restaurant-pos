@@ -178,6 +178,23 @@ export interface paths {
     patch: operations['update_tenant_admin_api_tenants__tenant_id__patch']
     trace?: never
   }
+  '/admin-api/tenants/{tenant_id}/flags': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Set Flags */
+    put: operations['set_flags_admin_api_tenants__tenant_id__flags_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/admin-api/tenants/{tenant_id}/impersonations': {
     parameters: {
       query?: never
@@ -246,6 +263,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/admin-api/tenants/{tenant_id}/usage': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Usage */
+    get: operations['usage_admin_api_tenants__tenant_id__usage_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/health': {
     parameters: {
       query?: never
@@ -293,6 +327,13 @@ export interface components {
        * Format: uuid
        */
       id: string
+    }
+    /** FlagsIn */
+    FlagsIn: {
+      /** Flags */
+      flags: {
+        [key: string]: boolean
+      }
     }
     /** HTTPValidationError */
     HTTPValidationError: {
@@ -442,6 +483,23 @@ export interface components {
       profile?: ('restaurant' | 'cloud_kitchen' | 'central_kitchen_group' | 'hybrid') | null
       /** Timezone */
       timezone?: string | null
+    }
+    /** Usage */
+    Usage: {
+      /** Active Users */
+      active_users: number
+      /** Flags */
+      flags: {
+        [key: string]: boolean
+      }
+      /** Job Failures 7D */
+      job_failures_7d: number
+      /** Last Activity */
+      last_activity: string | null
+      /** Outlets */
+      outlets: number
+      /** Storage Bytes */
+      storage_bytes: number
     }
     /** ValidationError */
     ValidationError: {
@@ -801,6 +859,43 @@ export interface operations {
       }
     }
   }
+  set_flags_admin_api_tenants__tenant_id__flags_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        tenant_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FlagsIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            [key: string]: boolean
+          }
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   impersonate_admin_api_tenants__tenant_id__impersonations_post: {
     parameters: {
       query?: never
@@ -923,6 +1018,37 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  usage_admin_api_tenants__tenant_id__usage_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        tenant_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Usage']
+        }
       }
       /** @description Validation Error */
       422: {

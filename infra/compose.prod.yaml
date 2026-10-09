@@ -47,10 +47,12 @@ services:
   migrate:
     <<: *app
     restart: "no"
-    command: ["alembic", "upgrade", "head"]
+    # New module permissions reach existing tenants right after the schema (sync-roles).
+    command: ["sh", "-c", "alembic upgrade head && python -m app.admin.cli sync-roles"]
     environment:
       <<: *api-env
       MIGRATION_DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-pos_owner}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-pos}
+      ADMIN_DATABASE_URL: postgresql+asyncpg://pos_admin:${ADMIN_DB_PASSWORD}@db:5432/${POSTGRES_DB:-pos}
 
   api:
     <<: *app
