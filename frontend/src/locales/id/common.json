@@ -50,7 +50,8 @@
     "main": "Utama",
     "settings": "Pengaturan",
     "catalog": "Katalog",
-    "audit": "Log audit"
+    "audit": "Log audit",
+    "pos": "Kasir"
   },
   "shell": {
     "business": "Usaha",
@@ -217,7 +218,22 @@
     "modifier_group_name_taken": "Grup modifier dengan nama ini sudah ada.",
     "option_not_found": "Sebuah opsi dihapus orang lain. Muat ulang dan coba lagi.",
     "not_a_menu_item": "Hanya menu yang bisa punya modifier.",
-    "duplicate_modifier_group": "Ada grup yang tercantum dua kali."
+    "duplicate_modifier_group": "Ada grup yang tercantum dua kali.",
+    "shift_required": "Buka laci kas (shift) sebelum menerima pembayaran.",
+    "shift_already_open": "Anda sudah punya shift terbuka di outlet ini.",
+    "payment_total_mismatch": "Jumlah pembayaran tidak sama dengan yang harus dibayar.",
+    "tendered_mismatch": "Hanya tunai yang boleh lebih; kartu dan QRIS harus pas.",
+    "tips_disabled": "Tip dimatikan di pengaturan.",
+    "order_empty": "Tambahkan item ke pesanan dulu.",
+    "item_sold_out": "Menu ini sedang habis.",
+    "line_already_sent": "Baris ini sudah dikirim ke dapur. Fitur void hadir di pembaruan berikutnya.",
+    "order_has_sent_lines": "Sudah ada yang dikirim ke dapur, jadi pesanan tidak bisa dibatalkan.",
+    "duplicate_option": "Ada opsi yang dipilih dua kali.",
+    "modifier_selection": "Periksa opsinya: ada grup yang jumlah pilihannya belum sesuai.",
+    "line_not_found": "Baris itu sudah tidak ada.",
+    "payment_method_not_found": "Metode pembayaran itu tidak aktif.",
+    "shift_not_found": "Shift itu tidak ada.",
+    "invalid_range": "Pilih rentang tanggal yang lebih pendek."
   },
   "appearance": {
     "open": "Tampilan",
@@ -257,6 +273,7 @@
       "tax": "Pajak",
       "service": "Biaya layanan",
       "payments": "Metode pembayaran",
+      "pos": "Kasir",
       "numbering": "Penomoran",
       "approvals": "Persetujuan",
       "stock": "Stok",
@@ -347,6 +364,12 @@
     "catalog": {
       "help": "Menu dengan HPP di saluran mana pun di atas persentase harga bersih ini akan memicu peringatan. Tiap menu bisa punya target sendiri. Kosongkan untuk mematikan.",
       "target": "Target HPP bawaan (%)"
+    },
+    "pos": {
+      "requireShift": "Pembayaran perlu shift kas yang terbuka",
+      "tips": "Izinkan tip",
+      "roundingStep": "Bulatkan tagihan tunai ke (0 = mati, mis. 100)",
+      "help": "Pembulatan hanya berlaku jika seluruh tagihan dibayar tunai; selisihnya dicatat pada penjualan. Tip dicatat terpisah dari penjualan."
     }
   },
   "catalog": {
@@ -991,6 +1014,79 @@
       "user": "Pengguna",
       "admin": "Dukungan platform",
       "system": "Sistem"
+    }
+  },
+  "pos": {
+    "title": "Kasir",
+    "outlet": "Outlet",
+    "channel": "Saluran penjualan",
+    "menu": "Menu",
+    "search": "Cari menu",
+    "allCategories": "Semua",
+    "noItems": "Belum ada menu dengan harga di saluran ini. Tambahkan harga di katalog.",
+    "soldOut": "Habis",
+    "chooseOptions": "Pilih opsinya, lalu tambahkan ke pesanan.",
+    "pickRange": "(pilih {{min}} sampai {{max}})",
+    "note": "Catatan untuk dapur",
+    "addToOrder": "Tambah ke pesanan",
+    "openOrders": "Pesanan terbuka",
+    "label": "Nama atau meja (opsional)",
+    "newOrder": "Pesanan baru",
+    "noOpenOrders": "Tidak ada pesanan terbuka. Ketuk menu untuk memulai.",
+    "lineCount_one": "{{count}} item",
+    "lineCount_other": "{{count}} item",
+    "emptyOrder": "Pesanan ini masih kosong. Ketuk menu untuk menambahkan.",
+    "subtotal": "Subtotal",
+    "serviceCharge": "Biaya layanan",
+    "tax": "Pajak",
+    "total": "Total",
+    "send": "Kirim ke dapur",
+    "pay": "Bayar",
+    "cancelOrder": "Batalkan pesanan",
+    "otherOrders": "Pesanan lain",
+    "less": "Kurangi satu",
+    "more": "Tambah satu",
+    "sent": "Terkirim",
+    "due": "Harus dibayar: {{amount}}",
+    "rounding": "Pembulatan tunai: {{amount}}",
+    "payHelp": "Pilih cara bayar pelanggan. Bisa dibagi ke beberapa metode.",
+    "tip": "Tip (opsional)",
+    "splitPayment": "Bagi pembayaran",
+    "change": "Kembalian: {{amount}}",
+    "paid": "Sudah dibayar: {{amount}}",
+    "confirmPay": "Konfirmasi pembayaran",
+    "method": "Metode pembayaran",
+    "amount": "Jumlah",
+    "received": "Uang diterima",
+    "removeTender": "Hapus pembayaran ini",
+    "nextOrder": "Pesanan berikutnya",
+    "status": {
+      "paid": "{{number}} lunas",
+      "cancelled": "{{number}} dibatalkan",
+      "void": "{{number}} di-void"
+    },
+    "shift": {
+      "button": "Laci kas",
+      "openTitle": "Buka laci kas Anda",
+      "openHelp": "Hitung uang di laci sebelum penjualan pertama. Pembayaran dicatat pada shift Anda.",
+      "float": "Modal awal",
+      "open": "Buka shift",
+      "current": "Shift Anda",
+      "closedTitle": "Shift ditutup",
+      "cashSales": "Tunai dari penjualan",
+      "cashIn": "Kas masuk",
+      "cashOut": "Kas keluar",
+      "expected": "Seharusnya di laci",
+      "variance": "Selisih (dihitung - seharusnya)",
+      "movement": "Kas masuk atau keluar",
+      "kindOut": "Ambil kas",
+      "kindIn": "Tambah kas",
+      "reason": "Alasan",
+      "record": "Catat",
+      "closeHelp": "Di akhir shift, hitung semua uang di laci lalu masukkan totalnya.",
+      "counted": "Uang dihitung",
+      "close": "Tutup shift",
+      "done": "Selesai"
     }
   }
 }

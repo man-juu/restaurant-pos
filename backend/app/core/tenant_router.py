@@ -103,6 +103,7 @@ async def capabilities(
         for m in request.app.state.modules
         if m.name in p.enabled_modules and any(p.can(c) for c in m.permissions)
         for key in m.nav
+        if key not in m.nav_permissions or p.can(m.nav_permissions[key])
     ]
     # A switched-off module's permissions stay in the role but are not offered in the UI.
     switched_off = {

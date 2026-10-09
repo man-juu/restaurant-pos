@@ -3051,6 +3051,74 @@
         "title": "MappingsIn",
         "type": "object"
       },
+      "MenuItemOut": {
+        "properties": {
+          "category_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category Id"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_available": {
+            "title": "Is Available",
+            "type": "boolean"
+          },
+          "modifier_groups": {
+            "items": {
+              "$ref": "#/components/schemas/GroupOut"
+            },
+            "title": "Modifier Groups",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "photo_upload_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Photo Upload Id"
+          },
+          "price": {
+            "title": "Price",
+            "type": "integer"
+          },
+          "sku": {
+            "title": "Sku",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "sku",
+          "category_id",
+          "photo_upload_id",
+          "is_available",
+          "price",
+          "modifier_groups"
+        ],
+        "title": "MenuItemOut",
+        "type": "object"
+      },
       "MfaSetupOut": {
         "properties": {
           "otpauth_uri": {
@@ -10972,6 +11040,67 @@
           }
         },
         "summary": "Set Price",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/menu": {
+      "get": {
+        "operationId": "menu_api_v1_catalog_menu_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "channel_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Channel Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MenuItemOut"
+                  },
+                  "title": "Response Menu Api V1 Catalog Menu Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Menu",
         "tags": [
           "catalog"
         ]

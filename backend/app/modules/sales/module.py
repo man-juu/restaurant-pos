@@ -11,5 +11,6 @@ MANIFEST = ModuleManifest(
     routers=(router, report_router, pos_router, shift_router),
     permissions=permissions.ALL,
     role_templates=permissions.ROLE_TEMPLATES,
-    nav=("sales", "pos"),
+    nav=("pos", "sales"),
+    nav_permissions={"pos": permissions.ORDER_CREATE, "sales": permissions.DAY_VIEW},
 )

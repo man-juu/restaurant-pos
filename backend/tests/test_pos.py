@@ -236,3 +236,17 @@ def test_cash_rounding_half_up_to_the_step() -> None:
     assert cash_rounding(27_550, 100) == 50
     assert cash_rounding(27_549, 100) == -49
     assert cash_rounding(27_549, 0) == 0
+
+
+def test_fr_sal_004_menu_for_the_till_and_nav(
+    client: TestClient, world: dict[str, Any], menu: dict[str, Any], extra_egg: str
+) -> None:
+    h = login(client, world["waiter_a"])
+    found = client.get(f"{CAT}/menu?channel_id={menu['gofood']}", headers=h)
+    assert found.status_code == 200, found.text
+    [nasi] = found.json()  # only items priced on the channel
+    assert (nasi["id"], nasi["price"], nasi["is_available"]) == (menu["nasi"], 25_000, True)
+    assert [o["id"] for o in nasi["modifier_groups"][0]["options"]] == [extra_egg]
+    # Waiters get the till but not the daily sales entry.
+    nav = client.get("/api/v1/me/capabilities", headers=h).json()["nav"]
+    assert "pos" in nav and "sales" not in nav

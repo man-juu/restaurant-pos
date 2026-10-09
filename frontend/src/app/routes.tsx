@@ -32,6 +32,7 @@ const NotificationsPage = lazy(() =>
     default: m.NotificationsPage,
   })),
 )
+const PosPage = lazy(() => import('../features/pos/PosPage').then((m) => ({ default: m.PosPage })))
 const SalesPage = lazy(() =>
   import('../features/sales/SalesPage').then((m) => ({ default: m.SalesPage })),
 )
@@ -66,6 +67,7 @@ export const routes = [
       { path: 'production', element: page(<ProductionPage />) },
       { path: 'transfers', element: page(<TransfersPage />) },
       { path: 'notifications', element: page(<NotificationsPage />) },
+      { path: 'pos', element: page(<PosPage />) },
       { path: 'sales', element: page(<SalesPage />) },
       { path: 'reports', element: page(<ReportsPage />) },
       { path: 'audit', element: page(<AuditPage />) },

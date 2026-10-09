@@ -26,6 +26,8 @@ class ModuleManifest:
     # Owner and co-owner get every permission automatically.
     role_templates: dict[str, tuple[str, ...]] = field(default_factory=dict)
     nav: tuple[str, ...] = ()  # navigation entry keys for /me/capabilities
+    # Optional: an entry shown only with this permission (default: any of the module's).
+    nav_permissions: dict[str, str] = field(default_factory=dict)
     settings_schema: type | None = None
     extra: dict[str, object] = field(default_factory=dict)
 

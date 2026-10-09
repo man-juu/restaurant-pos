@@ -834,6 +834,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/catalog/menu': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Menu */
+    get: operations['menu_api_v1_catalog_menu_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/catalog/modifier-groups': {
     parameters: {
       query?: never
@@ -3640,6 +3657,28 @@ export interface components {
     MappingsIn: {
       /** Mappings */
       mappings: components['schemas']['MappingIn'][]
+    }
+    /** MenuItemOut */
+    MenuItemOut: {
+      /** Category Id */
+      category_id: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Is Available */
+      is_available: boolean
+      /** Modifier Groups */
+      modifier_groups: components['schemas']['GroupOut'][]
+      /** Name */
+      name: string
+      /** Photo Upload Id */
+      photo_upload_id: string | null
+      /** Price */
+      price: number
+      /** Sku */
+      sku: string
     }
     /** MfaSetupOut */
     MfaSetupOut: {
@@ -7398,6 +7437,38 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['PriceOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  menu_api_v1_catalog_menu_get: {
+    parameters: {
+      query: {
+        channel_id: string
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MenuItemOut'][]
         }
       }
       /** @description Validation Error */

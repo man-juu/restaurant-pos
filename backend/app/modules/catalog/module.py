@@ -8,6 +8,7 @@ from app.modules.catalog.import_router import router as import_router
 from app.modules.catalog.modifiers import router as modifier_router
 from app.modules.catalog.photos import router as photo_router
 from app.modules.catalog.platform_map import router as map_router
+from app.modules.catalog.pos_menu import router as menu_router
 from app.modules.catalog.router import router
 
 # FR-CAT-012: the alerts job checks food cost against targets.
@@ -24,6 +25,7 @@ MANIFEST = ModuleManifest(
         import_router,
         map_router,
         modifier_router,
+        menu_router,
     ),
     permissions=permissions.ALL,
     role_templates=permissions.ROLE_TEMPLATES,

@@ -50,7 +50,8 @@
     "main": "Main",
     "settings": "Settings",
     "catalog": "Catalog",
-    "audit": "Audit log"
+    "audit": "Audit log",
+    "pos": "Cashier"
   },
   "shell": {
     "business": "Business",
@@ -217,7 +218,22 @@
     "modifier_group_name_taken": "A modifier group with this name already exists.",
     "option_not_found": "An option was removed by someone else. Reload and try again.",
     "not_a_menu_item": "Only menu items can have modifiers.",
-    "duplicate_modifier_group": "A group is listed twice."
+    "duplicate_modifier_group": "A group is listed twice.",
+    "shift_required": "Open your cash drawer (shift) before taking payment.",
+    "shift_already_open": "You already have an open shift at this outlet.",
+    "payment_total_mismatch": "The payments do not add up to the amount due.",
+    "tendered_mismatch": "Only cash can be more than the amount; card and QRIS must be exact.",
+    "tips_disabled": "Tips are switched off in the settings.",
+    "order_empty": "Add something to the order first.",
+    "item_sold_out": "This item is sold out.",
+    "line_already_sent": "This line was already sent to the kitchen. Voiding comes in a later update.",
+    "order_has_sent_lines": "Something was already sent to the kitchen, so the order cannot be cancelled.",
+    "duplicate_option": "An option was chosen twice.",
+    "modifier_selection": "Check the options: some groups need a different number of choices.",
+    "line_not_found": "That line no longer exists.",
+    "payment_method_not_found": "That payment method is not active.",
+    "shift_not_found": "That shift does not exist.",
+    "invalid_range": "Choose a shorter date range."
   },
   "appearance": {
     "open": "Appearance",
@@ -257,6 +273,7 @@
       "tax": "Taxes",
       "service": "Service charge",
       "payments": "Payment methods",
+      "pos": "Cashier",
       "numbering": "Numbering",
       "approvals": "Approvals",
       "stock": "Stock",
@@ -347,6 +364,12 @@
     "catalog": {
       "help": "Menu items whose food cost (HPP) on any channel rises above this share of the net price raise an alert. Items can set their own target. Leave empty to turn it off.",
       "target": "Default food cost target (%)"
+    },
+    "pos": {
+      "requireShift": "Payments need an open cash shift",
+      "tips": "Allow tips",
+      "roundingStep": "Round cash bills to (0 = off, e.g. 100)",
+      "help": "Rounding applies only when the whole bill is paid in cash; the difference is recorded on the sale. Tips are kept apart from sales."
     }
   },
   "catalog": {
@@ -991,6 +1014,79 @@
       "user": "A user",
       "admin": "Platform support",
       "system": "System"
+    }
+  },
+  "pos": {
+    "title": "Cashier",
+    "outlet": "Outlet",
+    "channel": "Sales channel",
+    "menu": "Menu",
+    "search": "Search the menu",
+    "allCategories": "All",
+    "noItems": "No menu items with a price on this channel. Add prices in the catalog.",
+    "soldOut": "Sold out",
+    "chooseOptions": "Choose the options, then add to the order.",
+    "pickRange": "(choose {{min}} to {{max}})",
+    "note": "Note for the kitchen",
+    "addToOrder": "Add to order",
+    "openOrders": "Open orders",
+    "label": "Name or table (optional)",
+    "newOrder": "New order",
+    "noOpenOrders": "No open orders. Tap a menu item to start one.",
+    "lineCount_one": "{{count}} item",
+    "lineCount_other": "{{count}} items",
+    "emptyOrder": "Nothing on this order yet. Tap menu items to add them.",
+    "subtotal": "Subtotal",
+    "serviceCharge": "Service charge",
+    "tax": "Tax",
+    "total": "Total",
+    "send": "Send to kitchen",
+    "pay": "Pay",
+    "cancelOrder": "Cancel order",
+    "otherOrders": "Other orders",
+    "less": "One less",
+    "more": "One more",
+    "sent": "Sent",
+    "due": "To pay: {{amount}}",
+    "rounding": "Cash rounding: {{amount}}",
+    "payHelp": "Choose how the customer pays. Split between methods if needed.",
+    "tip": "Tip (optional)",
+    "splitPayment": "Split payment",
+    "change": "Change: {{amount}}",
+    "paid": "Paid so far: {{amount}}",
+    "confirmPay": "Confirm payment",
+    "method": "Payment method",
+    "amount": "Amount",
+    "received": "Cash received",
+    "removeTender": "Remove this payment",
+    "nextOrder": "Next order",
+    "status": {
+      "paid": "{{number}} paid",
+      "cancelled": "{{number}} cancelled",
+      "void": "{{number}} voided"
+    },
+    "shift": {
+      "button": "Cash drawer",
+      "openTitle": "Open your cash drawer",
+      "openHelp": "Count the cash in the drawer before the first sale. Payments are recorded on your shift.",
+      "float": "Opening cash",
+      "open": "Open shift",
+      "current": "Your shift",
+      "closedTitle": "Shift closed",
+      "cashSales": "Cash from sales",
+      "cashIn": "Cash put in",
+      "cashOut": "Cash taken out",
+      "expected": "Should be in the drawer",
+      "variance": "Difference (counted - expected)",
+      "movement": "Cash in or out",
+      "kindOut": "Take cash out",
+      "kindIn": "Put cash in",
+      "reason": "Reason",
+      "record": "Record",
+      "closeHelp": "At the end of your shift, count all cash in the drawer and enter the total.",
+      "counted": "Cash counted",
+      "close": "Close shift",
+      "done": "Done"
     }
   }
 }

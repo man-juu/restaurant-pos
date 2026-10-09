@@ -9,6 +9,7 @@ import { useSettings } from './api'
 import { ApprovalsSection } from './ApprovalsSection'
 import { NumberingSection, PaymentsSection, ServiceSection } from './ChargesSections'
 import { CatalogSection } from './CatalogSection'
+import { PosSection } from './PosSection'
 import { PurchasingSection } from './PurchasingSection'
 import { StockSection } from './StockSection'
 import { TaxSection } from './TaxSection'
@@ -20,6 +21,7 @@ const SECTIONS = {
   tax: (p: Props) => <TaxSection {...p} />,
   service: (p: Props) => <ServiceSection {...p} />,
   payments: (p: Props) => <PaymentsSection {...p} />,
+  pos: (p: Props) => <PosSection {...p} />,
   numbering: (p: Props) => <NumberingSection data={p.data} />,
   approvals: (p: Props) => <ApprovalsSection canEdit={p.canEdit} />,
   stock: (p: Props) => <StockSection {...p} />,
