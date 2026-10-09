@@ -111,6 +111,7 @@ Examples:
 | `tenant.user.manage` | Invite, edit, deactivate users |
 | `tenant.settings.configure` | Settings, tax, payment methods |
 | `audit.log.view` | See the audit log |
+| `tenant.device.manage` / `tenant.pin.reset` | Register and remove shared tills; reset a staff PIN (owner, co-owner, manager) |
 
 ## 6. Rules that always apply
 

@@ -11,6 +11,7 @@ import { NotificationBell } from '../features/notifications/NotificationBell'
 import { Button, Logo } from '../components/ui'
 import type { Capabilities, SessionInfo } from '../lib/api/types'
 import { type NavItem, navItems } from './nav'
+import { MyPinDialog } from '../features/auth/MyPinDialog'
 import { useCapabilities, useLogout, useSession, useSwitchTenant } from '../lib/session'
 
 export function Shell() {
@@ -124,6 +125,7 @@ function TopBar({ session }: { session: SessionInfo }) {
       </DropdownMenu.Root>
       <div className="flex items-center gap-3">
         <NotificationBell />
+        <MyPinDialog />
         <LanguageSwitch />
         <AppearanceMenu />
         <Button variant="ghost" onClick={() => logout.mutate()}>

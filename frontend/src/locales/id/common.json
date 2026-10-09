@@ -255,7 +255,10 @@
     "ticket_not_found": "Tiket itu sudah tidak ada.",
     "recall_too_late": "Sudah terlambat untuk memanggil tiket ini.",
     "station_name_taken": "Stasiun dengan nama ini sudah ada.",
-    "station_not_found": "Stasiun itu sudah tidak ada."
+    "station_not_found": "Stasiun itu sudah tidak ada.",
+    "pin_not_allowed": "Pemilik dan wakil pemilik selalu masuk dengan kata sandi dan 2FA.",
+    "device_not_found": "Browser ini bukan perangkat terdaftar.",
+    "pin_not_found": "Orang itu belum punya PIN."
   },
   "appearance": {
     "open": "Tampilan",
@@ -303,7 +306,8 @@
       "limits": "Batas",
       "stock": "Stok",
       "purchasing": "Pembelian",
-      "catalog": "HPP"
+      "catalog": "HPP",
+      "devices": "Perangkat"
     },
     "tax": {
       "help": "Tarif diatur per usaha; periksa tarif daerah dengan konsultan pajak Anda.",
@@ -1247,5 +1251,29 @@
     "pdf": "Struk PDF",
     "noBluetooth": "Cetak Bluetooth perlu Chrome di Android atau komputer.",
     "failed": "Gagal mencetak. Pastikan printer menyala dan dekat, lalu coba lagi."
+  },
+  "pin": {
+    "device": "Kasir ini: {{name}}. Ketuk nama Anda.",
+    "usePassword": "Masuk dengan email dan kata sandi",
+    "pad": "Tombol PIN",
+    "delete": "Hapus",
+    "signIn": "Masuk",
+    "someoneElse": "Orang lain",
+    "mine": "PIN saya",
+    "help": "PIN 4 sampai 6 angka untuk masuk cepat di kasir terdaftar toko. Masuk sekali dengan kata sandi di kasir itu, lalu pakai PIN di sana. Pemilik selalu memakai kata sandi dan 2FA.",
+    "new": "PIN baru (4 sampai 6 angka)",
+    "save": "Simpan PIN",
+    "saved": "PIN tersimpan. Di kasir terdaftar, Anda bisa masuk dengan PIN."
+  },
+  "devices": {
+    "help": "Daftarkan kasir atau tablet bersama di sini, langsung dari perangkat itu. Staf yang masuk penuh di sana lalu bisa memakai PIN. Hapus segera perangkat yang hilang.",
+    "notAllowed": "Hanya manajer dan pemilik yang bisa mendaftarkan perangkat.",
+    "name": "Nama perangkat (mis. Kasir depan)",
+    "outlet": "Outlet",
+    "anyOutlet": "Semua outlet",
+    "registerThis": "Daftarkan perangkat ini",
+    "registered": "Perangkat ini terdaftar.",
+    "revoke": "Hapus",
+    "revoked": "Dihapus"
   }
 }

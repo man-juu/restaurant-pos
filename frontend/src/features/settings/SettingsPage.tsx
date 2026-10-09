@@ -9,6 +9,7 @@ import { useSettings } from './api'
 import { ApprovalsSection } from './ApprovalsSection'
 import { NumberingSection, PaymentsSection, ServiceSection } from './ChargesSections'
 import { CatalogSection } from './CatalogSection'
+import { DevicesSection } from './DevicesSection'
 import { KitchenSection } from './KitchenSection'
 import { LimitsSection } from './LimitsSection'
 import { PosSection } from './PosSection'
@@ -27,6 +28,7 @@ const SECTIONS = {
   pos: (p: Props) => <PosSection {...p} />,
   kitchen: (p: Props) => <KitchenSection {...p} />,
   receipt: (p: Props) => <ReceiptSection {...p} />,
+  devices: () => <DevicesSection />,
   numbering: (p: Props) => <NumberingSection data={p.data} />,
   approvals: (p: Props) => <ApprovalsSection canEdit={p.canEdit} />,
   limits: (p: Props) => <LimitsSection canEdit={p.canEdit} />,

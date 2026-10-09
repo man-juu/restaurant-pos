@@ -255,7 +255,10 @@
     "ticket_not_found": "That ticket no longer exists.",
     "recall_too_late": "Too late to recall this ticket.",
     "station_name_taken": "A station with this name exists.",
-    "station_not_found": "That station no longer exists."
+    "station_not_found": "That station no longer exists.",
+    "pin_not_allowed": "Owners and co-owners always sign in with password and 2FA.",
+    "device_not_found": "This browser is not a registered device.",
+    "pin_not_found": "That person has no PIN."
   },
   "appearance": {
     "open": "Appearance",
@@ -303,7 +306,8 @@
       "limits": "Limits",
       "stock": "Stock",
       "purchasing": "Purchasing",
-      "catalog": "Food cost"
+      "catalog": "Food cost",
+      "devices": "Devices"
     },
     "tax": {
       "help": "Rates are set per business; check regional rates with your tax advisor.",
@@ -1247,5 +1251,29 @@
     "pdf": "Receipt PDF",
     "noBluetooth": "Bluetooth printing needs Chrome on Android or a computer.",
     "failed": "Printing failed. Check the printer is on and close by, then try again."
+  },
+  "pin": {
+    "device": "This till: {{name}}. Tap your name.",
+    "usePassword": "Sign in with email and password",
+    "pad": "PIN keypad",
+    "delete": "Delete",
+    "signIn": "Sign in",
+    "someoneElse": "Someone else",
+    "mine": "My PIN",
+    "help": "A 4 to 6 digit PIN lets you sign in quickly on the shop's registered tills. Sign in once with your password on a till, then use your PIN there. Owners always use password and 2FA.",
+    "new": "New PIN (4 to 6 digits)",
+    "save": "Save PIN",
+    "saved": "PIN saved. On a registered till, you can now sign in with it."
+  },
+  "devices": {
+    "help": "Register a shared till or tablet here, on that device itself. Staff who sign in fully on it can then use their PIN there. Remove a lost device at once.",
+    "notAllowed": "Only managers and owners register devices.",
+    "name": "Device name (e.g. Front till)",
+    "outlet": "Outlet",
+    "anyOutlet": "Any outlet",
+    "registerThis": "Register this device",
+    "registered": "This device is registered.",
+    "revoke": "Remove",
+    "revoked": "Removed"
   }
 }

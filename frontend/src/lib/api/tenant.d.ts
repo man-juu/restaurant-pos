@@ -111,6 +111,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/auth/device': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * This Device
+     * @description For the PIN screen: which device this is and who may use a PIN on it.
+     */
+    get: operations['this_device_api_v1_auth_device_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/auth/invitations/accept': {
     parameters: {
       query?: never
@@ -262,6 +282,23 @@ export interface paths {
      * @description Always 202, whether or not the email has an account (no account enumeration).
      */
     post: operations['request_password_reset_api_v1_auth_password_reset_request_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/auth/pin-login': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Pin Login */
+    post: operations['pin_login_api_v1_auth_pin_login_post']
     delete?: never
     options?: never
     head?: never
@@ -938,6 +975,64 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/devices': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Devices */
+    get: operations['list_devices_api_v1_devices_get']
+    put?: never
+    /**
+     * Register
+     * @description Run on the shared till itself: this browser becomes the registered device.
+     */
+    post: operations['register_api_v1_devices_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/devices/this/enrol': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Enrol
+     * @description After a full sign-in on a registered device: allow this person's PIN here.
+     */
+    post: operations['enrol_api_v1_devices_this_enrol_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/devices/{device_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Revoke Device */
+    delete: operations['revoke_device_api_v1_devices__device_id__delete']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/inventory/adjustments': {
     parameters: {
       query?: never
@@ -1496,6 +1591,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/me/pin': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Set My Pin */
+    put: operations['set_my_pin_api_v1_me_pin_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/notifications': {
     parameters: {
       query?: never
@@ -1596,6 +1708,23 @@ export interface paths {
     put?: never
     post?: never
     delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pins/{user_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Reset Pin */
+    delete: operations['reset_pin_api_v1_pins__user_id__delete']
     options?: never
     head?: never
     patch?: never
@@ -3657,6 +3786,34 @@ export interface components {
       /** Approve */
       approve: boolean
     }
+    /** DeviceIn */
+    DeviceIn: {
+      /** Name */
+      name: string
+      /** Outlet Id */
+      outlet_id?: string | null
+    }
+    /** DeviceOut */
+    DeviceOut: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Last Seen At */
+      last_seen_at: string | null
+      /** Name */
+      name: string
+      /** Outlet Id */
+      outlet_id: string | null
+      /** Revoked At */
+      revoked_at: string | null
+    }
     /**
      * DiscountIn
      * @description FR-SAL-007: percent in basis points (1000 = 10 %) or an amount in minor units.
@@ -4643,6 +4800,23 @@ export interface components {
       id: string
       /** Width */
       width: number | null
+    }
+    /** PinIn */
+    PinIn: {
+      /** Password */
+      password: string
+      /** Pin */
+      pin: string
+    }
+    /** PinLoginIn */
+    PinLoginIn: {
+      /** Pin */
+      pin: string
+      /**
+       * User Id
+       * Format: uuid
+       */
+      user_id: string
     }
     /** PosLineIn */
     PosLineIn: {
@@ -5757,6 +5931,16 @@ export interface components {
       /** Line Ids */
       line_ids: string[]
     }
+    /** StaffOut */
+    StaffOut: {
+      /** Name */
+      name: string
+      /**
+       * User Id
+       * Format: uuid
+       */
+      user_id: string
+    }
     /** StationIn */
     StationIn: {
       /** Category Ids */
@@ -6111,6 +6295,15 @@ export interface components {
       id: string
       /** Name */
       name: string
+    }
+    /** ThisDeviceOut */
+    ThisDeviceOut: {
+      /** Name */
+      name: string
+      /** Outlet Id */
+      outlet_id: string | null
+      /** Staff */
+      staff: components['schemas']['StaffOut'][]
     }
     /** TicketItemOut */
     TicketItemOut: {
@@ -6895,6 +7088,26 @@ export interface operations {
       }
     }
   }
+  this_device_api_v1_auth_device_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ThisDeviceOut']
+        }
+      }
+    }
+  }
   accept_invitation_api_v1_auth_invitations_accept_post: {
     parameters: {
       query?: never
@@ -7114,6 +7327,39 @@ export interface operations {
         }
         content: {
           'application/json': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  pin_login_api_v1_auth_pin_login_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PinLoginIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SessionInfo']
         }
       }
       /** @description Validation Error */
@@ -8680,6 +8926,106 @@ export interface operations {
       }
     }
   }
+  list_devices_api_v1_devices_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DeviceOut'][]
+        }
+      }
+    }
+  }
+  register_api_v1_devices_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeviceIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DeviceOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  enrol_api_v1_devices_this_enrol_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  revoke_device_api_v1_devices__device_id__delete: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        device_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   create_adjustment_api_v1_inventory_adjustments_post: {
     parameters: {
       query?: never
@@ -9790,6 +10136,37 @@ export interface operations {
       }
     }
   }
+  set_my_pin_api_v1_me_pin_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PinIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   list_notifications_api_v1_notifications_get: {
     parameters: {
       query?: never
@@ -9916,6 +10293,35 @@ export interface operations {
         content: {
           'application/json': components['schemas']['OutletOut']
         }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reset_pin_api_v1_pins__user_id__delete: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        user_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Validation Error */
       422: {

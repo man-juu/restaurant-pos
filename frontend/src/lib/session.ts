@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { ApiError, request, setCsrfToken } from './api/client'
 import type {
+  ThisDeviceOut,
   Capabilities,
   MfaSetupOut,
   OutletOut,
@@ -46,6 +47,21 @@ export const useLogin = () =>
   useSessionMutation((vars: { email: string; password: string }) =>
     request<SessionInfo>('POST', '/api/v1/auth/login', vars),
   )
+
+/** FR-IDN-004: PIN sign-in on a registered device. */
+export const usePinLogin = () =>
+  useSessionMutation((vars: { user_id: string; pin: string }) =>
+    request<SessionInfo>('POST', '/api/v1/auth/pin-login', vars),
+  )
+
+/** The registered device this browser is (404 when it is not one). */
+export const useThisDevice = () =>
+  useQuery({
+    queryKey: ['this-device'],
+    queryFn: () => request<ThisDeviceOut>('GET', '/api/v1/auth/device'),
+    retry: false,
+    staleTime: 60_000,
+  })
 
 export const useVerifyMfa = () =>
   useSessionMutation((vars: { code: string }) =>

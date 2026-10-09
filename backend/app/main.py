@@ -12,7 +12,7 @@ from app.core.config import Settings, get_settings
 from app.core.crypto import SecretBox
 from app.core.db import create_engine, create_sessionmaker
 from app.core.errors import register_error_handlers
-from app.core.identity import account_router, mfa_router
+from app.core.identity import account_router, device_router, mfa_router
 from app.core.identity import router as identity
 from app.core.logging import configure_logging
 from app.core.mailer import MemoryMailer
@@ -66,6 +66,8 @@ def create_app(
         notifications_router.router,
         audit_router.router,
         limits_router.router,
+        device_router.router,
+        device_router.auth_router,
     ):
         include(api, router)
     mount(api, api.state.modules, include)

@@ -1698,6 +1698,98 @@
         "title": "DecisionIn",
         "type": "object"
       },
+      "DeviceIn": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "outlet_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outlet Id"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "DeviceIn",
+        "type": "object"
+      },
+      "DeviceOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "last_seen_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Seen At"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "outlet_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outlet Id"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "outlet_id",
+          "created_at",
+          "last_seen_at",
+          "revoked_at"
+        ],
+        "title": "DeviceOut",
+        "type": "object"
+      },
       "DiscountIn": {
         "additionalProperties": false,
         "description": "FR-SAL-007: percent in basis points (1000 = 10 %) or an amount in minor units.",
@@ -4368,6 +4460,49 @@
           "byte_size"
         ],
         "title": "PhotoOut",
+        "type": "object"
+      },
+      "PinIn": {
+        "additionalProperties": false,
+        "properties": {
+          "password": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Password",
+            "type": "string"
+          },
+          "pin": {
+            "pattern": "^\\d{4,6}$",
+            "title": "Pin",
+            "type": "string"
+          }
+        },
+        "required": [
+          "pin",
+          "password"
+        ],
+        "title": "PinIn",
+        "type": "object"
+      },
+      "PinLoginIn": {
+        "additionalProperties": false,
+        "properties": {
+          "pin": {
+            "pattern": "^\\d{4,6}$",
+            "title": "Pin",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "pin"
+        ],
+        "title": "PinLoginIn",
         "type": "object"
       },
       "PosLineIn": {
@@ -7206,6 +7341,25 @@
         "title": "SplitIn",
         "type": "object"
       },
+      "StaffOut": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "name"
+        ],
+        "title": "StaffOut",
+        "type": "object"
+      },
       "StationIn": {
         "additionalProperties": false,
         "properties": {
@@ -8013,6 +8167,40 @@
           "name"
         ],
         "title": "TenantOption",
+        "type": "object"
+      },
+      "ThisDeviceOut": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "outlet_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outlet Id"
+          },
+          "staff": {
+            "items": {
+              "$ref": "#/components/schemas/StaffOut"
+            },
+            "title": "Staff",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "outlet_id",
+          "staff"
+        ],
+        "title": "ThisDeviceOut",
         "type": "object"
       },
       "TicketItemOut": {
@@ -9971,6 +10159,28 @@
         ]
       }
     },
+    "/api/v1/auth/device": {
+      "get": {
+        "description": "For the PIN screen: which device this is and who may use a PIN on it.",
+        "operationId": "this_device_api_v1_auth_device_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThisDeviceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "This Device",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/v1/auth/invitations/accept": {
       "post": {
         "description": "New email: creates the account with the given password. Existing account: the\npassword must match it (proves the invitee owns that account). Then sign in normally.",
@@ -10237,6 +10447,47 @@
           }
         },
         "summary": "Request Password Reset",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/pin-login": {
+      "post": {
+        "operationId": "pin_login_api_v1_auth_pin_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PinLoginIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionInfo"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Pin Login",
         "tags": [
           "auth"
         ]
@@ -12678,6 +12929,122 @@
         ]
       }
     },
+    "/api/v1/devices": {
+      "get": {
+        "operationId": "list_devices_api_v1_devices_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceOut"
+                  },
+                  "title": "Response List Devices Api V1 Devices Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Devices",
+        "tags": [
+          "devices"
+        ]
+      },
+      "post": {
+        "description": "Run on the shared till itself: this browser becomes the registered device.",
+        "operationId": "register_api_v1_devices_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Register",
+        "tags": [
+          "devices"
+        ]
+      }
+    },
+    "/api/v1/devices/this/enrol": {
+      "post": {
+        "description": "After a full sign-in on a registered device: allow this person's PIN here.",
+        "operationId": "enrol_api_v1_devices_this_enrol_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Enrol",
+        "tags": [
+          "devices"
+        ]
+      }
+    },
+    "/api/v1/devices/{device_id}": {
+      "delete": {
+        "operationId": "revoke_device_api_v1_devices__device_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "device_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Device Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Revoke Device",
+        "tags": [
+          "devices"
+        ]
+      }
+    },
     "/api/v1/inventory/adjustments": {
       "post": {
         "operationId": "create_adjustment_api_v1_inventory_adjustments_post",
@@ -14654,6 +15021,40 @@
         ]
       }
     },
+    "/api/v1/me/pin": {
+      "put": {
+        "operationId": "set_my_pin_api_v1_me_pin_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PinIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set My Pin",
+        "tags": [
+          "devices"
+        ]
+      }
+    },
     "/api/v1/notifications": {
       "get": {
         "operationId": "list_notifications_api_v1_notifications_get",
@@ -14816,6 +15217,42 @@
         "summary": "Get Outlet",
         "tags": [
           "tenant"
+        ]
+      }
+    },
+    "/api/v1/pins/{user_id}": {
+      "delete": {
+        "operationId": "reset_pin_api_v1_pins__user_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "User Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reset Pin",
+        "tags": [
+          "devices"
         ]
       }
     },

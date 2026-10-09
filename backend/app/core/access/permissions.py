@@ -24,6 +24,8 @@ CORE_PERMISSIONS: dict[str, str] = {
     "tenant.outlet.view": "See outlets",
     "tenant.data.export": "Export tenant data",
     "audit.log.view": "See the audit log",
+    "tenant.device.manage": "Register and remove shared tills and tablets (FR-IDN-004)",
+    "tenant.pin.reset": "Reset a staff member's PIN (FR-IDN-004)",
 }
 
 
@@ -55,7 +57,14 @@ _CORE_TEMPLATES = (
         "Manager",
         "outlets",
         grants=frozenset(
-            {"tenant.outlet.view", "tenant.settings.view", "audit.log.view", "tenant.data.export"}
+            {
+                "tenant.outlet.view",
+                "tenant.settings.view",
+                "audit.log.view",
+                "tenant.data.export",
+                "tenant.device.manage",
+                "tenant.pin.reset",
+            }
         ),
     ),
     RoleTemplate(

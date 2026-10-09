@@ -34,7 +34,9 @@ Logical model. Final column types and names are fixed when each migration is wri
 | `roles` | tenant_id (null for platform templates), name, is_template | |
 | `role_permissions` | role_id, permission_code, limit_value | `limit_value` for discount %, approval amount, and so on |
 | `sessions` | user_id, tenant_id, device_id, created_at, last_seen_at, expires_at, revoked_at | Server-side sessions |
-| `devices` | tenant_id, name, outlet_id, registered_by, revoked_at | PIN login requires a registered device |
+| `devices` | tenant_id, name, outlet_id, token_hash, registered_by, created_at, last_seen_at, revoked_at | PIN login requires a registered device |
+| `device_users` | device_id, user_id | Who completed a full sign-in on the device |
+| `user_pins` | tenant_id, user_id, pin_hash (Argon2id), failed_count, locked_until, set_at | FR-IDN-004 |
 | `invitations` | tenant_id, email, role_id, token_hash, expires_at, used_at | |
 | `pin_credentials` | membership_id, pin_hash, failed_count, locked_until | |
 | `tenant_modules` | tenant_id, module, enabled, enabled_at | |

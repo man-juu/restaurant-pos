@@ -9,8 +9,9 @@ import { LanguageSwitch } from '../../components/LanguageSwitch'
 import { Alert, Button, Field, Logo } from '../../components/ui'
 import { errorMessage } from '../../lib/errors'
 import { useAppearance } from '../../lib/theme'
-import { useLogin, useSession } from '../../lib/session'
+import { useLogin, useSession, useThisDevice } from '../../lib/session'
 import { EnrollStep, RecoveryCodes, VerifyStep } from './MfaSteps'
+import { PinStep } from './PinStep'
 
 const credentials = z.object({ email: z.string().email(), password: z.string().min(1) })
 type Credentials = z.infer<typeof credentials>
@@ -69,12 +70,21 @@ export function LoginPage() {
           ) : state === 'enroll' ? (
             <EnrollStep onCodes={setCodes} />
           ) : (
-            <PasswordStep />
+            <FirstStep />
           )}
         </div>
       </section>
     </div>
   )
+}
+
+/** A registered till with PIN users starts at the PIN pad; everyone else at the password. */
+function FirstStep() {
+  const device = useThisDevice()
+  const [password, setPassword] = useState(false)
+  if (!password && device.data && device.data.staff.length > 0)
+    return <PinStep device={device.data} onPassword={() => setPassword(true)} />
+  return <PasswordStep />
 }
 
 function PasswordStep() {
