@@ -201,3 +201,9 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - 2FA is not bypassed: roles that require it get the code step after Google.
 - Tests: `backend/tests/test_google_login.py` covers each refusal with real signature checks.
 - Secrets: client ID and secret only in the server `.env`; never logged.
+
+## Slice 2k: lot trace, vendor returns and bills (2026-10-09)
+
+- Lot trace: outlet scope applies to every node (hidden ones are only counted); lot search escapes `%` and `_`; the walk is bounded (6 levels, 200 batches) so one request cannot scan the whole ledger.
+- Returns cannot take stock below zero; credits apply only to the same vendor's bills, once; a credited return cannot be reversed.
+- Bills: vendor invoice numbers unique per vendor (no double entry); payments append-only with reversal rows; payment cannot exceed the balance; paying is a separate permission (accountant) from entering bills (segregation of duties); every action is audited.

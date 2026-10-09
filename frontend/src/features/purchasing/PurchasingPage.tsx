@@ -5,10 +5,12 @@ import { useOutletContext } from 'react-router'
 import { SelectInput, Tabs } from '../../components/form'
 import type { Capabilities } from '../../lib/api/types'
 import { useOutlets } from '../../lib/session'
+import { BillsTab } from './BillsTab'
 import { OrdersTab } from './OrdersTab'
 import { QuickPurchaseTab } from './QuickPurchaseTab'
 import { ReceiptsTab } from './ReceiptsTab'
 import { ReorderTab } from './ReorderTab'
+import { ReturnsTab } from './ReturnsTab'
 import { VendorsTab } from './VendorsTab'
 
 interface Access {
@@ -51,6 +53,30 @@ const TABS: Record<
         outletId={o}
         currency={a.currency}
         canReverse={a.has('purchasing.receipt.reverse')}
+      />
+    ),
+  },
+  returns: {
+    visible: () => true,
+    render: (o, a) => (
+      <ReturnsTab
+        outletId={o}
+        currency={a.currency}
+        can={{
+          create: a.has('purchasing.return.create'),
+          reverse: a.has('purchasing.receipt.reverse'),
+          credit: a.has('purchasing.bill.manage'),
+        }}
+      />
+    ),
+  },
+  bills: {
+    visible: (a) => a.has('purchasing.bill.view'),
+    render: (o, a) => (
+      <BillsTab
+        outletId={o}
+        currency={a.currency}
+        can={{ manage: a.has('purchasing.bill.manage'), pay: a.has('purchasing.bill.pay') }}
       />
     ),
   },

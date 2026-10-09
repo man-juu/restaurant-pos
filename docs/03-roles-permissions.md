@@ -76,6 +76,9 @@ Legend: **Y** allowed, **A** allowed but needs approval by rule, **O** own outle
 | Stock count (enter) | Y | Y | O | - | - | O | O | - | - | - |
 | Stock count and adjustment (approve) | Y | Y | A | - | - | - | - | - | - | - |
 | Vendors and vendor prices | Y | Y | R | - | - | - | R | Y | R | R |
+| Return goods to vendor (FR-PUR-008) | Y | Y | O | - | - | - | O | Y | - | - |
+| Vendor bills and credit notes (enter, apply, void) | Y | Y | O | - | - | - | - | Y | Y | R |
+| Pay vendor bills | Y | Y | - | - | - | - | - | - | Y | - |
 | Journals, expenses, period close | Y | Y | - | - | - | - | - | - | Y | R |
 | Reports (own scope) | Y | Y | O | - | - | - | O | O | Y | R |
 | Audit log | Y | Y | O | - | - | - | - | - | R | R |

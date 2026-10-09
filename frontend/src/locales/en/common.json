@@ -271,7 +271,25 @@
     "account_not_found": "That account is not active.",
     "account_name_taken": "An account with this name exists.",
     "same_account": "Choose two different accounts.",
-    "expense_not_found": "That expense no longer exists."
+    "expense_not_found": "That expense no longer exists.",
+    "receipt_not_found": "That receipt was not found or is reversed.",
+    "vendor_not_found": "Vendor not found.",
+    "bill_not_found": "Bill not found.",
+    "return_not_found": "Return not found.",
+    "payment_not_found": "Payment not found.",
+    "duplicate_vendor_invoice": "This vendor invoice number is already entered.",
+    "receipt_already_billed": "A receipt is already on another bill.",
+    "payment_exceeds_balance": "The payment is more than what is still owed.",
+    "credit_note_missing": "Record the vendor's credit note first.",
+    "credit_already_applied": "This credit is already used on a bill.",
+    "credit_exceeds_balance": "The credit is more than what the bill still owes.",
+    "bill_mismatch": "This bill does not match its order and receipts, and your settings block paying it.",
+    "bill_not_open": "This bill is already paid or void.",
+    "bill_has_settlements": "A bill with payments or credits cannot be voided.",
+    "already_credited": "A credited return cannot be undone.",
+    "receipt_mismatch": "The receipt is from another vendor or outlet.",
+    "return_reversed": "This return was reversed.",
+    "already_void": "This bill is already void."
   },
   "appearance": {
     "open": "Appearance",
@@ -848,7 +866,9 @@
       "receipts": "Received",
       "vendors": "Vendors",
       "orders": "Orders",
-      "reorder": "Reorder"
+      "reorder": "Reorder",
+      "returns": "Returns",
+      "bills": "Bills"
     },
     "quick": {
       "help": "Record what you bought at the market or paid in cash. Stock is added at once and the price updates the average cost.",
@@ -918,6 +938,72 @@
       "noVendor": "No vendor price yet",
       "line": "{{name}}: have {{have}} {{unit}}, reorder at {{point}}, needs {{need}} {{unit}}",
       "draft": "Make a draft order"
+    },
+    "returns": {
+      "new": "New return",
+      "empty": "No returns at this outlet.",
+      "receipt": "From receipt",
+      "pickReceipt": "Choose a receipt",
+      "qtyOf": "{{name}}: quantity to return (received {{have}} {{unit}})",
+      "reason": "Reason",
+      "date": "Return date",
+      "post": "Post return",
+      "line": "{{date}} · {{reason}} · credit {{credit}}",
+      "credited": "Credit note {{no}}",
+      "creditNote": "Vendor credit note number",
+      "recordCredit": "Record credit note",
+      "reverse": "Undo return",
+      "reasons": {
+        "damaged": "Damaged",
+        "expired": "Expired",
+        "wrong_item": "Wrong item",
+        "quality": "Poor quality",
+        "other": "Other"
+      },
+      "status": {
+        "posted": "Returned",
+        "reversed": "Undone"
+      }
+    },
+    "bills": {
+      "new": "New bill",
+      "empty": "No bills at this outlet.",
+      "vendor": "Vendor",
+      "pickVendor": "Choose a vendor",
+      "invoiceNo": "Vendor invoice number",
+      "date": "Bill date",
+      "amountOf": "{{name}} ({{qty}} {{unit}}): billed amount",
+      "save": "Save bill",
+      "line": "Due {{due}} · total {{total}} · owed {{balance}}",
+      "owed": "Owed to vendors: {{total}}",
+      "overdue_one": "{{count}} bill overdue: {{total}}",
+      "overdue_other": "{{count}} bills overdue: {{total}}",
+      "amount": "Amount",
+      "method": "Paid with",
+      "reference": "Reference",
+      "pay": "Record payment",
+      "applyCredit": "Use credit {{no}}",
+      "void": "Void bill",
+      "match": {
+        "matched": "Matches order",
+        "mismatch": "Check needed",
+        "no_po": "No order"
+      },
+      "status": {
+        "open": "Open",
+        "partially_paid": "Partly paid",
+        "paid": "Paid",
+        "void": "Void"
+      },
+      "issue": {
+        "not_received": "Billed {{billed}} but nothing was received.",
+        "qty_over_received": "Billed {{billed}} but only {{received}} received.",
+        "price_over_po": "Billed price {{price}} is above the order price {{po}}.",
+        "not_on_po": "This item is not on the purchase order."
+      }
+    },
+    "ap": {
+      "cancel": "Cancel"
     }
   },
   "production": {

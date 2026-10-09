@@ -271,7 +271,25 @@
     "account_not_found": "Akun itu tidak aktif.",
     "account_name_taken": "Akun dengan nama ini sudah ada.",
     "same_account": "Pilih dua akun yang berbeda.",
-    "expense_not_found": "Pengeluaran itu sudah tidak ada."
+    "expense_not_found": "Pengeluaran itu sudah tidak ada.",
+    "receipt_not_found": "Penerimaan tidak ditemukan atau sudah dibatalkan.",
+    "vendor_not_found": "Pemasok tidak ditemukan.",
+    "bill_not_found": "Tagihan tidak ditemukan.",
+    "return_not_found": "Retur tidak ditemukan.",
+    "payment_not_found": "Pembayaran tidak ditemukan.",
+    "duplicate_vendor_invoice": "Nomor faktur pemasok ini sudah dicatat.",
+    "receipt_already_billed": "Ada penerimaan yang sudah masuk tagihan lain.",
+    "payment_exceeds_balance": "Pembayaran melebihi sisa utang.",
+    "credit_note_missing": "Catat nota kredit pemasok terlebih dahulu.",
+    "credit_already_applied": "Kredit ini sudah dipakai pada tagihan.",
+    "credit_exceeds_balance": "Kredit melebihi sisa tagihan.",
+    "bill_mismatch": "Tagihan ini tidak cocok dengan pesanan dan penerimaan, dan pengaturan Anda melarang membayarnya.",
+    "bill_not_open": "Tagihan ini sudah lunas atau dibatalkan.",
+    "bill_has_settlements": "Tagihan yang sudah ada pembayaran atau kredit tidak bisa dibatalkan.",
+    "already_credited": "Retur yang sudah dikreditkan tidak bisa dibatalkan.",
+    "receipt_mismatch": "Penerimaan berasal dari pemasok atau outlet lain.",
+    "return_reversed": "Retur ini sudah dibatalkan.",
+    "already_void": "Tagihan ini sudah dibatalkan."
   },
   "appearance": {
     "open": "Tampilan",
@@ -848,7 +866,9 @@
       "receipts": "Diterima",
       "vendors": "Pemasok",
       "orders": "Pesanan",
-      "reorder": "Pesan ulang"
+      "reorder": "Pesan ulang",
+      "returns": "Retur",
+      "bills": "Tagihan"
     },
     "quick": {
       "help": "Catat belanja di pasar atau pembayaran tunai. Stok langsung bertambah dan harganya memperbarui biaya rata-rata.",
@@ -918,6 +938,72 @@
       "noVendor": "Belum ada harga vendor",
       "line": "{{name}}: ada {{have}} {{unit}}, pesan ulang di {{point}}, perlu {{need}} {{unit}}",
       "draft": "Buat draf pesanan"
+    },
+    "returns": {
+      "new": "Retur baru",
+      "empty": "Belum ada retur di outlet ini.",
+      "receipt": "Dari penerimaan",
+      "pickReceipt": "Pilih penerimaan",
+      "qtyOf": "{{name}}: jumlah diretur (diterima {{have}} {{unit}})",
+      "reason": "Alasan",
+      "date": "Tanggal retur",
+      "post": "Simpan retur",
+      "line": "{{date}} · {{reason}} · kredit {{credit}}",
+      "credited": "Nota kredit {{no}}",
+      "creditNote": "Nomor nota kredit pemasok",
+      "recordCredit": "Catat nota kredit",
+      "reverse": "Batalkan retur",
+      "reasons": {
+        "damaged": "Rusak",
+        "expired": "Kedaluwarsa",
+        "wrong_item": "Barang salah",
+        "quality": "Kualitas buruk",
+        "other": "Lainnya"
+      },
+      "status": {
+        "posted": "Diretur",
+        "reversed": "Dibatalkan"
+      }
+    },
+    "bills": {
+      "new": "Tagihan baru",
+      "empty": "Belum ada tagihan di outlet ini.",
+      "vendor": "Pemasok",
+      "pickVendor": "Pilih pemasok",
+      "invoiceNo": "Nomor faktur pemasok",
+      "date": "Tanggal tagihan",
+      "amountOf": "{{name}} ({{qty}} {{unit}}): jumlah ditagih",
+      "save": "Simpan tagihan",
+      "line": "Jatuh tempo {{due}} · total {{total}} · sisa {{balance}}",
+      "owed": "Utang ke pemasok: {{total}}",
+      "overdue_one": "{{count}} tagihan lewat jatuh tempo: {{total}}",
+      "overdue_other": "{{count}} tagihan lewat jatuh tempo: {{total}}",
+      "amount": "Jumlah",
+      "method": "Dibayar dengan",
+      "reference": "Referensi",
+      "pay": "Catat pembayaran",
+      "applyCredit": "Pakai kredit {{no}}",
+      "void": "Batalkan tagihan",
+      "match": {
+        "matched": "Cocok dengan pesanan",
+        "mismatch": "Perlu dicek",
+        "no_po": "Tanpa pesanan"
+      },
+      "status": {
+        "open": "Belum dibayar",
+        "partially_paid": "Dibayar sebagian",
+        "paid": "Lunas",
+        "void": "Dibatalkan"
+      },
+      "issue": {
+        "not_received": "Ditagih {{billed}} tetapi belum ada yang diterima.",
+        "qty_over_received": "Ditagih {{billed}} tetapi hanya {{received}} diterima.",
+        "price_over_po": "Harga tagihan {{price}} di atas harga pesanan {{po}}.",
+        "not_on_po": "Barang ini tidak ada di pesanan pembelian."
+      }
+    },
+    "ap": {
+      "cancel": "Batal"
     }
   },
   "production": {
