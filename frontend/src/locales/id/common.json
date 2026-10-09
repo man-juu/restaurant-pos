@@ -309,7 +309,8 @@
         "warn": "Minta konfirmasi",
         "block": "Tolak"
       },
-      "expiryDays": "Peringatkan sekian hari sebelum batch kedaluwarsa (0 sampai 60)"
+      "expiryDays": "Peringatkan sekian hari sebelum batch kedaluwarsa (0 sampai 60)",
+      "lowDays": "Peringatkan jika stok cukup kurang dari sekian hari (0 untuk mematikan)"
     },
     "purchasing": {
       "requireInvoice": "Wajibkan foto nota pemasok di setiap pembelian",
@@ -540,7 +541,8 @@
       "waste": "Barang terbuang",
       "adjustments": "Penyesuaian",
       "counts": "Stok opname",
-      "levels": "Level"
+      "levels": "Level",
+      "producible": "Bisa dibuat"
     },
     "empty": "Belum ada stok tercatat di outlet ini.",
     "negative": "Di bawah nol: pemakaian melebihi stok yang tercatat masuk",
@@ -644,6 +646,13 @@
       "min_qty": "Minimum",
       "reorder_point": "Pesan ulang di",
       "max_qty": "Maksimum"
+    },
+    "daysLeft_one": "cukup sekitar {{count}} hari",
+    "daysLeft_other": "cukup sekitar {{count}} hari",
+    "producible": {
+      "help": "Berapa banyak tiap menu atau bahan olahan yang masih bisa dibuat dari stok di sini. Bahan yang paling dulu habis ditampilkan.",
+      "empty": "Belum ada resep aktif.",
+      "limit": "Paling dulu habis: {{name}}"
     }
   },
   "purchasing": {
@@ -652,7 +661,8 @@
       "buy": "Beli cepat",
       "receipts": "Diterima",
       "vendors": "Pemasok",
-      "orders": "Pesanan"
+      "orders": "Pesanan",
+      "reorder": "Pesan ulang"
     },
     "quick": {
       "help": "Catat belanja di pasar atau pembayaran tunai. Stok langsung bertambah dan harganya memperbarui biaya rata-rata.",
@@ -687,7 +697,8 @@
       "tax_id": "NPWP",
       "terms": "Termin bayar (hari)",
       "bank": "Data bank (disimpan terenkripsi)",
-      "bankKept": "Tersimpan. Ketik untuk mengganti."
+      "bankKept": "Tersimpan. Ketik untuk mengganti.",
+      "preferred": "Vendor utama untuk barang ini"
     },
     "orders": {
       "new": "Pesanan baru",
@@ -714,6 +725,13 @@
         "rejected": "Ditolak",
         "cancelled": "Dibatalkan"
       }
+    },
+    "reorder": {
+      "help": "Barang yang sudah di titik pesan ulang atau di bawahnya, per vendor (vendor utama dulu, jika tidak ada yang termurah). Jumlah dibulatkan ke kemasan utuh.",
+      "empty": "Tidak ada yang perlu dipesan. Atur titik pesan ulang di Inventaris, Level.",
+      "noVendor": "Belum ada harga vendor",
+      "line": "{{name}}: ada {{have}} {{unit}}, pesan ulang di {{point}}, perlu {{need}} {{unit}}",
+      "draft": "Buat draf pesanan"
     }
   },
   "production": {

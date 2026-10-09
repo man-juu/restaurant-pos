@@ -25,7 +25,9 @@ export function StockSection({ data, canEdit }: { data: AllSettings; canEdit: bo
   const save = useSaveSetting('stock')
   const [policy, setPolicy] = useState(() => withDefaults(data.stock.negative_stock))
   const [days, setDays] = useState(String(data.stock.expiry_warning_days ?? 2))
-  const daysOk = /^\d{1,2}$/.test(days) && Number(days) <= 60
+  const [low, setLow] = useState(String(data.stock.low_days_alert ?? 2))
+  const ok = (v: string) => /^\d{1,2}$/.test(v) && Number(v) <= 60
+  const daysOk = ok(days) && ok(low)
 
   return (
     <Card className="flex flex-col gap-4">
@@ -49,15 +51,27 @@ export function StockSection({ data, canEdit }: { data: AllSettings; canEdit: bo
           label={t('settings.stock.expiryDays')}
           inputMode="numeric"
           value={days}
-          invalid={!daysOk}
+          invalid={!ok(days)}
           onChange={(e) => setDays(e.target.value)}
+        />
+        <TextInput
+          label={t('settings.stock.lowDays')}
+          inputMode="numeric"
+          value={low}
+          invalid={!ok(low)}
+          onChange={(e) => setLow(e.target.value)}
         />
       </fieldset>
       {canEdit && (
         <SaveBar
           mutation={save}
           onSave={() =>
-            daysOk && save.mutate({ negative_stock: policy, expiry_warning_days: Number(days) })
+            daysOk &&
+            save.mutate({
+              negative_stock: policy,
+              expiry_warning_days: Number(days),
+              low_days_alert: Number(low),
+            })
           }
         />
       )}

@@ -54,6 +54,7 @@ class VendorItemIn(Strict):
     price: Money  # per pack
     min_order_qty: Qty | None = None
     valid_from: date
+    is_preferred: bool = False
 
 
 class VendorItemOut(VendorItemIn):
@@ -174,3 +175,23 @@ class ReceiveIn(Strict):
     lines: list[ReceiveLineIn] = Field(min_length=1, max_length=MAX_LINES)
     invoice_upload_id: uuid.UUID | None = None
     note: Annotated[str, StringConstraints(strip_whitespace=True, max_length=500)] | None = None
+
+
+class SuggestionLine(BaseModel):
+    item_id: uuid.UUID
+    name: str
+    unit_code: str  # base unit of on_hand and reorder_point
+    on_hand: Decimal
+    reorder_point: Decimal
+    suggested: Decimal  # base unit
+    order_qty: Decimal | None  # in order_unit_id, rounded up to whole packs
+    order_unit_id: uuid.UUID | None
+    unit_price: int | None  # per order unit, from the vendor's current price
+
+
+class SuggestionGroup(BaseModel):
+    """FR-INV-013: one group per vendor; items without a vendor price come last."""
+
+    vendor_id: uuid.UUID | None
+    vendor_name: str | None
+    lines: list[SuggestionLine]

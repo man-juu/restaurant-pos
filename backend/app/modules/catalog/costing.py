@@ -199,3 +199,41 @@ async def recipe_needs(
     if item_id not in boms:
         return None, {}
     return boms[item_id].id, dict(await _expand_level(db, {item_id: qty}, boms))
+
+
+async def unit_needs(
+    db: AsyncSession, ids: set[uuid.UUID], on: date
+) -> dict[uuid.UUID, dict[uuid.UUID, Decimal]]:
+    """For each item with a recipe in force: base quantity of each direct component per one
+    base unit of the item (waste included). One query per step, whatever the item count."""
+    boms = await active_boms(db, ids, on)
+    if not boms:
+        return {}
+    lines = await _lines_by_bom(db, list(boms.values()))
+    pairs = {(ln.component_item_id, ln.unit_id) for ls in lines.values() for ln in ls}
+    pairs |= {(b.item_id, b.yield_unit_id) for b in boms.values()}
+    factors = await base_factors(db, pairs)
+    out: dict[uuid.UUID, dict[uuid.UUID, Decimal]] = {}
+    for item_id, bom in boms.items():
+        batch = bom.yield_qty * factors[(item_id, bom.yield_unit_id)]
+        need: dict[uuid.UUID, Decimal] = defaultdict(Decimal)
+        for ln in lines[bom.id]:
+            gross = ln.qty * factors[(ln.component_item_id, ln.unit_id)]
+            need[ln.component_item_id] += gross / (1 - ln.waste_pct / HUNDRED) / batch
+        out[item_id] = dict(need)
+    return out
+
+
+async def items_with_recipe(db: AsyncSession, on: date) -> set[uuid.UUID]:
+    """Active items that have a recipe in force on `on`."""
+    stmt = (
+        select(Bom.item_id)
+        .join(Item, Item.id == Bom.item_id)
+        .where(
+            Item.is_active,
+            Bom.status == "active",
+            Bom.valid_from <= on,
+            or_(Bom.valid_to.is_(None), Bom.valid_to >= on),
+        )
+    )
+    return set(await db.scalars(stmt))

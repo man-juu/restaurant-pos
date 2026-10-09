@@ -26,7 +26,7 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 | 8 | 1f Purchasing (parts 1 and 2 done 2026-10-08: vendors, quick purchase, invoice photo, price history, PO with approval, receiving against PO, lead-time history, PO PDF; optional: purchase requests): vendors, PR, PO, receiving, quick purchase, PDF, invoice attachment | FR-PUR-001 to 006, 010, 011 | attachment optional, configurable mandatory |
 | 9 | 1g Production with yield and costing, shelf-life labels, prep list (done 2026-10-08: production orders with yield, cost and expiry; stock levels with par; prep list; shelf-life labels) | FR-PRD-001 to 004, 007, 008 | |
 | 10 | 1h Transfers with approval, delivery note, discrepancies (done 2026-10-08) | FR-TRF-001 to 004 | |
-| 12 | 1j Stock levels, DOI, alerts, reorder suggestions, producible quantity, notification center (part 1 done 2026-10-09: stock alerts, notification center, alerts job) | FR-INV-010 to 013, 020, FR-NTF-001 to 003 | |
+| 12 | 1j Stock levels, DOI, alerts, reorder suggestions, producible quantity, notification center (parts 1 and 2a done 2026-10-09: stock alerts, notification center, alerts job, days left, producible, reorder suggestions to draft PO, low-days alert; next: approval, count-variance and food-cost alerts) | FR-INV-010 to 013, 020, FR-NTF-001 to 003 | |
 | 13 | 1k Manual daily sales entry, recipe consumption, day lock, platform item mapping | FR-SAL-001 to 003, FR-CAT-010 | |
 | 14 | 1l Reports and variance | FR-RPT-001 to 006, 010, 011, FR-INV-015 | |
 | 15 | 1m Admin usage, feature flags, audit filters/export, subscription notices | FR-ADM-004, 006, FR-AUD-004, FR-SUB-006 | |

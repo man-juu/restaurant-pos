@@ -112,6 +112,8 @@ class StockSettings(Strict):
     negative_stock: NegativeStockPolicy = Field(default_factory=NegativeStockPolicy)
     # FR-INV-012: warn this many days before a batch expires (0 = only on the day).
     expiry_warning_days: int = Field(default=2, ge=0, le=60)
+    # FR-INV-012: alert when stock lasts fewer days than this at the recent pace (0 = off).
+    low_days_alert: int = Field(default=2, ge=0, le=60)
 
 
 class PurchasingSettings(Strict):

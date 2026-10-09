@@ -9,6 +9,7 @@ import { AdjustmentsTab } from './AdjustmentsTab'
 import { CountsTab } from './CountsTab'
 import { LevelsTab } from './LevelsTab'
 import { OpeningTab } from './OpeningTab'
+import { ProducibleTab } from './ProducibleTab'
 import { StockTab } from './StockTab'
 import { ValuationTab } from './ValuationTab'
 import { WasteTab } from './WasteTab'
@@ -56,6 +57,10 @@ const TABS: Record<
   opening: {
     visible: (a) => a.has('inventory.opening.post'),
     render: (o, a) => <OpeningTab key={o} outletId={o} currency={a.currency} />,
+  },
+  producible: {
+    visible: () => true,
+    render: (o) => <ProducibleTab outletId={o} />,
   },
   levels: {
     visible: () => true,

@@ -15,6 +15,7 @@ from app.core.notifications.service import Condition, sync
 from app.core.settings import service as settings
 from app.core.settings.schemas import StockSettings
 from app.modules.catalog.interface import item_names, stock_items, tenant_today
+from app.modules.inventory import planning
 from app.modules.inventory.models import StockBalance, StockBatch, StockLevel
 
 LINK = "/inventory"
@@ -76,6 +77,23 @@ async def _batches(
     return [(o, i, b, q, e) for o, i, b, q, e in rows if e is not None]
 
 
+async def _low_days(
+    db: AsyncSession, have: dict[tuple[uuid.UUID, uuid.UUID], Decimal], today: date, limit: int
+) -> list[tuple[uuid.UUID, uuid.UUID, Decimal, Decimal]]:
+    """FR-INV-011/012: stock that lasts fewer than `limit` days at the recent pace."""
+    if limit <= 0:
+        return []
+    out = []
+    for outlet in {o for o, _ in have}:
+        ids = {i for o, i in have if o == outlet}
+        usage = await planning.weekday_usage(db, outlet, ids, today)
+        for item, week in usage.items():
+            left = planning.days_left(have[(outlet, item)], week, today)
+            if left is not None and 0 < left < limit:
+                out.append((outlet, item, have[(outlet, item)], left))
+    return out
+
+
 async def scan_stock(db: AsyncSession, tenant_id: uuid.UUID) -> None:
     stock = cast(StockSettings, await settings.get_setting(db, tenant_id, "stock"))
     today = await tenant_today(db, tenant_id)
@@ -83,7 +101,9 @@ async def scan_stock(db: AsyncSession, tenant_id: uuid.UUID) -> None:
     negative = await _negative(db, have)
     low = await _below_reorder(db, have)
     dated = await _batches(db, today + timedelta(days=stock.expiry_warning_days))
+    short = await _low_days(db, have, today, stock.low_days_alert)
     ids = {r[1] for r in negative} | {r[1] for r in low} | {r[1] for r in dated}
+    ids |= {r[1] for r in short}
     language = await db.scalar(select(Tenant.language).where(Tenant.id == tenant_id)) or "en"
     names = await item_names(db, tenant_id, language, ids)
 
@@ -128,5 +148,14 @@ async def scan_stock(db: AsyncSession, tenant_id: uuid.UUID) -> None:
             Condition(o, i, b, info(i, qty=_num(q), expiry=e.isoformat()), LINK)
             for o, i, b, q, e in dated
             if e < today
+        ],
+    )
+    await sync(
+        db,
+        tenant_id,
+        "low_days_of_inventory",
+        [
+            Condition(o, i, details=info(i, qty=_num(q), days=_num(d)), link=LINK)
+            for o, i, q, d in short
         ],
     )

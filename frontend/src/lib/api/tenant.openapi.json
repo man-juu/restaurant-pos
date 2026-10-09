@@ -3610,6 +3610,61 @@
         "title": "PriceOut",
         "type": "object"
       },
+      "ProducibleRow": {
+        "properties": {
+          "can_make": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Can Make",
+            "type": "string"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "limiting_item_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limiting Item Id"
+          },
+          "limiting_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limiting Name"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "unit_code": {
+            "title": "Unit Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "name",
+          "unit_code",
+          "can_make",
+          "limiting_item_id",
+          "limiting_name"
+        ],
+        "title": "ProducibleRow",
+        "type": "object"
+      },
       "ProductionCompleteIn": {
         "additionalProperties": false,
         "description": "FR-PRD-002, 003: what really came out and, if different from the recipe, what was used.",
@@ -4897,6 +4952,30 @@
             ],
             "title": "Avg Cost"
           },
+          "avg_daily_use": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Daily Use"
+          },
+          "days_left": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Days Left"
+          },
           "item_id": {
             "format": "uuid",
             "title": "Item Id",
@@ -4958,6 +5037,13 @@
             "title": "Expiry Warning Days",
             "type": "integer"
           },
+          "low_days_alert": {
+            "default": 2,
+            "maximum": 60.0,
+            "minimum": 0.0,
+            "title": "Low Days Alert",
+            "type": "integer"
+          },
           "negative_stock": {
             "$ref": "#/components/schemas/NegativeStockPolicy"
           }
@@ -4988,6 +5074,128 @@
           "days_left"
         ],
         "title": "SubscriptionBanner",
+        "type": "object"
+      },
+      "SuggestionGroup": {
+        "description": "FR-INV-013: one group per vendor; items without a vendor price come last.",
+        "properties": {
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/SuggestionLine"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "vendor_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vendor Id"
+          },
+          "vendor_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vendor Name"
+          }
+        },
+        "required": [
+          "vendor_id",
+          "vendor_name",
+          "lines"
+        ],
+        "title": "SuggestionGroup",
+        "type": "object"
+      },
+      "SuggestionLine": {
+        "properties": {
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "on_hand": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "On Hand",
+            "type": "string"
+          },
+          "order_qty": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order Qty"
+          },
+          "order_unit_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order Unit Id"
+          },
+          "reorder_point": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Reorder Point",
+            "type": "string"
+          },
+          "suggested": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Suggested",
+            "type": "string"
+          },
+          "unit_code": {
+            "title": "Unit Code",
+            "type": "string"
+          },
+          "unit_price": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Price"
+          }
+        },
+        "required": [
+          "item_id",
+          "name",
+          "unit_code",
+          "on_hand",
+          "reorder_point",
+          "suggested",
+          "order_qty",
+          "order_unit_id",
+          "unit_price"
+        ],
+        "title": "SuggestionLine",
         "type": "object"
       },
       "SwitchTenantRequest": {
@@ -5855,6 +6063,11 @@
       "VendorItemIn": {
         "additionalProperties": false,
         "properties": {
+          "is_preferred": {
+            "default": false,
+            "title": "Is Preferred",
+            "type": "boolean"
+          },
           "item_id": {
             "format": "uuid",
             "title": "Item Id",
@@ -5935,6 +6148,11 @@
             "format": "uuid",
             "title": "Id",
             "type": "string"
+          },
+          "is_preferred": {
+            "default": false,
+            "title": "Is Preferred",
+            "type": "boolean"
           },
           "item_id": {
             "format": "uuid",
@@ -9700,6 +9918,64 @@
         ]
       }
     },
+    "/api/v1/inventory/producible": {
+      "get": {
+        "operationId": "producible_api_v1_inventory_producible_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProducibleRow"
+                  },
+                  "title": "Response Producible Api V1 Inventory Producible Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Producible",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
     "/api/v1/inventory/stock": {
       "get": {
         "operationId": "stock_api_v1_inventory_stock_get",
@@ -11495,6 +11771,67 @@
           }
         },
         "summary": "Reverse Receipt",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
+    "/api/v1/purchasing/reorder-suggestions": {
+      "get": {
+        "operationId": "reorder_suggestions_api_v1_purchasing_reorder_suggestions_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SuggestionGroup"
+                  },
+                  "title": "Response Reorder Suggestions Api V1 Purchasing Reorder Suggestions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reorder Suggestions",
         "tags": [
           "purchasing"
         ]

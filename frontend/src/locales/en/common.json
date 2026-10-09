@@ -309,7 +309,8 @@
         "warn": "Ask to confirm",
         "block": "Refuse"
       },
-      "expiryDays": "Warn this many days before a batch expires (0 to 60)"
+      "expiryDays": "Warn this many days before a batch expires (0 to 60)",
+      "lowDays": "Alert when stock lasts fewer days than this (0 turns it off)"
     },
     "purchasing": {
       "requireInvoice": "Require a photo of the supplier invoice on every purchase",
@@ -540,7 +541,8 @@
       "waste": "Waste",
       "adjustments": "Adjustments",
       "counts": "Stock counts",
-      "levels": "Levels"
+      "levels": "Levels",
+      "producible": "Can make"
     },
     "empty": "No stock recorded at this outlet yet.",
     "negative": "Below zero: more was used than was recorded in",
@@ -644,6 +646,13 @@
       "min_qty": "Minimum",
       "reorder_point": "Reorder at",
       "max_qty": "Maximum"
+    },
+    "daysLeft_one": "about {{count}} day left",
+    "daysLeft_other": "about {{count}} days left",
+    "producible": {
+      "help": "How many of each dish or prepared item the stock here can still make. The ingredient that runs out first is shown.",
+      "empty": "No active recipes yet.",
+      "limit": "Runs out first: {{name}}"
     }
   },
   "purchasing": {
@@ -652,7 +661,8 @@
       "buy": "Quick purchase",
       "receipts": "Received",
       "vendors": "Vendors",
-      "orders": "Orders"
+      "orders": "Orders",
+      "reorder": "Reorder"
     },
     "quick": {
       "help": "Record what you bought at the market or paid in cash. Stock is added at once and the price updates the average cost.",
@@ -687,7 +697,8 @@
       "tax_id": "Tax ID (NPWP)",
       "terms": "Payment terms (days)",
       "bank": "Bank details (stored encrypted)",
-      "bankKept": "Saved. Type to replace."
+      "bankKept": "Saved. Type to replace.",
+      "preferred": "Preferred vendor for this item"
     },
     "orders": {
       "new": "New order",
@@ -714,6 +725,13 @@
         "rejected": "Rejected",
         "cancelled": "Cancelled"
       }
+    },
+    "reorder": {
+      "help": "Items at or below their reorder point, grouped by vendor (preferred vendor first, else the cheapest). Quantities are rounded up to whole packs.",
+      "empty": "Nothing to reorder. Set reorder points under Inventory, Levels.",
+      "noVendor": "No vendor price yet",
+      "line": "{{name}}: have {{have}} {{unit}}, reorder at {{point}}, needs {{need}} {{unit}}",
+      "draft": "Make a draft order"
     }
   },
   "production": {

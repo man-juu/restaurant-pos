@@ -56,6 +56,8 @@ class StockRow(Labelled):
     qty: Decimal  # base unit; negative means more was used than was recorded in
     avg_cost: Decimal | None  # hidden without catalog.cost.view
     value: int | None
+    avg_daily_use: Decimal | None = None  # FR-INV-011: last four weeks, by weekday
+    days_left: Decimal | None = None  # None: not used lately, no estimate
 
 
 class BatchOut(BaseModel):
@@ -115,3 +117,12 @@ class LevelOut(LevelIn):
     name: str
     unit_code: str
     on_hand: Decimal
+
+
+class ProducibleRow(BaseModel):
+    item_id: uuid.UUID
+    name: str
+    unit_code: str
+    can_make: Decimal
+    limiting_item_id: uuid.UUID | None
+    limiting_name: str | None

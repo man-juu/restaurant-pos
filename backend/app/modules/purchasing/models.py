@@ -90,6 +90,8 @@ class VendorItem(Base):
     price: Mapped[int] = mapped_column(BigInteger)  # per pack, minor units
     min_order_qty: Mapped[Decimal | None] = mapped_column(Numeric(18, 4))  # packs
     valid_from: Mapped[date] = mapped_column(Date)
+    # FR-INV-010/013: reorder suggestions use this vendor for the item (else the cheapest).
+    is_preferred: Mapped[bool] = mapped_column(server_default="false")
 
 
 class PurchaseOrder(Base):

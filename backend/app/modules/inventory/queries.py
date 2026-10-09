@@ -11,7 +11,8 @@ from sqlalchemy import ColumnElement, Select, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import PageParams, paginate
-from app.modules.catalog.interface import item_names
+from app.modules.catalog.interface import item_names, tenant_today
+from app.modules.inventory import planning
 from app.modules.inventory.models import ItemCost, StockBalance, StockBatch, StockMovement
 from app.modules.inventory.schemas import BatchOut, MovementOut, StockRow, ValuationRow
 from app.modules.inventory.service import money
@@ -67,11 +68,24 @@ async def on_hand(
         default_sort="item_id",
     )
     labels = await _labels(db, v, [r[0] for r in rows])
+    today = await tenant_today(db, v.tenant_id)
+    usage = await planning.weekday_usage(db, outlet_id, {r[0] for r in rows}, today)
     out = []
     for i, qty, avg in rows:
         cost = avg if v.show_cost else None
         value = money(qty, avg) if v.show_cost and avg is not None else None
-        out.append(StockRow(item_id=i, qty=qty, avg_cost=cost, value=value, **labels[i]))
+        week = usage.get(i)
+        out.append(
+            StockRow(
+                item_id=i,
+                qty=qty,
+                avg_cost=cost,
+                value=value,
+                avg_daily_use=planning.average_daily(week) if week else None,
+                days_left=planning.days_left(qty, week, today),
+                **labels[i],
+            )
+        )
     return out, cursor
 
 

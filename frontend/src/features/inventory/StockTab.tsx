@@ -84,6 +84,7 @@ function StockLine({
       <span className="min-w-0">
         <span className="block truncate font-bold">{row.name}</span>
         <span className="block text-sm text-muted">{row.sku}</span>
+        <DaysLeft days={row.days_left} />
       </span>
       <span className="text-right tabular-nums">
         <span className={clsx('block font-bold', qty < 0 && 'text-danger')}>
@@ -97,5 +98,17 @@ function StockLine({
         )}
       </span>
     </button>
+  )
+}
+
+/** FR-INV-011: how long the stock lasts at the recent pace (nothing shown without usage). */
+function DaysLeft({ days }: { days?: string | null }) {
+  const { t } = useTranslation()
+  if (days == null) return null
+  const n = Number(days)
+  return (
+    <span className={clsx('block text-xs', n < 2 ? 'text-danger' : 'text-ink-soft')}>
+      {t('inventory.daysLeft', { count: Math.floor(n) })}
+    </span>
   )
 }

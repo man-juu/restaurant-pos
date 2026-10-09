@@ -8,11 +8,13 @@ import { useOutlets } from '../../lib/session'
 import { OrdersTab } from './OrdersTab'
 import { QuickPurchaseTab } from './QuickPurchaseTab'
 import { ReceiptsTab } from './ReceiptsTab'
+import { ReorderTab } from './ReorderTab'
 import { VendorsTab } from './VendorsTab'
 
 interface Access {
   has: (code: string) => boolean
   currency: string
+  goTo: (tab: string) => void
 }
 
 /** Each tab: who sees it (UI only; the server checks every call) and what it shows. */
@@ -38,6 +40,10 @@ const TABS: Record<
       />
     ),
   },
+  reorder: {
+    visible: (a) => a.has('purchasing.order.create'),
+    render: (o, a) => <ReorderTab outletId={o} onDrafted={() => a.goTo('orders')} />,
+  },
   receipts: {
     visible: () => true,
     render: (o, a) => (
@@ -54,19 +60,27 @@ const TABS: Record<
   },
 }
 
+function access(caps: Capabilities | undefined, goTo: (tab: string) => void): Access {
+  return {
+    has: (code) => Boolean(caps?.permissions.includes(code)),
+    currency: caps?.currency ?? 'IDR',
+    goTo,
+  }
+}
+
+const pick = (tabs: string[], tab: string) => (tabs.includes(tab) ? tab : (tabs[0] ?? 'receipts'))
+
 /** FR-PUR-001, 004, 011: vendors, quick purchases and goods received per outlet. */
 export function PurchasingPage() {
   const { t } = useTranslation()
   const { caps } = useOutletContext<{ caps?: Capabilities }>()
-  const a: Access = {
-    has: (code) => Boolean(caps?.permissions.includes(code)),
-    currency: caps?.currency ?? 'IDR',
-  }
+  const [tab, setTab] = useState('')
+  const a = access(caps, setTab)
   const tabs = Object.keys(TABS).filter((k) => TABS[k].visible(a))
   const outlets = useOutlets()
   const [picked, setPicked] = useState('')
   const outletId = picked || outlets.data?.find((o) => o.is_active)?.id || ''
-  const [tab, setTab] = useState(tabs[0] ?? 'receipts')
+  const current = pick(tabs, tab)
   return (
     <div className="flex flex-col gap-5">
       <h1 className="font-display text-3xl font-extrabold">{t('purchasing.title')}</h1>
@@ -82,8 +96,13 @@ export function PurchasingPage() {
           </option>
         ))}
       </SelectInput>
-      <Tabs tabs={tabs} value={tab} onChange={setTab} label={(k) => t(`purchasing.tabs.${k}`)} />
-      {outletId && <div role="tabpanel">{TABS[tab].render(outletId, a)}</div>}
+      <Tabs
+        tabs={tabs}
+        value={current}
+        onChange={setTab}
+        label={(k) => t(`purchasing.tabs.${k}`)}
+      />
+      {outletId && <div role="tabpanel">{TABS[current].render(outletId, a)}</div>}
     </div>
   )
 }

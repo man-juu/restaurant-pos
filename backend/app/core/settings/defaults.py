@@ -10,6 +10,7 @@ from typing import Any
 STOCK: dict[str, Any] = {
     "negative_stock": {"sale": "allow", "production": "warn", "transfer": "warn", "other": "block"},
     "expiry_warning_days": 2,
+    "low_days_alert": 2,
 }
 
 DEFAULTS: dict[str, dict[str, Any]] = {

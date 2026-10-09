@@ -1103,6 +1103,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/inventory/producible': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Producible */
+    get: operations['producible_api_v1_inventory_producible_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/inventory/stock': {
     parameters: {
       query?: never
@@ -1679,6 +1696,23 @@ export interface paths {
     put?: never
     /** Reverse Receipt */
     post: operations['reverse_receipt_api_v1_purchasing_receipts__receipt_id__reverse_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/reorder-suggestions': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Reorder Suggestions */
+    get: operations['reorder_suggestions_api_v1_purchasing_reorder_suggestions_get']
+    put?: never
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -3367,6 +3401,24 @@ export interface components {
        */
       valid_from: string
     }
+    /** ProducibleRow */
+    ProducibleRow: {
+      /** Can Make */
+      can_make: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Limiting Item Id */
+      limiting_item_id: string | null
+      /** Limiting Name */
+      limiting_name: string | null
+      /** Name */
+      name: string
+      /** Unit Code */
+      unit_code: string
+    }
     /**
      * ProductionCompleteIn
      * @description FR-PRD-002, 003: what really came out and, if different from the recipe, what was used.
@@ -3848,6 +3900,10 @@ export interface components {
     StockRow: {
       /** Avg Cost */
       avg_cost: string | null
+      /** Avg Daily Use */
+      avg_daily_use?: string | null
+      /** Days Left */
+      days_left?: string | null
       /**
        * Item Id
        * Format: uuid
@@ -3876,6 +3932,11 @@ export interface components {
        * @default 2
        */
       expiry_warning_days: number
+      /**
+       * Low Days Alert
+       * @default 2
+       */
+      low_days_alert: number
       negative_stock?: components['schemas']['NegativeStockPolicy']
     }
     /** SubscriptionBanner */
@@ -3884,6 +3945,42 @@ export interface components {
       days_left: number | null
       /** State */
       state: string
+    }
+    /**
+     * SuggestionGroup
+     * @description FR-INV-013: one group per vendor; items without a vendor price come last.
+     */
+    SuggestionGroup: {
+      /** Lines */
+      lines: components['schemas']['SuggestionLine'][]
+      /** Vendor Id */
+      vendor_id: string | null
+      /** Vendor Name */
+      vendor_name: string | null
+    }
+    /** SuggestionLine */
+    SuggestionLine: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Name */
+      name: string
+      /** On Hand */
+      on_hand: string
+      /** Order Qty */
+      order_qty: string | null
+      /** Order Unit Id */
+      order_unit_id: string | null
+      /** Reorder Point */
+      reorder_point: string
+      /** Suggested */
+      suggested: string
+      /** Unit Code */
+      unit_code: string
+      /** Unit Price */
+      unit_price: number | null
     }
     /** SwitchTenantRequest */
     SwitchTenantRequest: {
@@ -4226,6 +4323,11 @@ export interface components {
     /** VendorItemIn */
     VendorItemIn: {
       /**
+       * Is Preferred
+       * @default false
+       */
+      is_preferred: boolean
+      /**
        * Item Id
        * Format: uuid
        */
@@ -4256,6 +4358,11 @@ export interface components {
        * Format: uuid
        */
       id: string
+      /**
+       * Is Preferred
+       * @default false
+       */
+      is_preferred: boolean
       /**
        * Item Id
        * Format: uuid
@@ -6636,6 +6743,38 @@ export interface operations {
       }
     }
   }
+  producible_api_v1_inventory_producible_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        lang?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProducibleRow'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   stock_api_v1_inventory_stock_get: {
     parameters: {
       query: {
@@ -7729,6 +7868,38 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ReceiptOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reorder_suggestions_api_v1_purchasing_reorder_suggestions_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SuggestionGroup'][]
         }
       }
       /** @description Validation Error */
