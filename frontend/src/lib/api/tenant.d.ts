@@ -3436,6 +3436,7 @@ export interface components {
       numbering: components['schemas']['NumberingSettings']
       payment_methods: components['schemas']['PaymentMethodSettings']
       pos: components['schemas']['PosSettings']
+      production: components['schemas']['ProductionSettings']
       purchasing: components['schemas']['PurchasingSettings']
       receipt: components['schemas']['ReceiptSettings']
       service_charge: components['schemas']['ServiceChargeSettings']
@@ -5527,6 +5528,11 @@ export interface components {
       par_qty: string
       /** Planned */
       planned: string
+      /**
+       * Requested
+       * @default 0
+       */
+      requested: string
       /** Sku */
       sku: string
       /** Suggested */
@@ -5726,6 +5732,18 @@ export interface components {
        * Format: date
        */
       production_date: string
+    }
+    /**
+     * ProductionSettings
+     * @description FR-PRD-008: whether open branch requests (transfers) add to the central kitchen's prep
+     *     list, on top of its own par levels.
+     */
+    ProductionSettings: {
+      /**
+       * Prep Includes Requests
+       * @default true
+       */
+      prep_includes_requests: boolean
     }
     /** ProductionUsedIn */
     ProductionUsedIn: {

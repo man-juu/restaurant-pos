@@ -13,6 +13,7 @@ import { DevicesSection } from './DevicesSection'
 import { KitchenSection } from './KitchenSection'
 import { LimitsSection } from './LimitsSection'
 import { PosSection } from './PosSection'
+import { ProductionSection } from './ProductionSection'
 import { PurchasingSection } from './PurchasingSection'
 import { ReceiptSection } from './ReceiptSection'
 import { StockSection } from './StockSection'
@@ -34,6 +35,7 @@ const SECTIONS = {
   limits: (p: Props) => <LimitsSection canEdit={p.canEdit} />,
   stock: (p: Props) => <StockSection {...p} />,
   purchasing: (p: Props) => <PurchasingSection {...p} />,
+  production: (p: Props) => <ProductionSection {...p} />,
   catalog: (p: Props) => <CatalogSection {...p} />,
 } satisfies Record<string, (p: Props) => ReactNode>
 type Tab = keyof typeof SECTIONS

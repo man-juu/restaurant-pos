@@ -72,7 +72,8 @@ async function mock(page: Page) {
         name: 'Sambal',
         unit_code: 'g',
         par_qty: '2000.0000',
-        on_hand: '300.0000',
+        on_hand: '500.0000',
+        requested: '200',
         planned: '0',
         suggested: '1700.0000',
       },
@@ -158,7 +159,9 @@ test('prep list shows what is below par, ticks off and plans it (FR-PRD-008)', a
   await page.goto('/production')
   await page.getByRole('button', { name: 'EN' }).click()
   await page.getByRole('tab', { name: 'Prep list' }).click()
-  await expect(page.getByText('Make 1700 g · have 300 · par 2000 · planned 0')).toBeVisible()
+  await expect(
+    page.getByText('Make 1700 g · have 500 · par 2000 · requested 200 · planned 0'),
+  ).toBeVisible()
   await expect(page.getByRole('link', { name: 'Print prep list (PDF)' })).toBeVisible()
   const tick = page.getByRole('checkbox', { name: /Sambal/ })
   await tick.check()

@@ -96,10 +96,10 @@ async def save_levels(
     )
 
 
-async def below_par(
-    db: AsyncSession, outlet_id: uuid.UUID
+async def par_and_on_hand(
+    db: AsyncSession, outlet_id: uuid.UUID, also: set[uuid.UUID] | None = None
 ) -> dict[uuid.UUID, tuple[Decimal, Decimal]]:
-    """Items under their par level at the outlet: item -> (par, on hand)."""
+    """Items with a par level at the outlet, plus `also`: item -> (par or 0, on hand)."""
     rows = (
         await db.execute(
             select(StockLevel.item_id, StockLevel.par_qty).where(
@@ -107,6 +107,15 @@ async def below_par(
             )
         )
     ).all()
-    have = await on_hand_by_item(db, outlet_id, {i for i, _ in rows})
-    pars = {i: (par or Decimal(0), have.get(i, Decimal(0))) for i, par in rows}
-    return {i: v for i, v in pars.items() if v[1] < v[0]}
+    pars = {i: par or Decimal(0) for i, par in rows}
+    ids = set(pars) | (also or set())
+    have = await on_hand_by_item(db, outlet_id, ids)
+    return {i: (pars.get(i, Decimal(0)), have.get(i, Decimal(0))) for i in ids}
+
+
+async def below_par(
+    db: AsyncSession, outlet_id: uuid.UUID
+) -> dict[uuid.UUID, tuple[Decimal, Decimal]]:
+    """Items under their par level at the outlet: item -> (par, on hand)."""
+    levels = await par_and_on_hand(db, outlet_id)
+    return {i: v for i, v in levels.items() if v[1] < v[0]}

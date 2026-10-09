@@ -272,6 +272,9 @@
           "pos": {
             "$ref": "#/components/schemas/PosSettings"
           },
+          "production": {
+            "$ref": "#/components/schemas/ProductionSettings"
+          },
           "purchasing": {
             "$ref": "#/components/schemas/PurchasingSettings"
           },
@@ -302,7 +305,8 @@
           "catalog",
           "pos",
           "kitchen",
-          "receipt"
+          "receipt",
+          "production"
         ],
         "title": "AllSettings",
         "type": "object"
@@ -5681,6 +5685,12 @@
             "title": "Planned",
             "type": "string"
           },
+          "requested": {
+            "default": "0",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Requested",
+            "type": "string"
+          },
           "sku": {
             "title": "Sku",
             "type": "string"
@@ -6212,6 +6222,19 @@
           "production_date"
         ],
         "title": "ProductionPlanIn",
+        "type": "object"
+      },
+      "ProductionSettings": {
+        "additionalProperties": false,
+        "description": "FR-PRD-008: whether open branch requests (transfers) add to the central kitchen's prep\nlist, on top of its own par levels.",
+        "properties": {
+          "prep_includes_requests": {
+            "default": true,
+            "title": "Prep Includes Requests",
+            "type": "boolean"
+          }
+        },
+        "title": "ProductionSettings",
         "type": "object"
       },
       "ProductionUsedIn": {

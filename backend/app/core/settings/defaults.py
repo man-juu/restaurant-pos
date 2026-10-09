@@ -87,6 +87,7 @@ FALLBACK: dict[str, Any] = {
     },
     "kitchen": {"late_minutes": 15, "recall_minutes": 30},
     "receipt": {"header": "", "footer": "", "paper_mm": 58},
+    "production": {"prep_includes_requests": True},
 }
 
 

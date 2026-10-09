@@ -108,6 +108,7 @@ function PrepItem({
               unit: row.unit_code,
               have: n(row.on_hand),
               par: n(row.par_qty),
+              requested: n(row.requested ?? '0'),
               planned: n(row.planned),
             })}
           </span>

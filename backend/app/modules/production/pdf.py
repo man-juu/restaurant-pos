@@ -32,7 +32,7 @@ WORDS: dict[str, dict[str, Any]] = {
         "chilled": "Chilled",
         "dry": "Dry",
         "prep": "Prep list",
-        "head": ["Item", "Par", "On hand", "Planned", "To make", "Done"],
+        "head": ["Item", "Par", "On hand", "Requested", "Planned", "To make", "Done"],
     },
     "id": {
         "lot": "Lot",
@@ -44,7 +44,7 @@ WORDS: dict[str, dict[str, Any]] = {
         "chilled": "Dingin",
         "dry": "Kering",
         "prep": "Daftar persiapan",
-        "head": ["Barang", "Par", "Stok", "Direncanakan", "Dibuat", "Selesai"],
+        "head": ["Barang", "Par", "Stok", "Diminta", "Direncanakan", "Dibuat", "Selesai"],
     },
 }
 
@@ -116,6 +116,7 @@ def _prep(title: str, rows: list[PrepRow], language: str) -> bytes:
             _cut(r.name, 40),
             f"{_qty(r.par_qty)} {r.unit_code}",
             _qty(r.on_hand),
+            _qty(r.requested),
             _qty(r.planned),
             f"{_qty(r.suggested)} {r.unit_code}",
             "[  ]",

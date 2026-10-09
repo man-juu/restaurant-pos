@@ -313,6 +313,7 @@
       "limits": "Limits",
       "stock": "Stock",
       "purchasing": "Purchasing",
+      "production": "Production",
       "catalog": "Food cost",
       "devices": "Devices"
     },
@@ -392,6 +393,10 @@
       "expiryDays": "Warn this many days before a batch expires (0 to 60)",
       "lowDays": "Alert when stock lasts fewer days than this (0 turns it off)",
       "countVariance": "Alert when a count's difference is worth at least (0 turns it off)"
+    },
+    "production": {
+      "includeRequests": "Add branch requests to the prep list",
+      "help": "On by default. Open transfer requests from other outlets, due by the day, are added to the sending kitchen's prep list on top of its par levels."
     },
     "purchasing": {
       "requireInvoice": "Require a photo of the supplier invoice on every purchase",
@@ -912,10 +917,10 @@
       "prep": "Prep list"
     },
     "prep": {
-      "help": "Items below their par level today, minus what is already planned.",
+      "help": "Items below their par level or requested by other outlets for today, minus stock and what is already planned.",
       "print": "Print prep list (PDF)",
-      "empty": "Everything is at par. Set par levels under Inventory, Levels.",
-      "line": "Make {{make}} {{unit}} · have {{have}} · par {{par}} · planned {{planned}}",
+      "empty": "Everything is at par and nothing is requested. Set par levels under Inventory, Levels.",
+      "line": "Make {{make}} {{unit}} · have {{have}} · par {{par}} · requested {{requested}} · planned {{planned}}",
       "plan": "Plan it"
     },
     "labels": {

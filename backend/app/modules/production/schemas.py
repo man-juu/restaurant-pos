@@ -80,5 +80,6 @@ class PrepRow(BaseModel):
     unit_code: str
     par_qty: Decimal
     on_hand: Decimal
+    requested: Decimal = Decimal(0)  # open requests from other outlets, due by the day
     planned: Decimal  # already planned for the day, not made yet
-    suggested: Decimal  # par - on hand - planned, never below 0
+    suggested: Decimal  # par + requested - on hand - planned, never below 0

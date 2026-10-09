@@ -313,6 +313,7 @@
       "limits": "Batas",
       "stock": "Stok",
       "purchasing": "Pembelian",
+      "production": "Produksi",
       "catalog": "HPP",
       "devices": "Perangkat"
     },
@@ -392,6 +393,10 @@
       "expiryDays": "Peringatkan sekian hari sebelum batch kedaluwarsa (0 sampai 60)",
       "lowDays": "Peringatkan jika stok cukup kurang dari sekian hari (0 untuk mematikan)",
       "countVariance": "Peringatkan jika selisih hitung bernilai minimal (0 untuk mematikan)"
+    },
+    "production": {
+      "includeRequests": "Tambahkan permintaan cabang ke daftar persiapan",
+      "help": "Aktif secara bawaan. Permintaan transfer terbuka dari outlet lain yang jatuh tempo hari itu ditambahkan ke daftar persiapan dapur pengirim, di atas level par-nya."
     },
     "purchasing": {
       "requireInvoice": "Wajibkan foto nota pemasok di setiap pembelian",
@@ -912,10 +917,10 @@
       "prep": "Daftar persiapan"
     },
     "prep": {
-      "help": "Barang di bawah level par hari ini, dikurangi yang sudah direncanakan.",
+      "help": "Barang di bawah level par atau diminta outlet lain untuk hari ini, dikurangi stok dan yang sudah direncanakan.",
       "print": "Cetak daftar persiapan (PDF)",
-      "empty": "Semua sudah sesuai par. Atur level par di Inventaris, Level.",
-      "line": "Buat {{make}} {{unit}} · ada {{have}} · par {{par}} · direncanakan {{planned}}",
+      "empty": "Semua sudah sesuai par dan tidak ada permintaan. Atur level par di Inventaris, Level.",
+      "line": "Buat {{make}} {{unit}} · ada {{have}} · par {{par}} · diminta {{requested}} · direncanakan {{planned}}",
       "plan": "Rencanakan"
     },
     "labels": {

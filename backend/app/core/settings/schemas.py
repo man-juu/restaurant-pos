@@ -148,6 +148,13 @@ class KitchenSettings(Strict):
     recall_minutes: int = Field(default=30, ge=1, le=24 * 60)
 
 
+class ProductionSettings(Strict):
+    """FR-PRD-008: whether open branch requests (transfers) add to the central kitchen's prep
+    list, on top of its own par levels."""
+
+    prep_includes_requests: bool = True
+
+
 class ReceiptSettings(Strict):
     """FR-SAL-010: what the printed receipt says around the sale, and the paper width."""
 
@@ -168,6 +175,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "pos": PosSettings,
     "kitchen": KitchenSettings,
     "receipt": ReceiptSettings,
+    "production": ProductionSettings,
 }
 
 
@@ -185,3 +193,4 @@ class AllSettings(BaseModel):
     pos: PosSettings
     kitchen: KitchenSettings
     receipt: ReceiptSettings
+    production: ProductionSettings

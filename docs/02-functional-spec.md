@@ -170,7 +170,7 @@ Core modules cannot be switched off. Other modules can be switched on or off per
 | FR-PRD-005 | Production plan suggestion from open transfer requests and stock targets. | 3 |
 | FR-PRD-006 | Prep sheets and production labels as PDF. | 2 |
 | FR-PRD-007 | Shelf-life labels: printable labels for production output and opened or prepared items, with item name, batch, prep date and time, use-by date from shelf-life, storage type and allergens. | 2 |
-| FR-PRD-008 | Daily prep list per outlet: items below their target (par) level for the day, with suggested quantities from par minus stock on hand, printable and checkable on a phone. Precursor to the planned suggestion in FR-PRD-005. | 2 |
+| FR-PRD-008 | Daily prep list per outlet: items below their target (par) level for the day, with suggested quantities from par plus open branch requests (transfers, tenant setting) minus stock on hand and planned production, printable and checkable on a phone. Precursor to the planned suggestion in FR-PRD-005. | 2 |
 
 ## TRF. Transfers and delivery notes
 
