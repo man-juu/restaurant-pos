@@ -64,7 +64,8 @@ export function ItemsTab({
               onClick={() => onOpen(item.id)}
               className="flex min-h-14 w-full items-center justify-between gap-3 rounded-xl border border-line bg-card px-4 py-2 text-left hover:bg-raised"
             >
-              <span className="min-w-0">
+              <Thumb uploadId={item.photo_upload_id ?? null} />
+              <span className="min-w-0 flex-1">
                 <span className="block truncate font-bold">{item.name}</span>
                 <span className="block text-sm text-muted">
                   {item.sku} · {t(`catalog.types.${item.type}`)}
@@ -86,5 +87,18 @@ export function ItemsTab({
         </Button>
       )}
     </div>
+  )
+}
+
+/** Optional photo (FR-CAT-001); a neutral tile when the item has none. */
+function Thumb({ uploadId }: { uploadId: string | null }) {
+  if (!uploadId) return <span aria-hidden className="size-10 shrink-0 rounded-lg bg-raised" />
+  return (
+    <img
+      src={`/api/v1/uploads/${uploadId}`}
+      alt=""
+      loading="lazy"
+      className="size-10 shrink-0 rounded-lg object-cover"
+    />
   )
 }
