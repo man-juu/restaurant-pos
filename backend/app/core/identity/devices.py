@@ -124,7 +124,7 @@ async def pin_staff(db: AsyncSession, device: DeviceRef) -> list[tuple[uuid.UUID
                 " JOIN memberships m ON m.user_id = d.user_id AND m.tenant_id = d.tenant_id"
                 " JOIN roles r ON r.id = m.role_id"
                 " WHERE d.device_id = :device AND u.status = 'active' AND m.status = 'active'"
-                " AND NOT r.requires_mfa ORDER BY u.name"
+                " AND NOT r.requires_mfa AND u.totp_enabled_at IS NULL ORDER BY u.name"
             ),
             {"device": device.id},
         )

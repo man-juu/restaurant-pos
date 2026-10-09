@@ -219,3 +219,24 @@ def test_docs03_rule7_owner_sets_role_limits(client: TestClient, world: dict[str
         client.put(url, json={"limits": {"sales.discount.apply": 9000}}, headers=m).status_code
         == 403
     )
+
+
+def test_discount_rechecked_at_payment_when_the_order_shrank(
+    client: TestClient, world: dict[str, Any], menu: dict[str, Any]
+) -> None:
+    """Security review 2l: Rp 5.000 off Rp 50.000 is 10 % (the cashier's limit); lowering
+    the order to Rp 25.000 afterwards makes it 20 %, which payment refuses."""
+    h = login(client, world["cashier_a"])
+    order = new_order(client, h, world, menu)
+    out = line(client, h, order, menu)  # 2 x 25.000
+    oid, lid = order["id"], out["lines"][0]["id"]
+    off = {"kind": "amount", "value": 5000, "reason": "Regular"}
+    assert client.put(f"{POS}/orders/{oid}/discount", json=off, headers=h).status_code == 200
+    shrunk = client.put(f"{POS}/orders/{oid}/lines/{lid}", json={"qty": "1"}, headers=h)
+    assert shrunk.status_code == 200, shrunk.text
+    open_shift(client, h, world)
+    total = shrunk.json()["totals"]["total"]
+    paid = post(
+        client, h, f"/orders/{oid}/pay", {"payments": [{"method": "cash", "amount": total}]}
+    )
+    assert paid.status_code == 403 and paid.json()["details"]["limit"] == 1000

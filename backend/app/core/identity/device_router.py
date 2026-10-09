@@ -138,7 +138,15 @@ async def set_my_pin(body: PinIn, request: Request, p: Member) -> None:
     async with request.app.state.sessionmaker() as db, db.begin():
         user = (await db.execute(select(User).where(User.id == p.user_id))).scalar_one()
         mfa_role = await service.requires_mfa(db, p.user_id)
+        key = service.throttle_key("acct", user.email)  # same counter as /auth/login
+        until = await service.locked_until(db, [key])
+    if until is not None:
+        raise TooManyAttempts(details={"retry_at": until.isoformat()})
     if not await verify_password(user.password_hash, body.password):
+        settings: Settings = request.app.state.settings
+        async with request.app.state.sessionmaker() as db, db.begin():
+            await service.record_failure(db, [key], settings.login_max_failures)
+        await audit_auth(request, p.tenant_id, "auth.pin_set_failed", p.user_id)
         raise InvalidCredentials()
     if mfa_role:
         raise PinNotAllowed()  # owners and co-owners always sign in fully with 2FA
@@ -195,6 +203,11 @@ async def pin_login(body: PinLoginIn, request: Request, response: Response) -> S
         raise InvalidCredentials()
     ip, user_agent = client_info(request)
     async with request.app.state.sessionmaker() as db, db.begin():
+        # A PIN never stands in for 2FA: not for someone who owns another business (a PIN
+        # session could switch into it) and not for someone who turned on 2FA themselves.
+        user = (await db.execute(select(User).where(User.id == body.user_id))).scalar_one()
+        if user.totp_enabled_at is not None or await service.requires_mfa(db, body.user_id):
+            raise PinNotAllowed()
         token, row = await service.create_session(
             db,
             user_id=body.user_id,
@@ -203,7 +216,6 @@ async def pin_login(body: PinLoginIn, request: Request, response: Response) -> S
             user_agent=user_agent,
             settings=settings,
         )
-        user = (await db.execute(select(User).where(User.id == body.user_id))).scalar_one()
         info = await session_info(db, user, row)
     await audit_auth(
         request, device.tenant_id, "auth.pin_login", body.user_id, device=str(device.id)

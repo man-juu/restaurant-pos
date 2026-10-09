@@ -16,6 +16,7 @@ from app.core.settings import service as settings
 from app.core.settings.pricing import round_half_up_div
 from app.core.settings.schemas import PaymentMethod, PaymentMethodSettings, PosSettings
 from app.modules.catalog.interface import option_ingredients, tenant_today
+from app.modules.sales import discounts
 from app.modules.sales.events import ORDER_PAID
 from app.modules.sales.models import (
     Payment,
@@ -165,7 +166,12 @@ async def _post_lines(
 
 
 async def pay(
-    db: AsyncSession, order: PosOrder, *, user_id: uuid.UUID, data: PosPayIn, language: str
+    db: AsyncSession,
+    order: PosOrder,
+    *,
+    user_id: uuid.UUID,
+    data: PosPayIn,
+    language: str,
 ) -> tuple[SalesDocument, list[Payment]]:
     require_open(order)
     pos = cast(PosSettings, await settings.get_setting(db, order.tenant_id, "pos"))
@@ -193,6 +199,7 @@ async def pay(
             )
         )
     )
+    await discounts.recheck(db, order, rows, lines)
     qty = stock_quantities(rows, await option_changes(db, rows))
     used = await consume_for_sale(db, doc, qty, user_id, DOC)
     await _post_lines(db, doc, lines, used)

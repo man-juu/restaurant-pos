@@ -9,6 +9,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from tests.factories import add_member, add_outlet, drop_tenant, seed_tenant
+from tests.test_auth import owner
 from tests.test_inventory import HASH, PW, login
 from tests.test_purchasing import client as client
 
@@ -20,7 +21,7 @@ def world() -> Iterator[dict[str, Any]]:
     a, roles = seed_tenant("Alpha", modules=("inventory", "sales"))
     b, roles_b = seed_tenant("Beta", modules=("inventory", "sales"))
     shop = add_outlet(a, "Shop")
-    w: dict[str, Any] = {"a": a, "shop": shop}
+    w: dict[str, Any] = {"a": a, "shop": shop, "b": b, "owner_role_b": roles_b["owner"]}
     w["manager_a"] = add_member(a, roles["manager"], HASH)[1]
     w["cashier_id"], w["cashier_a"] = add_member(a, roles["cashier"], HASH, outlets=(shop,))
     w["waiter_id"], w["waiter_a"] = add_member(a, roles["waiter"], HASH, outlets=(shop,))
@@ -107,3 +108,34 @@ def test_devices_need_permission_and_stay_in_their_tenant(
     client.cookies.set(COOKIE, token or "")
     # Beta's manager on Alpha's device cannot enrol there.
     assert client.post("/api/v1/devices/this/enrol", headers=b).status_code == 404
+
+
+def test_a_pin_never_replaces_2fa(client: TestClient, world: dict[str, Any]) -> None:
+    """Security review 2l: someone who owns another business (a PIN session could switch
+    into it) or who turned on 2FA cannot sign in with a PIN."""
+    m = login(client, world["manager_a"])
+    client.post(
+        "/api/v1/devices", json={"name": "Till", "outlet_id": str(world["shop"])}, headers=m
+    )
+    token = client.cookies.get(COOKIE)
+    assert token
+    h = on_device(client, token, world["cashier_a"])
+    client.put("/api/v1/me/pin", json={"pin": "4321", "password": PW}, headers=h)
+    client.post("/api/v1/devices/this/enrol", headers=h)
+    assert pin_login(client, world["cashier_id"], "4321").status_code == 200
+    owner(
+        "INSERT INTO memberships (id, tenant_id, user_id, role_id)"
+        " VALUES (gen_random_uuid(), :t, :u, :r)",
+        {"t": world["b"], "u": world["cashier_id"], "r": world["owner_role_b"]},
+    )
+    refused = pin_login(client, world["cashier_id"], "4321")
+    assert refused.status_code == 403 and refused.json()["code"] == "pin_not_allowed"
+
+
+def test_set_pin_password_guesses_are_throttled(client: TestClient, world: dict[str, Any]) -> None:
+    h = login(client, world["cashier_a"])
+    codes = [
+        client.put("/api/v1/me/pin", json={"pin": "1111", "password": "x"}, headers=h).status_code
+        for _ in range(8)
+    ]
+    assert 429 in codes  # the same lockout as the sign-in page

@@ -7,11 +7,13 @@ import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.access.role_limits import NO_GRANT, limit_of
 from app.core.approvals import ensure_within_limit
 from app.core.errors import ConflictError, NotFoundError
 from app.core.settings.pricing import round_half_up_div
 from app.modules.sales.models import PosOrder, PosOrderLine
-from app.modules.sales.pos_schemas import DiscountIn
+from app.modules.sales.permissions import DISCOUNT_APPLY
+from app.modules.sales.pos_schemas import DiscountIn, PosLineOut
 
 FULL = 10_000  # basis points in 100 %
 
@@ -53,3 +55,28 @@ async def open_line(db: AsyncSession, order: PosOrder, line_id: uuid.UUID) -> Po
     if line is None or line.order_id != order.id or line.status == "void":
         raise NotFoundError("line_not_found")
     return line
+
+
+async def recheck(
+    db: AsyncSession, order: PosOrder, rows: list[PosOrderLine], lines: list[PosLineOut]
+) -> None:
+    """At payment (security review 2l). An amount discount grows as a share of the bill when
+    lines are removed or lowered after it was set, so each discount is checked again, on
+    what the order is now, against the limit of the person who gave it."""
+    shown = {ln.id: ln for ln in lines if ln.status != "void"}
+    net = 0
+    for row in rows:
+        ln = shown.get(row.id)
+        if ln is None:
+            continue
+        if ln.discount:
+            await _within(db, row.discount_by, as_percent_bp(ln.line_total, "amount", ln.discount))
+        net += ln.line_total - ln.discount
+    off = discount_amount(net, order.discount_kind, order.discount_value)
+    if off:
+        await _within(db, order.discount_by, as_percent_bp(net, "amount", off))
+
+
+async def _within(db: AsyncSession, giver: uuid.UUID | None, share_bp: int) -> None:
+    limit = await limit_of(db, giver, DISCOUNT_APPLY)
+    ensure_within_limit(share_bp, 0 if limit == NO_GRANT else limit, what="discount")

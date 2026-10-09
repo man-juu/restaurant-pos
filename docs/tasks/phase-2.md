@@ -15,4 +15,4 @@ Order follows docs/08 section 4, with modifiers and outlet overrides first (move
 | 2i | Combos and bundles, per-outlet overrides | FR-CAT-011, FR-TEN-011 | done 2026-10-09 |
 | 2j | Finance-lite (accounts, expenses, petty cash, P&L), tax report, sales by staff | FR-FIN-001, 008, FR-RPT-012 | done 2026-10-09 |
 | 2k | Lot traceability, vendor returns and credit notes, vendor bills with three-way match, prep sheets PDF | FR-INV-016, FR-PUR-008, 009, FR-PRD-006 | Done (2026-10-09) |
-| 2l | WAL archiving, POS load test, security review (Gate 2 needs an independent pentest) | Gate 2 | |
+| 2l | WAL archiving, POS load test, security review (Gate 2 needs an independent pentest) | Gate 2 | Done internally (2026-10-09); independent pentest still to book |
