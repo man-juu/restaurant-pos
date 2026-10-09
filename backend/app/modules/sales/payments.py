@@ -26,7 +26,15 @@ from app.modules.sales.models import (
     SalesLine,
     SalesModifierLine,
 )
-from app.modules.sales.orders import _audit, announce, lines_of, mark_sent, require_open, totals
+from app.modules.sales.orders import (
+    OrderTotals,
+    _audit,
+    announce,
+    lines_of,
+    mark_sent,
+    require_open,
+    totals,
+)
 from app.modules.sales.pos_schemas import PosLineOut, PosPayIn, PosPaymentIn
 from app.modules.sales.service import consume_for_sale, get_day
 from app.modules.sales.shifts import current_shift
@@ -97,11 +105,10 @@ async def _post_document(
     db: AsyncSession,
     order: PosOrder,
     user_id: uuid.UUID,
-    lines: list[PosLineOut],
+    t: OrderTotals,
     tip: int,
     rounding: int,
 ) -> SalesDocument:
-    t = await totals(db, order, lines)
     today = await tenant_today(db, order.tenant_id)
     day = await get_day(db, order.tenant_id, order.outlet_id, today, lock=True)
     if day.status == "locked":
@@ -178,7 +185,7 @@ async def pay(
     total = t.taxed.total
     rounding = cash_rounding(total, pos.cash_rounding_step) if all_cash else 0
     tenders = _tenders(data.payments, methods, total + rounding + data.tip)
-    doc = await _post_document(db, order, user_id, lines, data.tip, rounding)
+    doc = await _post_document(db, order, user_id, t, data.tip, rounding)
     rows = list(
         await db.scalars(
             select(PosOrderLine).where(

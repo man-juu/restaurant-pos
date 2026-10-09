@@ -29,3 +29,28 @@ NFR-001 (p95 under 300 ms for typical reads and writes) holds at 60 concurrently
 - Daily sales entry is the heaviest write (one ledger row and balance update per ingredient line, plus the reversal of the entry it replaces). If pilots enter many channels at once, batch the ledger writes (one INSERT for all movements).
 - Transfer receiving with losses allocates the adjustment number after posting stock; same lock-order pattern, much rarer. Move the number allocation first when touching that code.
 - Re-run on the real VPS during the pilot and record the numbers here (Gate 1).
+
+## Cashier load test (slice 2l, NFR-001 and NFR-002)
+
+Date: 2026-10-09. Script: `backend/tests/load/pos.js`, seed: `backend/tests/load/seed_pos.py` (4 outlets, 30 menu items with 4-ingredient recipes, opening stock, an open cash shift per outlet). Same sandbox and API setup as above (2 workers).
+
+Each virtual user is a till: open an order, add 1 to 4 items (0.5 to 1.5 s apart), take cash, wait 2 s, repeat. Tills are spread evenly over the 4 outlets. `order_end_to_end` adds up the server time of those calls (NFR-002 asks for under 1 s).
+
+| Tills (4 outlets) | Create order p95 | Add item p95 | Pay p95 | Whole order p95 | Errors |
+| --- | --- | --- | --- | --- | --- |
+| 16, before fix | 63 ms | 64 ms | 295 ms | 460 ms | 0 % |
+| 16 | 72 ms | 73 ms | 281 ms | 497 ms | 0 % |
+| 32, before fix | 108 ms | 136 ms | 501 ms | 808 ms | 0 % |
+| 32 | 100 ms | 115 ms | 388 ms | 698 ms | 0 % |
+| 8, no pauses (≈ 44 req/s), before fix | 199 ms | 205 ms | 706 ms | 1.46 s | 0 % |
+
+16 busy tills (4 per outlet, each finishing an order about every 6 seconds) meet NFR-001 and NFR-002. With 32 tills, each order still finishes within 1 s; only paying passes 300 ms.
+
+Paying is the heavy call: it posts the sale, its lines, the payment and the stock taken by every ingredient of every dish in one transaction (CLAUDE.md rule 3). About 6 queries per ingredient: 3 dishes with 4 ingredients is about 70 of its queries.
+
+Found and fixed:
+- Settings were read twice per call (stored value, then the tenant's country for the default), several times per payment. They are now cached for the transaction (`app/core/settings/service.py`) and cleared when the setting is saved.
+- Order totals were computed twice in the payment. They are now computed once and passed on.
+- Together: 136 → 127 queries per payment, and pay p95 at 32 tills went from 501 ms to 388 ms.
+
+Follow-up if pilots need more tills per outlet: batch the ledger writes in `inventory.consume` (one cost-row upsert and lock for all items, one balance read, one multi-row movement insert).

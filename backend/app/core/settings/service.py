@@ -27,17 +27,26 @@ async def _tenant(db: AsyncSession, tenant_id: uuid.UUID) -> Tenant:
     return (await db.execute(select(Tenant).where(Tenant.id == tenant_id))).scalar_one()
 
 
+CACHE = "settings_cache"
+
+
 async def get_setting(db: AsyncSession, tenant_id: uuid.UUID, key: str) -> Strict:
-    """Stored value, or the country default if the tenant never changed it."""
+    """Stored value, or the country default if the tenant never changed it. Cached for the
+    rest of the session (one request's transaction): paying an order reads the tax and
+    service charge settings several times, and each read used to cost two queries."""
     model = SETTINGS.get(key)
     if model is None:
         raise NotFoundError()
+    cache: dict[tuple[uuid.UUID, str], Strict] = db.info.setdefault(CACHE, {})
+    if (tenant_id, key) in cache:
+        return cache[(tenant_id, key)]
     row = (
         await db.execute(select(TenantSetting.value).where(TenantSetting.key == key))
     ).scalar_one_or_none()
     if row is None:
         row = default_for((await _tenant(db, tenant_id)).country, key)
-    return model.model_validate(row)
+    cache[(tenant_id, key)] = value = model.model_validate(row)
+    return value
 
 
 async def get_all_settings(db: AsyncSession, tenant_id: uuid.UUID) -> dict[str, Strict]:
@@ -75,6 +84,7 @@ async def put_setting(
     ):
         raise InvalidSetting("service_charge_not_allowed")
     before = await get_setting(db, tenant_id, key)
+    db.info.get(CACHE, {}).pop((tenant_id, key), None)
     stored = parsed.model_dump(mode="json")
     stmt = insert(TenantSetting).values(
         tenant_id=tenant_id, key=key, value=stored, updated_by=user_id
