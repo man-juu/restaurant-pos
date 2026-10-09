@@ -9,7 +9,7 @@ OPTIONAL_MODULES: dict[str, tuple[str, ...]] = {
     "purchasing": ("inventory",),
     "production": ("inventory",),
     "transfers": ("inventory",),
-    "sales": (),
+    "sales": ("inventory",),
     "tables": ("sales",),
     "kitchen": ("sales",),
     "finance": (),

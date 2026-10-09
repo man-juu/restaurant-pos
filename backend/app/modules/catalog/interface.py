@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.catalog.boms import ItemLabel, item_names
 from app.modules.catalog.costing import (
     CostSource,
+    consumption,
     explode,
     items_with_recipe,
     recipe_needs,
@@ -22,7 +23,8 @@ from app.modules.catalog.costing import (
 )
 from app.modules.catalog.models import Item, Unit
 from app.modules.catalog.permissions import COST_VIEW
-from app.modules.catalog.prices import tenant_today
+from app.modules.catalog.platform_map import item_ids_by_code
+from app.modules.catalog.prices import channel_code, prices_on, tenant_today
 from app.modules.catalog.units import base_factors
 
 __all__ = [
@@ -31,10 +33,14 @@ __all__ = [
     "ItemLabel",
     "StockItem",
     "base_factors",
+    "channel_code",
+    "consumption",
     "explode",
+    "item_ids_by_code",
     "item_ids_by_sku",
     "item_names",
     "items_with_recipe",
+    "prices_on",
     "recipe_needs",
     "set_cost_source",
     "stock_items",

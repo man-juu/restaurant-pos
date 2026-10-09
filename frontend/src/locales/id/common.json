@@ -191,7 +191,11 @@
     "nothing_to_send": "Setujui setidaknya satu barang.",
     "reason_required": "Isi alasan barang kurang (kurang atau rusak).",
     "more_than_shipped": "Lebih dari yang dikirim.",
-    "transfer_not_found": "Transfer tidak ditemukan."
+    "transfer_not_found": "Transfer tidak ditemukan.",
+    "day_locked": "Hari ini sudah dikunci. Minta manajer membukanya kembali.",
+    "price_missing": "Beberapa barang belum punya harga di saluran ini pada tanggal ini.",
+    "unknown_platform_code": "Beberapa kode platform belum dipetakan ke barang.",
+    "reported_above_list": "Total yang dilaporkan lebih tinggi dari total harga daftar."
   },
   "appearance": {
     "open": "Tampilan",
@@ -536,7 +540,15 @@
       "estimatedHelp": "Untuk barang yang sulit diukur (beras, minyak). Tidak pernah memblokir penjualan atau catatan buangan; koreksi dengan \"Atur stok\".",
       "untrackedHelp": "Stok tidak dicatat (misalnya gas). Isi biaya standar agar resep tetap menampilkan biaya lengkap."
     },
-    "problems": {}
+    "problems": {},
+    "platformCodes": {
+      "title": "Kode menu platform",
+      "help": "Kode yang dipakai platform untuk tiap menu, agar penjualan platform yang dicatat dengan kode masuk ke resep yang benar.",
+      "code": "Kode untuk {{name}}",
+      "remove": "Hapus",
+      "add": "Tambah menu",
+      "save": "Simpan kode"
+    }
   },
   "inventory": {
     "title": "Persediaan",
@@ -831,6 +843,24 @@
       "count_variance": "Hitung {{number}} selisih senilai {{amount}} (biaya rata-rata)",
       "food_cost_above_target": "{{item}}: HPP {{pct}} % di {{channel}}, target {{target}} %. Biaya terbesar: {{cause}}",
       "approval_requested": "{{number}} menunggu persetujuan Anda"
+    }
+  },
+  "sales": {
+    "title": "Penjualan harian",
+    "date": "Tanggal usaha",
+    "channel": "Saluran",
+    "noPrices": "Belum ada menu dengan harga di saluran ini pada tanggal ini. Atur harga di katalog.",
+    "listTotal": "Dengan harga daftar: {{total}}",
+    "reported": "Total menurut platform atau kasir (opsional; selisihnya adalah promo)",
+    "save": "Simpan penjualan saluran ini",
+    "dayTitle": "Hari ini",
+    "empty": "Belum ada yang dicatat.",
+    "promo": "promo {{value}}",
+    "lock": "Kunci hari",
+    "reopen": "Buka kembali hari",
+    "status": {
+      "open": "Terbuka",
+      "locked": "Terkunci"
     }
   }
 }

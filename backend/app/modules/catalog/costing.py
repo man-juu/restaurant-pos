@@ -237,3 +237,29 @@ async def items_with_recipe(db: AsyncSession, on: date) -> set[uuid.UUID]:
         )
     )
     return set(await db.scalars(stmt))
+
+
+async def consumption(
+    db: AsyncSession, quantities: dict[uuid.UUID, Decimal], on: date
+) -> tuple[dict[uuid.UUID, Decimal], dict[uuid.UUID, uuid.UUID]]:
+    """What a sale takes out of stock (FR-SAL-002): recipes are expanded only through items
+    that are not stocked themselves (a menu item, a sauce made to order); a stocked item
+    (sambal made in the central kitchen) is taken as it is. Returns (base quantity per
+    stocked item, recipe id used per expanded item)."""
+    taken: dict[uuid.UUID, Decimal] = defaultdict(Decimal)
+    used: dict[uuid.UUID, uuid.UUID] = {}
+    frontier = dict(quantities)
+    for _ in range(MAX_DEPTH + 1):
+        if not frontier:
+            return dict(taken), used
+        rows = (
+            await db.execute(select(Item.id, Item.is_stocked).where(Item.id.in_(frontier)))
+        ).all()
+        stocked = {i for i, s in rows if s}
+        boms = await active_boms(db, set(frontier) - stocked, on)
+        for item_id, qty in frontier.items():
+            if item_id not in boms:
+                taken[item_id] += qty  # stocked, or nothing to expand: taken as is
+        used.update({i: b.id for i, b in boms.items()})
+        frontier = await _expand_level(db, frontier, boms) if boms else {}
+    raise InvalidCatalogReference("bom_too_deep")

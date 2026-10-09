@@ -8,6 +8,7 @@ import { errorMessage } from '../../lib/errors'
 import { SaveBar } from '../settings/shared'
 import { useChannels, useSaveChannel } from './api'
 import { EditableRow } from './EditableRow'
+import { PlatformCodes } from './PlatformCodes'
 import { CHANNEL_KINDS } from './labels'
 
 const SLUG = /^[a-z0-9_]{1,40}$/
@@ -56,14 +57,18 @@ export function ChannelsTab({ canEdit }: { canEdit: boolean }) {
           <Button onClick={() => setEditing('new')}>{t('catalog.channels.new')}</Button>
         </div>
       )}
-      {editing && (
-        <ChannelForm
-          key={editing === 'new' ? 'new' : editing.id}
-          channel={editing === 'new' ? undefined : editing}
-          onDone={() => setEditing(undefined)}
-        />
-      )}
+      {editing && <ChannelEditor editing={editing} onDone={() => setEditing(undefined)} />}
     </div>
+  )
+}
+
+function ChannelEditor({ editing, onDone }: { editing: ChannelOut | 'new'; onDone: () => void }) {
+  const channel = editing === 'new' ? undefined : editing
+  return (
+    <>
+      <ChannelForm key={channel?.id ?? 'new'} channel={channel} onDone={onDone} />
+      {channel?.kind === 'platform' && <PlatformCodes channelId={channel.id} />}
+    </>
   )
 }
 

@@ -232,3 +232,28 @@ async def effective_prices(
         default_sort="item_id",
     )
     return [EffectivePrice(item_id=i, valid_from=v, price=p) for i, v, p in rows], cursor
+
+
+async def prices_on(
+    db: AsyncSession, channel_id: uuid.UUID, ids: set[uuid.UUID], on: date
+) -> dict[uuid.UUID, int]:
+    """List price of each item on the channel on a date (items without one are absent)."""
+    stmt = (
+        select(ItemPrice.item_id, ItemPrice.price)
+        .where(
+            ItemPrice.channel_id == channel_id,
+            ItemPrice.item_id.in_(ids),
+            ItemPrice.outlet_id.is_(None),
+            ItemPrice.valid_from <= on,
+            or_(ItemPrice.valid_to.is_(None), ItemPrice.valid_to >= on),
+        )
+        .order_by(ItemPrice.item_id, ItemPrice.valid_from.desc())
+        .ext(distinct_on(ItemPrice.item_id))
+    )
+    return {row[0]: row[1] for row in (await db.execute(stmt)).all()}
+
+
+async def channel_code(db: AsyncSession, channel_id: uuid.UUID) -> str:
+    """Code of an active channel of this tenant (service charge rules name channels by code)."""
+    channel = await _visible_channel(db, channel_id)
+    return channel.code

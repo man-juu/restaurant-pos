@@ -275,3 +275,22 @@ class BomLine(Base):
     qty: Mapped[Decimal] = mapped_column(Numeric(18, 4))
     unit_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("units.id"))
     waste_pct: Mapped[Decimal] = mapped_column(Numeric(5, 2), server_default="0")
+
+
+class PlatformItemMap(Base):
+    """FR-CAT-010: the code a delivery platform uses for a menu item, per channel, so platform
+    sales entered or imported by code land on the right recipe."""
+
+    __tablename__ = "platform_item_map"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "channel_id", "platform_code"),
+        ForeignKeyConstraint(["tenant_id", "channel_id"], ["channels.tenant_id", "channels.id"]),
+        ForeignKeyConstraint(["tenant_id", "item_id"], ["items.tenant_id", "items.id"]),
+        Index(None, "tenant_id", "item_id"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    channel_id: Mapped[uuid.UUID] = mapped_column()
+    platform_code: Mapped[str] = mapped_column(String(64))
+    item_id: Mapped[uuid.UUID] = mapped_column()

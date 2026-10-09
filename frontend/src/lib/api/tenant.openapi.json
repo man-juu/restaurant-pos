@@ -1455,6 +1455,102 @@
         "title": "CountedLine",
         "type": "object"
       },
+      "DayEntryIn": {
+        "additionalProperties": false,
+        "description": "FR-SAL-002: what one channel sold at one outlet on one day. Saving again replaces\nthe earlier entry (its stock comes back first).",
+        "properties": {
+          "business_date": {
+            "format": "date",
+            "title": "Business Date",
+            "type": "string"
+          },
+          "channel_id": {
+            "format": "uuid",
+            "title": "Channel Id",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/EntryLine"
+            },
+            "maxItems": 500,
+            "minItems": 1,
+            "title": "Lines",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "reported_total": {
+            "anyOf": [
+              {
+                "maximum": 1000000000000000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reported Total"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "business_date",
+          "channel_id",
+          "lines"
+        ],
+        "title": "DayEntryIn",
+        "type": "object"
+      },
+      "DayOut": {
+        "properties": {
+          "business_date": {
+            "format": "date",
+            "title": "Business Date",
+            "type": "string"
+          },
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/SalesDocOut"
+            },
+            "title": "Documents",
+            "type": "array"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "business_date",
+          "status",
+          "documents"
+        ],
+        "title": "DayOut",
+        "type": "object"
+      },
       "DecisionIn": {
         "additionalProperties": false,
         "properties": {
@@ -1569,6 +1665,68 @@
           "price"
         ],
         "title": "EffectivePrice",
+        "type": "object"
+      },
+      "EntryLine": {
+        "additionalProperties": false,
+        "description": "An item by id, or by the platform's code (FR-CAT-010).",
+        "properties": {
+          "item_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Item Id"
+          },
+          "platform_code": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Platform Code"
+          },
+          "qty": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Qty"
+          },
+          "unit_price": {
+            "anyOf": [
+              {
+                "maximum": 1000000000000000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Price"
+          }
+        },
+        "required": [
+          "qty"
+        ],
+        "title": "EntryLine",
         "type": "object"
       },
       "GenerateIn": {
@@ -2581,6 +2739,68 @@
           "password"
         ],
         "title": "LoginRequest",
+        "type": "object"
+      },
+      "MappingIn": {
+        "additionalProperties": false,
+        "properties": {
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "platform_code": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Platform Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "platform_code",
+          "item_id"
+        ],
+        "title": "MappingIn",
+        "type": "object"
+      },
+      "MappingOut": {
+        "additionalProperties": false,
+        "properties": {
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "platform_code": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Platform Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "platform_code",
+          "item_id"
+        ],
+        "title": "MappingOut",
+        "type": "object"
+      },
+      "MappingsIn": {
+        "additionalProperties": false,
+        "properties": {
+          "mappings": {
+            "items": {
+              "$ref": "#/components/schemas/MappingIn"
+            },
+            "maxItems": 1000,
+            "title": "Mappings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "mappings"
+        ],
+        "title": "MappingsIn",
         "type": "object"
       },
       "MfaSetupOut": {
@@ -4700,6 +4920,141 @@
           "template_key"
         ],
         "title": "RoleOut",
+        "type": "object"
+      },
+      "SalesDocOut": {
+        "properties": {
+          "business_date": {
+            "format": "date",
+            "title": "Business Date",
+            "type": "string"
+          },
+          "channel_id": {
+            "format": "uuid",
+            "title": "Channel Id",
+            "type": "string"
+          },
+          "cost": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "discount": {
+            "title": "Discount",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/SalesLineOut"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "service_charge": {
+            "title": "Service Charge",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "subtotal": {
+            "title": "Subtotal",
+            "type": "integer"
+          },
+          "tax": {
+            "title": "Tax",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "outlet_id",
+          "channel_id",
+          "business_date",
+          "status",
+          "subtotal",
+          "discount",
+          "service_charge",
+          "tax",
+          "total",
+          "cost",
+          "created_at",
+          "lines"
+        ],
+        "title": "SalesDocOut",
+        "type": "object"
+      },
+      "SalesLineOut": {
+        "properties": {
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "platform_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Platform Code"
+          },
+          "qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Qty",
+            "type": "string"
+          },
+          "unit_price": {
+            "title": "Unit Price",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "item_id",
+          "qty",
+          "unit_price",
+          "platform_code"
+        ],
+        "title": "SalesLineOut",
         "type": "object"
       },
       "ServiceChargeSettings": {
@@ -7572,6 +7927,109 @@
           }
         },
         "summary": "Update Channel",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/channels/{channel_id}/mappings": {
+      "get": {
+        "operationId": "list_mappings_api_v1_catalog_channels__channel_id__mappings_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "channel_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Channel Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MappingOut"
+                  },
+                  "title": "Response List Mappings Api V1 Catalog Channels  Channel Id  Mappings Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Mappings",
+        "tags": [
+          "catalog"
+        ]
+      },
+      "put": {
+        "description": "The whole list for the channel; a code appears once.",
+        "operationId": "replace_mappings_api_v1_catalog_channels__channel_id__mappings_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "channel_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Channel Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MappingsIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MappingOut"
+                  },
+                  "title": "Response Replace Mappings Api V1 Catalog Channels  Channel Id  Mappings Put",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Replace Mappings",
         "tags": [
           "catalog"
         ]
@@ -12210,6 +12668,252 @@
         "summary": "List Roles",
         "tags": [
           "tenant"
+        ]
+      }
+    },
+    "/api/v1/sales/days/entries": {
+      "post": {
+        "operationId": "enter_api_v1_sales_days_entries_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DayEntryIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DayOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Enter",
+        "tags": [
+          "sales"
+        ]
+      }
+    },
+    "/api/v1/sales/days/{outlet_id}/{on}": {
+      "get": {
+        "operationId": "get_day_api_v1_sales_days__outlet_id___on__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "on",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "On",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DayOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Day",
+        "tags": [
+          "sales"
+        ]
+      }
+    },
+    "/api/v1/sales/days/{outlet_id}/{on}/lock": {
+      "post": {
+        "operationId": "lock_day_api_v1_sales_days__outlet_id___on__lock_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "on",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "On",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DayOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Lock Day",
+        "tags": [
+          "sales"
+        ]
+      }
+    },
+    "/api/v1/sales/days/{outlet_id}/{on}/reopen": {
+      "post": {
+        "operationId": "reopen_day_api_v1_sales_days__outlet_id___on__reopen_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "on",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "On",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DayOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reopen Day",
+        "tags": [
+          "sales"
         ]
       }
     },

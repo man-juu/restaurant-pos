@@ -191,7 +191,11 @@
     "nothing_to_send": "Approve at least one item.",
     "reason_required": "Say why less arrived (short or damaged).",
     "more_than_shipped": "More than was shipped.",
-    "transfer_not_found": "Transfer not found."
+    "transfer_not_found": "Transfer not found.",
+    "day_locked": "This day is locked. Ask a manager to reopen it.",
+    "price_missing": "Some items have no price on this channel for this day.",
+    "unknown_platform_code": "Some platform codes are not mapped to items.",
+    "reported_above_list": "The reported total is higher than the list total."
   },
   "appearance": {
     "open": "Appearance",
@@ -536,7 +540,15 @@
       "estimatedHelp": "For things hard to measure (rice, oil). Never blocks a sale or waste entry; correct it with \"Set on hand\".",
       "untrackedHelp": "No stock is kept (for example gas). Add a standard cost so recipes still show a full cost."
     },
-    "problems": {}
+    "problems": {},
+    "platformCodes": {
+      "title": "Platform item codes",
+      "help": "The code the platform uses for each menu item, so platform sales entered by code reach the right recipe.",
+      "code": "Code for {{name}}",
+      "remove": "Remove",
+      "add": "Add a menu item",
+      "save": "Save codes"
+    }
   },
   "inventory": {
     "title": "Inventory",
@@ -831,6 +843,24 @@
       "count_variance": "Count {{number}} differs by {{amount}} (at average cost)",
       "food_cost_above_target": "{{item}}: food cost {{pct}} % on {{channel}}, target {{target}} %. Biggest cost: {{cause}}",
       "approval_requested": "{{number}} is waiting for your approval"
+    }
+  },
+  "sales": {
+    "title": "Daily sales",
+    "date": "Business day",
+    "channel": "Channel",
+    "noPrices": "No menu items have a price on this channel for this day. Set prices in the catalog.",
+    "listTotal": "At list prices: {{total}}",
+    "reported": "Total reported by the platform or till (optional; the difference is the promo)",
+    "save": "Save this channel's sales",
+    "dayTitle": "This day",
+    "empty": "Nothing entered yet.",
+    "promo": "promo {{value}}",
+    "lock": "Lock the day",
+    "reopen": "Reopen the day",
+    "status": {
+      "open": "Open",
+      "locked": "Locked"
     }
   }
 }

@@ -450,6 +450,27 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/catalog/channels/{channel_id}/mappings': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Mappings */
+    get: operations['list_mappings_api_v1_catalog_channels__channel_id__mappings_get']
+    /**
+     * Replace Mappings
+     * @description The whole list for the channel; a code appears once.
+     */
+    put: operations['replace_mappings_api_v1_catalog_channels__channel_id__mappings_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/catalog/exports/items': {
     parameters: {
       query?: never
@@ -1812,6 +1833,74 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/sales/days/entries': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Enter */
+    post: operations['enter_api_v1_sales_days_entries_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/days/{outlet_id}/{on}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Day */
+    get: operations['get_day_api_v1_sales_days__outlet_id___on__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/days/{outlet_id}/{on}/lock': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Lock Day */
+    post: operations['lock_day_api_v1_sales_days__outlet_id___on__lock_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/days/{outlet_id}/{on}/reopen': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reopen Day */
+    post: operations['reopen_day_api_v1_sales_days__outlet_id___on__reopen_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/settings': {
     parameters: {
       query?: never
@@ -2605,6 +2694,51 @@ export interface components {
        */
       item_id: string
     }
+    /**
+     * DayEntryIn
+     * @description FR-SAL-002: what one channel sold at one outlet on one day. Saving again replaces
+     *     the earlier entry (its stock comes back first).
+     */
+    DayEntryIn: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /** Lines */
+      lines: components['schemas']['EntryLine'][]
+      /** Note */
+      note?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Reported Total */
+      reported_total?: number | null
+    }
+    /** DayOut */
+    DayOut: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /** Documents */
+      documents: components['schemas']['SalesDocOut'][]
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Status */
+      status: string
+    }
     /** DecisionIn */
     DecisionIn: {
       /** Approve */
@@ -2646,6 +2780,20 @@ export interface components {
        * Format: date
        */
       valid_from: string
+    }
+    /**
+     * EntryLine
+     * @description An item by id, or by the platform's code (FR-CAT-010).
+     */
+    EntryLine: {
+      /** Item Id */
+      item_id?: string | null
+      /** Platform Code */
+      platform_code?: string | null
+      /** Qty */
+      qty: number | string
+      /** Unit Price */
+      unit_price?: number | null
     }
     /** GenerateIn */
     GenerateIn: {
@@ -2962,6 +3110,31 @@ export interface components {
       email: string
       /** Password */
       password: string
+    }
+    /** MappingIn */
+    MappingIn: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Platform Code */
+      platform_code: string
+    }
+    /** MappingOut */
+    MappingOut: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Platform Code */
+      platform_code: string
+    }
+    /** MappingsIn */
+    MappingsIn: {
+      /** Mappings */
+      mappings: components['schemas']['MappingIn'][]
     }
     /** MfaSetupOut */
     MfaSetupOut: {
@@ -3776,6 +3949,71 @@ export interface components {
       name: string
       /** Template Key */
       template_key: string | null
+    }
+    /** SalesDocOut */
+    SalesDocOut: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /** Cost */
+      cost: number | null
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Discount */
+      discount: number
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Lines */
+      lines: components['schemas']['SalesLineOut'][]
+      /** Number */
+      number: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Service Charge */
+      service_charge: number
+      /** Status */
+      status: string
+      /** Subtotal */
+      subtotal: number
+      /** Tax */
+      tax: number
+      /** Total */
+      total: number
+    }
+    /** SalesLineOut */
+    SalesLineOut: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /**
+       * Name
+       * @default
+       */
+      name: string
+      /** Platform Code */
+      platform_code: string | null
+      /** Qty */
+      qty: string
+      /** Unit Price */
+      unit_price: number
     }
     /** ServiceChargeSettings */
     ServiceChargeSettings: {
@@ -5335,6 +5573,72 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ChannelOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_mappings_api_v1_catalog_channels__channel_id__mappings_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        channel_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MappingOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  replace_mappings_api_v1_catalog_channels__channel_id__mappings_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        channel_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MappingsIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MappingOut'][]
         }
       }
       /** @description Validation Error */
@@ -8145,6 +8449,141 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['RoleOut'][]
+        }
+      }
+    }
+  }
+  enter_api_v1_sales_days_entries_post: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DayEntryIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DayOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_day_api_v1_sales_days__outlet_id___on__get: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path: {
+        outlet_id: string
+        on: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DayOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  lock_day_api_v1_sales_days__outlet_id___on__lock_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        outlet_id: string
+        on: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DayOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reopen_day_api_v1_sales_days__outlet_id___on__reopen_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        outlet_id: string
+        on: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DayOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
         }
       }
     }
