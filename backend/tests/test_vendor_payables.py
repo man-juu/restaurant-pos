@@ -123,7 +123,7 @@ def test_fr_pur_008_return_credit_note_applied_to_a_bill(
     }
     receipt = buy(client, m, body).json()
     [base] = client.get(f"{P}/returns/receipt-lines/{receipt['id']}", headers=m).json()
-    assert (base["sku"], Decimal(base["qty"]), base["amount"]) == ("BEEF", 2000, 240000)
+    assert (base["sku"], Decimal(base["qty"]), base["amount"]) == ("BEEF", Decimal(2000), 240000)
     back = {
         "outlet_id": str(world["shop"]),
         "vendor_id": vendor,
