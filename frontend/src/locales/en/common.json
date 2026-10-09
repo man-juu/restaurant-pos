@@ -406,7 +406,10 @@
     },
     "purchasing": {
       "requireInvoice": "Require a photo of the supplier invoice on every purchase",
-      "help": "Off by default. When on, a purchase cannot be saved without the photo."
+      "help": "Off by default. When on, a purchase cannot be saved without the photo.",
+      "tolerance": "Bill price may exceed the order price by (%)",
+      "blockMismatch": "Do not allow paying a bill that does not match its order and receipts",
+      "matchHelp": "Bills are checked against the purchase order and what was received. Flagged bills show why; by default they can still be paid."
     },
     "catalog": {
       "help": "Menu items whose food cost (HPP) on any channel rises above this share of the net price raise an alert. Items can set their own target. Leave empty to turn it off.",

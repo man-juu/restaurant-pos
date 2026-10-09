@@ -406,7 +406,10 @@
     },
     "purchasing": {
       "requireInvoice": "Wajibkan foto nota pemasok di setiap pembelian",
-      "help": "Mati secara bawaan. Jika aktif, pembelian tidak bisa disimpan tanpa foto."
+      "help": "Mati secara bawaan. Jika aktif, pembelian tidak bisa disimpan tanpa foto.",
+      "tolerance": "Harga tagihan boleh melebihi harga pesanan sebesar (%)",
+      "blockMismatch": "Jangan izinkan membayar tagihan yang tidak cocok dengan pesanan dan penerimaan",
+      "matchHelp": "Tagihan dicek terhadap pesanan pembelian dan barang yang diterima. Tagihan yang ditandai menunjukkan alasannya; secara bawaan tetap bisa dibayar."
     },
     "catalog": {
       "help": "Menu dengan HPP di saluran mana pun di atas persentase harga bersih ini akan memicu peringatan. Tiap menu bisa punya target sendiri. Kosongkan untuk mematikan.",
