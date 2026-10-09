@@ -131,6 +131,15 @@ export function StockFields({ d, set, issues, isNew }: FieldsProps) {
         invalid={issues.includes('standardCost')}
         onChange={(e) => set({ standard_cost: e.target.value })}
       />
+      {d.type === 'menu' && (
+        <TextInput
+          label={t('catalog.item.targetPct')}
+          inputMode="decimal"
+          value={d.target_pct}
+          invalid={issues.includes('targetPct')}
+          onChange={(e) => set({ target_pct: e.target.value })}
+        />
+      )}
       {!isNew && (
         <CheckInput
           label={t('catalog.item.active')}

@@ -20,13 +20,13 @@ Status as of 2026-10-07. Order follows docs/08 section 3. PR #1 stays open (not 
 | --- | --- | --- | --- |
 | 2 | ~~1b part 3: upload engine~~ done 2026-10-08 (item photos; background and attachments reuse it) | FR-CAT-001 photo | |
 | 3 | ~~1b part 4: free AI images~~ done 2026-10-08 (off until keys are set, docs/runbooks/ai-images.md) with usage counter, block at 85% of free limit plus per-tenant daily cap | FR-CAT-013, ADR-022 | off until platform configures the key |
-| 5 | 1c rest: food-cost alert | FR-CAT-012 | needs a target HPP % per item and tenant (not in docs/05: owner decision) and the notification center (1j); build with 1j |
+| 5 | 1c rest: food-cost alert (done 2026-10-09, see 0.40) | FR-CAT-012 | needs a target HPP % per item and tenant (not in docs/05: owner decision) and the notification center (1j); build with 1j |
 | 6 | 1d Import/export CSV/XLSX (done 2026-10-08: items, recipes, opening stock, demo kitchen in docs/demo; vendors come with 1f), demo seed (fictional menu shaped like the legacy one) | FR-IMP-001 to 003 | XLSX library needs owner approval |
 | 7 | 1e follow-ups: negative-stock and expiry alerts; nightly invariant job (I-1, I-2) | docs/05 rule 8, FR-INV-011 | with the notification center and jobs in 1j |
 | 8 | 1f Purchasing (parts 1 and 2 done 2026-10-08: vendors, quick purchase, invoice photo, price history, PO with approval, receiving against PO, lead-time history, PO PDF; optional: purchase requests): vendors, PR, PO, receiving, quick purchase, PDF, invoice attachment | FR-PUR-001 to 006, 010, 011 | attachment optional, configurable mandatory |
 | 9 | 1g Production with yield and costing, shelf-life labels, prep list (done 2026-10-08: production orders with yield, cost and expiry; stock levels with par; prep list; shelf-life labels) | FR-PRD-001 to 004, 007, 008 | |
 | 10 | 1h Transfers with approval, delivery note, discrepancies (done 2026-10-08) | FR-TRF-001 to 004 | |
-| 12 | 1j Stock levels, DOI, alerts, reorder suggestions, producible quantity, notification center (parts 1 and 2a done 2026-10-09: stock alerts, notification center, alerts job, days left, producible, reorder suggestions to draft PO, low-days alert; part 2b: approval and count-variance notifications; next: food-cost alert) | FR-INV-010 to 013, 020, FR-NTF-001 to 003 | |
+| 12 | 1j Stock levels, DOI, alerts, reorder suggestions, producible quantity, notification center (parts 1 and 2a done 2026-10-09: stock alerts, notification center, alerts job, days left, producible, reorder suggestions to draft PO, low-days alert; part 2b: approval and count-variance notifications; part 2c: food-cost alert; slice done) | FR-INV-010 to 013, 020, FR-NTF-001 to 003 | |
 | 13 | 1k Manual daily sales entry, recipe consumption, day lock, platform item mapping | FR-SAL-001 to 003, FR-CAT-010 | |
 | 14 | 1l Reports and variance | FR-RPT-001 to 006, 010, 011, FR-INV-015 | |
 | 15 | 1m Admin usage, feature flags, audit filters/export, subscription notices | FR-ADM-004, 006, FR-AUD-004, FR-SUB-006 | |

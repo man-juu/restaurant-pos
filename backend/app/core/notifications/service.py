@@ -14,7 +14,7 @@ from typing import Any
 from sqlalchemy import delete, exists, insert, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.models import Membership, MembershipOutlet, Role
+from app.core.models import Membership, MembershipOutlet, Role, RolePermission
 from app.core.notifications.models import Alert, Notification
 from app.core.settings.models import AlertRule
 
@@ -50,8 +50,10 @@ async def members(
     *,
     role_ids: set[uuid.UUID],
     user_ids: set[uuid.UUID] | None = None,
+    permission: str | None = None,
 ) -> set[uuid.UUID]:
-    """Active members with one of the roles (or listed by user) who can see the outlet."""
+    """Active members with one of the roles (or listed by user) who can see the outlet and,
+    when given, hold `permission` (owners and co-owners hold every permission)."""
     stmt = select(Membership.user_id).where(
         Membership.status == "active",
         or_(Membership.role_id.in_(role_ids), Membership.user_id.in_(user_ids or set())),
@@ -61,11 +63,23 @@ async def members(
             MembershipOutlet.membership_id == Membership.id, MembershipOutlet.outlet_id == outlet_id
         )
         stmt = stmt.where(or_(Membership.scope == "all", sees))
+    if permission is not None:
+        holds = exists().where(
+            RolePermission.role_id == Membership.role_id,
+            RolePermission.permission_code == permission,
+        )
+        everything = exists().where(
+            Role.id == Membership.role_id, Role.template_key.in_(("owner", "co_owner"))
+        )
+        stmt = stmt.where(or_(holds, everything))
     return set(await db.scalars(stmt))
 
 
 async def recipients(
-    db: AsyncSession, alert_type: str, outlet_id: uuid.UUID | None
+    db: AsyncSession,
+    alert_type: str,
+    outlet_id: uuid.UUID | None,
+    permission: str | None = None,
 ) -> set[uuid.UUID]:
     rules = (
         await db.execute(
@@ -81,7 +95,7 @@ async def recipients(
             Role.template_key.in_(DEFAULT_ROLES), Role.tenant_id.is_not(None)
         )
         role_ids = set(await db.scalars(stmt))
-    return await members(db, outlet_id, role_ids=role_ids, user_ids=user_ids)
+    return await members(db, outlet_id, role_ids=role_ids, user_ids=user_ids, permission=permission)
 
 
 async def notify(
@@ -113,7 +127,11 @@ async def notify(
 
 
 async def sync(
-    db: AsyncSession, tenant_id: uuid.UUID, alert_type: str, now_true: list[Condition]
+    db: AsyncSession,
+    tenant_id: uuid.UUID,
+    alert_type: str,
+    now_true: list[Condition],
+    permission: str | None = None,
 ) -> tuple[int, int]:
     """Open alerts for new conditions, resolve the ones that cleared. Returns (opened, resolved)."""
     stmt = select(Alert).where(Alert.type == alert_type, Alert.state == "open")
@@ -139,7 +157,7 @@ async def sync(
         )
         db.add(alert)
         await db.flush()
-        users = await recipients(db, alert_type, c.outlet_id)
+        users = await recipients(db, alert_type, c.outlet_id, permission)
         await notify(db, tenant_id, users, alert_type, c.details, c.link, alert.id)
     return len(new), len(gone)
 

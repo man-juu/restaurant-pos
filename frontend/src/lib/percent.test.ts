@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { bpToPercent, percentToBp } from './percent'
+import { bpToPercent, percentToBp, optionalPercentOk } from './percent'
 
 describe('percent and basis points', () => {
   it('parses whole and decimal percentages with dot or comma', () => {
@@ -19,5 +19,14 @@ describe('percent and basis points', () => {
     expect(bpToPercent(1000, 'en')).toBe('10')
     for (const bp of [0, 1, 99, 1000, 1234, 10000])
       expect(percentToBp(bpToPercent(bp, 'en'))).toBe(bp)
+  })
+})
+
+describe('optionalPercentOk', () => {
+  it('allows empty, rejects 0 and above 100', () => {
+    expect(optionalPercentOk('')).toBe(true)
+    expect(optionalPercentOk('35,5')).toBe(true)
+    expect(optionalPercentOk('0')).toBe(false)
+    expect(optionalPercentOk('101')).toBe(false)
   })
 })

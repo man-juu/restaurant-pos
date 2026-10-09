@@ -86,6 +86,11 @@ class Item(Base):
             "(tracking_mode = 'untracked') = (NOT is_stocked)", name="tracking_matches_stocked"
         ),
         CheckConstraint("standard_cost IS NULL OR standard_cost >= 0", name="standard_cost"),
+        CheckConstraint(
+            "target_food_cost_bp IS NULL"
+            " OR (target_food_cost_bp > 0 AND target_food_cost_bp <= 10000)",
+            name="target_food_cost_bp",
+        ),
         ForeignKeyConstraint(
             ["tenant_id", "category_id"], ["item_categories.tenant_id", "item_categories.id"]
         ),
@@ -103,6 +108,9 @@ class Item(Base):
     tracking_mode: Mapped[str] = mapped_column(Text, server_default="exact")
     # Minor units per base unit, used when the ledger has no average yet (or never will).
     standard_cost: Mapped[Decimal | None] = mapped_column(Numeric(18, 6))
+    # FR-CAT-012: food cost (HPP) target, basis points of the net price (3500 = 35 %);
+    # empty = the tenant default.
+    target_food_cost_bp: Mapped[int | None] = mapped_column()
     shelf_life_days: Mapped[int | None] = mapped_column()
     storage_type: Mapped[str | None] = mapped_column(Text)
     allergens: Mapped[list[str]] = mapped_column(ARRAY(String(40)), server_default="{}")

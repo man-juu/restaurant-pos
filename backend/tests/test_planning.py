@@ -201,3 +201,54 @@ def test_fr_inv_012_large_count_difference_alerts_managers(
     # 10 kg rice at Rp 14 per g = Rp 140.000 missing: above the threshold.
     [alert] = [n for n in notes if n["kind"] == "count_variance"]
     assert alert["params"] == {"number": count["number"], "amount": 140000}
+
+
+def test_fr_cat_012_food_cost_alert_only_to_cost_viewers(
+    client: TestClient, world: dict[str, Any], stock: dict[str, Any], settings: Settings
+) -> None:
+    """Fried rice costs Rp 7.200 (200 g rice at Rp 14 + 2 eggs at Rp 2.200) and sells for
+    Rp 15.000 dine-in: about 48 % food cost, above the 35 % Indonesian default target."""
+    h = login(client, world["manager_a"])
+    channel = {"code": "dine_in", "name": "Dine-in", "kind": "dine_in"}
+    ch = client.post(f"{CAT}/channels", json=channel, headers=h).json()["id"]
+    price = {"channel_id": ch, "valid_from": "2026-01-01", "price": 15_000}
+    assert (
+        client.put(f"{CAT}/items/{stock['nasi']}/prices", json=price, headers=h).status_code == 200
+    )
+    # Routed to the kitchen role, which may not see costs: nobody is told.
+    kitchen_role = tenant_sql(
+        world["a"],
+        "SELECT id FROM roles WHERE template_key = 'kitchen' AND tenant_id = :t",
+        {"t": world["a"]},
+    )[0][0]
+    tenant_sql(
+        world["a"],
+        "INSERT INTO alert_rules (id, tenant_id, alert_type, recipient_role_id) "
+        "VALUES (gen_random_uuid(), :t, 'food_cost_above_target', :r)",
+        {"t": world["a"], "r": kitchen_role},
+    )
+    scan(settings, world["a"])
+    cook = login(client, world["kitchen_a"])
+    assert client.get("/api/v1/notifications", headers=cook).json() == []
+    # Without a rule the default recipients (managers) are told, with the cause.
+    tenant_sql(world["a"], "DELETE FROM alert_rules WHERE tenant_id = :t", {"t": world["a"]})
+    tenant_sql(
+        world["a"],
+        "UPDATE items SET target_food_cost_bp = 6000 WHERE id = :i",
+        {"i": stock["nasi"]},
+    )
+    scan(settings, world["a"])  # 48 % is under a 60 % target: the open alert resolves
+    tenant_sql(
+        world["a"],
+        "UPDATE items SET target_food_cost_bp = 3000 WHERE id = :i",
+        {"i": stock["nasi"]},
+    )
+    scan(settings, world["a"])
+    h = login(client, world["manager_a"])
+    [note] = [
+        n
+        for n in client.get("/api/v1/notifications", headers=h).json()
+        if n["kind"] == "food_cost_above_target"
+    ]
+    assert note["params"]["channel"] == "Dine-in" and note["params"]["target"] == "30.0"
+    assert float(note["params"]["pct"]) > 30 and note["params"]["cause"]

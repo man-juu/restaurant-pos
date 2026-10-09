@@ -65,6 +65,7 @@ class ItemIn(Strict):
     # Optional; derived from is_stocked when missing. "untracked" always means not stocked.
     tracking_mode: Literal["exact", "estimated", "untracked"] | None = None
     standard_cost: Decimal | None = Field(default=None, ge=0, max_digits=18, decimal_places=6)
+    target_food_cost_bp: int | None = Field(default=None, gt=0, le=10_000)
     shelf_life_days: int | None = Field(default=None, gt=0, le=36500)
     storage_type: Literal["frozen", "chilled", "dry"] | None = None
     allergens: list[Annotated[str, StringConstraints(min_length=1, max_length=40)]] = Field(
@@ -126,6 +127,7 @@ class ItemOut(ItemSummary):
     is_stocked: bool
     tracking_mode: str = "exact"
     standard_cost: Decimal | None = None
+    target_food_cost_bp: int | None = None
     shelf_life_days: int | None
     storage_type: str | None
     allergens: list[str]

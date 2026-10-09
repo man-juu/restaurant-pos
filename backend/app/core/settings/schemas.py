@@ -118,6 +118,12 @@ class StockSettings(Strict):
     count_variance_alert: int = Field(default=0, ge=0, le=10**12)
 
 
+class CatalogSettings(Strict):
+    """FR-CAT-012: default food cost (HPP) target for menu items without their own; None = off."""
+
+    target_food_cost_bp: BasisPoints | None = None
+
+
 class PurchasingSettings(Strict):
     """FR-PUR-011: supplier invoice photo on receipts, optional unless the tenant requires it."""
 
@@ -132,6 +138,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "session": SessionSettings,
     "stock": StockSettings,
     "purchasing": PurchasingSettings,
+    "catalog": CatalogSettings,
 }
 
 
@@ -145,3 +152,4 @@ class AllSettings(BaseModel):
     session: SessionSettings
     stock: StockSettings
     purchasing: PurchasingSettings
+    catalog: CatalogSettings

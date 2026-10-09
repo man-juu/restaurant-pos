@@ -234,7 +234,8 @@
       "numbering": "Numbering",
       "approvals": "Approvals",
       "stock": "Stock",
-      "purchasing": "Purchasing"
+      "purchasing": "Purchasing",
+      "catalog": "Food cost"
     },
     "tax": {
       "help": "Rates are set per business; check regional rates with your tax advisor.",
@@ -316,6 +317,10 @@
     "purchasing": {
       "requireInvoice": "Require a photo of the supplier invoice on every purchase",
       "help": "Off by default. When on, a purchase cannot be saved without the photo."
+    },
+    "catalog": {
+      "help": "Menu items whose food cost (HPP) on any channel rises above this share of the net price raise an alert. Items can set their own target. Leave empty to turn it off.",
+      "target": "Default food cost target (%)"
     }
   },
   "catalog": {
@@ -383,7 +388,8 @@
         "conversion": "Each conversion needs a different unit and a number above 0."
       },
       "tracking": "Stock tracking",
-      "standardCost": "Standard cost per base unit (optional)"
+      "standardCost": "Standard cost per base unit (optional)",
+      "targetPct": "Food cost target (%), empty = default"
     },
     "conversions": {
       "title": "Unit conversions",
@@ -823,7 +829,7 @@
       "expired_stock": "{{item}}: {{qty}} {{unit}} expired on {{expiry}}",
       "low_days_of_inventory": "{{item}} is running low",
       "count_variance": "Count {{number}} differs by {{amount}} (at average cost)",
-      "food_cost_above_target": "Food cost of {{item}} is above target",
+      "food_cost_above_target": "{{item}}: food cost {{pct}} % on {{channel}}, target {{target}} %. Biggest cost: {{cause}}",
       "approval_requested": "{{number}} is waiting for your approval"
     }
   }

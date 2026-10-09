@@ -19,3 +19,10 @@ export function bpToPercent(bp: number, locale: string): string {
   const sep = locale.startsWith('id') ? ',' : '.'
   return `${whole}${sep}${String(fraction).padStart(2, '0').replace(/0$/, '')}`
 }
+
+/** For optional targets: empty is allowed (no target); otherwise above 0 and at most 100 %. */
+export function optionalPercentOk(input: string): boolean {
+  if (input.trim() === '') return true
+  const bp = percentToBp(input)
+  return bp !== null && bp > 0
+}

@@ -56,6 +56,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
         "session": {"idle_minutes": 60},
         "stock": {**STOCK, "count_variance_alert": 200_000},  # Rp 200.000
         "purchasing": {"require_invoice_attachment": False},
+        "catalog": {"target_food_cost_bp": 3500},  # 35 %, a common Indonesian target
     }
 }
 
@@ -68,6 +69,7 @@ FALLBACK: dict[str, Any] = {
     "session": {"idle_minutes": 60},
     "stock": STOCK,
     "purchasing": {"require_invoice_attachment": False},
+    "catalog": {"target_food_cost_bp": None},
 }
 
 

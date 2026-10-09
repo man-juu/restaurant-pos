@@ -55,7 +55,7 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | --- | --- | --- |
 | `units` | tenant_id, code, name, dimension (mass, volume, count) | Platform seeds g, kg, ml, l, pcs; tenants add more |
 | `item_categories` | tenant_id, parent_id, name | |
-| `items` | tenant_id, sku, type, category_id, base_unit_id, is_stocked, tracking_mode, standard_cost, shelf_life_days, storage_type, allergens, photo_upload_id, is_active | `type`: ingredient, semi_finished, menu. `tracking_mode`: exact, estimated, untracked (estimated never blocks a sale or raises negative-stock alerts). `standard_cost` numeric(18,6) per base unit, used only when no moving average exists |
+| `items` | tenant_id, sku, type, category_id, base_unit_id, is_stocked, tracking_mode, standard_cost, target_food_cost_bp, shelf_life_days, storage_type, allergens, photo_upload_id, is_active | `type`: ingredient, semi_finished, menu. `tracking_mode`: exact, estimated, untracked (estimated never blocks a sale or raises negative-stock alerts). `standard_cost` numeric(18,6) per base unit, used only when no moving average exists |
 | `item_unit_conversions` | tenant_id, item_id, unit_id, factor_to_base | Exact decimals |
 | `modifier_groups`, `modifiers` | tenant_id, item scope, price_delta, ingredient_delta (via BOM line) | |
 | `channels` | tenant_id, code, name, kind, platform | kind: dine_in, takeaway, platform, wholesale |

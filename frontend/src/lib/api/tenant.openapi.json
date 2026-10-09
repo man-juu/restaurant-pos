@@ -257,6 +257,9 @@
       "AllSettings": {
         "description": "Response of GET /settings, typed so the generated frontend client knows every field.",
         "properties": {
+          "catalog": {
+            "$ref": "#/components/schemas/CatalogSettings"
+          },
           "numbering": {
             "$ref": "#/components/schemas/NumberingSettings"
           },
@@ -286,7 +289,8 @@
           "numbering",
           "session",
           "stock",
-          "purchasing"
+          "purchasing",
+          "catalog"
         ],
         "title": "AllSettings",
         "type": "object"
@@ -864,6 +868,27 @@
           "language"
         ],
         "title": "Capabilities",
+        "type": "object"
+      },
+      "CatalogSettings": {
+        "additionalProperties": false,
+        "description": "FR-CAT-012: default food cost (HPP) target for menu items without their own; None = off.",
+        "properties": {
+          "target_food_cost_bp": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Food Cost Bp"
+          }
+        },
+        "title": "CatalogSettings",
         "type": "object"
       },
       "CategoryIn": {
@@ -1849,6 +1874,19 @@
             ],
             "title": "Storage Type"
           },
+          "target_food_cost_bp": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 10000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Food Cost Bp"
+          },
           "tracking_mode": {
             "anyOf": [
               {
@@ -1992,6 +2030,17 @@
               }
             ],
             "title": "Storage Type"
+          },
+          "target_food_cost_bp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Food Cost Bp"
           },
           "tracking_mode": {
             "default": "exact",
@@ -2205,6 +2254,19 @@
               }
             ],
             "title": "Storage Type"
+          },
+          "target_food_cost_bp": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 10000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Food Cost Bp"
           },
           "tracking_mode": {
             "anyOf": [

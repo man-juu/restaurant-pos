@@ -234,7 +234,8 @@
       "numbering": "Penomoran",
       "approvals": "Persetujuan",
       "stock": "Stok",
-      "purchasing": "Pembelian"
+      "purchasing": "Pembelian",
+      "catalog": "HPP"
     },
     "tax": {
       "help": "Tarif diatur per usaha; periksa tarif daerah dengan konsultan pajak Anda.",
@@ -316,6 +317,10 @@
     "purchasing": {
       "requireInvoice": "Wajibkan foto nota pemasok di setiap pembelian",
       "help": "Mati secara bawaan. Jika aktif, pembelian tidak bisa disimpan tanpa foto."
+    },
+    "catalog": {
+      "help": "Menu dengan HPP di saluran mana pun di atas persentase harga bersih ini akan memicu peringatan. Tiap menu bisa punya target sendiri. Kosongkan untuk mematikan.",
+      "target": "Target HPP bawaan (%)"
     }
   },
   "catalog": {
@@ -383,7 +388,8 @@
         "conversion": "Setiap konversi perlu satuan berbeda dan angka di atas 0."
       },
       "tracking": "Pencatatan stok",
-      "standardCost": "Biaya standar per satuan dasar (opsional)"
+      "standardCost": "Biaya standar per satuan dasar (opsional)",
+      "targetPct": "Target HPP (%), kosong = bawaan"
     },
     "conversions": {
       "title": "Konversi satuan",
@@ -823,7 +829,7 @@
       "expired_stock": "{{item}}: {{qty}} {{unit}} sudah kedaluwarsa sejak {{expiry}}",
       "low_days_of_inventory": "{{item}} hampir habis",
       "count_variance": "Hitung {{number}} selisih senilai {{amount}} (biaya rata-rata)",
-      "food_cost_above_target": "HPP {{item}} di atas target",
+      "food_cost_above_target": "{{item}}: HPP {{pct}} % di {{channel}}, target {{target}} %. Biaya terbesar: {{cause}}",
       "approval_requested": "{{number}} menunggu persetujuan Anda"
     }
   }

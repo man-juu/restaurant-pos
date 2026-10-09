@@ -19,8 +19,8 @@ from app.core.idempotency import (
 )
 from app.core.pagination import Page, PageParams, page_params
 from app.core.tenancy import tenant_session
+from app.modules.catalog import categories, prices, service
 from app.modules.catalog import permissions as perm
-from app.modules.catalog import prices, service
 from app.modules.catalog.models import Item
 from app.modules.catalog.schemas import (
     CategoryIn,
@@ -55,6 +55,7 @@ def _visible(p: Principal, item: ItemOut) -> ItemOut:
     """docs/03 rule 5: cost data is hidden from roles without catalog.cost.view, in the API too."""
     if not p.can(perm.COST_VIEW):
         item.standard_cost = None
+        item.target_food_cost_bp = None
     return item
 
 
@@ -73,14 +74,16 @@ async def create_unit(body: UnitIn, request: Request, p: Update) -> UnitOut:
 @router.get("/categories", response_model=list[CategoryOut])
 async def list_categories(request: Request, p: View) -> list[CategoryOut]:
     async with _db(request, p) as db:
-        rows = await service.list_categories(db)
+        rows = await categories.list_categories(db)
         return [CategoryOut.model_validate(r, from_attributes=True) for r in rows]
 
 
 @router.post("/categories", response_model=CategoryOut, status_code=201)
 async def create_category(body: CategoryIn, request: Request, p: Update) -> CategoryOut:
     async with _db(request, p) as db:
-        row = await service.save_category(db, tenant_id=p.tenant_id, user_id=p.user_id, data=body)
+        row = await categories.save_category(
+            db, tenant_id=p.tenant_id, user_id=p.user_id, data=body
+        )
         return CategoryOut.model_validate(row, from_attributes=True)
 
 
@@ -89,7 +92,7 @@ async def update_category(
     category_id: uuid.UUID, body: CategoryIn, request: Request, p: Update
 ) -> CategoryOut:
     async with _db(request, p) as db:
-        row = await service.save_category(
+        row = await categories.save_category(
             db, tenant_id=p.tenant_id, user_id=p.user_id, data=body, category_id=category_id
         )
         return CategoryOut.model_validate(row, from_attributes=True)
@@ -156,9 +159,12 @@ async def update_item(
     async with _db(request, p) as db:
         if not p.can(perm.COST_VIEW):
             # They never saw the standard cost, so their save must not change or clear it.
-            body.standard_cost = await db.scalar(
-                select(Item.standard_cost).where(Item.id == item_id)
-            )
+            kept = (
+                await db.execute(
+                    select(Item.standard_cost, Item.target_food_cost_bp).where(Item.id == item_id)
+                )
+            ).first()
+            body.standard_cost, body.target_food_cost_bp = kept if kept else (None, None)
         await service.update_item(
             db, tenant_id=p.tenant_id, user_id=p.user_id, item_id=item_id, data=body, language=lang
         )

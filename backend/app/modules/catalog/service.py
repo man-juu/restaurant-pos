@@ -8,7 +8,6 @@ from decimal import Decimal
 from typing import Any, cast
 
 from sqlalchemy import ColumnElement, Select, delete, func, insert, or_, select
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import aliased
 
@@ -24,7 +23,6 @@ from app.modules.catalog.models import (
     Unit,
 )
 from app.modules.catalog.schemas import (
-    CategoryIn,
     ItemIn,
     ItemOut,
     ItemSummary,
@@ -125,70 +123,6 @@ async def factor_to_base(db: AsyncSession, item_id: uuid.UUID, unit_id: uuid.UUI
     return factor
 
 
-# ─── Categories ───────────────────────────────────────────────────────────
-
-
-async def list_categories(db: AsyncSession) -> list[ItemCategory]:
-    stmt = select(ItemCategory).order_by(ItemCategory.sort_order, ItemCategory.name)
-    return list((await db.execute(stmt)).scalars())
-
-
-async def _check_parent(
-    db: AsyncSession, parent_id: uuid.UUID | None, self_id: uuid.UUID | None = None
-) -> None:
-    """Parent must exist in this tenant and must not create a loop."""
-    seen = {self_id} if self_id else set()
-    current = parent_id
-    while current is not None:
-        if current in seen:
-            raise InvalidCatalogReference("category_cycle")
-        seen.add(current)
-        current_row = await db.get(ItemCategory, current)
-        if current_row is None:
-            raise InvalidCatalogReference(details={"parent_id": str(parent_id)})
-        current = current_row.parent_id
-        if len(seen) > 20:
-            raise InvalidCatalogReference("category_too_deep")
-
-
-async def save_category(
-    db: AsyncSession,
-    *,
-    tenant_id: uuid.UUID,
-    user_id: uuid.UUID,
-    data: CategoryIn,
-    category_id: uuid.UUID | None = None,
-) -> ItemCategory:
-    await _check_parent(db, data.parent_id, category_id)
-    if category_id is None:
-        row = ItemCategory(tenant_id=tenant_id, **data.model_dump())
-        db.add(row)
-        action, before = "catalog.category.create", None
-    else:
-        found = await db.get(ItemCategory, category_id)
-        if found is None:
-            raise NotFoundError("category_not_found")
-        row = found
-        before = CategoryIn.model_validate(row, from_attributes=True).model_dump(mode="json")
-        for key, value in data.model_dump().items():
-            setattr(row, key, value)
-        action = "catalog.category.update"
-    try:
-        await db.flush()
-    except IntegrityError:
-        raise ConflictError("category_name_taken") from None
-    await audit.record(
-        db,
-        tenant_id=tenant_id,
-        user_id=user_id,
-        action=action,
-        target_type="item_category",
-        target_id=row.id,
-        summary={"before": before, "after": data.model_dump(mode="json")},
-    )
-    return row
-
-
 # ─── Items ────────────────────────────────────────────────────────────────
 
 
@@ -274,6 +208,7 @@ async def get_item(
         is_stocked=item.is_stocked,
         tracking_mode=item.tracking_mode,
         standard_cost=item.standard_cost,
+        target_food_cost_bp=item.target_food_cost_bp,
         shelf_life_days=item.shelf_life_days,
         storage_type=item.storage_type,
         allergens=list(item.allergens),
@@ -325,6 +260,7 @@ _ITEM_FIELDS: Sequence[str] = (
     "is_stocked",
     "tracking_mode",
     "standard_cost",
+    "target_food_cost_bp",
     "shelf_life_days",
     "storage_type",
     "allergens",

@@ -2124,6 +2124,7 @@ export interface components {
      * @description Response of GET /settings, typed so the generated frontend client knows every field.
      */
     AllSettings: {
+      catalog: components['schemas']['CatalogSettings']
       numbering: components['schemas']['NumberingSettings']
       payment_methods: components['schemas']['PaymentMethodSettings']
       purchasing: components['schemas']['PurchasingSettings']
@@ -2368,6 +2369,14 @@ export interface components {
        * Format: uuid
        */
       tenant_id: string
+    }
+    /**
+     * CatalogSettings
+     * @description FR-CAT-012: default food cost (HPP) target for menu items without their own; None = off.
+     */
+    CatalogSettings: {
+      /** Target Food Cost Bp */
+      target_food_cost_bp?: number | null
     }
     /** CategoryIn */
     CategoryIn: {
@@ -2750,6 +2759,8 @@ export interface components {
       standard_cost?: number | string | null
       /** Storage Type */
       storage_type?: ('frozen' | 'chilled' | 'dry') | null
+      /** Target Food Cost Bp */
+      target_food_cost_bp?: number | null
       /** Tracking Mode */
       tracking_mode?: ('exact' | 'estimated' | 'untracked') | null
       /** Translations */
@@ -2794,6 +2805,8 @@ export interface components {
       standard_cost?: string | null
       /** Storage Type */
       storage_type: string | null
+      /** Target Food Cost Bp */
+      target_food_cost_bp?: number | null
       /**
        * Tracking Mode
        * @default exact
@@ -2868,6 +2881,8 @@ export interface components {
       standard_cost?: number | string | null
       /** Storage Type */
       storage_type?: ('frozen' | 'chilled' | 'dry') | null
+      /** Target Food Cost Bp */
+      target_food_cost_bp?: number | null
       /** Tracking Mode */
       tracking_mode?: ('exact' | 'estimated' | 'untracked') | null
       /** Translations */

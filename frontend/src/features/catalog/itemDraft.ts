@@ -1,5 +1,6 @@
 /** Item form state <-> API body, and validation that mirrors the server rules (FR-CAT-001). */
 import type { ItemIn, ItemOut } from '../../lib/api/types'
+import { bpToPercent, optionalPercentOk, percentToBp } from '../../lib/percent'
 
 export interface ConversionDraft {
   unit_id: string
@@ -13,6 +14,7 @@ export interface ItemDraft {
   base_unit_id: string
   tracking_mode: 'exact' | 'estimated' | 'untracked'
   standard_cost: string
+  target_pct: string
   shelf_life: string
   storage_type: '' | NonNullable<ItemIn['storage_type']>
   allergens: string
@@ -32,6 +34,7 @@ export const EMPTY_DRAFT: ItemDraft = {
   base_unit_id: '',
   tracking_mode: 'exact',
   standard_cost: '',
+  target_pct: '',
   shelf_life: '',
   storage_type: '',
   allergens: '',
@@ -50,6 +53,7 @@ export function toDraft(item?: ItemOut): ItemDraft {
     base_unit_id: item.base_unit_id,
     tracking_mode: (item.tracking_mode ?? 'exact') as ItemDraft['tracking_mode'],
     standard_cost: item.standard_cost == null ? '' : String(item.standard_cost),
+    target_pct: item.target_food_cost_bp == null ? '' : bpToPercent(item.target_food_cost_bp, 'en'),
     shelf_life: String(item.shelf_life_days ?? ''),
     storage_type: (item.storage_type ?? '') as ItemDraft['storage_type'],
     allergens: item.allergens.join(', '),
@@ -62,7 +66,8 @@ export function toDraft(item?: ItemOut): ItemDraft {
   }
 }
 
-export type DraftProblem = 'sku' | 'name' | 'unit' | 'shelfLife' | 'conversion' | 'standardCost'
+export type DraftProblem =
+  'sku' | 'name' | 'unit' | 'shelfLife' | 'conversion' | 'standardCost' | 'targetPct'
 
 const SHELF = /^\d{1,5}$/
 
@@ -73,6 +78,7 @@ const RULES: [DraftProblem, (d: ItemDraft) => boolean][] = [
   ['unit', (d) => !d.base_unit_id],
   ['shelfLife', (d) => Boolean(d.shelf_life) && !(SHELF.test(d.shelf_life) && +d.shelf_life >= 1)],
   ['standardCost', (d) => Boolean(d.standard_cost) && !FACTOR.test(d.standard_cost)],
+  ['targetPct', (d) => !optionalPercentOk(d.target_pct)],
   ['conversion', (d) => conversionsInvalid(d)],
 ]
 
@@ -111,6 +117,7 @@ export function toBody(d: ItemDraft, item?: ItemOut): ItemIn {
     tracking_mode: d.tracking_mode,
     // Exact decimal string (per base unit), never a float.
     standard_cost: d.standard_cost ? d.standard_cost.replace(',', '.') : null,
+    target_food_cost_bp: d.target_pct.trim() ? percentToBp(d.target_pct) : null,
     shelf_life_days: d.shelf_life ? Number(d.shelf_life) : null,
     storage_type: d.storage_type || null,
     allergens: d.allergens

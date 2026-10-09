@@ -16,6 +16,7 @@ const item: ItemOut = {
   is_stocked: false,
   tracking_mode: 'untracked',
   standard_cost: null,
+  target_food_cost_bp: null,
   shelf_life_days: null,
   storage_type: null,
   allergens: ['egg'],

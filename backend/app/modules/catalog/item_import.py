@@ -16,7 +16,7 @@ from app.core.errors import ConflictError
 from app.core.imports import runner
 from app.core.imports.models import ImportBatch
 from app.core.tabular import InvalidTable, read_table
-from app.modules.catalog import recipe_import, service
+from app.modules.catalog import categories, recipe_import, service
 from app.modules.catalog.models import Item, ItemCategory, Unit
 from app.modules.catalog.schemas import CategoryIn, ItemIn
 
@@ -167,7 +167,7 @@ async def _create_categories(
 ) -> dict[str, uuid.UUID]:
     made = {}
     for name in names:
-        row = await service.save_category(
+        row = await categories.save_category(
             db, tenant_id=tenant_id, user_id=user_id, data=CategoryIn(name=name)
         )
         made[name.lower()] = row.id
