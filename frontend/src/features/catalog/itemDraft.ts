@@ -9,6 +9,7 @@ export interface ConversionDraft {
 
 export interface ItemDraft {
   sku: string
+  barcode: string
   type: ItemIn['type']
   category_id: string
   base_unit_id: string
@@ -29,6 +30,7 @@ const FACTOR = /^\d{1,12}([.,]\d{1,6})?$/
 
 export const EMPTY_DRAFT: ItemDraft = {
   sku: '',
+  barcode: '',
   type: 'menu',
   category_id: '',
   base_unit_id: '',
@@ -48,6 +50,7 @@ export function toDraft(item?: ItemOut): ItemDraft {
   const name = (lang: string) => item.translations.find((t) => t.language === lang)?.name ?? ''
   return {
     sku: item.sku,
+    barcode: item.barcode ?? '',
     type: item.type,
     category_id: item.category_id ?? '',
     base_unit_id: item.base_unit_id,
@@ -67,13 +70,14 @@ export function toDraft(item?: ItemOut): ItemDraft {
 }
 
 export type DraftProblem =
-  'sku' | 'name' | 'unit' | 'shelfLife' | 'conversion' | 'standardCost' | 'targetPct'
+  'sku' | 'barcode' | 'name' | 'unit' | 'shelfLife' | 'conversion' | 'standardCost' | 'targetPct'
 
 const SHELF = /^\d{1,5}$/
 
 /** Each rule is a check and the problem it reports; a table instead of an if-chain. */
 const RULES: [DraftProblem, (d: ItemDraft) => boolean][] = [
   ['sku', (d) => !SKU.test(d.sku.trim())],
+  ['barcode', (d) => Boolean(d.barcode.trim()) && !SKU.test(d.barcode.trim())],
   ['name', (d) => !d.names.en.trim() && !d.names.id.trim()],
   ['unit', (d) => !d.base_unit_id],
   ['shelfLife', (d) => Boolean(d.shelf_life) && !(SHELF.test(d.shelf_life) && +d.shelf_life >= 1)],
@@ -110,6 +114,7 @@ export function toBody(d: ItemDraft, item?: ItemOut): ItemIn {
   }))
   return {
     sku: d.sku.trim(),
+    barcode: d.barcode.trim() || null,
     type: d.type,
     category_id: d.category_id || null,
     base_unit_id: d.base_unit_id,

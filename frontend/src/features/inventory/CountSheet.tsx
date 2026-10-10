@@ -7,6 +7,8 @@ import type { StockDocument } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
 import { formatNumber, intlLocale } from '../../lib/format'
 import { useDecide, useDocument, useSaveCounted, useSubmitCount } from './docApi'
+import { focusLine } from './locations/focus'
+import { ScanBox } from './locations/ScanBox'
 
 const QTY = /^\d{1,14}([.,]\d{1,4})?$/
 
@@ -108,25 +110,31 @@ function CountLines({
       ? ''
       : t('inventory.docs.system', { qty: `${formatNumber(Number(qty), locale)} ${unit}` })
   return (
-    <ul className="flex flex-col gap-2">
-      {(doc.lines ?? []).map((ln) => (
-        <li
-          key={ln.item_id}
-          className="grid items-end gap-3 border-b border-line pb-2 sm:grid-cols-[2fr_1fr_1fr]"
-        >
-          <span className="self-center font-semibold">{ln.name}</span>
-          <span className="self-center text-sm text-ink-soft">
-            {system(ln.system_qty, ln.unit_code)}
-          </span>
-          <TextInput
-            label={t('inventory.docs.counted', { unit: ln.unit_code })}
-            inputMode="decimal"
-            disabled={doc.status !== 'draft'}
-            value={counted[ln.item_id] ?? ''}
-            onChange={(e) => onChange({ ...counted, [ln.item_id]: e.target.value })}
-          />
-        </li>
-      ))}
-    </ul>
+    <>
+      {doc.status === 'draft' && (
+        <ScanBox outletId={doc.outlet_id} onFound={(hit) => focusLine(`count-${hit.item_id}`)} />
+      )}
+      <ul className="flex flex-col gap-2">
+        {(doc.lines ?? []).map((ln) => (
+          <li
+            key={ln.item_id}
+            className="grid items-end gap-3 border-b border-line pb-2 sm:grid-cols-[2fr_1fr_1fr]"
+          >
+            <span className="self-center font-semibold">{ln.name}</span>
+            <span className="self-center text-sm text-ink-soft">
+              {system(ln.system_qty, ln.unit_code)}
+            </span>
+            <TextInput
+              label={t('inventory.docs.counted', { unit: ln.unit_code })}
+              id={`count-${ln.item_id}`}
+              inputMode="decimal"
+              disabled={doc.status !== 'draft'}
+              value={counted[ln.item_id] ?? ''}
+              onChange={(e) => onChange({ ...counted, [ln.item_id]: e.target.value })}
+            />
+          </li>
+        ))}
+      </ul>
+    </>
   )
 }

@@ -1990,6 +1990,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/inventory/labels': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Labels
+     * @description A sheet of labels: one QR label per batch and one barcode label per item.
+     */
+    get: operations['labels_api_v1_inventory_labels_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/inventory/levels': {
     parameters: {
       query?: never
@@ -2001,6 +2021,92 @@ export interface paths {
     get: operations['list_levels_api_v1_inventory_levels_get']
     /** Save Levels */
     put: operations['save_levels_api_v1_inventory_levels_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/locations': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Locations */
+    get: operations['list_locations_api_v1_inventory_locations_get']
+    put?: never
+    /** Create Location */
+    post: operations['create_location_api_v1_inventory_locations_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/locations/homes': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Homes */
+    get: operations['homes_api_v1_inventory_locations_homes_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/locations/homes/{item_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Unassign */
+    delete: operations['unassign_api_v1_inventory_locations_homes__item_id__delete']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/locations/{location_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Location */
+    put: operations['update_location_api_v1_inventory_locations__location_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/locations/{location_id}/items': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Assign */
+    put: operations['assign_api_v1_inventory_locations__location_id__items_put']
     post?: never
     delete?: never
     options?: never
@@ -2105,6 +2211,23 @@ export interface paths {
     }
     /** Stock Report */
     get: operations['stock_report_api_v1_inventory_reports__kind__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/inventory/scan': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Resolve */
+    get: operations['resolve_api_v1_inventory_scan_get']
     put?: never
     post?: never
     delete?: never
@@ -4455,6 +4578,11 @@ export interface components {
       /** Qty */
       qty: number | string
     }
+    /** AssignIn */
+    AssignIn: {
+      /** Item Ids */
+      item_ids: string[]
+    }
     /** AuditRow */
     AuditRow: {
       /** Action */
@@ -5015,6 +5143,8 @@ export interface components {
       count_type: 'full' | 'spot' | 'cycle'
       /** Item Ids */
       item_ids?: string[]
+      /** Location Id */
+      location_id?: string | null
       /** Note */
       note?: string | null
       /**
@@ -5460,6 +5590,23 @@ export interface components {
       /** Detail */
       detail?: components['schemas']['ValidationError'][]
     }
+    /** HomeOut */
+    HomeOut: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /**
+       * Location Id
+       * Format: uuid
+       */
+      location_id: string
+      /** Name */
+      name: string
+      /** Sku */
+      sku: string
+    }
     /** ImportBatchOut */
     ImportBatchOut: {
       /**
@@ -5632,6 +5779,8 @@ export interface components {
     ItemIn: {
       /** Allergens */
       allergens?: string[]
+      /** Barcode */
+      barcode?: string | null
       /**
        * Base Unit Id
        * Format: uuid
@@ -5670,6 +5819,8 @@ export interface components {
     ItemOut: {
       /** Allergens */
       allergens: string[]
+      /** Barcode */
+      barcode?: string | null
       /**
        * Base Unit Id
        * Format: uuid
@@ -5759,6 +5910,8 @@ export interface components {
     ItemUpdate: {
       /** Allergens */
       allergens?: string[]
+      /** Barcode */
+      barcode?: string | null
       /**
        * Base Unit Id
        * Format: uuid
@@ -5977,6 +6130,60 @@ export interface components {
       memo?: string | null
       /** Outlet Id */
       outlet_id?: string | null
+    }
+    /** LocationIn */
+    LocationIn: {
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /** Name */
+      name: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /**
+       * Sort Order
+       * @default 0
+       */
+      sort_order: number
+    }
+    /** LocationOut */
+    LocationOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Is Active */
+      is_active: boolean
+      /** Name */
+      name: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Sort Order */
+      sort_order: number
+    }
+    /** LocationUpdate */
+    LocationUpdate: {
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /** Name */
+      name: string
+      /**
+       * Sort Order
+       * @default 0
+       */
+      sort_order: number
     }
     /** LoginRequest */
     LoginRequest: {
@@ -7728,6 +7935,33 @@ export interface components {
       /** Unit Price */
       unit_price: number
     }
+    /** ScanOut */
+    ScanOut: {
+      /**
+       * Base Unit Id
+       * Format: uuid
+       */
+      base_unit_id: string
+      /** Batch Id */
+      batch_id?: string | null
+      /** Expiry Date */
+      expiry_date?: string | null
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Kind */
+      kind: string
+      /** Lot Code */
+      lot_code?: string | null
+      /** Name */
+      name: string
+      /** Sku */
+      sku: string
+      /** Unit Code */
+      unit_code: string
+    }
     /** SeatIn */
     SeatIn: {
       /**
@@ -8166,6 +8400,8 @@ export interface components {
       kind: 'waste' | 'adjustment' | 'count'
       /** Lines */
       lines?: components['schemas']['DocLine'][]
+      /** Location Id */
+      location_id?: string | null
       /** Note */
       note: string | null
       /** Number */
@@ -13665,6 +13901,41 @@ export interface operations {
       }
     }
   }
+  labels_api_v1_inventory_labels_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        batch_id?: string[]
+        item_id?: string[]
+        copies?: number
+        lang?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   list_levels_api_v1_inventory_levels_get: {
     parameters: {
       query: {
@@ -13720,6 +13991,201 @@ export interface operations {
         content: {
           'application/json': components['schemas']['LevelOut'][]
         }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_locations_api_v1_inventory_locations_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LocationOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_location_api_v1_inventory_locations_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LocationIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LocationOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  homes_api_v1_inventory_locations_homes_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        lang?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HomeOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  unassign_api_v1_inventory_locations_homes__item_id__delete: {
+    parameters: {
+      query: {
+        outlet_id: string
+      }
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_location_api_v1_inventory_locations__location_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        location_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LocationUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LocationOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  assign_api_v1_inventory_locations__location_id__items_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        location_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AssignIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Validation Error */
       422: {
@@ -13921,6 +14387,39 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['Report']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  resolve_api_v1_inventory_scan_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        code: string
+        lang?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ScanOut']
         }
       }
       /** @description Validation Error */

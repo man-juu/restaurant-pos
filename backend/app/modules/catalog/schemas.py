@@ -58,6 +58,7 @@ class ConversionIn(Strict):
 
 class ItemIn(Strict):
     sku: Sku
+    barcode: Sku | None = None  # the pack's EAN/UPC, scanned on receive and count
     type: ItemType
     category_id: uuid.UUID | None = None
     base_unit_id: uuid.UUID
@@ -125,6 +126,7 @@ class ItemSummary(BaseModel):
 
 
 class ItemOut(ItemSummary):
+    barcode: str | None = None
     is_stocked: bool
     tracking_mode: str = "exact"
     standard_cost: Decimal | None = None

@@ -57,7 +57,7 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | --- | --- | --- |
 | `units` | tenant_id, code, name, dimension (mass, volume, count) | Platform seeds g, kg, ml, l, pcs; tenants add more |
 | `item_categories` | tenant_id, parent_id, name | |
-| `items` | tenant_id, sku, type, category_id, base_unit_id, is_stocked, tracking_mode, standard_cost, target_food_cost_bp, shelf_life_days, storage_type, allergens, photo_upload_id, is_available, is_active | `type`: ingredient, semi_finished, menu. `tracking_mode`: exact, estimated, untracked (estimated never blocks a sale or raises negative-stock alerts). `standard_cost` numeric(18,6) per base unit, used only when no moving average exists |
+| `items` | tenant_id, sku, barcode (optional, unique), type, category_id, base_unit_id, is_stocked, tracking_mode, standard_cost, target_food_cost_bp, shelf_life_days, storage_type, allergens, photo_upload_id, is_available, is_active | `type`: ingredient, semi_finished, menu. `tracking_mode`: exact, estimated, untracked (estimated never blocks a sale or raises negative-stock alerts). `standard_cost` numeric(18,6) per base unit, used only when no moving average exists |
 | `item_unit_conversions` | tenant_id, item_id, unit_id, factor_to_base | Exact decimals |
 | `modifier_groups` | tenant_id, name, min_select, max_select, is_active | FR-CAT-003 |
 | `modifier_options` | tenant_id, group_id, name, price_delta, ingredient_item_id, ingredient_qty (base unit, negative = less), sort_order, is_active | Never deleted, only switched off (sold lines point at them) |
@@ -87,7 +87,7 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `stock_balances` | tenant_id, outlet_id, item_id, batch_id, qty | Cache maintained in the same transaction; rebuildable from movements |
 | `item_costs` | tenant_id, outlet_id, item_id, avg_cost, qty_on_hand_for_avg, updated_at | Moving average state |
 | `stock_levels` | tenant_id, outlet_id, item_id, par_qty, min_qty, max_qty, reorder_point, lead_time_days, safety_qty, preferred_vendor_id | par_qty added 2026-10-08 (0.35) for the daily prep list; preferred vendor is `vendor_items.is_preferred` instead (0.38) |
-| `stock_counts`, `stock_count_lines` | header: outlet, type, blind, status; line: item, batch, system_qty, counted_qty | Status: draft, submitted, approved, posted |
+| `stock_counts`, `stock_count_lines` | header: outlet, type, blind, location (optional), status; line: item, batch, system_qty, counted_qty | Status: draft, submitted, approved, posted |
 | `waste_logs`, `waste_lines` | outlet, reason_code, photo_ref | Post as movements |
 | `adjustments`, `adjustment_lines` | outlet, reason_code, status | Post as movements |
 | `alerts` | tenant_id, type, outlet_id, item_id, batch_id, state, raised_at, resolved_at | |
@@ -108,6 +108,8 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `receivables` | wholesale sales document (unique), customer, outlet, invoice_date, due_date, total, paid, status open/partially_paid/paid/void (ADR 0.64) |
 | `receivable_payments` | receivable, paid_on, amount (negative = reversal of `reverses_id`), method code, reference; append-only |
 | `platform_settlements` | number, platform channel, outlet, money account, period_from/to, paid_on, gross, commission, fees, adjustments (signed), payout (= gross - commission - fees + adjustments), reference, status posted/reversed (ADR 0.65) |
+| `storage_locations` | outlet, name (unique per outlet), sort_order, is_active (ADR 0.66) |
+| `item_locations` | outlet, item (unique per outlet), storage location: where the item is kept |
 | `vendor_price_history` | vendor_id, item_id, price, observed_at, source_doc_id |
 | `vendor_lead_history` | vendor_id, ordered_at, received_at, item_id |
 

@@ -9,6 +9,7 @@ import { todayIso } from '../catalog/labels'
 import { CountSheet } from './CountSheet'
 import { useDocuments, useStartCount } from './docApi'
 import { DocList } from './DocList'
+import { useLocations } from './locations/locationApi'
 
 const TYPES = ['full', 'spot', 'cycle'] as const
 type CountType = (typeof TYPES)[number]
@@ -48,6 +49,8 @@ function StartCount({
   const start = useStartCount()
   const [type, setType] = useState<CountType>('full')
   const [blind, setBlind] = useState(true)
+  const [location, setLocation] = useState('')
+  const places = (useLocations(outletId).data ?? []).filter((l) => l.is_active)
   const [items, setItems] = useState<{ id: string; label: string }[]>([])
   const needsItems = type !== 'full' && items.length === 0
   const body = {
@@ -55,6 +58,7 @@ function StartCount({
     business_date: todayIso(),
     count_type: type,
     blind,
+    location_id: location || null,
     item_ids: items.map((i) => i.id),
   }
 
@@ -73,6 +77,20 @@ function StartCount({
           ))}
         </SelectInput>
         <CheckInput label={t('inventory.docs.blind')} checked={blind} onChange={setBlind} />
+        {places.length > 0 && (
+          <SelectInput
+            label={t('locations.countAt')}
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          >
+            <option value="">{t('locations.everywhere')}</option>
+            {places.map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.name}
+              </option>
+            ))}
+          </SelectInput>
+        )}
       </div>
       {items.length > 0 && <p className="text-sm">{items.map((i) => i.label).join(', ')}</p>}
       {type !== 'full' && (

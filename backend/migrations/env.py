@@ -21,6 +21,7 @@ import app.modules.finance.gl_models
 import app.modules.finance.models
 import app.modules.finance.settlement_models
 import app.modules.inventory.doc_models
+import app.modules.inventory.location_models
 import app.modules.inventory.models
 import app.modules.kitchen.models
 import app.modules.production.models

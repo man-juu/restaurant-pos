@@ -28,6 +28,7 @@ export function QuickLines({
         >
           <p className="self-center font-semibold sm:col-span-2 lg:col-span-1">{ln.label}</p>
           <TextInput
+            id={`buy-${ln.item_id}`}
             label={t('catalog.recipe.qty')}
             inputMode="decimal"
             value={ln.qty}

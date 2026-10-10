@@ -75,6 +75,7 @@ class Item(Base):
     __table_args__ = (
         UniqueConstraint("tenant_id", "id"),
         UniqueConstraint("tenant_id", "sku"),
+        UniqueConstraint("tenant_id", "barcode"),  # FR-INV-019: scanned on receive and count
         _check_in("type", ITEM_TYPES),
         CheckConstraint(
             "storage_type IS NULL OR storage_type IN ('frozen', 'chilled', 'dry')",
@@ -101,6 +102,7 @@ class Item(Base):
     id: Mapped[uuid.UUID] = _id()
     tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
     sku: Mapped[str] = mapped_column(String(64))
+    barcode: Mapped[str | None] = mapped_column(String(64))  # EAN/UPC on the pack, optional
     type: Mapped[str] = mapped_column(Text)
     category_id: Mapped[uuid.UUID | None] = mapped_column()
     base_unit_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("units.id"))

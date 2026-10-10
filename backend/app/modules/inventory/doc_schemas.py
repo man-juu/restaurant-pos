@@ -70,6 +70,7 @@ class CountIn(Strict):
     business_date: date
     count_type: Literal["full", "spot", "cycle"]
     blind: bool = False
+    location_id: uuid.UUID | None = None  # FR-INV-017: also every item kept there
     note: Note = None
     item_ids: list[uuid.UUID] = Field(default_factory=list, max_length=MAX_LINES)
 
@@ -106,6 +107,7 @@ class StockDocument(BaseModel):
     reason_code: str | None = None
     count_type: str | None = None
     blind: bool = False
+    location_id: uuid.UUID | None = None
     note: str | None
     created_by: uuid.UUID | None
     lines: list[DocLine] = Field(default_factory=list)

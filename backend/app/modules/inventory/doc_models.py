@@ -140,12 +140,16 @@ class StockCount(_Flow, Base):
         UniqueConstraint("tenant_id", "number"),
         _outlet_fk(),
         _check_in("count_type", COUNT_TYPES),
+        ForeignKeyConstraint(
+            ["tenant_id", "location_id"], ["storage_locations.tenant_id", "storage_locations.id"]
+        ),
         _check_in("status", FLOW_STATUSES),
         Index(None, "tenant_id", "outlet_id", "status"),
     )
 
     count_type: Mapped[str] = mapped_column(Text)
     blind: Mapped[bool] = mapped_column(server_default="false")
+    location_id: Mapped[uuid.UUID | None] = mapped_column()  # FR-INV-017: one storage location
 
 
 class StockCountLine(Base):

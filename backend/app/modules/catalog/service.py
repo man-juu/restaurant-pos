@@ -160,7 +160,9 @@ async def list_items(
     if search:
         pattern = "%" + search.replace("\\", "\\\\").replace("%", r"\%").replace("_", r"\_") + "%"
         matches = select(ItemTranslation.item_id).where(ItemTranslation.name.ilike(pattern))
-        stmt = stmt.where(or_(Item.sku.ilike(pattern), Item.id.in_(matches)))
+        stmt = stmt.where(
+            or_(Item.sku.ilike(pattern), Item.barcode == search, Item.id.in_(matches))
+        )
     rows, cursor = await paginate(
         db,
         cast(Select[Any], stmt),
@@ -206,6 +208,7 @@ async def get_item(
     name = by_lang.get(language) or by_lang.get(await _default_language(db, tenant_id))
     return ItemOut(
         **_summary(item, name or next(iter(by_lang.values()), item.sku)).model_dump(),
+        barcode=item.barcode,
         is_stocked=item.is_stocked,
         tracking_mode=item.tracking_mode,
         standard_cost=item.standard_cost,
@@ -255,6 +258,7 @@ async def _replace_children(
 
 _ITEM_FIELDS: Sequence[str] = (
     "sku",
+    "barcode",
     "type",
     "category_id",
     "base_unit_id",
@@ -268,12 +272,21 @@ _ITEM_FIELDS: Sequence[str] = (
 )
 
 
+async def _barcode_free(db: AsyncSession, code: str | None, item_id: uuid.UUID | None) -> None:
+    if code is None:
+        return
+    other = await db.scalar(select(Item.id).where(Item.barcode == code))
+    if other is not None and other != item_id:
+        raise ConflictError("barcode_taken")
+
+
 async def create_item(
     db: AsyncSession, *, tenant_id: uuid.UUID, user_id: uuid.UUID, data: ItemIn
 ) -> uuid.UUID:
     await _check_item_refs(db, data)
     if await db.scalar(select(Item.id).where(Item.sku == data.sku)):
         raise ConflictError("sku_taken")
+    await _barcode_free(db, data.barcode, None)
     item = Item(
         tenant_id=tenant_id,
         created_by=user_id,
@@ -316,6 +329,7 @@ async def update_item(
     await _check_item_refs(db, data)
     if data.sku != item.sku and await db.scalar(select(Item.id).where(Item.sku == data.sku)):
         raise ConflictError("sku_taken")
+    await _barcode_free(db, data.barcode, item_id)
     before = (
         await get_item(db, tenant_id=tenant_id, item_id=item_id, language=language)
     ).model_dump(mode="json")

@@ -8,6 +8,7 @@ import { useOutlets } from '../../lib/session'
 import { AdjustmentsTab } from './AdjustmentsTab'
 import { CountsTab } from './CountsTab'
 import { LevelsTab } from './LevelsTab'
+import { LocationsTab } from './locations/LocationsTab'
 import { OpeningTab } from './OpeningTab'
 import { ProducibleTab } from './ProducibleTab'
 import { StockTab } from './StockTab'
@@ -69,6 +70,12 @@ const TABS: Record<
       <LevelsTab key={o} outletId={o} canManage={a.has('inventory.level.manage')} />
     ),
   },
+  locations: {
+    visible: () => true,
+    render: (o, a) => (
+      <LocationsTab key={o} outletId={o} canManage={a.has('inventory.level.manage')} />
+    ),
+  },
   trace: {
     visible: () => true,
     render: () => <TraceTab />,
@@ -84,7 +91,7 @@ function access(caps?: Capabilities): Access {
   return { has, showCost: has('catalog.cost.view'), currency: caps?.currency ?? 'IDR' }
 }
 
-/** FR-INV-001 to 009, 014: stock per outlet and the documents that change it. */
+/** FR-INV-001 to 009, 014, 017, 019: stock per outlet and the documents that change it. */
 export function InventoryPage() {
   const { t } = useTranslation()
   const { caps } = useOutletContext<{ caps?: Capabilities }>()

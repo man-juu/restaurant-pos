@@ -320,7 +320,12 @@
     "invoice_has_payments": "Reverse its payments before voiding.",
     "not_a_platform_channel": "Pick a delivery-platform channel.",
     "settlement_not_found": "Payout not found.",
-    "outlet_required": "Pick an outlet."
+    "outlet_required": "Pick an outlet.",
+    "location_name_taken": "A place with this name already exists at this outlet.",
+    "location_not_found": "Storage place not found.",
+    "location_other_outlet": "That storage place belongs to another outlet.",
+    "code_not_found": "Nothing found for this code.",
+    "barcode_taken": "Another item already has this barcode."
   },
   "appearance": {
     "open": "Appearance",
@@ -563,11 +568,13 @@
         "name": "Enter a name in at least one language.",
         "unit": "Choose a base unit.",
         "shelfLife": "Shelf life is a whole number of days.",
-        "conversion": "Each conversion needs a different unit and a number above 0."
+        "conversion": "Each conversion needs a different unit and a number above 0.",
+        "barcode": "The barcode may use letters, digits and . _ / - only (up to 64)."
       },
       "tracking": "Stock tracking",
       "standardCost": "Standard cost per base unit (optional)",
-      "targetPct": "Food cost target (%), empty = default"
+      "targetPct": "Food cost target (%), empty = default",
+      "barcode": "Barcode on the pack (optional)"
     },
     "conversions": {
       "title": "Unit conversions",
@@ -764,7 +771,8 @@
       "counts": "Stock counts",
       "levels": "Levels",
       "producible": "Can make",
-      "trace": "Lot trace"
+      "trace": "Lot trace",
+      "locations": "Locations"
     },
     "empty": "No stock recorded at this outlet yet.",
     "negative": "Below zero: more was used than was recorded in",
@@ -1701,5 +1709,28 @@
       "posted": "Posted",
       "reversed": "Reversed"
     }
+  },
+  "scan": {
+    "code": "Scan or type a code",
+    "find": "Find",
+    "camera": "Use camera",
+    "stop": "Stop camera"
+  },
+  "locations": {
+    "name": "New storage place",
+    "add": "Add place",
+    "empty": "No storage places yet: add the freezer, chiller, dry store…",
+    "off": "Switch off",
+    "on": "Switch on",
+    "unassign": "Remove",
+    "remove": "Remove {{name}} from this place",
+    "keep": "Keep an item here",
+    "countAt": "Count at",
+    "everywhere": "The whole outlet"
+  },
+  "labels": {
+    "item": "Item label",
+    "batches": "All batch labels",
+    "one": "Label"
   }
 }

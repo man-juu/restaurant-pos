@@ -320,7 +320,12 @@
     "invoice_has_payments": "Batalkan pembayarannya dulu sebelum membatalkan faktur.",
     "not_a_platform_channel": "Pilih saluran platform pesan-antar.",
     "settlement_not_found": "Pencairan tidak ditemukan.",
-    "outlet_required": "Pilih outlet."
+    "outlet_required": "Pilih outlet.",
+    "location_name_taken": "Tempat dengan nama ini sudah ada di outlet ini.",
+    "location_not_found": "Tempat simpan tidak ditemukan.",
+    "location_other_outlet": "Tempat simpan itu milik outlet lain.",
+    "code_not_found": "Tidak ada yang cocok dengan kode ini.",
+    "barcode_taken": "Barcode ini sudah dipakai barang lain."
   },
   "appearance": {
     "open": "Tampilan",
@@ -563,11 +568,13 @@
         "name": "Isi nama dalam minimal satu bahasa.",
         "unit": "Pilih satuan dasar.",
         "shelfLife": "Masa simpan berupa jumlah hari (bilangan bulat).",
-        "conversion": "Setiap konversi perlu satuan berbeda dan angka di atas 0."
+        "conversion": "Setiap konversi perlu satuan berbeda dan angka di atas 0.",
+        "barcode": "Barcode hanya boleh huruf, angka dan . _ / - (maks. 64)."
       },
       "tracking": "Pencatatan stok",
       "standardCost": "Biaya standar per satuan dasar (opsional)",
-      "targetPct": "Target HPP (%), kosong = bawaan"
+      "targetPct": "Target HPP (%), kosong = bawaan",
+      "barcode": "Barcode di kemasan (opsional)"
     },
     "conversions": {
       "title": "Konversi satuan",
@@ -764,7 +771,8 @@
       "counts": "Stok opname",
       "levels": "Level",
       "producible": "Bisa dibuat",
-      "trace": "Telusur lot"
+      "trace": "Telusur lot",
+      "locations": "Lokasi"
     },
     "empty": "Belum ada stok tercatat di outlet ini.",
     "negative": "Di bawah nol: pemakaian melebihi stok yang tercatat masuk",
@@ -1701,5 +1709,28 @@
       "posted": "Tercatat",
       "reversed": "Dibatalkan"
     }
+  },
+  "scan": {
+    "code": "Pindai atau ketik kode",
+    "find": "Cari",
+    "camera": "Pakai kamera",
+    "stop": "Matikan kamera"
+  },
+  "locations": {
+    "name": "Tempat simpan baru",
+    "add": "Tambah tempat",
+    "empty": "Belum ada tempat simpan: tambahkan freezer, chiller, gudang kering…",
+    "off": "Nonaktifkan",
+    "on": "Aktifkan",
+    "unassign": "Hapus",
+    "remove": "Hapus {{name}} dari tempat ini",
+    "keep": "Simpan barang di sini",
+    "countAt": "Hitung di",
+    "everywhere": "Seluruh outlet"
+  },
+  "labels": {
+    "item": "Label barang",
+    "batches": "Semua label batch",
+    "one": "Label"
   }
 }

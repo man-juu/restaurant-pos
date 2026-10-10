@@ -12,6 +12,7 @@ from app.modules.inventory.invariants import (
     transfers_net_zero,
 )
 from app.modules.inventory.level_router import router as level_router
+from app.modules.inventory.location_router import router as location_router
 from app.modules.inventory.planning_router import router as planning_router
 from app.modules.inventory.queries import tenant_unit_costs
 from app.modules.inventory.report_router import router as report_router
@@ -31,7 +32,15 @@ register_invariant("I-4 transfers net zero", transfers_net_zero)
 MANIFEST = ModuleManifest(
     name="inventory",
     depends_on=("catalog",),
-    routers=(router, doc_router, import_router, level_router, planning_router, report_router),
+    routers=(
+        router,
+        doc_router,
+        import_router,
+        level_router,
+        location_router,
+        planning_router,
+        report_router,
+    ),
     permissions=permissions.ALL,
     role_templates=permissions.ROLE_TEMPLATES,
     nav=("inventory",),

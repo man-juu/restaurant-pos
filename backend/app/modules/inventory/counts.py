@@ -20,7 +20,7 @@ from app.core.notifications.service import notify, recipients
 from app.core.settings import service as settings
 from app.core.settings.schemas import StockSettings
 from app.modules.catalog.interface import COST_VIEW, stock_items
-from app.modules.inventory import flow
+from app.modules.inventory import flow, locations
 from app.modules.inventory.doc_models import StockCount, StockCountLine
 from app.modules.inventory.doc_schemas import CountedIn, CountIn
 from app.modules.inventory.models import StockBalance
@@ -65,8 +65,13 @@ async def start_count(
 ) -> StockCount:
     await visible_outlet(db, data.outlet_id)
     ids = set(data.item_ids)
+    kept = None
+    if data.location_id is not None:
+        kept = await locations.items_at(db, data.outlet_id, data.location_id)
+        ids |= kept
     if data.count_type == "full":
-        ids |= set(await _on_hand(db, data.outlet_id, None))
+        held = set(await _on_hand(db, data.outlet_id, None))
+        ids |= held if kept is None else held & kept  # a location count stays in that place
     if not ids:
         raise StockError("items_required")
     found = await stock_items(db, ids)

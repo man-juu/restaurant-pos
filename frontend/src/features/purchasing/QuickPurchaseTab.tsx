@@ -11,6 +11,8 @@ import { ComponentPicker } from '../catalog/ComponentPicker'
 import { todayIso } from '../catalog/labels'
 import { useQuickPurchase, useVendors } from './api'
 import { InvoicePhoto } from './InvoicePhoto'
+import { focusLine } from '../inventory/locations/focus'
+import { ScanBox } from '../inventory/locations/ScanBox'
 import { QuickLines } from './QuickLines'
 import { lineInvalid, type QuickLineDraft, quickTotal, toQuickBody } from './quickDraft'
 
@@ -27,7 +29,7 @@ export function QuickPurchaseTab({ outletId, currency }: { outletId: string; cur
   const [lines, setLines] = useState<QuickLineDraft[]>([])
   const [key, setKey] = useState(() => crypto.randomUUID())
   const invalid = lines.length === 0 || lines.some((ln) => lineInvalid(ln, currency))
-  const add = (item: ItemSummary) =>
+  const add = (item: Pick<ItemSummary, 'id' | 'name' | 'base_unit_id'>) =>
     setLines([
       ...lines,
       {
@@ -85,6 +87,14 @@ export function QuickPurchaseTab({ outletId, currency }: { outletId: string; cur
         exclude={new Set(lines.map((l) => l.item_id))}
         onPick={add}
         label={t('purchasing.quick.add')}
+      />
+      <ScanBox
+        outletId={outletId}
+        onFound={(hit) =>
+          lines.some((l) => l.item_id === hit.item_id)
+            ? focusLine(`buy-${hit.item_id}`)
+            : add({ id: hit.item_id, name: hit.name, base_unit_id: hit.base_unit_id })
+        }
       />
       <QuickLines lines={lines} units={units.data ?? []} currency={currency} onChange={setLines} />
       <InvoicePhoto onUploaded={setInvoice} />

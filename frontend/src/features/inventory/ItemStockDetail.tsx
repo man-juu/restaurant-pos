@@ -4,6 +4,7 @@ import { Button, Card } from '../../components/ui'
 import type { StockRow } from '../../lib/api/types'
 import { formatDate, formatNumber, intlLocale } from '../../lib/format'
 import { useBatches, useMovements } from './api'
+import { labelsUrl } from './locations/locationApi'
 import { SetOnHand } from './SetOnHand'
 
 /** Batches in FEFO order and the latest movements of one item at one outlet. */
@@ -20,7 +21,6 @@ export function ItemStockDetail({
 }) {
   const { t, i18n } = useTranslation()
   const locale = intlLocale(i18n.language)
-  const batches = useBatches(outletId, row.item_id)
   const movements = useMovements(outletId, row.item_id)
   const qty = (value: string) => `${formatNumber(Number(value), locale)} ${row.unit_code}`
 
@@ -35,29 +35,7 @@ export function ItemStockDetail({
       {canAdjust && row.tracking_mode === 'estimated' && (
         <SetOnHand outletId={outletId} row={row} />
       )}
-      <Card className="flex flex-col gap-2">
-        <h3 className="font-bold">{t('inventory.batches')}</h3>
-        <p className="text-sm text-ink-soft">{t('inventory.fefo')}</p>
-        <ul className="flex flex-col gap-1">
-          {batches.data?.map((b) => (
-            <li
-              key={b.id}
-              className="flex flex-wrap justify-between gap-2 border-b border-line py-1.5"
-            >
-              <span>
-                {b.lot_code ?? t('inventory.noLot')}
-                <span className="text-ink-soft">
-                  {' · '}
-                  {b.expiry_date
-                    ? t('inventory.expires', { date: formatDate(b.expiry_date, locale) })
-                    : t('inventory.noExpiry')}
-                </span>
-              </span>
-              <span className="tabular-nums">{qty(b.qty)}</span>
-            </li>
-          ))}
-        </ul>
-      </Card>
+      <BatchList outletId={outletId} row={row} />
       <Card className="flex flex-col gap-2">
         <h3 className="font-bold">{t('inventory.history')}</h3>
         <ul className="flex flex-col gap-1">
@@ -81,5 +59,56 @@ export function ItemStockDetail({
         </ul>
       </Card>
     </div>
+  )
+}
+
+/** Batches in FEFO order, with a printable QR label for each (FR-INV-019). */
+function BatchList({ outletId, row }: { outletId: string; row: StockRow }) {
+  const { t, i18n } = useTranslation()
+  const locale = intlLocale(i18n.language)
+  const batches = useBatches(outletId, row.item_id)
+  const ids = (batches.data ?? []).map((b) => b.id)
+  const link = 'text-sm font-semibold text-accent underline'
+  return (
+    <Card className="flex flex-col gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className="font-bold">{t('inventory.batches')}</h3>
+        <span className="flex gap-3">
+          <a className={link} href={labelsUrl(outletId, i18n.language, { item: [row.item_id] })}>
+            {t('labels.item')}
+          </a>
+          {ids.length > 0 && (
+            <a className={link} href={labelsUrl(outletId, i18n.language, { batch: ids })}>
+              {t('labels.batches')}
+            </a>
+          )}
+        </span>
+      </div>
+      <p className="text-sm text-ink-soft">{t('inventory.fefo')}</p>
+      <ul className="flex flex-col gap-1">
+        {batches.data?.map((b) => (
+          <li
+            key={b.id}
+            className="flex flex-wrap justify-between gap-2 border-b border-line py-1.5"
+          >
+            <span>
+              {b.lot_code ?? t('inventory.noLot')}
+              <span className="text-ink-soft">
+                {' · '}
+                {b.expiry_date
+                  ? t('inventory.expires', { date: formatDate(b.expiry_date, locale) })
+                  : t('inventory.noExpiry')}
+              </span>
+            </span>
+            <span className="flex items-center gap-3">
+              <span className="tabular-nums">{`${formatNumber(Number(b.qty), locale)} ${row.unit_code}`}</span>
+              <a className={link} href={labelsUrl(outletId, i18n.language, { batch: [b.id] })}>
+                {t('labels.one')}
+              </a>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </Card>
   )
 }

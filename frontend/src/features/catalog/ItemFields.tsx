@@ -39,6 +39,14 @@ export function IdentityFields({ d, set, issues }: FieldsProps) {
         invalid={issues.includes('sku')}
         onChange={(e) => set({ sku: e.target.value })}
       />
+      <TextInput
+        label={t('catalog.item.barcode')}
+        value={d.barcode}
+        maxLength={64}
+        inputMode="numeric"
+        invalid={issues.includes('barcode')}
+        onChange={(e) => set({ barcode: e.target.value })}
+      />
       <SelectInput
         label={t('catalog.items.type')}
         value={d.type}

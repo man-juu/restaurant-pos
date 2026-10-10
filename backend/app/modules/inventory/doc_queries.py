@@ -39,6 +39,7 @@ def _header(kind: Kind, doc: Any) -> StockDocument:
         reason_code=getattr(doc, "reason_code", None),
         count_type=getattr(doc, "count_type", None),
         blind=getattr(doc, "blind", False),
+        location_id=getattr(doc, "location_id", None),
         note=doc.note,
         created_by=doc.created_by,
     )

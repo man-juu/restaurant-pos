@@ -7,6 +7,8 @@ import type { TransferOut } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
 import { todayIso } from '../catalog/labels'
 import { useTransferStep } from './api'
+import { focusLine } from '../inventory/locations/focus'
+import { ScanBox } from '../inventory/locations/ScanBox'
 
 const QTY = /^\d{1,14}([.,]\d{1,4})?$/
 const n = (v: string | null | undefined) => String(Number(v ?? 0))
@@ -48,10 +50,15 @@ export function LineForm({
   return (
     <div className="flex flex-col gap-3 border-t border-line pt-3">
       <h3 className="font-bold">{t(`transfers.${mode}`)}</h3>
+      <ScanBox
+        outletId={transfer.from_outlet_id}
+        onFound={(hit) => focusLine(`tr-${hit.item_id}`)}
+      />
       {lines.map((ln) => (
         <div key={ln.item_id} className="grid gap-2 sm:grid-cols-2">
           <TextInput
             label={t('transfers.lineQty', { name: ln.item_name, unit: ln.unit_code })}
+            id={`tr-${ln.item_id}`}
             inputMode="decimal"
             placeholder={base(ln)}
             value={qty[ln.item_id] ?? ''}

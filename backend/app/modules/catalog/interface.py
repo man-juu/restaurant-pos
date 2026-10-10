@@ -53,6 +53,7 @@ __all__ = [
     "consumption",
     "costing",
     "explode",
+    "item_by_code",
     "item_categories",
     "item_ids_by_code",
     "item_ids_by_sku",
@@ -135,3 +136,12 @@ async def item_ids_by_sku(db: AsyncSession) -> dict[str, uuid.UUID]:
 async def unit_ids_by_code(db: AsyncSession) -> dict[str, uuid.UUID]:
     """Lower-cased unit code -> unit id (platform and tenant units)."""
     return {c.lower(): i for i, c in (await db.execute(select(Unit.id, Unit.code))).all()}
+
+
+async def item_by_code(db: AsyncSession, code: str) -> uuid.UUID | None:
+    """FR-INV-019: the item a scanned code names, by the pack's barcode first, then the SKU."""
+    for column in (Item.barcode, Item.sku):
+        found = await db.scalar(select(Item.id).where(column == code))
+        if found is not None:
+            return found
+    return None
