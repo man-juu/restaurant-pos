@@ -90,6 +90,11 @@ FALLBACK: dict[str, Any] = {
     "kitchen": {"late_minutes": 15, "recall_minutes": 30},
     "receipt": {"header": "", "footer": "", "paper_mm": 58},
     "production": {"prep_includes_requests": True},
+    "tables": {
+        "default_dwell_minutes": 90,
+        "no_show_after_minutes": 15,
+        "allow_overbooking": False,
+    },
 }
 
 

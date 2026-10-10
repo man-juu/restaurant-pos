@@ -438,6 +438,130 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/bookings/reservations': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Day */
+    get: operations['list_day_api_v1_bookings_reservations_get']
+    put?: never
+    /** Book */
+    post: operations['book_api_v1_bookings_reservations_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/bookings/reservations/{reservation_id}/seat': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Seat Reservation */
+    post: operations['seat_reservation_api_v1_bookings_reservations__reservation_id__seat_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/bookings/reservations/{reservation_id}/status': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Set Status */
+    put: operations['set_status_api_v1_bookings_reservations__reservation_id__status_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/bookings/suggest': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Suggest
+     * @description FR-TBL-006: tables that are free and big enough for the party at that time.
+     */
+    get: operations['suggest_api_v1_bookings_suggest_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/bookings/waitlist': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Waiting */
+    get: operations['list_waiting_api_v1_bookings_waitlist_get']
+    put?: never
+    /** Add Waiting */
+    post: operations['add_waiting_api_v1_bookings_waitlist_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/bookings/waitlist/{entry_id}/leave': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Leave */
+    post: operations['leave_api_v1_bookings_waitlist__entry_id__leave_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/bookings/waitlist/{entry_id}/seat': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Seat Waiting */
+    post: operations['seat_waiting_api_v1_bookings_waitlist__entry_id__seat_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/catalog/ai-images': {
     parameters: {
       query?: never
@@ -1062,6 +1186,45 @@ export interface paths {
     /** Create Unit */
     post: operations['create_unit_api_v1_catalog_units_post']
     delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/customers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Search */
+    get: operations['search_api_v1_customers_get']
+    put?: never
+    /** Create */
+    post: operations['create_api_v1_customers_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/customers/{customer_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update */
+    put: operations['update_api_v1_customers__customer_id__put']
+    post?: never
+    /**
+     * Erase
+     * @description Remove the guest's personal data (on their request); history stays, anonymous.
+     */
+    delete: operations['erase_api_v1_customers__customer_id__delete']
     options?: never
     head?: never
     patch?: never
@@ -3748,6 +3911,7 @@ export interface components {
       service_charge: components['schemas']['ServiceChargeSettings']
       session: components['schemas']['SessionSettings']
       stock: components['schemas']['StockSettings']
+      tables: components['schemas']['TablesSettings']
       tax: components['schemas']['TaxSettings']
     }
     /** ApplyCreditIn */
@@ -4371,6 +4535,36 @@ export interface components {
        */
       credited_on: string
     }
+    /** CustomerIn */
+    CustomerIn: {
+      /**
+       * Consent
+       * @default false
+       */
+      consent: boolean
+      /** Name */
+      name: string
+      /** Note */
+      note?: string | null
+      /** Phone */
+      phone?: string | null
+    }
+    /** CustomerOut */
+    CustomerOut: {
+      /** Consent At */
+      consent_at: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Name */
+      name: string
+      /** Note */
+      note: string | null
+      /** Phone */
+      phone: string | null
+    }
     /**
      * DayEntryIn
      * @description FR-SAL-002: what one channel sold at one outlet on one day. Saving again replaces
@@ -4717,6 +4911,18 @@ export interface components {
       name: string
       /** Options */
       options: components['schemas']['OptionOut'][]
+    }
+    /**
+     * Guest
+     * @description An existing customer, or name and phone (found by phone or created).
+     */
+    Guest: {
+      /** Customer Id */
+      customer_id?: string | null
+      /** Name */
+      name?: string | null
+      /** Phone */
+      phone?: string | null
     }
     /** HTTPValidationError */
     HTTPValidationError: {
@@ -6548,6 +6754,69 @@ export interface components {
       /** Qty */
       qty: number | string
     }
+    /** ReservationIn */
+    ReservationIn: {
+      /** Duration Min */
+      duration_min?: number | null
+      guest: components['schemas']['Guest']
+      /** Notes */
+      notes?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Party Size */
+      party_size: number
+      /**
+       * Starts At
+       * Format: date-time
+       */
+      starts_at: string
+      /** Table Ids */
+      table_ids: string[]
+    }
+    /** ReservationOut */
+    ReservationOut: {
+      /**
+       * Customer Id
+       * Format: uuid
+       */
+      customer_id: string
+      /** Duration Min */
+      duration_min: number
+      /** Guest Name */
+      guest_name: string
+      /** Guest Phone */
+      guest_phone: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** No Shows */
+      no_shows: number
+      /** Notes */
+      notes: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Party Size */
+      party_size: number
+      /** Session Id */
+      session_id: string | null
+      /**
+       * Starts At
+       * Format: date-time
+       */
+      starts_at: string
+      /** Status */
+      status: string
+      /** Table Ids */
+      table_ids: string[]
+    }
     /** ReturnLineIn */
     ReturnLineIn: {
       /** Batch Id */
@@ -6720,6 +6989,24 @@ export interface components {
        * @default 2
        */
       party_size: number
+    }
+    /** SeatReservationIn */
+    SeatReservationIn: {
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+    }
+    /** SeatWaitIn */
+    SeatWaitIn: {
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /** Table Ids */
+      table_ids: string[]
     }
     /** ServiceChargeSettings */
     ServiceChargeSettings: {
@@ -6960,14 +7247,6 @@ export interface components {
        */
       outlet_id: string
     }
-    /** StatusIn */
-    StatusIn: {
-      /**
-       * Status
-       * @enum {string}
-       */
-      status: 'available' | 'reserved' | 'needs_cleaning'
-    }
     /** StockDocument */
     StockDocument: {
       /**
@@ -7064,6 +7343,15 @@ export interface components {
       days_left: number | null
       /** State */
       state: string
+    }
+    /** Suggestion */
+    Suggestion: {
+      /** Capacity */
+      capacity: number
+      /** Names */
+      names: string[]
+      /** Table Ids */
+      table_ids: string[]
     }
     /**
      * SuggestionGroup
@@ -7219,6 +7507,28 @@ export interface components {
       status: 'open' | 'closed'
       /** Table Ids */
       table_ids: string[]
+    }
+    /**
+     * TablesSettings
+     * @description FR-TBL-006 to 008: how long a party usually stays; after how many minutes a booking
+     *     whose guests have not come is shown as late (staff then mark it a no-show).
+     */
+    TablesSettings: {
+      /**
+       * Allow Overbooking
+       * @default false
+       */
+      allow_overbooking: boolean
+      /**
+       * Default Dwell Minutes
+       * @default 90
+       */
+      default_dwell_minutes: number
+      /**
+       * No Show After Minutes
+       * @default 15
+       */
+      no_show_after_minutes: number
     }
     /** TaxRule */
     TaxRule: {
@@ -7989,6 +8299,45 @@ export interface components {
       /** Reason */
       reason: string
     }
+    /** WaitIn */
+    WaitIn: {
+      guest: components['schemas']['Guest']
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Party Size */
+      party_size: number
+    }
+    /** WaitOut */
+    WaitOut: {
+      /**
+       * Added At
+       * Format: date-time
+       */
+      added_at: string
+      /**
+       * Customer Id
+       * Format: uuid
+       */
+      customer_id: string
+      /** Estimated Wait Min */
+      estimated_wait_min: number
+      /** Guest Name */
+      guest_name: string
+      /** Guest Phone */
+      guest_phone: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Party Size */
+      party_size: number
+      /** Status */
+      status: string
+    }
     /** WasteIn */
     WasteIn: {
       /**
@@ -8071,6 +8420,22 @@ export interface components {
       kind: string
       /** Reason */
       reason: string
+    }
+    /** StatusIn */
+    app__modules__tables__booking_schemas__StatusIn: {
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'confirmed' | 'no_show' | 'cancelled' | 'completed'
+    }
+    /** StatusIn */
+    app__modules__tables__schemas__StatusIn: {
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'available' | 'reserved' | 'needs_cleaning'
     }
   }
   responses: never
@@ -8767,6 +9132,305 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['SessionInfo']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_day_api_v1_bookings_reservations_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        day: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReservationOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  book_api_v1_bookings_reservations_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReservationIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReservationOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  seat_reservation_api_v1_bookings_reservations__reservation_id__seat_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        reservation_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SeatReservationIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReservationOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  set_status_api_v1_bookings_reservations__reservation_id__status_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        reservation_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['app__modules__tables__booking_schemas__StatusIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReservationOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  suggest_api_v1_bookings_suggest_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        starts_at: string
+        party_size: number
+        duration_min?: number | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Suggestion'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_waiting_api_v1_bookings_waitlist_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['WaitOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  add_waiting_api_v1_bookings_waitlist_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['WaitIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['WaitOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  leave_api_v1_bookings_waitlist__entry_id__leave_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entry_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['WaitOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  seat_waiting_api_v1_bookings_waitlist__entry_id__seat_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entry_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SeatWaitIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['WaitOut'][]
         }
       }
       /** @description Validation Error */
@@ -10320,6 +10984,134 @@ export interface operations {
         content: {
           'application/json': components['schemas']['UnitOut']
         }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  search_api_v1_customers_get: {
+    parameters: {
+      query: {
+        q: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CustomerOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_api_v1_customers_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CustomerIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CustomerOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_api_v1_customers__customer_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        customer_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CustomerIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CustomerOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  erase_api_v1_customers__customer_id__delete: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        customer_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Validation Error */
       422: {
@@ -15331,7 +16123,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['StatusIn']
+        'application/json': components['schemas']['app__modules__tables__schemas__StatusIn']
       }
     }
     responses: {

@@ -13,6 +13,7 @@ from app.core import audit
 from app.core.errors import ConflictError, NotFoundError
 from app.modules.inventory.interface import visible_outlet
 from app.modules.sales.interface import move_lines, open_order, order_states
+from app.modules.tables.booking_models import Reservation
 from app.modules.tables.models import DiningTable, Floor, SessionOrder, SessionTable, TableSession
 from app.modules.tables.schemas import (
     FloorIn,
@@ -284,6 +285,11 @@ async def close_if_done(db: AsyncSession, order_id: uuid.UUID) -> None:
         update(SessionTable).where(SessionTable.session_id == session.id).values(active=False)
     )
     session.status, session.closed_at = "closed", datetime.now(UTC)
+    await db.execute(  # a seated reservation is over when its party leaves (FR-TBL-007)
+        update(Reservation)
+        .where(Reservation.session_id == session.id, Reservation.status == "seated")
+        .values(status="completed")
+    )
     await db.flush()
 
 

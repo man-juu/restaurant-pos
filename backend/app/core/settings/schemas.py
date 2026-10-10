@@ -159,6 +159,15 @@ class ProductionSettings(Strict):
     prep_includes_requests: bool = True
 
 
+class TablesSettings(Strict):
+    """FR-TBL-006 to 008: how long a party usually stays; after how many minutes a booking
+    whose guests have not come is shown as late (staff then mark it a no-show)."""
+
+    default_dwell_minutes: int = Field(default=90, ge=15, le=600)
+    no_show_after_minutes: int = Field(default=15, ge=0, le=240)
+    allow_overbooking: bool = False  # off: a table is never booked twice for the same time
+
+
 class ReceiptSettings(Strict):
     """FR-SAL-010: what the printed receipt says around the sale, and the paper width."""
 
@@ -180,6 +189,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "kitchen": KitchenSettings,
     "receipt": ReceiptSettings,
     "production": ProductionSettings,
+    "tables": TablesSettings,
 }
 
 
@@ -198,3 +208,4 @@ class AllSettings(BaseModel):
     kitchen: KitchenSettings
     receipt: ReceiptSettings
     production: ProductionSettings
+    tables: TablesSettings

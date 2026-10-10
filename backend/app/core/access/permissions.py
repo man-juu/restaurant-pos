@@ -26,6 +26,8 @@ CORE_PERMISSIONS: dict[str, str] = {
     "audit.log.view": "See the audit log",
     "tenant.device.manage": "Register and remove shared tills and tablets (FR-IDN-004)",
     "tenant.pin.reset": "Reset a staff member's PIN (FR-IDN-004)",
+    "tenant.customer.view": "Find guests by name or phone (FR-SAL-012)",
+    "tenant.customer.manage": "Add, change and erase guest records (FR-SAL-012)",
 }
 
 
@@ -39,6 +41,10 @@ class RoleTemplate:
     exclude: frozenset[str] = frozenset()
     grants: frozenset[str] = field(default_factory=frozenset)
 
+
+# Front of house takes reservations: find and add guests (docs/03 "Manage tables and
+# reservations": manager, cashier, waiter).
+_GUESTS = ("tenant.customer.view", "tenant.customer.manage")
 
 # Core grants per template; modules add theirs via role_templates.
 _CORE_TEMPLATES = (
@@ -64,6 +70,8 @@ _CORE_TEMPLATES = (
                 "tenant.data.export",
                 "tenant.device.manage",
                 "tenant.pin.reset",
+                "tenant.customer.view",
+                "tenant.customer.manage",
             }
         ),
     ),
@@ -71,9 +79,9 @@ _CORE_TEMPLATES = (
         "cashier",
         "Cashier",
         "outlets",
-        grants=frozenset({"tenant.outlet.view", "tenant.settings.view"}),
+        grants=frozenset({"tenant.outlet.view", "tenant.settings.view", *_GUESTS}),
     ),
-    RoleTemplate("waiter", "Waiter", "outlets", grants=frozenset({"tenant.outlet.view"})),
+    RoleTemplate("waiter", "Waiter", "outlets", grants=frozenset({"tenant.outlet.view", *_GUESTS})),
     RoleTemplate("kitchen", "Kitchen", "outlets", grants=frozenset({"tenant.outlet.view"})),
     RoleTemplate("warehouse", "Warehouse", "outlets", grants=frozenset({"tenant.outlet.view"})),
     RoleTemplate("purchaser", "Purchaser", "all", grants=frozenset({"tenant.outlet.view"})),

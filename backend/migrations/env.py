@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 import app.admin.models
 import app.core.ai.models
+import app.core.customers.models
 import app.core.flags
 import app.core.identity.device_models
 import app.core.imports.models
@@ -24,6 +25,7 @@ import app.modules.production.models
 import app.modules.purchasing.ap_models
 import app.modules.purchasing.models
 import app.modules.sales.models
+import app.modules.tables.booking_models
 import app.modules.tables.models
 import app.modules.transfers.models  # noqa: F401 - module tables
 from app.core.config import get_settings

@@ -290,6 +290,9 @@
           "stock": {
             "$ref": "#/components/schemas/StockSettings"
           },
+          "tables": {
+            "$ref": "#/components/schemas/TablesSettings"
+          },
           "tax": {
             "$ref": "#/components/schemas/TaxSettings"
           }
@@ -306,7 +309,8 @@
           "pos",
           "kitchen",
           "receipt",
-          "production"
+          "production",
+          "tables"
         ],
         "title": "AllSettings",
         "type": "object"
@@ -1838,6 +1842,107 @@
         "title": "CreditNoteIn",
         "type": "object"
       },
+      "CustomerIn": {
+        "additionalProperties": false,
+        "properties": {
+          "consent": {
+            "default": false,
+            "title": "Consent",
+            "type": "boolean"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "maxLength": 30,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CustomerIn",
+        "type": "object"
+      },
+      "CustomerOut": {
+        "properties": {
+          "consent_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Consent At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "phone",
+          "consent_at",
+          "note"
+        ],
+        "title": "CustomerOut",
+        "type": "object"
+      },
       "DayEntryIn": {
         "additionalProperties": false,
         "description": "FR-SAL-002: what one channel sold at one outlet on one day. Saving again replaces\nthe earlier entry (its stock comes back first).",
@@ -2655,6 +2760,51 @@
           "id"
         ],
         "title": "GroupOut",
+        "type": "object"
+      },
+      "Guest": {
+        "additionalProperties": false,
+        "description": "An existing customer, or name and phone (found by phone or created).",
+        "properties": {
+          "customer_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Customer Id"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "maxLength": 30,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          }
+        },
+        "title": "Guest",
         "type": "object"
       },
       "HTTPValidationError": {
@@ -7510,6 +7660,177 @@
         "title": "RequestLine",
         "type": "object"
       },
+      "ReservationIn": {
+        "additionalProperties": false,
+        "properties": {
+          "duration_min": {
+            "anyOf": [
+              {
+                "maximum": 600.0,
+                "minimum": 15.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Min"
+          },
+          "guest": {
+            "$ref": "#/components/schemas/Guest"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "party_size": {
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Party Size",
+            "type": "integer"
+          },
+          "starts_at": {
+            "format": "date-time",
+            "title": "Starts At",
+            "type": "string"
+          },
+          "table_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Table Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "guest",
+          "party_size",
+          "starts_at",
+          "table_ids"
+        ],
+        "title": "ReservationIn",
+        "type": "object"
+      },
+      "ReservationOut": {
+        "properties": {
+          "customer_id": {
+            "format": "uuid",
+            "title": "Customer Id",
+            "type": "string"
+          },
+          "duration_min": {
+            "title": "Duration Min",
+            "type": "integer"
+          },
+          "guest_name": {
+            "title": "Guest Name",
+            "type": "string"
+          },
+          "guest_phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Guest Phone"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "no_shows": {
+            "title": "No Shows",
+            "type": "integer"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "party_size": {
+            "title": "Party Size",
+            "type": "integer"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Id"
+          },
+          "starts_at": {
+            "format": "date-time",
+            "title": "Starts At",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "table_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Table Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "outlet_id",
+          "customer_id",
+          "guest_name",
+          "guest_phone",
+          "no_shows",
+          "party_size",
+          "starts_at",
+          "duration_min",
+          "status",
+          "notes",
+          "table_ids",
+          "session_id"
+        ],
+        "title": "ReservationOut",
+        "type": "object"
+      },
       "ReturnLineIn": {
         "additionalProperties": false,
         "properties": {
@@ -7943,6 +8264,47 @@
           "channel_id"
         ],
         "title": "SeatIn",
+        "type": "object"
+      },
+      "SeatReservationIn": {
+        "additionalProperties": false,
+        "properties": {
+          "channel_id": {
+            "format": "uuid",
+            "title": "Channel Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "channel_id"
+        ],
+        "title": "SeatReservationIn",
+        "type": "object"
+      },
+      "SeatWaitIn": {
+        "additionalProperties": false,
+        "properties": {
+          "channel_id": {
+            "format": "uuid",
+            "title": "Channel Id",
+            "type": "string"
+          },
+          "table_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Table Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "table_ids",
+          "channel_id"
+        ],
+        "title": "SeatWaitIn",
         "type": "object"
       },
       "ServiceChargeSettings": {
@@ -8467,25 +8829,6 @@
         "title": "StationOut",
         "type": "object"
       },
-      "StatusIn": {
-        "additionalProperties": false,
-        "properties": {
-          "status": {
-            "enum": [
-              "available",
-              "reserved",
-              "needs_cleaning"
-            ],
-            "title": "Status",
-            "type": "string"
-          }
-        },
-        "required": [
-          "status"
-        ],
-        "title": "StatusIn",
-        "type": "object"
-      },
       "StockDocument": {
         "properties": {
           "blind": {
@@ -8734,6 +9077,36 @@
           "days_left"
         ],
         "title": "SubscriptionBanner",
+        "type": "object"
+      },
+      "Suggestion": {
+        "properties": {
+          "capacity": {
+            "title": "Capacity",
+            "type": "integer"
+          },
+          "names": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Names",
+            "type": "array"
+          },
+          "table_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Table Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "table_ids",
+          "names",
+          "capacity"
+        ],
+        "title": "Suggestion",
         "type": "object"
       },
       "SuggestionGroup": {
@@ -9086,6 +9459,33 @@
           "open_amount"
         ],
         "title": "TableSessionOut",
+        "type": "object"
+      },
+      "TablesSettings": {
+        "additionalProperties": false,
+        "description": "FR-TBL-006 to 008: how long a party usually stays; after how many minutes a booking\nwhose guests have not come is shown as late (staff then mark it a no-show).",
+        "properties": {
+          "allow_overbooking": {
+            "default": false,
+            "title": "Allow Overbooking",
+            "type": "boolean"
+          },
+          "default_dwell_minutes": {
+            "default": 90,
+            "maximum": 600.0,
+            "minimum": 15.0,
+            "title": "Default Dwell Minutes",
+            "type": "integer"
+          },
+          "no_show_after_minutes": {
+            "default": 15,
+            "maximum": 240.0,
+            "minimum": 0.0,
+            "title": "No Show After Minutes",
+            "type": "integer"
+          }
+        },
+        "title": "TablesSettings",
         "type": "object"
       },
       "TaxRule": {
@@ -11090,6 +11490,90 @@
         "title": "VoidIn",
         "type": "object"
       },
+      "WaitIn": {
+        "additionalProperties": false,
+        "properties": {
+          "guest": {
+            "$ref": "#/components/schemas/Guest"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "party_size": {
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Party Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "guest",
+          "party_size"
+        ],
+        "title": "WaitIn",
+        "type": "object"
+      },
+      "WaitOut": {
+        "properties": {
+          "added_at": {
+            "format": "date-time",
+            "title": "Added At",
+            "type": "string"
+          },
+          "customer_id": {
+            "format": "uuid",
+            "title": "Customer Id",
+            "type": "string"
+          },
+          "estimated_wait_min": {
+            "title": "Estimated Wait Min",
+            "type": "integer"
+          },
+          "guest_name": {
+            "title": "Guest Name",
+            "type": "string"
+          },
+          "guest_phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Guest Phone"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "party_size": {
+            "title": "Party Size",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "customer_id",
+          "guest_name",
+          "guest_phone",
+          "party_size",
+          "status",
+          "added_at",
+          "estimated_wait_min"
+        ],
+        "title": "WaitOut",
+        "type": "object"
+      },
       "WasteIn": {
         "additionalProperties": false,
         "properties": {
@@ -11283,6 +11767,45 @@
           "created_at"
         ],
         "title": "MovementOut",
+        "type": "object"
+      },
+      "app__modules__tables__booking_schemas__StatusIn": {
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "enum": [
+              "confirmed",
+              "no_show",
+              "cancelled",
+              "completed"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "StatusIn",
+        "type": "object"
+      },
+      "app__modules__tables__schemas__StatusIn": {
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "enum": [
+              "available",
+              "reserved",
+              "needs_cleaning"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "StatusIn",
         "type": "object"
       }
     }
@@ -12389,6 +12912,489 @@
         "summary": "Switch Tenant",
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/api/v1/bookings/reservations": {
+      "get": {
+        "operationId": "list_day_api_v1_bookings_reservations_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "day",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Day",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ReservationOut"
+                  },
+                  "title": "Response List Day Api V1 Bookings Reservations Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Day",
+        "tags": [
+          "tables"
+        ]
+      },
+      "post": {
+        "operationId": "book_api_v1_bookings_reservations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReservationIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Book",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/bookings/reservations/{reservation_id}/seat": {
+      "post": {
+        "operationId": "seat_reservation_api_v1_bookings_reservations__reservation_id__seat_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "reservation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Reservation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeatReservationIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Seat Reservation",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/bookings/reservations/{reservation_id}/status": {
+      "put": {
+        "operationId": "set_status_api_v1_bookings_reservations__reservation_id__status_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "reservation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Reservation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/app__modules__tables__booking_schemas__StatusIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Status",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/bookings/suggest": {
+      "get": {
+        "description": "FR-TBL-006: tables that are free and big enough for the party at that time.",
+        "operationId": "suggest_api_v1_bookings_suggest_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "starts_at",
+            "required": true,
+            "schema": {
+              "format": "date-time",
+              "title": "Starts At",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "party_size",
+            "required": true,
+            "schema": {
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Party Size",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "duration_min",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maximum": 600,
+                  "minimum": 15,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Duration Min"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Suggestion"
+                  },
+                  "title": "Response Suggest Api V1 Bookings Suggest Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Suggest",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/bookings/waitlist": {
+      "get": {
+        "operationId": "list_waiting_api_v1_bookings_waitlist_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/WaitOut"
+                  },
+                  "title": "Response List Waiting Api V1 Bookings Waitlist Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Waiting",
+        "tags": [
+          "tables"
+        ]
+      },
+      "post": {
+        "operationId": "add_waiting_api_v1_bookings_waitlist_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WaitIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/WaitOut"
+                  },
+                  "title": "Response Add Waiting Api V1 Bookings Waitlist Post",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Add Waiting",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/bookings/waitlist/{entry_id}/leave": {
+      "post": {
+        "operationId": "leave_api_v1_bookings_waitlist__entry_id__leave_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/WaitOut"
+                  },
+                  "title": "Response Leave Api V1 Bookings Waitlist  Entry Id  Leave Post",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Leave",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/bookings/waitlist/{entry_id}/seat": {
+      "post": {
+        "operationId": "seat_waiting_api_v1_bookings_waitlist__entry_id__seat_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeatWaitIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/WaitOut"
+                  },
+                  "title": "Response Seat Waiting Api V1 Bookings Waitlist  Entry Id  Seat Post",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Seat Waiting",
+        "tags": [
+          "tables"
         ]
       }
     },
@@ -14875,6 +15881,181 @@
         "summary": "Create Unit",
         "tags": [
           "catalog"
+        ]
+      }
+    },
+    "/api/v1/customers": {
+      "get": {
+        "operationId": "search_api_v1_customers_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "maxLength": 60,
+              "minLength": 2,
+              "title": "Q",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerOut"
+                  },
+                  "title": "Response Search Api V1 Customers Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Search",
+        "tags": [
+          "customers"
+        ]
+      },
+      "post": {
+        "operationId": "create_api_v1_customers_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create",
+        "tags": [
+          "customers"
+        ]
+      }
+    },
+    "/api/v1/customers/{customer_id}": {
+      "delete": {
+        "description": "Remove the guest's personal data (on their request); history stays, anonymous.",
+        "operationId": "erase_api_v1_customers__customer_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customer_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Customer Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Erase",
+        "tags": [
+          "customers"
+        ]
+      },
+      "put": {
+        "operationId": "update_api_v1_customers__customer_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customer_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Customer Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update",
+        "tags": [
+          "customers"
         ]
       }
     },
@@ -23367,7 +24548,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/StatusIn"
+                "$ref": "#/components/schemas/app__modules__tables__schemas__StatusIn"
               }
             }
           },

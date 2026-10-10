@@ -10,6 +10,7 @@ from app.core.access.permissions import build_registry
 from app.core.access.policy import assert_all_routes_declared, include
 from app.core.config import Settings, get_settings
 from app.core.crypto import SecretBox
+from app.core.customers import router as customers_router
 from app.core.db import create_engine, create_sessionmaker
 from app.core.errors import register_error_handlers
 from app.core.identity import account_router, device_router, google_router, mfa_router
@@ -65,6 +66,7 @@ def create_app(
         settings_router.router,
         uploads_router.router,
         notifications_router.router,
+        customers_router.router,
         audit_router.router,
         limits_router.router,
         device_router.router,

@@ -12,4 +12,6 @@ Required by `docs/06` (personal data protection). List every place that stores p
 | Sign-in failure counters | Pseudonymous (hashed email and IP) | `auth_throttle` | Lockout (FR-IDN-003) | Until the lock expires and the counter is cleared | Identity service only | 0.4a |
 | Audit entries with user ID, IP and request ID | Personal (IP) | `audit_log` | Security and financial accountability | Same as ledgers (`docs/05` section 7) | Owner, co-owner, users with permission | 0.3 |
 
-Planned entries (fill in when built): device records (Phase 2), customer name and phone (Phase 3).
+| Customer name, phone, note (`customers`) | Reservations, waitlist, later wholesale and loyalty | Tenant staff with `tenant.customer.view` | Until erased on request (`DELETE /api/v1/customers/{id}` blanks name, phone and note; history kept anonymous). Consent time recorded. Never in the audit log. |
+
+Planned entries (fill in when built): device records (Phase 2).
