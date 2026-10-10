@@ -15,4 +15,4 @@ Order: front of house first (reservations build on tables), then the books (each
 | 3i | Standing transfer orders by weekday; optional internal transfer pricing | FR-TRF-005, 006 | done 2026-10-10 (books stay at cost until Q-006 is answered) |
 | 3j | Menu engineering and prime cost | FR-RPT-007, 008 | done 2026-10-10 |
 | 3k | Tenant data export (owner and admin), platform announcements, web push, context help and changelog | FR-TEN-010, FR-ADM-005, 007, FR-NTF-005, FR-X-007 | done 2026-10-10 (web push needs VAPID keys in the server environment) |
-| 3l | Gate 3 checks: reconciliation drill, security review of the phase | Gate 3 | |
+| 3l | Gate 3 checks: reconciliation drill, security review of the phase | Gate 3 | Done |

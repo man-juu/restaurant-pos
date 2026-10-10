@@ -75,7 +75,7 @@ async def run_standing(request: Request, p: Ask) -> dict[str, int]:
     """Make the requests that are due now, without waiting for the worker (it runs every
     10 minutes and never makes one twice)."""
     async with _db(request, p) as db:
-        return {"made": await standing.run(db, p.tenant_id)}
+        return {"made": await standing.run(db, p.tenant_id, p.can_access_outlet)}
 
 
 @router.get("/reports/charges", response_model=list[ChargeRow])

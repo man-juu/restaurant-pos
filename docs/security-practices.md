@@ -214,3 +214,9 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - Admin export: the admin role can only insert the request (platform_admin policy); it never reads or downloads tenant data.
 - Announcements: plain text only; targeting rows sit under tenant RLS so a tenant cannot see who else was targeted.
 - Web push SSRF: subscription URLs must be HTTPS on known push services, port 443; tested against internal addresses and look-alike hosts. Payload carries only a count and an in-app path.
+
+Phase 3 security review (2026-10-10, slices 3e to 3l): no critical or high findings. Fixed:
+- Push subscription takeover: re-registering an endpoint no longer moves it to another user.
+- Service worker notification link: only same-origin paths open (blocks `//evil.example`).
+- Manual standing-transfer run now only covers the caller's outlets.
+Open (low): the export secret-column filter is name-based; revisit with a per-column flag if a secret column with an unusual name is ever added.

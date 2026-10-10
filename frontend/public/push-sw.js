@@ -17,8 +17,10 @@ self.addEventListener('push', (event) => {
     /* a push without a readable payload still shows the generic text */
   }
   const lang = (self.navigator.language || 'en').slice(0, 2) === 'id' ? 'id' : 'en'
-  const link =
-    typeof data.link === 'string' && data.link.startsWith('/') ? data.link : '/notifications'
+  const same =
+    typeof data.link === 'string' &&
+    new URL(data.link, self.location.origin).origin === self.location.origin
+  const link = same && data.link.startsWith('/') ? data.link : '/notifications'
   event.waitUntil(
     self.registration.showNotification(WORDS[lang].title, {
       body: WORDS[lang].body(Number(data.count) || 1),

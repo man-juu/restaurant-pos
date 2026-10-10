@@ -3,6 +3,7 @@ from today to today + lead days, one normal transfer request is made, needed by 
 The (order, day) pair is unique, so the task can run every few minutes without doubling."""
 
 import uuid
+from collections.abc import Callable
 from datetime import date, timedelta
 
 from sqlalchemy import delete, select
@@ -131,12 +132,19 @@ async def _made(db: AsyncSession, s: StandingTransfer, days: list[date]) -> set[
     return {d for d in rows if d is not None}
 
 
-async def run(db: AsyncSession, tenant_id: uuid.UUID) -> int:
-    """Periodic task: make the requests that are due. Returns how many were made."""
+async def run(
+    db: AsyncSession,
+    tenant_id: uuid.UUID,
+    outlet_ok: Callable[[uuid.UUID], bool] | None = None,
+) -> int:
+    """Periodic task: make the requests that are due. Returns how many were made.
+    `outlet_ok` limits a manual run to the caller's outlets."""
     today = await tenant_today(db, tenant_id)
     orders = list(await db.scalars(select(StandingTransfer).where(StandingTransfer.is_active)))
     made = 0
     for s in orders:
+        if outlet_ok is not None and not outlet_ok(s.to_outlet_id):
+            continue
         days = due_days(s, today)
         missing = sorted(set(days) - await _made(db, s, days)) if days else []
         lines = [RequestLine(item_id=ln.item_id, qty=ln.qty) for ln in await _lines(db, s.id)]

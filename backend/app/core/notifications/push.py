@@ -67,7 +67,9 @@ async def subscribe(
     await db.execute(
         stmt.on_conflict_do_update(
             index_elements=["tenant_id", "endpoint"],
-            set_={"user_id": user_id, "p256dh": p256dh, "auth_secret": auth, "failures": 0},
+            set_={"p256dh": p256dh, "auth_secret": auth, "failures": 0},
+            # only the owner may refresh a subscription; nobody can take over another's device
+            where=PushSubscription.user_id == user_id,
         )
     )
 
