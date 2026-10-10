@@ -1345,6 +1345,174 @@
         "title": "BomSummary",
         "type": "object"
       },
+      "BudgetIn": {
+        "additionalProperties": false,
+        "properties": {
+          "cost_of_sales": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Cost Of Sales",
+            "type": "integer"
+          },
+          "expenses": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Expenses",
+            "type": "integer"
+          },
+          "labor": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Labor",
+            "type": "integer"
+          },
+          "month": {
+            "format": "date",
+            "title": "Month",
+            "type": "string"
+          },
+          "net_sales": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Net Sales",
+            "type": "integer"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "month",
+          "net_sales",
+          "cost_of_sales",
+          "labor",
+          "expenses"
+        ],
+        "title": "BudgetIn",
+        "type": "object"
+      },
+      "BudgetLine": {
+        "properties": {
+          "actual": {
+            "title": "Actual",
+            "type": "integer"
+          },
+          "budget": {
+            "title": "Budget",
+            "type": "integer"
+          },
+          "favourable": {
+            "title": "Favourable",
+            "type": "boolean"
+          },
+          "line": {
+            "title": "Line",
+            "type": "string"
+          },
+          "variance": {
+            "title": "Variance",
+            "type": "integer"
+          },
+          "variance_pct": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variance Pct"
+          }
+        },
+        "required": [
+          "line",
+          "budget",
+          "actual",
+          "variance",
+          "variance_pct",
+          "favourable"
+        ],
+        "title": "BudgetLine",
+        "type": "object"
+      },
+      "BudgetOut": {
+        "additionalProperties": false,
+        "properties": {
+          "cost_of_sales": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Cost Of Sales",
+            "type": "integer"
+          },
+          "expenses": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Expenses",
+            "type": "integer"
+          },
+          "labor": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Labor",
+            "type": "integer"
+          },
+          "month": {
+            "format": "date",
+            "title": "Month",
+            "type": "string"
+          },
+          "net_sales": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Net Sales",
+            "type": "integer"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "month",
+          "net_sales",
+          "cost_of_sales",
+          "labor",
+          "expenses"
+        ],
+        "title": "BudgetOut",
+        "type": "object"
+      },
+      "BudgetReport": {
+        "properties": {
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/BudgetLine"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "months_missing": {
+            "items": {
+              "format": "date",
+              "type": "string"
+            },
+            "title": "Months Missing",
+            "type": "array"
+          }
+        },
+        "required": [
+          "lines",
+          "months_missing"
+        ],
+        "title": "BudgetReport",
+        "type": "object"
+      },
       "Capabilities": {
         "properties": {
           "all_outlets": {
@@ -19428,6 +19596,213 @@
           }
         },
         "summary": "Update Account",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/budgets": {
+      "get": {
+        "operationId": "list_budgets_api_v1_finance_budgets_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "from",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "From",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "To",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Outlet Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "json",
+              "enum": [
+                "json",
+                "csv",
+                "xlsx"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BudgetOut"
+                  },
+                  "title": "Response List Budgets Api V1 Finance Budgets Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Budgets",
+        "tags": [
+          "finance"
+        ]
+      },
+      "put": {
+        "description": "Saving a month again replaces it (idempotent; audited).",
+        "operationId": "save_budget_api_v1_finance_budgets_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BudgetIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Save Budget",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/budgets/vs-actual": {
+      "get": {
+        "operationId": "vs_actual_api_v1_finance_budgets_vs_actual_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "from",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "From",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "To",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Outlet Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "json",
+              "enum": [
+                "json",
+                "csv",
+                "xlsx"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetReport"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Vs Actual",
         "tags": [
           "finance"
         ]

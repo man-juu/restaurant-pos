@@ -232,3 +232,9 @@ Open (low): the export secret-column filter is name-based; revisit with a per-co
 - Files go through the shared reader (5 MB, 2000 rows, 40 columns, zip-bomb guard); cells are text only, and dates, quantities and amounts are parsed strictly (bad values are row errors, never guesses).
 - Outlet scope on check, import and undo (`require_outlet`, 404 out of scope); the channel must belong to the tenant (RLS plus the visible-channel check); mapping saves are audited.
 - Bounded work per request: at most 62 day entries per file. The check runs the real save in a rolled-back savepoint.
+
+## Budgets (2026-10-10, ADR 0.79)
+
+- Outlet scope on save and read (`require_outlet`, plus the visible-outlet check in the service); tenant RLS on `budgets`; a test checks another tenant cannot save or read.
+- Amounts are bounded integers (0 to 10^15, extra fields refused); saves are audited with the figures.
+- Performance: the report runs four indexed aggregate queries for the period, no per-row loops.

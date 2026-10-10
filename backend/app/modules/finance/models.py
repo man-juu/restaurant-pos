@@ -131,3 +131,30 @@ class LaborCost(Base):
     note: Mapped[str | None] = mapped_column(String(200))
     updated_by: Mapped[uuid.UUID] = mapped_column()
     updated_at: Mapped[datetime] = _created_at()
+
+
+class Budget(Base):
+    """FR-FIN-010: the plan for an outlet and month, one figure per P&L line. Saving the month
+    again replaces it (audited). A period covering part of a month takes its share by days."""
+
+    __tablename__ = "budgets"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "outlet_id", "month"),
+        _fk("outlet_id", "outlets"),
+        CheckConstraint(
+            "net_sales >= 0 AND cost_of_sales >= 0 AND labor >= 0 AND expenses >= 0",
+            name="amounts",
+        ),
+        CheckConstraint("extract(day from month) = 1", name="first_of_month"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    outlet_id: Mapped[uuid.UUID] = mapped_column()
+    month: Mapped[date] = mapped_column(Date)  # first day of the month
+    net_sales: Mapped[int] = mapped_column(BigInteger)
+    cost_of_sales: Mapped[int] = mapped_column(BigInteger)
+    labor: Mapped[int] = mapped_column(BigInteger)
+    expenses: Mapped[int] = mapped_column(BigInteger)
+    updated_by: Mapped[uuid.UUID] = mapped_column()
+    updated_at: Mapped[datetime] = _created_at()

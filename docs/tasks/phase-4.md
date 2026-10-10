@@ -11,7 +11,7 @@ duplicates); gateway reconciliation matches settlements.
 | --- | --- | --- | --- |
 | 4a | Offline order taking: server sync API, till totals | FR-SAL-013 | done 2026-10-10 (till screen with a queue on the device) |
 | 4a+ | Modules per outlet by the owner; simple and advanced finance; central kitchen notified of requests | FR-TEN-003, FR-FIN, FR-TRF-001 | done 2026-10-10 |
-| 4b | Budgets per outlet and period, actual vs budget | FR-FIN-010 | |
+| 4b | Budgets per outlet and period, actual vs budget | FR-FIN-010 | done 2026-10-10 (Finance > Budget tab) |
 | 4c | Import delivery-platform sales files with a saved column mapping | FR-IMP-004 | done 2026-10-10 |
 | 4d | Loyalty points and vouchers | FR-SAL-016 | |
 | 4e | Scheduled report email | FR-RPT-009 | skipped by the owner (2026-10-10) |

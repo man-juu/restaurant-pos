@@ -1357,6 +1357,44 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/finance/budgets': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Budgets */
+    get: operations['list_budgets_api_v1_finance_budgets_get']
+    /**
+     * Save Budget
+     * @description Saving a month again replaces it (idempotent; audited).
+     */
+    put: operations['save_budget_api_v1_finance_budgets_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/budgets/vs-actual': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Vs Actual */
+    get: operations['vs_actual_api_v1_finance_budgets_vs_actual_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/finance/categories': {
     parameters: {
       query?: never
@@ -5358,6 +5396,70 @@ export interface components {
        * Format: uuid
        */
       yield_unit_id: string
+    }
+    /** BudgetIn */
+    BudgetIn: {
+      /** Cost Of Sales */
+      cost_of_sales: number
+      /** Expenses */
+      expenses: number
+      /** Labor */
+      labor: number
+      /**
+       * Month
+       * Format: date
+       */
+      month: string
+      /** Net Sales */
+      net_sales: number
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
+    /** BudgetLine */
+    BudgetLine: {
+      /** Actual */
+      actual: number
+      /** Budget */
+      budget: number
+      /** Favourable */
+      favourable: boolean
+      /** Line */
+      line: string
+      /** Variance */
+      variance: number
+      /** Variance Pct */
+      variance_pct: string | null
+    }
+    /** BudgetOut */
+    BudgetOut: {
+      /** Cost Of Sales */
+      cost_of_sales: number
+      /** Expenses */
+      expenses: number
+      /** Labor */
+      labor: number
+      /**
+       * Month
+       * Format: date
+       */
+      month: string
+      /** Net Sales */
+      net_sales: number
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
+    /** BudgetReport */
+    BudgetReport: {
+      /** Lines */
+      lines: components['schemas']['BudgetLine'][]
+      /** Months Missing */
+      months_missing: string[]
     }
     /** Capabilities */
     Capabilities: {
@@ -13691,6 +13793,105 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['MoneyAccountOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_budgets_api_v1_finance_budgets_get: {
+    parameters: {
+      query: {
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BudgetOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  save_budget_api_v1_finance_budgets_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BudgetIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  vs_actual_api_v1_finance_budgets_vs_actual_get: {
+    parameters: {
+      query: {
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BudgetReport']
         }
       }
       /** @description Validation Error */

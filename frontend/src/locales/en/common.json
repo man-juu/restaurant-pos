@@ -1662,7 +1662,8 @@
       "books": "Books",
       "receivables": "Receivables",
       "platforms": "Platform payouts",
-      "prime": "Prime cost"
+      "prime": "Prime cost",
+      "budget": "Budget"
     },
     "pl": {
       "netSales": "Net sales",
@@ -2056,6 +2057,9 @@
   "changelog": {
     "title": "What's new",
     "items": {
+      "2026-10-10g": [
+        "Set a monthly budget per outlet on the Finance page and compare it with actual sales and costs"
+      ],
       "2026-10-10f": [
         "Import GrabFood, GoFood or ShopeeFood sales files on the Sales page; the columns are remembered per platform"
       ],
@@ -2093,6 +2097,25 @@
         "Lot trace for food-safety recalls",
         "Sign in with Google"
       ]
+    }
+  },
+  "budget": {
+    "line": "Line",
+    "plan": "Budget",
+    "actual": "Actual",
+    "variance": "Difference",
+    "missing": "No budget for: {{months}}",
+    "enter": "Budget for a month",
+    "month": "Month",
+    "help": "Plan per outlet and month. A shorter period takes its share by days. Saving the same month again replaces it.",
+    "saved": "Saved.",
+    "save": "Save budget",
+    "lines": {
+      "net_sales": "Net sales",
+      "cost_of_sales": "Cost of sales (HPP)",
+      "labor": "Labour",
+      "expenses": "Other expenses",
+      "net_profit": "Net profit"
     }
   }
 }

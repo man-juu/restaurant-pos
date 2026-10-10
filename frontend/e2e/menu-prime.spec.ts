@@ -24,6 +24,7 @@ async function mock(page: Page, puts: unknown[]) {
           'catalog.cost.view',
           'finance.report.view',
           'finance.expense.create',
+          'finance.budget.manage',
         ],
         all_outlets: true,
         outlet_ids: [],
@@ -72,6 +73,27 @@ async function mock(page: Page, puts: unknown[]) {
         labor_pct: '24.0',
         labor_months_missing: [],
       },
+      '/api/v1/finance/budgets/vs-actual': {
+        lines: [
+          {
+            line: 'net_sales',
+            budget: 60000000,
+            actual: 50000000,
+            variance: -10000000,
+            variance_pct: '-16.7',
+            favourable: false,
+          },
+          {
+            line: 'net_profit',
+            budget: 20000000,
+            actual: 22000000,
+            variance: 2000000,
+            variance_pct: '10.0',
+            favourable: true,
+          },
+        ],
+        months_missing: ['2026-11-01'],
+      },
     }
     return path in data ? json(data[path]) : json({ code: 'not_found' }, 404)
   })
@@ -96,4 +118,19 @@ test('accountant enters labour and reads prime cost (FR-RPT-008)', async ({ page
   await page.getByLabel('Amount (IDR)').fill('12000000')
   await page.getByRole('button', { name: 'Save labour' }).click()
   await expect.poll(() => puts.at(-1)).toMatchObject({ outlet_id: 'o1', amount: 12000000 })
+})
+
+test('accountant sets a budget and reads actual vs budget (FR-FIN-010)', async ({ page }) => {
+  const puts: unknown[] = []
+  await mock(page, puts)
+  await page.goto('/finance')
+  await page.getByRole('button', { name: 'EN', exact: true }).click()
+  await page.getByRole('tab', { name: 'Budget' }).click()
+  await expect(page.getByText(/-16\.7 %/)).toBeVisible()
+  await expect(page.getByText('No budget for: 2026-11')).toBeVisible()
+  await page.getByLabel('Net sales (IDR)').fill('60000000')
+  await page.getByRole('button', { name: 'Save budget' }).click()
+  await expect
+    .poll(() => puts.at(-1))
+    .toMatchObject({ outlet_id: 'o1', net_sales: 60000000, labor: 0 })
 })

@@ -1662,7 +1662,8 @@
       "books": "Pembukuan",
       "receivables": "Piutang",
       "platforms": "Pencairan platform",
-      "prime": "Prime cost"
+      "prime": "Prime cost",
+      "budget": "Anggaran"
     },
     "pl": {
       "netSales": "Penjualan bersih",
@@ -2056,6 +2057,9 @@
   "changelog": {
     "title": "Yang baru",
     "items": {
+      "2026-10-10g": [
+        "Atur anggaran bulanan per outlet di halaman Keuangan dan bandingkan dengan penjualan dan biaya aktual"
+      ],
       "2026-10-10f": [
         "Impor file penjualan GrabFood, GoFood atau ShopeeFood di halaman Penjualan; kolomnya diingat per platform"
       ],
@@ -2093,6 +2097,25 @@
         "Pelacakan lot untuk penarikan produk",
         "Masuk dengan Google"
       ]
+    }
+  },
+  "budget": {
+    "line": "Pos",
+    "plan": "Anggaran",
+    "actual": "Realisasi",
+    "variance": "Selisih",
+    "missing": "Belum ada anggaran untuk: {{months}}",
+    "enter": "Anggaran sebulan",
+    "month": "Bulan",
+    "help": "Rencana per outlet dan bulan. Periode lebih pendek memakai bagiannya menurut hari. Menyimpan bulan yang sama lagi akan menggantinya.",
+    "saved": "Tersimpan.",
+    "save": "Simpan anggaran",
+    "lines": {
+      "net_sales": "Penjualan bersih",
+      "cost_of_sales": "Harga pokok penjualan (HPP)",
+      "labor": "Tenaga kerja",
+      "expenses": "Biaya lain",
+      "net_profit": "Laba bersih"
     }
   }
 }

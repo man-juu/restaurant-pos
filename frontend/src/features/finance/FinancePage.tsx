@@ -8,6 +8,7 @@ import { useOutlets } from '../../lib/session'
 import { useSettings } from '../settings/api'
 import { todayIso } from '../catalog/labels'
 import { AccountsTab } from './AccountsTab'
+import { BudgetTab } from './budget/BudgetTab'
 import { BooksTab } from './books/BooksTab'
 import { ExpensesTab } from './ExpensesTab'
 import { PrimeCostTab } from './PrimeCostTab'
@@ -15,10 +16,19 @@ import { ProfitLoss } from './ProfitLoss'
 import { ReceivablesTab } from './receivables/ReceivablesTab'
 import { SettlementsTab } from './settlements/SettlementsTab'
 
-const TABS = ['pl', 'prime', 'expenses', 'accounts', 'receivables', 'platforms', 'books'] as const
+const TABS = [
+  'pl',
+  'budget',
+  'prime',
+  'expenses',
+  'accounts',
+  'receivables',
+  'platforms',
+  'books',
+] as const
 type Tab = (typeof TABS)[number]
 /** Simple mode (the default) keeps only what needs no accounting knowledge. */
-const SIMPLE: readonly Tab[] = ['pl', 'expenses', 'accounts']
+const SIMPLE: readonly Tab[] = ['pl', 'budget', 'expenses', 'accounts']
 
 const monthStart = () => `${todayIso().slice(0, 8)}01`
 
@@ -87,6 +97,15 @@ type Ctx = {
 /** One entry per tab: a lookup table instead of a chain of conditions. */
 const PANELS: Record<Tab, (c: Ctx) => ReactNode> = {
   pl: (c) => <ProfitLoss outletId={c.outletId} from={c.from} to={c.to} currency={c.currency} />,
+  budget: (c) => (
+    <BudgetTab
+      outletId={c.outletId}
+      from={c.from}
+      to={c.to}
+      currency={c.currency}
+      canManage={c.can('finance.budget.manage')}
+    />
+  ),
   prime: (c) => (
     <PrimeCostTab
       outletId={c.outletId}
