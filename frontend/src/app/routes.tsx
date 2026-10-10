@@ -9,6 +9,9 @@ import { Shell } from './Shell'
 const AdminPage = lazy(() =>
   import('../features/admin/AdminPage').then((m) => ({ default: m.AdminPage })),
 )
+const ChangelogPage = lazy(() =>
+  import('../features/help/ChangelogPage').then((m) => ({ default: m.ChangelogPage })),
+)
 const LoginPage = lazy(() =>
   import('../features/auth/LoginPage').then((m) => ({ default: m.LoginPage })),
 )
@@ -83,6 +86,7 @@ export const routes = [
       { path: 'sales', element: page(<SalesPage />) },
       { path: 'reports', element: page(<ReportsPage />) },
       { path: 'audit', element: page(<AuditPage />) },
+      { path: 'changelog', element: page(<ChangelogPage />) },
       // Module pages arrive with their modules (Phase 1); nav entries come from capabilities.
       { path: '*', element: <DashboardPage /> },
     ],

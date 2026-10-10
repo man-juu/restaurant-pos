@@ -7,6 +7,7 @@ import { NavLink, Navigate, Outlet } from 'react-router'
 import { InstallPrompt } from '../components/InstallPrompt'
 import { AppearanceMenu } from '../components/AppearanceMenu'
 import { LanguageSwitch } from '../components/LanguageSwitch'
+import { HelpDialog } from '../features/help/HelpDialog'
 import { NotificationBell } from '../features/notifications/NotificationBell'
 import { Button, Logo } from '../components/ui'
 import type { Capabilities, SessionInfo } from '../lib/api/types'
@@ -125,8 +126,9 @@ function TopBar({ session }: { session: SessionInfo }) {
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2">
         <NotificationBell />
+        <HelpDialog />
         <MyPinDialog />
         <LanguageSwitch />
         <AppearanceMenu />

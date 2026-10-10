@@ -1894,5 +1894,100 @@
     "on": "Get notifications on this device",
     "off": "Stop notifications on this device",
     "failed": "Notifications could not be switched on. Allow them for this site in the browser settings, then try again."
+  },
+  "help": {
+    "open": "Help for this page",
+    "mark": "?",
+    "close": "Close",
+    "changelog": "What's new",
+    "newChanges": "What's new: see the latest changes",
+    "pages": {
+      "home": {
+        "title": "Home",
+        "body": "Today's sales, stock warnings and what needs you. Pick an outlet at the top of each screen; you only see the outlets you work at."
+      },
+      "pos": {
+        "title": "Cashier",
+        "body": "Open a shift with the cash in the drawer, take orders, send them to the kitchen and take payment. Discounts and refunds above your limit need a manager's approval. Close the shift by counting the cash."
+      },
+      "tables": {
+        "title": "Tables",
+        "body": "Floor: tap a table to open or move it. Reservations: book a table for a time; the app suggests free tables and warns about clashes. Waitlist: add walk-ins and seat them when a table frees up."
+      },
+      "kitchen": {
+        "title": "Kitchen",
+        "body": "Orders appear here as soon as the cashier sends them. Tap a ticket to mark dishes as ready. Late tickets turn red after the time set in Settings."
+      },
+      "catalog": {
+        "title": "Menu and recipes",
+        "body": "Items are menu dishes, ingredients or semi-finished goods (like sambal). Give menu items a price per channel and a recipe; ingredients get a unit (g, ml, pcs or your own) and conversions such as 1 sack = 25 kg."
+      },
+      "inventory": {
+        "title": "Stock",
+        "body": "On hand shows stock per outlet with days left. Record waste, adjustments and counts (count one storage place at a time if you like). Forecast shows next week's expected use. Locations: where each item is kept; print labels and scan them."
+      },
+      "purchasing": {
+        "title": "Purchasing",
+        "body": "Buy at the market: type the seller and what you paid. Purchase orders: order from vendors, then receive the goods. Reorder suggests what to buy and compares vendors. Bills: record vendor invoices and payments."
+      },
+      "production": {
+        "title": "Production",
+        "body": "Plan what the kitchen makes and record what came out. Suggested shows what to make for the next days from par levels, branch requests and expected use. The prep list prints for the cook."
+      },
+      "transfers": {
+        "title": "Transfers",
+        "body": "Branches ask the central kitchen for goods; the kitchen approves, ships and the branch receives. Standing orders repeat on fixed weekdays. Charges shows what outlets charged each other, if you use transfer prices."
+      },
+      "sales": {
+        "title": "Daily sales",
+        "body": "Enter a day's sales per channel (for example from a delivery platform's report). Recipes take the stock out automatically."
+      },
+      "finance": {
+        "title": "Money",
+        "body": "Profit and loss, prime cost (food cost plus labour), expenses, cash and bank, customer invoices and what is owed, platform payouts and the books (journals and statements)."
+      },
+      "reports": {
+        "title": "Reports",
+        "body": "Sales, stock, purchases and menu engineering for any period and outlet. Download as a spreadsheet or CSV."
+      },
+      "settings": {
+        "title": "Settings",
+        "body": "How your business works: taxes, payment methods, approvals, numbering, stock rules, planning, transfers and more. Your data: download a copy of everything."
+      },
+      "notifications": {
+        "title": "Notifications",
+        "body": "Stock alerts, approvals waiting for you and other messages. Switch on notifications on this device to get them on your phone."
+      }
+    }
+  },
+  "changelog": {
+    "title": "What's new",
+    "items": {
+      "2026-10-10c": [
+        "Download a copy of all your data (Settings → Your data)",
+        "Platform announcements at the top of the app",
+        "Notifications on your phone for the installed app",
+        "Help on every screen (the ? button) and this page"
+      ],
+      "2026-10-10b": [
+        "Standing transfer orders by weekday, and optional transfer prices between outlets",
+        "Menu engineering: stars, plowhorses, puzzles and dogs",
+        "Prime cost with monthly labour",
+        "Menu items no longer ask for a unit"
+      ],
+      "2026-10-10a": [
+        "Books: chart of accounts, journals, statements, automatic journals",
+        "Customer invoices, receivables and payables aging",
+        "Delivery-platform payouts reconciled",
+        "Storage locations, barcode and QR labels, scanning",
+        "Forecast, order quantities, production plan and vendor ranking"
+      ],
+      "2026-10-09": [
+        "Reservations, waitlist and a floor plan editor",
+        "Vendor returns, bills, three-way match and payments",
+        "Lot trace for food-safety recalls",
+        "Sign in with Google"
+      ]
+    }
   }
 }

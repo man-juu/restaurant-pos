@@ -117,6 +117,7 @@ Redis (until measured need), marketplace scraping, native mobile apps, payroll o
   - Performance: backend `tests/test_performance.py` (p95 and query-count guards) and the frontend bundle budget (`npm run build` runs `scripts/check-bundle.mjs`). Never raise a budget without saying why.
 - Code shape (enforced in lint and tests): cyclomatic complexity <= 10, cognitive complexity <= 15, nesting <= 3; backend files <= 400 lines (`tests/test_structure.py`), frontend files <= 250 lines and components <= 120 lines; each module keeps the standard file set. Split by responsibility rather than raising a limit.
 - UI work follows `docs/ux-review.md` (Shneiderman's 8 Golden Rules, Nielsen's 10 heuristics) and its per-screen checklist.
+- Add a changelog entry (`frontend/src/features/help/changelog.ts` plus EN/ID text) for user-visible changes.
 - Update this file when commands, layout or rules change.
 
 ## Ask the owner before

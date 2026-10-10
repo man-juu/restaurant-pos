@@ -1894,5 +1894,100 @@
     "on": "Terima notifikasi di perangkat ini",
     "off": "Hentikan notifikasi di perangkat ini",
     "failed": "Notifikasi tidak bisa diaktifkan. Izinkan notifikasi untuk situs ini di pengaturan browser, lalu coba lagi."
+  },
+  "help": {
+    "open": "Bantuan untuk halaman ini",
+    "mark": "?",
+    "close": "Tutup",
+    "changelog": "Yang baru",
+    "newChanges": "Yang baru: lihat perubahan terbaru",
+    "pages": {
+      "home": {
+        "title": "Beranda",
+        "body": "Penjualan hari ini, peringatan stok, dan hal yang perlu Anda tangani. Pilih outlet di atas setiap layar; Anda hanya melihat outlet tempat Anda bekerja."
+      },
+      "pos": {
+        "title": "Kasir",
+        "body": "Buka shift dengan uang di laci, terima pesanan, kirim ke dapur, dan terima pembayaran. Diskon dan refund di atas batas Anda perlu persetujuan manajer. Tutup shift dengan menghitung uang."
+      },
+      "tables": {
+        "title": "Meja",
+        "body": "Denah: ketuk meja untuk membuka atau memindahkannya. Reservasi: pesan meja untuk jam tertentu; aplikasi menyarankan meja kosong dan memberi tahu bila bentrok. Daftar tunggu: tambahkan tamu walk-in dan dudukkan saat meja kosong."
+      },
+      "kitchen": {
+        "title": "Dapur",
+        "body": "Pesanan muncul di sini begitu kasir mengirimnya. Ketuk tiket untuk menandai menu siap. Tiket yang terlambat menjadi merah setelah waktu yang diatur di Pengaturan."
+      },
+      "catalog": {
+        "title": "Menu dan resep",
+        "body": "Barang bisa berupa menu, bahan, atau barang setengah jadi (seperti sambal). Beri menu harga per saluran dan resep; bahan memakai satuan (g, ml, pcs, atau satuan Anda) dan konversi seperti 1 karung = 25 kg."
+      },
+      "inventory": {
+        "title": "Stok",
+        "body": "Stok per outlet beserta sisa hari. Catat waste, penyesuaian, dan stock opname (boleh per tempat simpan). Perkiraan menunjukkan pemakaian minggu depan. Lokasi: tempat setiap barang disimpan; cetak label dan pindai."
+      },
+      "purchasing": {
+        "title": "Pembelian",
+        "body": "Belanja di pasar: ketik penjual dan harga yang dibayar. PO: pesan ke pemasok, lalu terima barangnya. Saran beli menunjukkan yang perlu dibeli dan membandingkan pemasok. Tagihan: catat faktur dan pembayaran pemasok."
+      },
+      "production": {
+        "title": "Produksi",
+        "body": "Rencanakan yang dibuat dapur dan catat hasilnya. Saran menunjukkan yang perlu dibuat untuk beberapa hari ke depan dari par, permintaan cabang, dan perkiraan pemakaian. Daftar persiapan bisa dicetak untuk juru masak."
+      },
+      "transfers": {
+        "title": "Transfer",
+        "body": "Cabang meminta barang ke dapur pusat; dapur menyetujui, mengirim, dan cabang menerima. Order rutin berulang pada hari tertentu. Tagihan menunjukkan yang ditagihkan antar outlet, bila memakai harga transfer."
+      },
+      "sales": {
+        "title": "Penjualan harian",
+        "body": "Masukkan penjualan sehari per saluran (misalnya dari laporan platform pesan-antar). Resep mengurangi stok secara otomatis."
+      },
+      "finance": {
+        "title": "Keuangan",
+        "body": "Laba rugi, prime cost (HPP ditambah tenaga kerja), pengeluaran, kas dan bank, faktur pelanggan dan piutang, pencairan platform, serta pembukuan (jurnal dan laporan)."
+      },
+      "reports": {
+        "title": "Laporan",
+        "body": "Penjualan, stok, pembelian, dan menu engineering untuk periode dan outlet mana pun. Unduh sebagai spreadsheet atau CSV."
+      },
+      "settings": {
+        "title": "Pengaturan",
+        "body": "Cara kerja usaha Anda: pajak, metode pembayaran, persetujuan, penomoran, aturan stok, perencanaan, transfer, dan lainnya. Data Anda: unduh salinan semuanya."
+      },
+      "notifications": {
+        "title": "Notifikasi",
+        "body": "Peringatan stok, persetujuan yang menunggu Anda, dan pesan lain. Aktifkan notifikasi di perangkat ini agar sampai ke ponsel Anda."
+      }
+    }
+  },
+  "changelog": {
+    "title": "Yang baru",
+    "items": {
+      "2026-10-10c": [
+        "Unduh salinan semua data Anda (Pengaturan → Data Anda)",
+        "Pengumuman platform di bagian atas aplikasi",
+        "Notifikasi di ponsel untuk aplikasi yang terpasang",
+        "Bantuan di setiap layar (tombol ?) dan halaman ini"
+      ],
+      "2026-10-10b": [
+        "Order transfer rutin per hari, dan harga transfer antar outlet (opsional)",
+        "Menu engineering: bintang, kuda beban, teka-teki, dan anjing",
+        "Prime cost dengan biaya tenaga kerja bulanan",
+        "Menu tidak lagi meminta satuan"
+      ],
+      "2026-10-10a": [
+        "Pembukuan: bagan akun, jurnal, laporan, jurnal otomatis",
+        "Faktur pelanggan, umur piutang dan utang",
+        "Rekonsiliasi pencairan platform pesan-antar",
+        "Lokasi simpan, label barcode dan QR, pemindaian",
+        "Perkiraan, jumlah pesan, rencana produksi, dan peringkat pemasok"
+      ],
+      "2026-10-09": [
+        "Reservasi, daftar tunggu, dan editor denah meja",
+        "Retur pemasok, tagihan, pencocokan tiga arah, dan pembayaran",
+        "Pelacakan lot untuk penarikan produk",
+        "Masuk dengan Google"
+      ]
+    }
   }
 }
