@@ -8,7 +8,7 @@ import uuid
 from datetime import date, timedelta
 from typing import cast
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import audit
@@ -360,3 +360,26 @@ async def payables_aging(
         ),
         key=lambda a: -a.total,
     )
+
+
+async def payables_total(db: AsyncSession) -> int:
+    """Gate 3 reconciliation: open bill balances plus goods received on account that no bill
+    covers yet (both are owed to vendors)."""
+    billed = await db.scalar(
+        select(
+            func.coalesce(func.sum(VendorBill.total - VendorBill.paid - VendorBill.credited), 0)
+        ).where(VendorBill.status != "void")
+    )
+    covered = (
+        select(VendorBillReceipt.receipt_id)
+        .join(VendorBill, VendorBill.id == VendorBillReceipt.bill_id)
+        .where(VendorBill.status != "void")
+    )
+    unbilled = await db.scalar(
+        select(func.coalesce(func.sum(GoodsReceipt.total), 0)).where(
+            GoodsReceipt.status == "posted",
+            GoodsReceipt.vendor_id.is_not(None),
+            GoodsReceipt.id.not_in(covered),
+        )
+    )
+    return int(billed or 0) + int(unbilled or 0)

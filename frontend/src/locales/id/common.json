@@ -1672,7 +1672,8 @@
       "journals": "Jurnal",
       "statements": "Laporan",
       "periods": "Bulan",
-      "chart": "Daftar akun"
+      "chart": "Daftar akun",
+      "reconcile": "Rekonsiliasi"
     },
     "newJournal": "Jurnal baru",
     "noJournals": "Tidak ada jurnal di periode ini.",
@@ -1729,6 +1730,17 @@
       "equity": "Ekuitas",
       "revenue": "Pendapatan",
       "expense": "Beban"
+    },
+    "reconcile": {
+      "help": "Total hari ini dari stok, faktur pelanggan, dan utang pemasok, dibandingkan dengan akunnya. Selisih biasanya berarti saldo awal belum diisi, jurnal manual pada akun kontrol, atau penjualan house account; periksa sebelum tutup bulan.",
+      "names": {
+        "stock_value": "Stok yang ada",
+        "open_invoices": "Faktur pelanggan belum dibayar",
+        "owed_to_vendors": "Utang ke pemasok (tagihan terbuka dan barang belum ditagih)"
+      },
+      "line": "Catatan {{sub}} · buku {{books}} (akun {{code}})",
+      "diff": "Selisih: {{amount}}",
+      "ok": "Sama dengan buku"
     }
   },
   "ar": {

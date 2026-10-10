@@ -1636,6 +1636,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/finance/gl/reconcile': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Reconcile
+     * @description Gate 3: stock, open invoices and vendor debts against their accounts, today.
+     */
+    get: operations['reconcile_api_v1_finance_gl_reconcile_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/finance/gl/setup': {
     parameters: {
       query?: never
@@ -8233,6 +8253,21 @@ export interface components {
       /** Settlements */
       settlements: number
     }
+    /** ReconcileRow */
+    ReconcileRow: {
+      /** Account Code */
+      account_code: string | null
+      /** Books */
+      books: number
+      /** Difference */
+      difference: number
+      /** Name */
+      name: string
+      /** Role */
+      role: string
+      /** Subledger */
+      subledger: number
+    }
     /** RecoveryCodesOut */
     RecoveryCodesOut: {
       /** Recovery Codes */
@@ -13953,6 +13988,26 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reconcile_api_v1_finance_gl_reconcile_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReconcileRow'][]
         }
       }
     }

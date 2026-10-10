@@ -195,3 +195,9 @@ async def tenant_unit_costs(db: AsyncSession, ids: set[uuid.UUID]) -> dict[uuid.
         .group_by(ItemCost.item_id)
     )
     return {i: Decimal(c).quantize(Decimal("0.000001")) for i, c in (await db.execute(stmt)).all()}
+
+
+async def stock_value_total(db: AsyncSession) -> int:
+    """Gate 3 reconciliation: what all stock on hand is worth, from the ledger."""
+    total = await db.scalar(select(func.coalesce(func.sum(StockMovement.value), 0)))
+    return int(total or 0)

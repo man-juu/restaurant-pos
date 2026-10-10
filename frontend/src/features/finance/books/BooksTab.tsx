@@ -8,11 +8,12 @@ import { errorMessage } from '../../../lib/errors'
 import { ChartView } from './ChartView'
 import { JournalsView } from './JournalsView'
 import { PeriodsView } from './PeriodsView'
+import { ReconcileView } from './ReconcileView'
 import { SetupForm } from './SetupForm'
 import { StatementsView } from './StatementsView'
 import { useGlAccounts, useSetup } from './glApi'
 
-const VIEWS = ['journals', 'statements', 'chart', 'periods'] as const
+const VIEWS = ['journals', 'statements', 'reconcile', 'chart', 'periods'] as const
 type View = (typeof VIEWS)[number]
 type Can = { setup: boolean; post: boolean; close: boolean }
 
@@ -72,6 +73,7 @@ function ViewPanel({ view, from, to, currency, can, accounts }: PanelProps) {
       />
     )
   if (view === 'statements') return <StatementsView from={from} to={to} currency={currency} />
+  if (view === 'reconcile') return <ReconcileView currency={currency} />
   if (view === 'chart') return <ChartView accounts={accounts} canEdit={can.setup} />
   return <PeriodsView canClose={can.close} />
 }

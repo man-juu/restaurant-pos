@@ -9129,6 +9129,51 @@
         "title": "ReconcileOut",
         "type": "object"
       },
+      "ReconcileRow": {
+        "properties": {
+          "account_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Account Code"
+          },
+          "books": {
+            "title": "Books",
+            "type": "integer"
+          },
+          "difference": {
+            "title": "Difference",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "subledger": {
+            "title": "Subledger",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "role",
+          "account_code",
+          "subledger",
+          "books",
+          "difference"
+        ],
+        "title": "ReconcileRow",
+        "type": "object"
+      },
       "RecoveryCodesOut": {
         "properties": {
           "recovery_codes": {
@@ -19875,6 +19920,32 @@
           }
         },
         "summary": "Reopen",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/reconcile": {
+      "get": {
+        "description": "Gate 3: stock, open invoices and vendor debts against their accounts, today.",
+        "operationId": "reconcile_api_v1_finance_gl_reconcile_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ReconcileRow"
+                  },
+                  "title": "Response Reconcile Api V1 Finance Gl Reconcile Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Reconcile",
         "tags": [
           "finance"
         ]

@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.access.policy import Principal, require
 from app.core.errors import NotFoundError
 from app.core.tenancy import tenant_session
+from app.modules.catalog.interface import tenant_today
 from app.modules.finance import books, ledger, statements
 from app.modules.finance import permissions as perm
 from app.modules.finance.gl_models import GlAccount, JournalEntry, LedgerSetup
@@ -29,6 +30,8 @@ from app.modules.finance.gl_schemas import (
     SetupOut,
     TrialRow,
 )
+from app.modules.finance.reconcile import ReconcileRow
+from app.modules.finance.reconcile import reconcile as reconcile_books
 
 router = APIRouter(prefix="/api/v1/finance/gl", tags=["finance"])
 
@@ -200,6 +203,14 @@ async def trial_balance(
 ) -> list[TrialRow]:
     async with _db(request, p) as db:
         return await statements.trial_balance(db, until, since)
+
+
+@router.get("/reconcile", response_model=list[ReconcileRow])
+async def reconcile(request: Request, p: View) -> list[ReconcileRow]:
+    """Gate 3: stock, open invoices and vendor debts against their accounts, today."""
+    async with _db(request, p) as db:
+        today = await tenant_today(db, p.tenant_id)
+        return await reconcile_books(db, p.tenant_id, today)
 
 
 @router.get("/balance-sheet", response_model=BalanceSheet)

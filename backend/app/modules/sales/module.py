@@ -1,4 +1,5 @@
 from app.core.modules import ModuleManifest
+from app.core.subledger import register_subledger
 from app.modules.sales import permissions
 from app.modules.sales.pos_actions_router import router as pos_actions_router
 from app.modules.sales.pos_router import router as pos_router
@@ -6,7 +7,11 @@ from app.modules.sales.receipt_router import router as receipt_router
 from app.modules.sales.report_router import router as report_router
 from app.modules.sales.router import router
 from app.modules.sales.shift_router import router as shift_router
+from app.modules.sales.wholesale import open_receivables_total
 from app.modules.sales.wholesale_router import router as wholesale_router
+
+# Gate 3: open wholesale invoices should match accounts receivable.
+register_subledger("sales", "receivable", "open_invoices", open_receivables_total)
 
 MANIFEST = ModuleManifest(
     name="sales",

@@ -10,7 +10,7 @@ from datetime import date, timedelta
 from decimal import Decimal
 from typing import cast
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import audit
@@ -300,3 +300,11 @@ async def aging(db: AsyncSession, today: date, outlet_ids: set[uuid.UUID] | None
         ),
         key=lambda a: -a.total,
     )
+
+
+async def open_receivables_total(db: AsyncSession) -> int:
+    """Gate 3 reconciliation: what wholesale customers still owe."""
+    stmt = select(func.coalesce(func.sum(Receivable.total - Receivable.paid), 0)).where(
+        Receivable.status.in_(("open", "partially_paid"))
+    )
+    return int(await db.scalar(stmt) or 0)

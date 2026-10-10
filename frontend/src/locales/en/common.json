@@ -1672,7 +1672,8 @@
       "journals": "Journals",
       "statements": "Statements",
       "periods": "Months",
-      "chart": "Chart of accounts"
+      "chart": "Chart of accounts",
+      "reconcile": "Reconcile"
     },
     "newJournal": "New journal",
     "noJournals": "No journals in this period.",
@@ -1729,6 +1730,17 @@
       "equity": "Equity",
       "revenue": "Revenue",
       "expense": "Expense"
+    },
+    "reconcile": {
+      "help": "Today's totals from stock, customer invoices and vendor debts, against their accounts. A difference usually means a missing opening balance, a hand journal on a control account, or house-account sales; check it before closing a month.",
+      "names": {
+        "stock_value": "Stock on hand",
+        "open_invoices": "Customer invoices not yet paid",
+        "owed_to_vendors": "Owed to vendors (open bills and goods not yet billed)"
+      },
+      "line": "Records {{sub}} · books {{books}} (account {{code}})",
+      "diff": "Difference: {{amount}}",
+      "ok": "Matches the books"
     }
   },
   "ar": {
