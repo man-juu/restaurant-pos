@@ -9,11 +9,12 @@ import { todayIso } from '../catalog/labels'
 import { AccountsTab } from './AccountsTab'
 import { BooksTab } from './books/BooksTab'
 import { ExpensesTab } from './ExpensesTab'
+import { PrimeCostTab } from './PrimeCostTab'
 import { ProfitLoss } from './ProfitLoss'
 import { ReceivablesTab } from './receivables/ReceivablesTab'
 import { SettlementsTab } from './settlements/SettlementsTab'
 
-const TABS = ['pl', 'expenses', 'accounts', 'receivables', 'platforms', 'books'] as const
+const TABS = ['pl', 'prime', 'expenses', 'accounts', 'receivables', 'platforms', 'books'] as const
 type Tab = (typeof TABS)[number]
 
 const monthStart = () => `${todayIso().slice(0, 8)}01`
@@ -77,6 +78,15 @@ type Ctx = {
 /** One entry per tab: a lookup table instead of a chain of conditions. */
 const PANELS: Record<Tab, (c: Ctx) => ReactNode> = {
   pl: (c) => <ProfitLoss outletId={c.outletId} from={c.from} to={c.to} currency={c.currency} />,
+  prime: (c) => (
+    <PrimeCostTab
+      outletId={c.outletId}
+      from={c.from}
+      to={c.to}
+      currency={c.currency}
+      canEnter={c.can('finance.expense.create')}
+    />
+  ),
   expenses: (c) => (
     <ExpensesTab
       outletId={c.outletId}

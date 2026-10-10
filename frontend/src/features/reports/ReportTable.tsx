@@ -17,6 +17,8 @@ const MONEY_COLS = new Set([
   'value',
   'net_value',
   'variance_value',
+  'unit_margin',
+  'total_margin',
 ])
 
 function Cell({
@@ -36,6 +38,7 @@ function Cell({
     return <>{formatMoney(value, currency, intlLocale(i18n.language))}</>
   if (col.endsWith('_pct')) return <>{`${String(value)} %`}</>
   if (weekday && col === 'name') return <>{t(`reports.weekdays.${String(value)}`)}</>
+  if (col === 'class') return <>{t(`reports.menuClass.${String(value)}`)}</>
   return <>{String(value)}</>
 }
 
@@ -126,6 +129,14 @@ function Totals({ totals, currency }: { totals: Record<string, unknown>; currenc
       )}
       {'total' in totals && <p>{t('reports.grandTotal', { value: money(totals.total) })}</p>}
       {'value' in totals && <p>{t('reports.grandTotal', { value: money(totals.value) })}</p>}
+      {'average_unit_margin' in totals && (
+        <p>
+          {t('reports.menuBars', {
+            margin: money(totals.average_unit_margin),
+            mix: totals.popularity_bar_pct,
+          })}
+        </p>
+      )}
       {best.length > 0 && (
         <p>
           {t('reports.bestDays', {

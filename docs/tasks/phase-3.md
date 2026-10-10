@@ -13,6 +13,6 @@ Order: front of house first (reservations build on tables), then the books (each
 | 3g | Storage locations with counts per location; barcode and QR labels, scanning on receive, transfer and count | FR-INV-017, 019 | done 2026-10-10 (camera scanning where the browser supports it; typed or USB scanner elsewhere) |
 | 3h | Forecast and EOQ, production plan suggestion, best-vendor suggestion | FR-INV-018, FR-PRD-005, FR-PUR-007 | done 2026-10-10 |
 | 3i | Standing transfer orders by weekday; optional internal transfer pricing | FR-TRF-005, 006 | done 2026-10-10 (books stay at cost until Q-006 is answered) |
-| 3j | Menu engineering and prime cost | FR-RPT-007, 008 | |
+| 3j | Menu engineering and prime cost | FR-RPT-007, 008 | done 2026-10-10 |
 | 3k | Tenant data export (owner and admin), platform announcements, web push, context help and changelog | FR-TEN-010, FR-ADM-005, 007, FR-NTF-005, FR-X-007 | |
 | 3l | Gate 3 checks: reconciliation drill, security review of the phase | Gate 3 | |

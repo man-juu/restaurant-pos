@@ -60,6 +60,11 @@ export const REPORTS: ReportDef[] = [
     permission: 'sales.staff.view',
   },
   {
+    key: 'menuEngineering',
+    path: '/api/v1/sales/reports/menu-engineering',
+    permission: 'catalog.cost.view', // margins are costs; also needs sales.report.view
+  },
+  {
     key: 'stockMovements',
     path: '/api/v1/inventory/reports/movements',
     permission: 'inventory.report.view',

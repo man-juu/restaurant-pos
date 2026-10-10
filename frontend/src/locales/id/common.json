@@ -381,7 +381,8 @@
       "tables": "Meja",
       "finance": "Pembukuan",
       "planning": "Perencanaan",
-      "transfers": "Transfer"
+      "transfers": "Transfer",
+      "reports": "Laporan"
     },
     "tax": {
       "help": "Tarif diatur per usaha; periksa tarif daerah dengan konsultan pajak Anda.",
@@ -524,6 +525,10 @@
       "costPlus": "Nilai stok ditambah markup (usaha terpisah)",
       "markup": "Markup (%)",
       "help": "Tanyakan ke akuntan apakah outlet Anda badan usaha terpisah. Pembukuan tetap mencatat transfer sebesar biaya; tagihan tampil di surat jalan dan laporan tagihan."
+    },
+    "reports": {
+      "popularity": "Menu engineering: laris mulai % ini dari porsi wajar",
+      "help": "Aturan umum 70 %: dengan 20 menu, sebuah menu dianggap laris bila terjual minimal 3,5 % dari semua porsi."
     }
   },
   "catalog": {
@@ -1248,7 +1253,11 @@
       "tax": "Pajak",
       "staff": "Staf",
       "orders": "Pesanan",
-      "average_order": "Rata-rata pesanan"
+      "average_order": "Rata-rata pesanan",
+      "unit_margin": "Margin per porsi",
+      "total_margin": "Total margin",
+      "mix_pct": "Porsi dari total",
+      "class": "Kelas"
     },
     "names": {
       "salesDaily": "Penjualan per hari",
@@ -1265,7 +1274,8 @@
       "purchasesByVendor": "Pembelian per vendor",
       "purchasesByItem": "Pembelian per barang",
       "taxCollected": "Pajak terpungut (PBJT/PB1)",
-      "salesByStaff": "Penjualan per staf"
+      "salesByStaff": "Penjualan per staf",
+      "menuEngineering": "Menu engineering"
     },
     "weekdays": {
       "1": "Senin",
@@ -1277,7 +1287,15 @@
       "7": "Minggu"
     },
     "csv": "Unduh CSV",
-    "excel": "Unduh Excel"
+    "excel": "Unduh Excel",
+    "menuClass": {
+      "star": "Bintang: pertahankan dan tonjolkan",
+      "plowhorse": "Kuda beban: laris, naikkan margin",
+      "puzzle": "Teka-teki: untung, promosikan",
+      "dog": "Anjing: ubah atau hapus",
+      "no_cost": "Belum ada biaya resep"
+    },
+    "menuBars": "Rata-rata margin per porsi {{margin}} · laris mulai {{mix}} % porsi"
   },
   "audit": {
     "title": "Log audit",
@@ -1518,7 +1536,8 @@
       "accounts": "Kas dan bank",
       "books": "Pembukuan",
       "receivables": "Piutang",
-      "platforms": "Pencairan platform"
+      "platforms": "Pencairan platform",
+      "prime": "Prime cost"
     },
     "pl": {
       "netSales": "Penjualan bersih",
@@ -1810,5 +1829,18 @@
     "noCharges": "Tidak ada transfer terkirim pada periode ini.",
     "chargeLine_one": "{{count}} transfer · biaya {{cost}} · tagihan {{charge}}",
     "chargeLine_other": "{{count}} transfer · biaya {{cost}} · tagihan {{charge}}"
+  },
+  "prime": {
+    "netSales": "Penjualan bersih",
+    "prime": "Prime cost",
+    "food": "HPP",
+    "labor": "Biaya tenaga kerja",
+    "missing": "Belum ada biaya tenaga kerja untuk: {{months}}",
+    "enter": "Biaya tenaga kerja sebulan",
+    "month": "Bulan",
+    "amount": "Jumlah ({{currency}})",
+    "help": "Gaji, lembur, makan dan tunjangan staf outlet ini dalam sebulan. Menyimpan bulan yang sama lagi akan menggantinya.",
+    "saved": "Tersimpan.",
+    "save": "Simpan biaya tenaga kerja"
   }
 }

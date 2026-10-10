@@ -109,3 +109,25 @@ class MoneyTransfer(Base):
     note: Mapped[str | None] = mapped_column(String(300))
     created_by: Mapped[uuid.UUID] = mapped_column()
     created_at: Mapped[datetime] = _created_at()
+
+
+class LaborCost(Base):
+    """FR-RPT-008: what staff cost an outlet in a month, typed in by hand (no payroll here).
+    One row per outlet and month; saving again replaces the amount (audited)."""
+
+    __tablename__ = "labor_costs"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "outlet_id", "month"),
+        _fk("outlet_id", "outlets"),
+        CheckConstraint("amount >= 0", name="amount"),
+        CheckConstraint("extract(day from month) = 1", name="first_of_month"),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    outlet_id: Mapped[uuid.UUID] = mapped_column()
+    month: Mapped[date] = mapped_column(Date)  # first day of the month
+    amount: Mapped[int] = mapped_column(BigInteger)
+    note: Mapped[str | None] = mapped_column(String(200))
+    updated_by: Mapped[uuid.UUID] = mapped_column()
+    updated_at: Mapped[datetime] = _created_at()

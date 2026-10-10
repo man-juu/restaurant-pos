@@ -110,6 +110,7 @@ FALLBACK: dict[str, Any] = {
         "lead_day_cost_bp": 0,
     },
     "transfers": {"price_mode": "cost", "markup_bp": 0},
+    "reports": {"menu_popularity_pct": 70},
 }
 
 

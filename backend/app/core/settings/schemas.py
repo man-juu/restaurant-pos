@@ -187,6 +187,13 @@ class TransferSettings(Strict):
     markup_bp: int = Field(default=0, ge=0, le=100_000)
 
 
+class ReportSettings(Strict):
+    """FR-RPT-007: how popular an item must be to count as popular in menu engineering, as
+    a share of a fair share of portions sold (70 % is the usual rule)."""
+
+    menu_popularity_pct: int = Field(default=70, ge=10, le=200)
+
+
 class FinanceSettings(Strict):
     """FR-FIN-003: journal sales, stock, purchases and payments automatically once the books
     are set up. Off: only manual journals (an accountant keeps the books elsewhere)."""
@@ -229,6 +236,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "wholesale": WholesaleSettings,
     "planning": PlanningSettings,
     "transfers": TransferSettings,
+    "reports": ReportSettings,
 }
 
 
@@ -252,3 +260,4 @@ class AllSettings(BaseModel):
     wholesale: WholesaleSettings
     planning: PlanningSettings
     transfers: TransferSettings
+    reports: ReportSettings

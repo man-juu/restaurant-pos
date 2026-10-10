@@ -1,16 +1,17 @@
-"""Sales reports (FR-RPT-001 to 003, 006, 011). Outlet scope and cost visibility apply."""
+"""Sales reports (FR-RPT-001 to 003, 006, 007, 011). Outlet scope and cost visibility apply."""
 
 from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import Response
 
-from app.core.access.policy import Principal, require
+from app.core.access.policy import PermissionDenied, Principal, require
 from app.core.reports import PeriodDep, Report, outlet_filter, respond
 from app.core.tenancy import tenant_session
 from app.modules.catalog.interface import COST_VIEW
 from app.modules.sales import money_reports, reports
 from app.modules.sales import permissions as perm
+from app.modules.sales.menu_engineering import report as menu_engineering_report
 from app.modules.sales.reports import Dimension, Grain
 
 router = APIRouter(prefix="/api/v1/sales/reports", tags=["sales"])
@@ -48,6 +49,20 @@ async def breakdown(
             show_cost=p.can(COST_VIEW),
         )
     return respond(report, period, f"sales-by-{by}")
+
+
+@router.get("/menu-engineering", response_model=Report)
+async def menu_engineering(
+    request: Request, p: View, period: PeriodDep, lang: Literal["en", "id"] = "en"
+) -> Report | Response:
+    """FR-RPT-007: stars, plowhorses, puzzles and dogs. Margins are costs: cost view only."""
+    if not p.can(COST_VIEW):
+        raise PermissionDenied(details={"permission": COST_VIEW})
+    async with tenant_session(request.app.state.sessionmaker, p.tenant_id, p.user_id) as db:
+        report = await menu_engineering_report(
+            db, p.tenant_id, period, outlet_filter(p, period), lang
+        )
+    return respond(report, period, "menu-engineering")
 
 
 @router.get("/tax", response_model=Report)

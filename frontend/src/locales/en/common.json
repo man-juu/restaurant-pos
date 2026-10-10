@@ -381,7 +381,8 @@
       "tables": "Tables",
       "finance": "Books",
       "planning": "Planning",
-      "transfers": "Transfers"
+      "transfers": "Transfers",
+      "reports": "Reports"
     },
     "tax": {
       "help": "Rates are set per business; check regional rates with your tax advisor.",
@@ -524,6 +525,10 @@
       "costPlus": "Stock value plus a markup (separate businesses)",
       "markup": "Markup (%)",
       "help": "Ask your accountant whether your outlets are separate legal entities. The books keep transfers at cost either way; the charge shows on delivery notes and in the charges report."
+    },
+    "reports": {
+      "popularity": "Menu engineering: popular from this % of a fair share",
+      "help": "70 % is the usual rule: with 20 dishes, a dish counts as popular when it sells at least 3,5 % of all portions."
     }
   },
   "catalog": {
@@ -1248,7 +1253,11 @@
       "tax": "Tax",
       "staff": "Staff",
       "orders": "Orders",
-      "average_order": "Average order"
+      "average_order": "Average order",
+      "unit_margin": "Margin per portion",
+      "total_margin": "Total margin",
+      "mix_pct": "Share of portions",
+      "class": "Class"
     },
     "names": {
       "salesDaily": "Sales per day",
@@ -1265,7 +1274,8 @@
       "purchasesByVendor": "Purchases by vendor",
       "purchasesByItem": "Purchases by item",
       "taxCollected": "Tax collected (PBJT/PB1)",
-      "salesByStaff": "Sales by staff"
+      "salesByStaff": "Sales by staff",
+      "menuEngineering": "Menu engineering"
     },
     "weekdays": {
       "1": "Monday",
@@ -1277,7 +1287,15 @@
       "7": "Sunday"
     },
     "csv": "Download CSV",
-    "excel": "Download Excel"
+    "excel": "Download Excel",
+    "menuClass": {
+      "star": "Star: keep and feature",
+      "plowhorse": "Plowhorse: popular, raise margin",
+      "puzzle": "Puzzle: profitable, promote",
+      "dog": "Dog: rethink or remove",
+      "no_cost": "No recipe cost"
+    },
+    "menuBars": "Average margin per portion {{margin}} · popular from {{mix}} % of portions"
   },
   "audit": {
     "title": "Audit log",
@@ -1518,7 +1536,8 @@
       "accounts": "Cash and bank",
       "books": "Books",
       "receivables": "Receivables",
-      "platforms": "Platform payouts"
+      "platforms": "Platform payouts",
+      "prime": "Prime cost"
     },
     "pl": {
       "netSales": "Net sales",
@@ -1810,5 +1829,18 @@
     "noCharges": "No shipped transfers in this period.",
     "chargeLine_one": "{{count}} transfer · cost {{cost}} · charged {{charge}}",
     "chargeLine_other": "{{count}} transfers · cost {{cost}} · charged {{charge}}"
+  },
+  "prime": {
+    "netSales": "Net sales",
+    "prime": "Prime cost",
+    "food": "Food cost (HPP)",
+    "labor": "Labour",
+    "missing": "No labour entered for: {{months}}",
+    "enter": "Labour cost for a month",
+    "month": "Month",
+    "amount": "Amount ({{currency}})",
+    "help": "Wages, overtime, meals and benefits for this outlet's staff in the month. Saving the same month again replaces it.",
+    "saved": "Saved.",
+    "save": "Save labour"
   }
 }

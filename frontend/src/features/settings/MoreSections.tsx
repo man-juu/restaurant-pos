@@ -67,3 +67,29 @@ export function FinanceSection({ data, canEdit }: Props) {
     </Card>
   )
 }
+
+/** FR-RPT-007: how popular a dish must be to count as popular in menu engineering. */
+export function ReportsSection({ data, canEdit }: Props) {
+  const { t } = useTranslation()
+  const save = useSaveSetting('reports')
+  const [pct, setPct] = useState(String(data.reports?.menu_popularity_pct ?? 70))
+  return (
+    <Card className="flex flex-col gap-3">
+      <fieldset disabled={!canEdit} className="flex flex-col gap-3">
+        <TextInput
+          label={t('settings.reports.popularity')}
+          inputMode="numeric"
+          value={pct}
+          onChange={(e) => setPct(e.target.value)}
+        />
+        <p className="text-sm text-muted">{t('settings.reports.help')}</p>
+      </fieldset>
+      {canEdit && (
+        <SaveBar
+          mutation={save}
+          onSave={() => save.mutate({ menu_popularity_pct: minutes(pct, 70) })}
+        />
+      )}
+    </Card>
+  )
+}

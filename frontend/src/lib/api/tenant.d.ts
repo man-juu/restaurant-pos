@@ -1637,6 +1637,44 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/finance/labor': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Labor */
+    get: operations['list_labor_api_v1_finance_labor_get']
+    /**
+     * Save Labor
+     * @description Saving a month again replaces its amount (idempotent; audited).
+     */
+    put: operations['save_labor_api_v1_finance_labor_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/prime-cost': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Prime Cost */
+    get: operations['prime_cost_api_v1_finance_prime_cost_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/finance/profit-loss': {
     parameters: {
       query?: never
@@ -3941,6 +3979,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/sales/reports/menu-engineering': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Menu Engineering
+     * @description FR-RPT-007: stars, plowhorses, puzzles and dogs. Margins are costs: cost view only.
+     */
+    get: operations['menu_engineering_api_v1_sales_reports_menu_engineering_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/sales/reports/staff': {
     parameters: {
       query?: never
@@ -4252,6 +4310,7 @@ export interface paths {
     /**
      * Charges
      * @description FR-TRF-006: shipped transfers in the period per pair of outlets, at cost and charged.
+     *     Shows stock values, so it also needs catalog.cost.view.
      */
     get: operations['charges_api_v1_transfers_reports_charges_get']
     put?: never
@@ -4652,6 +4711,7 @@ export interface components {
       production: components['schemas']['ProductionSettings']
       purchasing: components['schemas']['PurchasingSettings']
       receipt: components['schemas']['ReceiptSettings']
+      reports: components['schemas']['ReportSettings']
       service_charge: components['schemas']['ServiceChargeSettings']
       session: components['schemas']['SessionSettings']
       stock: components['schemas']['StockSettings']
@@ -6236,6 +6296,40 @@ export interface components {
        */
       recall_minutes: number
     }
+    /** LaborIn */
+    LaborIn: {
+      /** Amount */
+      amount: number
+      /**
+       * Month
+       * Format: date
+       */
+      month: string
+      /** Note */
+      note?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
+    /** LaborOut */
+    LaborOut: {
+      /** Amount */
+      amount: number
+      /**
+       * Month
+       * Format: date
+       */
+      month: string
+      /** Note */
+      note: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
     /**
      * LevelIn
      * @description One item's targets at one outlet, in the item's base unit; empty = no target.
@@ -7461,6 +7555,25 @@ export interface components {
        */
       valid_from: string
     }
+    /** PrimeCostOut */
+    PrimeCostOut: {
+      /** Food Cost */
+      food_cost: number
+      /** Food Cost Pct */
+      food_cost_pct: string | null
+      /** Labor */
+      labor: number
+      /** Labor Months Missing */
+      labor_months_missing: string[]
+      /** Labor Pct */
+      labor_pct: string | null
+      /** Net Sales */
+      net_sales: number
+      /** Prime Cost */
+      prime_cost: number
+      /** Prime Cost Pct */
+      prime_cost_pct: string | null
+    }
     /** ProducibleRow */
     ProducibleRow: {
       /** Can Make */
@@ -7998,6 +8111,18 @@ export interface components {
       totals: {
         [key: string]: unknown
       }
+    }
+    /**
+     * ReportSettings
+     * @description FR-RPT-007: how popular an item must be to count as popular in menu engineering, as
+     *     a share of a fair share of portions sold (70 % is the usual rule).
+     */
+    ReportSettings: {
+      /**
+       * Menu Popularity Pct
+       * @default 70
+       */
+      menu_popularity_pct: number
     }
     /** RequestLine */
     RequestLine: {
@@ -13667,6 +13792,105 @@ export interface operations {
       }
     }
   }
+  list_labor_api_v1_finance_labor_get: {
+    parameters: {
+      query: {
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LaborOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  save_labor_api_v1_finance_labor_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LaborIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  prime_cost_api_v1_finance_prime_cost_get: {
+    parameters: {
+      query: {
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrimeCostOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   profit_loss_api_v1_finance_profit_loss_get: {
     parameters: {
       query: {
@@ -18433,6 +18657,41 @@ export interface operations {
     parameters: {
       query: {
         by?: 'outlet' | 'channel' | 'item' | 'category' | 'weekday'
+        lang?: 'en' | 'id'
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Report']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  menu_engineering_api_v1_sales_reports_menu_engineering_get: {
+    parameters: {
+      query: {
         lang?: 'en' | 'id'
         from: string
         to: string

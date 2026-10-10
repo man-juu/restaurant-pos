@@ -448,6 +448,9 @@
           "receipt": {
             "$ref": "#/components/schemas/ReceiptSettings"
           },
+          "reports": {
+            "$ref": "#/components/schemas/ReportSettings"
+          },
           "service_charge": {
             "$ref": "#/components/schemas/ServiceChargeSettings"
           },
@@ -487,7 +490,8 @@
           "finance",
           "wholesale",
           "planning",
-          "transfers"
+          "transfers",
+          "reports"
         ],
         "title": "AllSettings",
         "type": "object"
@@ -4481,6 +4485,83 @@
         "title": "KitchenSettings",
         "type": "object"
       },
+      "LaborIn": {
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Amount",
+            "type": "integer"
+          },
+          "month": {
+            "format": "date",
+            "title": "Month",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "month",
+          "amount"
+        ],
+        "title": "LaborIn",
+        "type": "object"
+      },
+      "LaborOut": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "integer"
+          },
+          "month": {
+            "format": "date",
+            "title": "Month",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "month",
+          "amount",
+          "note"
+        ],
+        "title": "LaborOut",
+        "type": "object"
+      },
       "LevelIn": {
         "additionalProperties": false,
         "description": "One item's targets at one outlet, in the item's base unit; empty = no target.",
@@ -7534,6 +7615,79 @@
         "title": "PriceOut",
         "type": "object"
       },
+      "PrimeCostOut": {
+        "properties": {
+          "food_cost": {
+            "title": "Food Cost",
+            "type": "integer"
+          },
+          "food_cost_pct": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Food Cost Pct"
+          },
+          "labor": {
+            "title": "Labor",
+            "type": "integer"
+          },
+          "labor_months_missing": {
+            "items": {
+              "format": "date",
+              "type": "string"
+            },
+            "title": "Labor Months Missing",
+            "type": "array"
+          },
+          "labor_pct": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Labor Pct"
+          },
+          "net_sales": {
+            "title": "Net Sales",
+            "type": "integer"
+          },
+          "prime_cost": {
+            "title": "Prime Cost",
+            "type": "integer"
+          },
+          "prime_cost_pct": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prime Cost Pct"
+          }
+        },
+        "required": [
+          "net_sales",
+          "food_cost",
+          "labor",
+          "prime_cost",
+          "prime_cost_pct",
+          "food_cost_pct",
+          "labor_pct",
+          "labor_months_missing"
+        ],
+        "title": "PrimeCostOut",
+        "type": "object"
+      },
       "ProducibleRow": {
         "properties": {
           "can_make": {
@@ -8962,6 +9116,21 @@
           "computed_at"
         ],
         "title": "Report",
+        "type": "object"
+      },
+      "ReportSettings": {
+        "additionalProperties": false,
+        "description": "FR-RPT-007: how popular an item must be to count as popular in menu engineering, as\na share of a fair share of portions sold (70 % is the usual rule).",
+        "properties": {
+          "menu_popularity_pct": {
+            "default": 70,
+            "maximum": 200.0,
+            "minimum": 10.0,
+            "title": "Menu Popularity Pct",
+            "type": "integer"
+          }
+        },
+        "title": "ReportSettings",
         "type": "object"
       },
       "RequestLine": {
@@ -19572,6 +19741,213 @@
         ]
       }
     },
+    "/api/v1/finance/labor": {
+      "get": {
+        "operationId": "list_labor_api_v1_finance_labor_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "from",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "From",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "To",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Outlet Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "json",
+              "enum": [
+                "json",
+                "csv",
+                "xlsx"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LaborOut"
+                  },
+                  "title": "Response List Labor Api V1 Finance Labor Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Labor",
+        "tags": [
+          "finance"
+        ]
+      },
+      "put": {
+        "description": "Saving a month again replaces its amount (idempotent; audited).",
+        "operationId": "save_labor_api_v1_finance_labor_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LaborIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Save Labor",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/prime-cost": {
+      "get": {
+        "operationId": "prime_cost_api_v1_finance_prime_cost_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "from",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "From",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "To",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Outlet Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "json",
+              "enum": [
+                "json",
+                "csv",
+                "xlsx"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrimeCostOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Prime Cost",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
     "/api/v1/finance/profit-loss": {
       "get": {
         "description": "FR-FIN-001: sales, HPP and expenses per outlet and period.",
@@ -27916,6 +28292,106 @@
         ]
       }
     },
+    "/api/v1/sales/reports/menu-engineering": {
+      "get": {
+        "description": "FR-RPT-007: stars, plowhorses, puzzles and dogs. Margins are costs: cost view only.",
+        "operationId": "menu_engineering_api_v1_sales_reports_menu_engineering_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "From",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "To",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Outlet Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "json",
+              "enum": [
+                "json",
+                "csv",
+                "xlsx"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Report"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Menu Engineering",
+        "tags": [
+          "sales"
+        ]
+      }
+    },
     "/api/v1/sales/reports/staff": {
       "get": {
         "description": "FR-RPT-012: sales by staff member, only with sales.staff.view.",
@@ -29027,7 +29503,7 @@
     },
     "/api/v1/transfers/reports/charges": {
       "get": {
-        "description": "FR-TRF-006: shipped transfers in the period per pair of outlets, at cost and charged.",
+        "description": "FR-TRF-006: shipped transfers in the period per pair of outlets, at cost and charged.\nShows stock values, so it also needs catalog.cost.view.",
         "operationId": "charges_api_v1_transfers_reports_charges_get",
         "parameters": [
           {
