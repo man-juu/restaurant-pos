@@ -279,4 +279,3 @@ async def suggest(
         )
         for o in options[:5]
     ]
-

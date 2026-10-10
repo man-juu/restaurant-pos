@@ -292,7 +292,15 @@
     "return_reversed": "Retur ini sudah dibatalkan.",
     "already_void": "Tagihan ini sudah dibatalkan.",
     "pin_blocked": "PIN ini diblokir karena terlalu sering salah. Minta manajer mengatur ulang.",
-    "refund_method_mismatch": "Kembalikan dana dengan cara pelanggan membayar."
+    "refund_method_mismatch": "Kembalikan dana dengan cara pelanggan membayar.",
+    "table_already_booked": "Meja ini sudah dipesan untuk jam itu.",
+    "tables_too_small": "Meja ini tidak cukup untuk seluruh rombongan.",
+    "guest_name_required": "Isi nama tamu.",
+    "customer_phone_exists": "Sudah ada tamu dengan nomor telepon ini.",
+    "customer_erased": "Data tamu ini sudah dihapus.",
+    "reservation_not_found": "Reservasi tidak ditemukan.",
+    "waitlist_entry_not_found": "Tidak ada di antrean.",
+    "customer_not_found": "Tamu tidak ditemukan."
   },
   "appearance": {
     "open": "Tampilan",
@@ -1472,5 +1480,48 @@
     "categoriesList": "Kategori pengeluaran: {{names}}",
     "categoryName": "Kategori baru",
     "addCategory": "Tambah kategori"
+  },
+  "bookings": {
+    "tabs": {
+      "floor": "Denah",
+      "reservations": "Reservasi",
+      "waitlist": "Antrean"
+    },
+    "day": "Tanggal",
+    "new": "Reservasi baru",
+    "empty": "Tidak ada reservasi di hari ini.",
+    "name": "Nama tamu",
+    "phone": "Telepon",
+    "party": "Jumlah tamu",
+    "time": "Jam",
+    "notes": "Catatan",
+    "tables": "Meja",
+    "noTables": "Tidak ada meja kosong yang cukup untuk rombongan ini di jam ini.",
+    "option": "{{names}} ({{seats}} kursi)",
+    "save": "Simpan reservasi",
+    "cancelForm": "Tutup",
+    "line": "{{time}} · {{name}} · {{party}} tamu",
+    "noShows_one": "Pernah tidak datang {{count}} kali",
+    "noShows_other": "Pernah tidak datang {{count}} kali",
+    "late": "Terlambat",
+    "seat": "Dudukkan",
+    "confirm": "Konfirmasi",
+    "noShow": "Tidak datang",
+    "cancel": "Batalkan reservasi",
+    "status": {
+      "pending": "Menunggu",
+      "confirmed": "Dikonfirmasi",
+      "seated": "Duduk",
+      "completed": "Selesai",
+      "no_show": "Tidak datang",
+      "cancelled": "Dibatalkan"
+    },
+    "addWaiting": "Tambah ke antrean",
+    "nobodyWaiting": "Tidak ada yang mengantre.",
+    "waitLine": "{{name}} · {{party}} tamu",
+    "wait_one": "Sekitar {{count}} menit",
+    "wait_other": "Sekitar {{count}} menit",
+    "table": "Meja",
+    "left": "Pergi"
   }
 }

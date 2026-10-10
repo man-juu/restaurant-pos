@@ -4,7 +4,7 @@ Order: front of house first (reservations build on tables), then the books (each
 
 | # | Slice | Requirements | Status |
 | --- | --- | --- | --- |
-| 3a | Customers with consent; reservations with conflict detection and suggested tables; seating opens a table session; no-shows per guest; walk-in waitlist | FR-SAL-012, FR-TBL-005 to 008 | backend done 2026-10-10 |
+| 3a | Customers with consent; reservations with conflict detection and suggested tables; seating opens a table session; no-shows per guest; walk-in waitlist | FR-SAL-012, FR-TBL-005 to 008 | done 2026-10-10 |
 | 3b | Visual floor plan editor | FR-TBL-009 | |
 | 3c | General ledger: chart of accounts (Indonesian F&B template), journals, periods, trial balance, balance sheet, cash flow; manual journals with approval and attachments; period close; finance start date and opening balances | FR-FIN-002, 004, 005, 009 | |
 | 3d | Automatic journals from operations by configurable posting rules | FR-FIN-003 | |

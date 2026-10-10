@@ -292,7 +292,15 @@
     "return_reversed": "This return was reversed.",
     "already_void": "This bill is already void.",
     "pin_blocked": "This PIN is blocked after too many wrong tries. Ask a manager to reset it.",
-    "refund_method_mismatch": "Refund the way the customer paid."
+    "refund_method_mismatch": "Refund the way the customer paid.",
+    "table_already_booked": "This table is already booked for that time.",
+    "tables_too_small": "These tables do not seat the whole party.",
+    "guest_name_required": "Enter the guest's name.",
+    "customer_phone_exists": "A guest with this phone number already exists.",
+    "customer_erased": "This guest's details were erased.",
+    "reservation_not_found": "Reservation not found.",
+    "waitlist_entry_not_found": "Not on the waitlist.",
+    "customer_not_found": "Guest not found."
   },
   "appearance": {
     "open": "Appearance",
@@ -1472,5 +1480,48 @@
     "categoriesList": "Expense categories: {{names}}",
     "categoryName": "New category",
     "addCategory": "Add category"
+  },
+  "bookings": {
+    "tabs": {
+      "floor": "Floor",
+      "reservations": "Reservations",
+      "waitlist": "Waitlist"
+    },
+    "day": "Day",
+    "new": "New reservation",
+    "empty": "No reservations on this day.",
+    "name": "Guest name",
+    "phone": "Phone",
+    "party": "Guests",
+    "time": "Time",
+    "notes": "Notes",
+    "tables": "Tables",
+    "noTables": "No free table fits this party at this time.",
+    "option": "{{names}} ({{seats}} seats)",
+    "save": "Save reservation",
+    "cancelForm": "Close",
+    "line": "{{time}} · {{name}} · {{party}} guests",
+    "noShows_one": "Did not come {{count}} time before",
+    "noShows_other": "Did not come {{count}} times before",
+    "late": "Late",
+    "seat": "Seat now",
+    "confirm": "Confirm",
+    "noShow": "No-show",
+    "cancel": "Cancel booking",
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "seated": "Seated",
+      "completed": "Done",
+      "no_show": "No-show",
+      "cancelled": "Cancelled"
+    },
+    "addWaiting": "Add to waitlist",
+    "nobodyWaiting": "Nobody is waiting.",
+    "waitLine": "{{name}} · {{party}} guests",
+    "wait_one": "About {{count}} minute",
+    "wait_other": "About {{count}} minutes",
+    "table": "Table",
+    "left": "Left"
   }
 }
