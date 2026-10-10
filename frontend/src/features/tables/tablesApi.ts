@@ -80,3 +80,16 @@ export const useSessionStep = (sessionId: string) =>
       kind === 'orders' ? undefined : body,
     ),
   )
+
+/** FR-TBL-009: a new spot (grid cell) on the floor plan; everything else stays. */
+export const useMoveTable = () =>
+  useTableChange(({ table, x, y }: { table: TableOut; x: number; y: number }) =>
+    request<TableOut[]>('PUT', `${T}/${table.id}`, {
+      floor_id: table.floor_id,
+      name: table.name,
+      capacity: table.capacity,
+      x,
+      y,
+      is_active: table.is_active,
+    }),
+  )

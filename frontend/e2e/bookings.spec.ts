@@ -109,3 +109,60 @@ test('book a table from the suggestions; the list warns about past no-shows (FR-
     })
   await expect(page.getByText('Did not come 1 time before')).toBeVisible()
 })
+
+test('lay out the floor: an arrow key moves a table one cell and saves it (FR-TBL-009)', async ({
+  page,
+}) => {
+  const puts: Body[] = []
+  await page.route('**/api/v1/**', async (route: Route) => {
+    const req = route.request()
+    const path = new URL(req.url()).pathname
+    const t2 = {
+      id: 't2',
+      outlet_id: 'o1',
+      floor_id: 'f1',
+      name: 'T2',
+      capacity: 4,
+      x: 3,
+      y: 2,
+      status: 'available',
+      is_active: true,
+      session: null,
+    }
+    const routes: Record<string, () => unknown> = {
+      'GET /api/v1/auth/session': () => ({
+        user: { id: 'u', email: 'w@x', name: 'Ani', locale: 'en' },
+        tenants: [{ id: 't', name: 'Dapur' }],
+        active_tenant_id: 't',
+        csrf_token: 'c',
+        mfa_state: 'ok',
+      }),
+      'GET /api/v1/me/capabilities': () => ({
+        ...caps,
+        permissions: [...caps.permissions, 'tables.table.setup'],
+      }),
+      'GET /api/v1/outlets': () => [
+        { id: 'o1', name: 'Shop', type: 'branch', timezone: 'Asia/Jakarta', is_active: true },
+      ],
+      'GET /api/v1/catalog/channels': () => [],
+      'GET /api/v1/tables/floors': () => [
+        { id: 'f1', outlet_id: 'o1', name: 'Main', sort_order: 0, is_active: true },
+      ],
+      'GET /api/v1/tables': () => [t2],
+      'PUT /api/v1/tables/t2': () => {
+        puts.push(req.postDataJSON() as Body)
+        return [t2]
+      },
+    }
+    const data = routes[`${req.method()} ${path}`]?.()
+    return data === undefined
+      ? route.fulfill({ status: 404, json: { code: 'not_found' } })
+      : route.fulfill({ json: data })
+  })
+  await page.goto('/tables')
+  await page.getByRole('button', { name: 'EN', exact: true }).click()
+  await page.getByRole('button', { name: 'Edit layout' }).click()
+  await page.getByRole('button', { name: 'T2, 4 seats' }).focus()
+  await page.keyboard.press('ArrowRight')
+  await expect.poll(() => puts[0]).toMatchObject({ x: 4, y: 2, name: 'T2', capacity: 4 })
+})

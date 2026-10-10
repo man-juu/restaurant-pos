@@ -3,15 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { useOutletContext } from 'react-router'
 
 import { SelectInput, Tabs } from '../../components/form'
-import { Alert } from '../../components/ui'
 import type { Capabilities } from '../../lib/api/types'
-import { errorMessage } from '../../lib/errors'
-import { formatMoney, intlLocale } from '../../lib/format'
+import { FloorTab } from './FloorTab'
 import { ReservationsTab } from './ReservationsTab'
-import { TableCard } from './TableCard'
-import { TablePanel } from './TablePanel'
-import { TableSetup } from './TableSetup'
-import { type FloorView, useFloorView, useNow } from './useFloorView'
+import { type FloorView, useFloorView } from './useFloorView'
 import { WaitlistTab } from './WaitlistTab'
 
 const TABS = ['floor', 'reservations', 'waitlist'] as const
@@ -33,7 +28,7 @@ export function TablesPage() {
         <Pickers view={view} />
       </div>
       <Tabs tabs={TABS} value={tab} onChange={setTab} label={(k) => t(`bookings.tabs.${k}`)} />
-      {tab === 'floor' && <Floor view={view} caps={caps} />}
+      {tab === 'floor' && <FloorTab view={view} caps={caps} />}
       {tab === 'reservations' && (
         <ReservationsTab
           outletId={view.outletId}
@@ -49,43 +44,6 @@ export function TablesPage() {
           tables={view.all}
           canManage={canManage}
         />
-      )}
-    </div>
-  )
-}
-
-function Floor({ view, caps }: { view: FloorView; caps?: Capabilities }) {
-  const { t, i18n } = useTranslation()
-  const [selected, setSelected] = useState<string>()
-  const now = useNow()
-  const money = (v: number) => formatMoney(v, caps?.currency ?? 'IDR', intlLocale(i18n.language))
-  const current = view.all.find((x) => x.id === selected)
-  return (
-    <div className="flex flex-col gap-4">
-      {view.tables.error && <Alert>{errorMessage(view.tables.error, t)}</Alert>}
-      {view.tables.isSuccess && view.shown.length === 0 && (
-        <p className="text-ink-soft">{t('tables.empty')}</p>
-      )}
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4">
-          {view.shown.map((x) => (
-            <li key={x.id}>
-              <TableCard
-                table={x}
-                selected={x.id === selected}
-                money={money}
-                now={now}
-                onSelect={() => setSelected(x.id)}
-              />
-            </li>
-          ))}
-        </ul>
-        {current && (
-          <TablePanel table={current} tables={view.all} channels={view.channels} money={money} />
-        )}
-      </div>
-      {caps?.permissions.includes('tables.table.setup') && (
-        <TableSetup outletId={view.outletId} floorId={view.floorId} />
       )}
     </div>
   )

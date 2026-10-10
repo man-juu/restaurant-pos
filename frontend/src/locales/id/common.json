@@ -1370,7 +1370,15 @@
     "addFloor": "Tambah lantai",
     "tableName": "Nama meja",
     "capacity": "Kursi",
-    "addTable": "Tambah meja"
+    "addTable": "Tambah meja",
+    "plan": {
+      "view": "Tampilkan meja sebagai",
+      "list": "Kartu",
+      "plan": "Denah",
+      "edit": "Atur denah",
+      "help": "Seret meja ke tempatnya, atau pilih lalu pakai tombol panah. Setiap perpindahan disimpan.",
+      "table": "{{name}}, {{seats}} kursi"
+    }
   },
   "kitchen": {
     "title": "Dapur",
