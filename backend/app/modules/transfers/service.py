@@ -88,7 +88,7 @@ async def _tell(db: AsyncSession, t: Transfer, user_id: uuid.UUID, action: str) 
     if action == "request":
         users = await recipients(db, "transfer_requested", t.from_outlet_id, APPROVE, any_role=True)
         await notify(db, t.tenant_id, users - {user_id}, "transfer_requested", params, link)
-    elif action != "receive" and t.requested_by != user_id:
+    elif action != "receive" and t.requested_by not in (None, user_id):
         await notify(db, t.tenant_id, {t.requested_by}, "transfer_updated", params, link)
 
 

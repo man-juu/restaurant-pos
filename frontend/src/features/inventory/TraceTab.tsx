@@ -14,7 +14,7 @@ export function TraceTab() {
   const [lot, setLot] = useState('')
   const [picked, setPicked] = useState<string | null>(null)
   const lots = useLots(lot, i18n.language)
-  const outlets = useOutlets()
+  const outlets = useOutlets('inventory')
   const outletName = (id: string) => outlets.data?.find((o) => o.id === id)?.name ?? ''
   const search = (e: FormEvent) => {
     e.preventDefault()

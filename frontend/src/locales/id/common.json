@@ -396,6 +396,7 @@
     "add": "Tambah",
     "remove": "Hapus",
     "tabs": {
+      "modules": "Modul",
       "tax": "Pajak",
       "service": "Biaya layanan",
       "payments": "Metode pembayaran",
@@ -416,6 +417,23 @@
       "transfers": "Transfer",
       "reports": "Laporan",
       "data": "Data Anda"
+    },
+    "outletModules": {
+      "help": "Nyalakan atau matikan modul per outlet. Modul yang butuh modul lain (misalnya penjualan butuh stok) ikut menyalakannya.",
+      "allOn": "Semua nyala",
+      "allOff": "Semua mati",
+      "names": {
+        "inventory": "Stok",
+        "purchasing": "Pembelian",
+        "production": "Produksi",
+        "transfers": "Transfer",
+        "sales": "Penjualan dan kasir",
+        "tables": "Meja",
+        "kitchen": "Layar dapur",
+        "finance": "Keuangan",
+        "reports": "Laporan",
+        "notifications": "Notifikasi"
+      }
     },
     "tax": {
       "help": "Tarif diatur per usaha; periksa tarif daerah dengan konsultan pajak Anda.",
@@ -540,6 +558,9 @@
       "overbooking": "Izinkan meja dipesan dua kali untuk jam yang sama"
     },
     "finance": {
+      "mode": "Tampilan keuangan",
+      "simple": "Sederhana: uang masuk dan keluar, laba rugi (tanpa perlu ilmu akuntansi)",
+      "advanced": "Lanjutan: juga pembukuan, faktur pelanggan, pencairan platform dan prime cost",
       "auto": "Jurnal otomatis untuk penjualan, stok, pembelian dan pembayaran",
       "help": "Hanya setelah pembukuan disiapkan (Keuangan, Pembukuan). Mati: akuntan mencatat jurnal manual."
     },
@@ -1983,6 +2004,12 @@
   "changelog": {
     "title": "Yang baru",
     "items": {
+      "2026-10-10d": [
+        "Nyalakan atau matikan modul per outlet (Pengaturan → Modul)",
+        "Keuangan punya mode sederhana (bawaan) dan mode lanjutan",
+        "Dapur pusat diberi tahu permintaan stok; cabang diberi kabar saat diproses",
+        "Kasir bisa diatur tetap menerima pesanan saat offline (pengaturan Kasir)"
+      ],
       "2026-10-10c": [
         "Unduh salinan semua data Anda (Pengaturan → Data Anda)",
         "Pengumuman platform di bagian atas aplikasi",

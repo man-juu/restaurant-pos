@@ -127,7 +127,7 @@ async def void_bill(bill_id: uuid.UUID, request: Request, p: Manage) -> VendorBi
 async def payables_aging(request: Request, p: View) -> list[AgingRow]:
     async with _db(request, p) as db:
         today = await tenant_today(db, p.tenant_id)
-        scope = None if p.all_outlets else set(p.outlet_ids)
+        scope = _scope(p)
         return await bills.payables_aging(db, scope, today)
 
 
@@ -135,5 +135,10 @@ async def payables_aging(request: Request, p: View) -> list[AgingRow]:
 async def payables(request: Request, p: View) -> list[PayableRow]:
     async with _db(request, p) as db:
         today = await tenant_today(db, p.tenant_id)
-        scope = None if p.all_outlets else set(p.outlet_ids)
+        scope = _scope(p)
         return await bills.payables(db, scope, today)
+
+
+def _scope(p: Principal) -> set[uuid.UUID] | None:
+    seen = p.visible_outlets()
+    return None if seen is None else set(seen)

@@ -16,7 +16,7 @@ import { TicketCard } from './TicketCard'
 const COLUMNS = ['new', 'preparing', 'ready'] as const
 
 function useOutletPick() {
-  const outlets = (useOutlets().data ?? []).filter((o) => o.is_active)
+  const outlets = (useOutlets('kitchen').data ?? []).filter((o) => o.is_active)
   const [picked, setOutlet] = useState('')
   return { outlets, outletId: picked || outlets[0]?.id || '', setOutlet }
 }

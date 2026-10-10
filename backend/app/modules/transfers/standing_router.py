@@ -100,8 +100,7 @@ async def charges(request: Request, p: View, period: PeriodDep) -> list[ChargeRo
         )
         .group_by(t.from_outlet_id, t.to_outlet_id)
     )
-    if not p.all_outlets:
-        mine = sorted(p.outlet_ids)
+    if (mine := p.visible_outlets()) is not None:
         stmt = stmt.where(or_(t.from_outlet_id.in_(mine), t.to_outlet_id.in_(mine)))
     async with _db(request, p) as db:
         rows = (await db.execute(stmt)).all()

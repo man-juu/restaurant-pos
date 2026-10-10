@@ -201,6 +201,10 @@ class FinanceSettings(Strict):
     are set up. Off: only manual journals (an accountant keeps the books elsewhere)."""
 
     auto_journals: bool = True
+    # Owner 2026-10-10: most owners have no accountant. "simple" shows money in and out,
+    # profit and loss, and money accounts; "advanced" adds the books, receivables,
+    # platform settlements and prime cost.
+    mode: Literal["simple", "advanced"] = "simple"
 
 
 class TablesSettings(Strict):

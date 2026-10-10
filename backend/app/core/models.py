@@ -352,6 +352,23 @@ class TenantModule(Base):
     enabled_at: Mapped[datetime] = mapped_column(server_default=func.now())
 
 
+class OutletModuleOff(Base):
+    """Owner's per-outlet switch: a row means this module is OFF at this outlet. No row
+    means on (the tenant default), so a new outlet gets every module the tenant has."""
+
+    __tablename__ = "outlet_modules_off"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "outlet_id"], ["outlets.tenant_id", "outlets.id"], ondelete="CASCADE"
+        ),
+    )
+
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"), primary_key=True)
+    outlet_id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    module: Mapped[str] = mapped_column(String(40), primary_key=True)
+    created_at: Mapped[datetime] = _created_at()
+
+
 class Subscription(Base):
     """FR-SUB-001 to 005. Billing happens outside the app; the admin records the dates.
     The effective state is computed from them (app/core/access/subscription.py)."""

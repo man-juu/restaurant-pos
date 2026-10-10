@@ -102,7 +102,7 @@ export function InventoryPage() {
   const { caps } = useOutletContext<{ caps?: Capabilities }>()
   const a = access(caps)
   const tabs = Object.keys(TABS).filter((k) => TABS[k].visible(a))
-  const outlets = useOutlets()
+  const outlets = useOutlets('inventory')
   const [picked, setPicked] = useState('')
   const outletId = picked || outlets.data?.find((o) => o.is_active)?.id || ''
   const [tab, setTab] = useState('stock')

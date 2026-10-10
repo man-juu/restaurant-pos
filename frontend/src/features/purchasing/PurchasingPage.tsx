@@ -103,7 +103,7 @@ export function PurchasingPage() {
   const [tab, setTab] = useState('')
   const a = access(caps, setTab)
   const tabs = Object.keys(TABS).filter((k) => TABS[k].visible(a))
-  const outlets = useOutlets()
+  const outlets = useOutlets('purchasing')
   const [picked, setPicked] = useState('')
   const outletId = picked || outlets.data?.find((o) => o.is_active)?.id || ''
   const current = pick(tabs, tab)

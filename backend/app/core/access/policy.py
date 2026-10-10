@@ -14,7 +14,7 @@ route has neither `require(...)` nor `public()`, so a forgotten check cannot shi
 
 import uuid
 from collections.abc import Awaitable, Callable, Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from typing import Any
 
@@ -61,6 +61,11 @@ class Principal:
     enabled_modules: frozenset[str]
     subscription_state: str
     subscription: SubscriptionInfo | None
+    # Owner's per-outlet module switches (outlet, module) that are OFF, and the module of the
+    # route being served: an outlet whose module is off looks like one the caller cannot see.
+    modules_off: frozenset[tuple[uuid.UUID, str]] = frozenset()
+    tenant_outlets: frozenset[uuid.UUID] = frozenset()
+    module: str | None = None
 
     @property
     def user_id(self) -> uuid.UUID:
@@ -70,7 +75,16 @@ class Principal:
         return permission in self.permissions
 
     def can_access_outlet(self, outlet_id: uuid.UUID) -> bool:
+        if self.module is not None and (outlet_id, self.module) in self.modules_off:
+            return False
         return self.all_outlets or outlet_id in self.outlet_ids
+
+    def visible_outlets(self) -> list[uuid.UUID] | None:
+        """Outlets this route may cover; None = every outlet of the tenant (no switch off)."""
+        if self.all_outlets and not any(m == self.module for _, m in self.modules_off):
+            return None
+        pool = self.tenant_outlets if self.all_outlets else self.outlet_ids
+        return sorted(o for o in pool if self.can_access_outlet(o))
 
     def require_outlet(self, outlet_id: uuid.UUID) -> None:
         """404, not 403: an out-of-scope outlet looks like one that does not exist."""
@@ -87,6 +101,9 @@ _PRINCIPAL_SQL = text("""
            ARRAY(SELECT mo.outlet_id FROM membership_outlets mo
                  WHERE mo.membership_id = m.id) AS outlet_ids,
            ARRAY(SELECT tm.module FROM tenant_modules tm WHERE tm.enabled) AS modules,
+           ARRAY(SELECT om.outlet_id::text || ':' || om.module
+                 FROM outlet_modules_off om) AS modules_off,
+           ARRAY(SELECT o.id FROM outlets o) AS tenant_outlets,
            s.plan_type, s.ends_at, s.grace_days, s.reminders_enabled, s.reminder_days, s.suspended
     FROM memberships m
     LEFT JOIN subscriptions s ON s.tenant_id = m.tenant_id
@@ -130,7 +147,14 @@ async def load_principal(request: Request, auth: AuthContext) -> Principal:
         enabled_modules=frozenset(row.modules or ()) | CORE_MODULES,
         subscription_state=effective_state(sub, datetime.now(UTC)),
         subscription=sub,
+        modules_off=frozenset(_off(x) for x in row.modules_off or ()),
+        tenant_outlets=frozenset(row.tenant_outlets or ()),
     )
+
+
+def _off(pair: str) -> tuple[uuid.UUID, str]:
+    outlet, module = pair.split(":", 1)
+    return uuid.UUID(outlet), module
 
 
 def require(permission: str) -> Callable[[Request], Awaitable[Principal]]:
@@ -150,7 +174,7 @@ def require(permission: str) -> Callable[[Request], Awaitable[Principal]]:
             raise ModuleDisabled(details={"module": module})
         if not principal.can(permission):
             raise PermissionDenied(details={"permission": permission})
-        return principal
+        return replace(principal, module=module)
 
     dependency.access_rule = ("permission", permission)  # type: ignore[attr-defined]
     return dependency

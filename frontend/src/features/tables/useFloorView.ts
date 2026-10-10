@@ -21,7 +21,7 @@ export function useNow() {
 
 /** Outlet, floor and the tables on it, for the floor screen. */
 export function useFloorView() {
-  const outlets = (useOutlets().data ?? []).filter((o) => o.is_active)
+  const outlets = (useOutlets('tables').data ?? []).filter((o) => o.is_active)
   const [outletId, setOutlet] = usePick(outlets[0]?.id)
   const floors = useFloors(outletId).data ?? []
   const [floorId, setFloor] = usePick(floors[0]?.id)

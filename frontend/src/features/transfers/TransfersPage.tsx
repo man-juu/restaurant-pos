@@ -35,10 +35,11 @@ function abilities(caps?: Capabilities): Can {
 export function TransfersPage() {
   const { t } = useTranslation()
   const { caps } = useOutletContext<{ caps?: Capabilities }>()
-  const all = useOutlets().data ?? []
+  const every = useOutlets().data ?? []
+  const all = every.filter((o) => !o.modules_off?.includes('transfers'))
   const [picked, setPicked] = useState('')
   const outletId = picked || firstActive(all)
-  const names = Object.fromEntries(all.map((o) => [o.id, o.name]))
+  const names = Object.fromEntries(every.map((o) => [o.id, o.name]))
   const can = abilities(caps)
   const currency = caps?.currency ?? 'IDR'
   const [tab, setTab] = useState<Tab>('list')

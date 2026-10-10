@@ -63,7 +63,7 @@ def outlet_filter(p: Principal, period: Period) -> list[uuid.UUID] | None:
     if period.outlet_id is not None:
         p.require_outlet(period.outlet_id)
         return [period.outlet_id]
-    return None if p.all_outlets else sorted(p.outlet_ids)
+    return p.visible_outlets()
 
 
 class Report(BaseModel):

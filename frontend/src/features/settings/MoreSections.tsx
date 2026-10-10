@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { CheckInput, TextInput } from '../../components/form'
+import { CheckInput, TextInput, SelectInput } from '../../components/form'
 import { Card } from '../../components/ui'
 import type { AllSettings } from '../../lib/api/types'
 import { useSaveSetting } from './api'
@@ -57,13 +57,24 @@ export function FinanceSection({ data, canEdit }: Props) {
   const { t } = useTranslation()
   const save = useSaveSetting('finance')
   const [auto, setAuto] = useState(data.finance?.auto_journals ?? true)
+  const [mode, setMode] = useState(data.finance?.mode ?? 'simple')
   return (
     <Card className="flex flex-col gap-3">
-      <fieldset disabled={!canEdit}>
+      <fieldset disabled={!canEdit} className="flex flex-col gap-3">
+        <SelectInput
+          label={t('settings.finance.mode')}
+          value={mode}
+          onChange={(e) => setMode(e.target.value as 'simple' | 'advanced')}
+        >
+          <option value="simple">{t('settings.finance.simple')}</option>
+          <option value="advanced">{t('settings.finance.advanced')}</option>
+        </SelectInput>
         <CheckInput label={t('settings.finance.auto')} checked={auto} onChange={setAuto} />
         <p className="text-sm text-muted">{t('settings.finance.help')}</p>
       </fieldset>
-      {canEdit && <SaveBar mutation={save} onSave={() => save.mutate({ auto_journals: auto })} />}
+      {canEdit && (
+        <SaveBar mutation={save} onSave={() => save.mutate({ auto_journals: auto, mode })} />
+      )}
     </Card>
   )
 }

@@ -48,7 +48,7 @@ function Picker({
 export function SalesPage() {
   const { t } = useTranslation()
   const { caps } = useOutletContext<{ caps?: Capabilities }>()
-  const outlets = useOutlets().data?.filter((o) => o.is_active)
+  const outlets = useOutlets('sales').data?.filter((o) => o.is_active)
   const channels = useChannels().data
   const [outletId, setOutlet] = usePick(outlets)
   const [channelId, setChannel] = usePick(channels)

@@ -25,6 +25,7 @@ class OutletOut(BaseModel):
     type: str
     timezone: str
     is_active: bool
+    modules_off: list[str] = []  # switched off at this outlet by the owner
 
 
 class SubscriptionBanner(BaseModel):
@@ -56,7 +57,7 @@ async def list_outlets(
         if not p.all_outlets:  # outlet scope (docs/03)
             stmt = stmt.where(Outlet.id.in_(p.outlet_ids))
         rows = (await db.execute(stmt)).scalars()
-        return [OutletOut.model_validate(r, from_attributes=True) for r in rows]
+        return [_outlet_out(p, r) for r in rows]
 
 
 @router.get("/outlets/{outlet_id}", response_model=OutletOut)
@@ -71,7 +72,13 @@ async def get_outlet(
         row = (await db.execute(select(Outlet).where(Outlet.id == outlet_id))).scalar_one_or_none()
     if row is None:
         raise NotFoundError()
-    return OutletOut.model_validate(row, from_attributes=True)
+    return _outlet_out(p, row)
+
+
+def _outlet_out(p: Principal, row: Outlet) -> OutletOut:
+    out = OutletOut.model_validate(row, from_attributes=True)
+    out.modules_off = sorted(m for o, m in p.modules_off if o == row.id)
+    return out
 
 
 class RoleOut(BaseModel):

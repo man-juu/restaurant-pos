@@ -117,10 +117,13 @@ export function useCapabilities(enabled: boolean) {
   })
 }
 
-export function useOutlets() {
+/** Outlets the caller can see; with `module`, only those where the owner has it switched on
+ * (the server hides the others from that module's calls anyway). */
+export function useOutlets(module?: string) {
   return useQuery({
     queryKey: ['outlets'],
     queryFn: () => request<OutletOut[]>('GET', '/api/v1/outlets'),
+    select: module ? (rows) => rows.filter((o) => !o.modules_off?.includes(module)) : undefined,
   })
 }
 

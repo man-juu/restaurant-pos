@@ -396,6 +396,7 @@
     "add": "Add",
     "remove": "Remove",
     "tabs": {
+      "modules": "Modules",
       "tax": "Taxes",
       "service": "Service charge",
       "payments": "Payment methods",
@@ -416,6 +417,23 @@
       "transfers": "Transfers",
       "reports": "Reports",
       "data": "Your data"
+    },
+    "outletModules": {
+      "help": "Turn modules on or off per outlet. A module that needs another (for example sales needs stock) switches it on with it.",
+      "allOn": "All on",
+      "allOff": "All off",
+      "names": {
+        "inventory": "Stock",
+        "purchasing": "Purchasing",
+        "production": "Production",
+        "transfers": "Transfers",
+        "sales": "Sales and cashier",
+        "tables": "Tables",
+        "kitchen": "Kitchen screen",
+        "finance": "Finance",
+        "reports": "Reports",
+        "notifications": "Notifications"
+      }
     },
     "tax": {
       "help": "Rates are set per business; check regional rates with your tax advisor.",
@@ -540,6 +558,9 @@
       "overbooking": "Allow booking a table twice for the same time"
     },
     "finance": {
+      "mode": "Finance screens",
+      "simple": "Simple: money in and out, profit and loss (no accounting knowledge needed)",
+      "advanced": "Advanced: also the books, customer invoices, platform payouts and prime cost",
       "auto": "Journal sales, stock, purchases and payments automatically",
       "help": "Only after the books are set up (Finance, Books). Off: the accountant enters journals by hand."
     },
@@ -1983,6 +2004,12 @@
   "changelog": {
     "title": "What's new",
     "items": {
+      "2026-10-10d": [
+        "Turn modules on or off per outlet (Settings → Modules)",
+        "Finance has a simple mode (the default) and an advanced mode",
+        "The central kitchen is notified of stock requests; the branch hears back when they are handled",
+        "Tills can be set to keep taking orders offline (setting under Cashier)"
+      ],
       "2026-10-10c": [
         "Download a copy of all your data (Settings → Your data)",
         "Platform announcements at the top of the app",

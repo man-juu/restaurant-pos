@@ -5,6 +5,7 @@ import { useOutletContext } from 'react-router'
 import { SelectInput, Tabs, TextInput } from '../../components/form'
 import type { Capabilities } from '../../lib/api/types'
 import { useOutlets } from '../../lib/session'
+import { useSettings } from '../settings/api'
 import { todayIso } from '../catalog/labels'
 import { AccountsTab } from './AccountsTab'
 import { BooksTab } from './books/BooksTab'
@@ -16,6 +17,8 @@ import { SettlementsTab } from './settlements/SettlementsTab'
 
 const TABS = ['pl', 'prime', 'expenses', 'accounts', 'receivables', 'platforms', 'books'] as const
 type Tab = (typeof TABS)[number]
+/** Simple mode (the default) keeps only what needs no accounting knowledge. */
+const SIMPLE: readonly Tab[] = ['pl', 'expenses', 'accounts']
 
 const monthStart = () => `${todayIso().slice(0, 8)}01`
 
@@ -25,12 +28,14 @@ export function FinancePage() {
   const { caps } = useOutletContext<{ caps?: Capabilities }>()
   const can = (code: string) => Boolean(caps?.permissions.includes(code))
   const currency = caps?.currency ?? 'IDR'
-  const outlets = (useOutlets().data ?? []).filter((o) => o.is_active)
+  const outlets = (useOutlets('finance').data ?? []).filter((o) => o.is_active)
   const [outletPick, setOutlet] = useState('')
   const outletId = outletPick || outlets[0]?.id || ''
   const [from, setFrom] = useState(monthStart)
   const [to, setTo] = useState(todayIso)
   const [tab, setTab] = useState<Tab>('pl')
+  const tabs = useFinanceTabs()
+  const shown = tabs.includes(tab) ? tab : 'pl'
   return (
     <div className="flex flex-col gap-4">
       <h1 className="font-display text-3xl font-extrabold">{t('finance.title')}</h1>
@@ -59,12 +64,16 @@ export function FinancePage() {
           onChange={(e) => setTo(e.target.value)}
         />
       </div>
-      <Tabs tabs={TABS} value={tab} onChange={setTab} label={(k) => t(`finance.tabs.${k}`)} />
+      <Tabs tabs={tabs} value={shown} onChange={setTab} label={(k) => t(`finance.tabs.${k}`)} />
       <div role="tabpanel">
-        <Panel tab={tab} ctx={{ outletId, from, to, currency, can }} />
+        <Panel tab={shown} ctx={{ outletId, from, to, currency, can }} />
       </div>
     </div>
   )
+}
+
+function useFinanceTabs(): readonly Tab[] {
+  return useSettings().data?.finance?.mode === 'advanced' ? TABS : SIMPLE
 }
 
 type Ctx = {

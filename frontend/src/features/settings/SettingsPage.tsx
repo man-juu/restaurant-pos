@@ -14,6 +14,7 @@ import { DevicesSection } from './DevicesSection'
 import { KitchenSection } from './KitchenSection'
 import { LimitsSection } from './LimitsSection'
 import { FinanceSection, ReportsSection, TablesSection } from './MoreSections'
+import { OutletModulesSection } from './OutletModulesSection'
 import { PlanningSection } from './PlanningSection'
 import { PosSection } from './PosSection'
 import { ProductionSection } from './ProductionSection'
@@ -23,10 +24,11 @@ import { StockSection } from './StockSection'
 import { TaxSection } from './TaxSection'
 import { TransfersSection } from './TransfersSection'
 
-type Props = { data: AllSettings; canEdit: boolean }
+type Props = { data: AllSettings; canEdit: boolean; canModules: boolean }
 
 /** One entry per tab: a lookup table instead of a chain of conditions. */
 const SECTIONS = {
+  modules: (p: Props) => <OutletModulesSection canEdit={p.canModules} />,
   tax: (p: Props) => <TaxSection {...p} />,
   service: (p: Props) => <ServiceSection {...p} />,
   payments: (p: Props) => <PaymentsSection {...p} />,
@@ -55,6 +57,7 @@ export function SettingsPage() {
   const { t } = useTranslation()
   const { caps } = useOutletContext<{ caps?: Capabilities }>()
   const canEdit = Boolean(caps?.permissions.includes('tenant.settings.configure'))
+  const canModules = Boolean(caps?.permissions.includes('tenant.module.configure'))
   const settings = useSettings()
   const [tab, setTab] = useState<Tab>('tax')
 
@@ -65,7 +68,7 @@ export function SettingsPage() {
       <Tabs tabs={TABS} value={tab} onChange={setTab} label={(k) => t(`settings.tabs.${k}`)} />
       {settings.error && <Alert>{errorMessage(settings.error, t)}</Alert>}
       {settings.data && (
-        <div role="tabpanel">{SECTIONS[tab]({ data: settings.data, canEdit })}</div>
+        <div role="tabpanel">{SECTIONS[tab]({ data: settings.data, canEdit, canModules })}</div>
       )}
     </div>
   )

@@ -21,7 +21,7 @@ function usePick(first: string | undefined) {
 }
 
 function usePlace() {
-  const outlets = (useOutlets().data ?? []).filter((o) => o.is_active)
+  const outlets = (useOutlets('sales').data ?? []).filter((o) => o.is_active)
   const channels = useChannels().data ?? []
   const [outletId, setOutlet] = usePick(outlets[0]?.id)
   const [channelId, setChannel] = usePick(channels[0]?.id)

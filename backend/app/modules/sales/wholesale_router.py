@@ -88,7 +88,7 @@ async def aging(
 ) -> list[AgingRow]:
     async with _db(request, p) as db:
         today = as_of or await tenant_today(db, p.tenant_id)
-        return await wholesale.aging(db, today, None if p.all_outlets else set(p.outlet_ids))
+        return await wholesale.aging(db, today, _scope(p))
 
 
 @router.post("/{invoice_id}/payments", response_model=InvoiceOut, status_code=201)
@@ -123,3 +123,8 @@ async def void(invoice_id: uuid.UUID, request: Request, p: Manage) -> InvoiceOut
         row = await _scoped(db, p, invoice_id)
         await wholesale.void(db, row, user_id=p.user_id)
         return await _one(db, row)
+
+
+def _scope(p: Principal) -> set[uuid.UUID] | None:
+    seen = p.visible_outlets()
+    return None if seen is None else set(seen)

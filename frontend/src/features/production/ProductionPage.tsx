@@ -22,7 +22,7 @@ export function ProductionPage() {
   const { t } = useTranslation()
   const { caps } = useOutletContext<{ caps?: Capabilities }>()
   const has = (code: string) => Boolean(caps?.permissions.includes(code))
-  const outlets = useOutlets()
+  const outlets = useOutlets('production')
   const [picked, setPicked] = useState('')
   const [date, setDate] = useState(todayIso)
   const [tab, setTab] = useState<Tab>('plan')

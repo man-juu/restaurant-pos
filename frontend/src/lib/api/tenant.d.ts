@@ -2647,6 +2647,27 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/outlet-modules': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Outlet Modules */
+    get: operations['get_outlet_modules_api_v1_outlet_modules_get']
+    /**
+     * Put Outlet Modules
+     * @description Replaces the whole table: outlets left out get every module.
+     */
+    put: operations['put_outlet_modules_api_v1_outlet_modules_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/outlets': {
     parameters: {
       query?: never
@@ -5931,6 +5952,12 @@ export interface components {
        * @default true
        */
       auto_journals: boolean
+      /**
+       * Mode
+       * @default simple
+       * @enum {string}
+       */
+      mode: 'simple' | 'advanced'
     }
     /** FloorIn */
     FloorIn: {
@@ -7207,6 +7234,36 @@ export interface components {
       /** Is Available */
       is_available: boolean
     }
+    /** OutletModulesIn */
+    OutletModulesIn: {
+      /** Off */
+      off?: {
+        [key: string]: string[]
+      }
+    }
+    /** OutletModulesOut */
+    OutletModulesOut: {
+      /** Depends On */
+      depends_on: {
+        [key: string]: string[]
+      }
+      /** Modules */
+      modules: string[]
+      /** Outlets */
+      outlets: components['schemas']['OutletModulesRow'][]
+    }
+    /** OutletModulesRow */
+    OutletModulesRow: {
+      /** Name */
+      name: string
+      /** Off */
+      off: string[]
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
     /** OutletOut */
     OutletOut: {
       /**
@@ -7216,6 +7273,11 @@ export interface components {
       id: string
       /** Is Active */
       is_active: boolean
+      /**
+       * Modules Off
+       * @default []
+       */
+      modules_off: string[]
       /** Name */
       name: string
       /** Timezone */
@@ -16081,6 +16143,57 @@ export interface operations {
       cookie?: never
     }
     requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_outlet_modules_api_v1_outlet_modules_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OutletModulesOut']
+        }
+      }
+    }
+  }
+  put_outlet_modules_api_v1_outlet_modules_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OutletModulesIn']
+      }
+    }
     responses: {
       /** @description Successful Response */
       204: {

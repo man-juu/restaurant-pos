@@ -3062,6 +3062,15 @@
             "default": true,
             "title": "Auto Journals",
             "type": "boolean"
+          },
+          "mode": {
+            "default": "simple",
+            "enum": [
+              "simple",
+              "advanced"
+            ],
+            "title": "Mode",
+            "type": "string"
           }
         },
         "title": "FinanceSettings",
@@ -6308,6 +6317,88 @@
         "title": "OutletAvailabilityIn",
         "type": "object"
       },
+      "OutletModulesIn": {
+        "properties": {
+          "off": {
+            "additionalProperties": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "maxProperties": 500,
+            "propertyNames": {
+              "format": "uuid"
+            },
+            "title": "Off",
+            "type": "object"
+          }
+        },
+        "title": "OutletModulesIn",
+        "type": "object"
+      },
+      "OutletModulesOut": {
+        "properties": {
+          "depends_on": {
+            "additionalProperties": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "title": "Depends On",
+            "type": "object"
+          },
+          "modules": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Modules",
+            "type": "array"
+          },
+          "outlets": {
+            "items": {
+              "$ref": "#/components/schemas/OutletModulesRow"
+            },
+            "title": "Outlets",
+            "type": "array"
+          }
+        },
+        "required": [
+          "modules",
+          "depends_on",
+          "outlets"
+        ],
+        "title": "OutletModulesOut",
+        "type": "object"
+      },
+      "OutletModulesRow": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "off": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Off",
+            "type": "array"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "name",
+          "off"
+        ],
+        "title": "OutletModulesRow",
+        "type": "object"
+      },
       "OutletOut": {
         "properties": {
           "id": {
@@ -6318,6 +6409,14 @@
           "is_active": {
             "title": "Is Active",
             "type": "boolean"
+          },
+          "modules_off": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Modules Off",
+            "type": "array"
           },
           "name": {
             "title": "Name",
@@ -23583,6 +23682,60 @@
         "summary": "Mark Read",
         "tags": [
           "notifications"
+        ]
+      }
+    },
+    "/api/v1/outlet-modules": {
+      "get": {
+        "operationId": "get_outlet_modules_api_v1_outlet_modules_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutletModulesOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Outlet Modules",
+        "tags": [
+          "tenant"
+        ]
+      },
+      "put": {
+        "description": "Replaces the whole table: outlets left out get every module.",
+        "operationId": "put_outlet_modules_api_v1_outlet_modules_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OutletModulesIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Put Outlet Modules",
+        "tags": [
+          "tenant"
         ]
       }
     },
