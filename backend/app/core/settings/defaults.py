@@ -109,6 +109,7 @@ FALLBACK: dict[str, Any] = {
         "reliability_weight_pct": 30,
         "lead_day_cost_bp": 0,
     },
+    "transfers": {"price_mode": "cost", "markup_bp": 0},
 }
 
 

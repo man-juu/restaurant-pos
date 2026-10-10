@@ -79,6 +79,7 @@ class TransferLineOut(BaseModel):
     received_qty: Decimal | None
     discrepancy_reason: str | None
     value: int | None  # hidden without catalog.cost.view
+    charge: int | None = None  # FR-TRF-006, hidden like the value
 
 
 class TransferOut(BaseModel):
@@ -94,4 +95,6 @@ class TransferOut(BaseModel):
     created_at: datetime
     shipped_on: date | None
     received_on: date | None
+    standing_id: uuid.UUID | None = None  # FR-TRF-005: made by a standing order
+    charge_total: int | None = None  # FR-TRF-006, hidden without catalog.cost.view
     lines: list[TransferLineOut]

@@ -463,6 +463,9 @@
           "tax": {
             "$ref": "#/components/schemas/TaxSettings"
           },
+          "transfers": {
+            "$ref": "#/components/schemas/TransferSettings"
+          },
           "wholesale": {
             "$ref": "#/components/schemas/WholesaleSettings"
           }
@@ -483,7 +486,8 @@
           "tables",
           "finance",
           "wholesale",
-          "planning"
+          "planning",
+          "transfers"
         ],
         "title": "AllSettings",
         "type": "object"
@@ -1695,6 +1699,42 @@
           "id"
         ],
         "title": "ChannelOut",
+        "type": "object"
+      },
+      "ChargeRow": {
+        "description": "FR-TRF-006: what one outlet charged another for goods shipped in the period.",
+        "properties": {
+          "charge": {
+            "title": "Charge",
+            "type": "integer"
+          },
+          "cost": {
+            "title": "Cost",
+            "type": "integer"
+          },
+          "from_outlet_id": {
+            "format": "uuid",
+            "title": "From Outlet Id",
+            "type": "string"
+          },
+          "to_outlet_id": {
+            "format": "uuid",
+            "title": "To Outlet Id",
+            "type": "string"
+          },
+          "transfers": {
+            "title": "Transfers",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "from_outlet_id",
+          "to_outlet_id",
+          "transfers",
+          "cost",
+          "charge"
+        ],
+        "title": "ChargeRow",
         "type": "object"
       },
       "CodeRequest": {
@@ -10403,6 +10443,185 @@
         "title": "StaffOut",
         "type": "object"
       },
+      "StandingIn": {
+        "additionalProperties": false,
+        "description": "The receiving outlet's regular order: which weekdays it needs the goods, and how many\ndays before each the request is made.",
+        "properties": {
+          "from_outlet_id": {
+            "format": "uuid",
+            "title": "From Outlet Id",
+            "type": "string"
+          },
+          "is_active": {
+            "default": true,
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "lead_days": {
+            "default": 1,
+            "maximum": 6.0,
+            "minimum": 0.0,
+            "title": "Lead Days",
+            "type": "integer"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/RequestLine"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "title": "Lines",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "to_outlet_id": {
+            "format": "uuid",
+            "title": "To Outlet Id",
+            "type": "string"
+          },
+          "weekdays": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 7,
+            "minItems": 1,
+            "title": "Weekdays",
+            "type": "array"
+          }
+        },
+        "required": [
+          "from_outlet_id",
+          "to_outlet_id",
+          "weekdays",
+          "lines"
+        ],
+        "title": "StandingIn",
+        "type": "object"
+      },
+      "StandingLineOut": {
+        "additionalProperties": false,
+        "properties": {
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+            "title": "Qty",
+            "type": "string"
+          },
+          "unit_code": {
+            "default": "",
+            "title": "Unit Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "qty"
+        ],
+        "title": "StandingLineOut",
+        "type": "object"
+      },
+      "StandingOut": {
+        "additionalProperties": false,
+        "properties": {
+          "from_outlet_id": {
+            "format": "uuid",
+            "title": "From Outlet Id",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_active": {
+            "default": true,
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "lead_days": {
+            "default": 1,
+            "maximum": 6.0,
+            "minimum": 0.0,
+            "title": "Lead Days",
+            "type": "integer"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/StandingLineOut"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "next_delivery": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Delivery"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "to_outlet_id": {
+            "format": "uuid",
+            "title": "To Outlet Id",
+            "type": "string"
+          },
+          "weekdays": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 7,
+            "minItems": 1,
+            "title": "Weekdays",
+            "type": "array"
+          }
+        },
+        "required": [
+          "from_outlet_id",
+          "to_outlet_id",
+          "weekdays",
+          "lines",
+          "id",
+          "next_delivery"
+        ],
+        "title": "StandingOut",
+        "type": "object"
+      },
       "StationIn": {
         "additionalProperties": false,
         "properties": {
@@ -11741,6 +11960,17 @@
             ],
             "title": "Approved Qty"
           },
+          "charge": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Charge"
+          },
           "discrepancy_reason": {
             "anyOf": [
               {
@@ -11840,6 +12070,17 @@
             ],
             "title": "Adjustment Id"
           },
+          "charge_total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Charge Total"
+          },
           "created_at": {
             "format": "date-time",
             "title": "Created At",
@@ -11923,6 +12164,18 @@
               }
             ],
             "title": "Shipped Value"
+          },
+          "standing_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Standing Id"
           },
           "status": {
             "title": "Status",
@@ -12030,6 +12283,30 @@
           "lines"
         ],
         "title": "TransferRequestIn",
+        "type": "object"
+      },
+      "TransferSettings": {
+        "additionalProperties": false,
+        "description": "FR-TRF-006: what one outlet charges another for goods it sends. \"cost\": no charge\nbeyond stock value (one legal entity). \"cost_plus\": stock value plus a markup, shown on\nthe delivery note and in the charges report (outlets that are separate businesses).",
+        "properties": {
+          "markup_bp": {
+            "default": 0,
+            "maximum": 100000.0,
+            "minimum": 0.0,
+            "title": "Markup Bp",
+            "type": "integer"
+          },
+          "price_mode": {
+            "default": "cost",
+            "enum": [
+              "cost",
+              "cost_plus"
+            ],
+            "title": "Price Mode",
+            "type": "string"
+          }
+        },
+        "title": "TransferSettings",
         "type": "object"
       },
       "TransferShipIn": {
@@ -28743,6 +29020,275 @@
           }
         },
         "summary": "Request Transfer",
+        "tags": [
+          "transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/reports/charges": {
+      "get": {
+        "description": "FR-TRF-006: shipped transfers in the period per pair of outlets, at cost and charged.",
+        "operationId": "charges_api_v1_transfers_reports_charges_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "from",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "From",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "To",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Outlet Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "json",
+              "enum": [
+                "json",
+                "csv",
+                "xlsx"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ChargeRow"
+                  },
+                  "title": "Response Charges Api V1 Transfers Reports Charges Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Charges",
+        "tags": [
+          "transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/standing": {
+      "get": {
+        "operationId": "list_standing_api_v1_transfers_standing_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/StandingOut"
+                  },
+                  "title": "Response List Standing Api V1 Transfers Standing Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Standing",
+        "tags": [
+          "transfers"
+        ]
+      },
+      "post": {
+        "operationId": "create_standing_api_v1_transfers_standing_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StandingIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandingOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Standing",
+        "tags": [
+          "transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/standing/run": {
+      "post": {
+        "description": "Make the requests that are due now, without waiting for the worker (it runs every\n10 minutes and never makes one twice).",
+        "operationId": "run_standing_api_v1_transfers_standing_run_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "title": "Response Run Standing Api V1 Transfers Standing Run Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Run Standing",
+        "tags": [
+          "transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/standing/{standing_id}": {
+      "put": {
+        "operationId": "update_standing_api_v1_transfers_standing__standing_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "standing_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Standing Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StandingIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandingOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Standing",
         "tags": [
           "transfers"
         ]

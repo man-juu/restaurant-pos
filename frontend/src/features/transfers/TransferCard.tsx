@@ -50,6 +50,7 @@ export function TransferCard({
         ))}
       </ul>
       <ShippedValue value={transfer.shipped_value} currency={currency} />
+      <Charged amount={transfer.charge_total} currency={currency} />
       {(s === 'shipped' || s === 'received') && (
         <a
           className="text-sm font-semibold text-accent underline"
@@ -117,4 +118,14 @@ function ShippedValue({ value, currency }: { value: number | null; currency: str
   const { i18n } = useTranslation()
   if (!value) return null
   return <p className="text-sm">{formatMoney(value, currency, intlLocale(i18n.language))}</p>
+}
+
+function Charged({ amount, currency }: { amount?: number | null; currency: string }) {
+  const { t, i18n } = useTranslation()
+  if (!amount) return null
+  return (
+    <p className="text-sm">
+      {t('standing.charged', { amount: formatMoney(amount, currency, intlLocale(i18n.language)) })}
+    </p>
+  )
 }

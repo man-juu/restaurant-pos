@@ -42,6 +42,8 @@ class Transfer(Base):
         CheckConstraint("shipped_value >= 0", name="shipped_value"),
         Index(None, "tenant_id", "from_outlet_id", "status"),
         Index(None, "tenant_id", "to_outlet_id", "status"),
+        UniqueConstraint("tenant_id", "standing_id", "standing_for"),  # never twice a day
+        CheckConstraint("charge_total >= 0", name="charge_total"),
     )
 
     id: Mapped[uuid.UUID] = _id()
@@ -64,6 +66,9 @@ class Transfer(Base):
     received_by: Mapped[uuid.UUID | None] = mapped_column()
     received_at: Mapped[datetime | None] = mapped_column()
     received_on: Mapped[date | None] = mapped_column(Date)
+    standing_id: Mapped[uuid.UUID | None] = mapped_column()  # FR-TRF-005: made by a standing order
+    standing_for: Mapped[date | None] = mapped_column(Date)  # the delivery day it is for
+    charge_total: Mapped[int] = mapped_column(BigInteger, server_default="0")  # FR-TRF-006
 
 
 class TransferLine(Base):
@@ -94,6 +99,7 @@ class TransferLine(Base):
     received_qty: Mapped[Decimal | None] = mapped_column(Numeric(18, 4))
     discrepancy_reason: Mapped[str | None] = mapped_column(Text)
     value: Mapped[int] = mapped_column(BigInteger, server_default="0")  # shipped, at source cost
+    charge: Mapped[int] = mapped_column(BigInteger, server_default="0")  # FR-TRF-006 price
 
 
 class TransferPick(Base):

@@ -31,7 +31,8 @@ import app.modules.sales.models
 import app.modules.sales.wholesale_models
 import app.modules.tables.booking_models
 import app.modules.tables.models
-import app.modules.transfers.models  # noqa: F401 - module tables
+import app.modules.transfers.models
+import app.modules.transfers.standing_models  # noqa: F401 - module tables
 from app.core.config import get_settings
 from app.core.models import Base
 

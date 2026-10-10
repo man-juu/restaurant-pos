@@ -326,7 +326,8 @@
     "location_other_outlet": "Tempat simpan itu milik outlet lain.",
     "code_not_found": "Tidak ada yang cocok dengan kode ini.",
     "barcode_taken": "Barcode ini sudah dipakai barang lain.",
-    "duplicate_item": "Setiap barang hanya boleh muncul sekali."
+    "duplicate_item": "Setiap barang hanya boleh muncul sekali.",
+    "standing_not_found": "Order rutin tidak ditemukan."
   },
   "appearance": {
     "open": "Tampilan",
@@ -379,7 +380,8 @@
       "devices": "Perangkat",
       "tables": "Meja",
       "finance": "Pembukuan",
-      "planning": "Perencanaan"
+      "planning": "Perencanaan",
+      "transfers": "Transfer"
     },
     "tax": {
       "help": "Tarif diatur per usaha; periksa tarif daerah dengan konsultan pajak Anda.",
@@ -515,6 +517,13 @@
       "reliability_weight_pct": "Pemasok: bobot tambahan untuk kirim terlambat atau kurang (%)",
       "lead_day_cost_bp": "Pemasok: tambahan harga per hari menunggu (0,01 %)",
       "help": "Biaya pesan dan biaya simpan menghasilkan jumlah pesan ekonomis; isi biaya pesan 0 untuk tidak memakainya. Pemasok diurutkan menurut harga, dibuat lebih mahal oleh kiriman terlambat atau kurang dan waktu tunggu yang lama sesuai pengaturan ini."
+    },
+    "transfers": {
+      "mode": "Yang ditagihkan antar outlet",
+      "cost": "Hanya nilai stok (satu usaha)",
+      "costPlus": "Nilai stok ditambah markup (usaha terpisah)",
+      "markup": "Markup (%)",
+      "help": "Tanyakan ke akuntan apakah outlet Anda badan usaha terpisah. Pembukuan tetap mencatat transfer sebesar biaya; tagihan tampil di surat jalan dan laporan tagihan."
     }
   },
   "catalog": {
@@ -1767,5 +1776,39 @@
     "make": "Buat ({{unit}})",
     "accept_one": "Rencanakan {{count}} order",
     "accept_other": "Rencanakan {{count}} order"
+  },
+  "standing": {
+    "tabs": {
+      "list": "Transfer",
+      "standing": "Order rutin",
+      "charges": "Tagihan"
+    },
+    "weekday": {
+      "0": "Senin",
+      "1": "Selasa",
+      "2": "Rabu",
+      "3": "Kamis",
+      "4": "Jumat",
+      "5": "Sabtu",
+      "6": "Minggu"
+    },
+    "help": "Order rutin meminta barang yang sama pada hari yang sama tiap minggu. Permintaan dibuat otomatis beberapa hari sebelumnya, dan tidak pernah dua kali untuk satu hari.",
+    "new": "Order rutin baru",
+    "runNow": "Buat permintaan yang jatuh tempo sekarang",
+    "made_one": "{{count}} permintaan dibuat.",
+    "made_other": "{{count}} permintaan dibuat.",
+    "days": "Hari kirim",
+    "lead": "Minta sekian hari sebelumnya (0 = pada hari itu)",
+    "active": "Aktif",
+    "save": "Simpan order rutin",
+    "edit": "Ubah",
+    "line": "{{days}} · diminta {{lead}} hari sebelumnya · {{items}} barang",
+    "next": "Kiriman berikutnya: {{date}}",
+    "off": "Nonaktif",
+    "charged": "Ditagihkan ke outlet penerima: {{amount}}",
+    "chargesHelp": "Transfer yang dikirim pada periode ini: nilai stok dan yang ditagihkan (Pengaturan → Transfer).",
+    "noCharges": "Tidak ada transfer terkirim pada periode ini.",
+    "chargeLine_one": "{{count}} transfer · biaya {{cost}} · tagihan {{charge}}",
+    "chargeLine_other": "{{count}} transfer · biaya {{cost}} · tagihan {{charge}}"
   }
 }

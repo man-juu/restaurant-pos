@@ -14,6 +14,7 @@ from app.core.invariants import run_checks
 from app.core.models import Subscription, Tenant
 from app.core.modules import discover
 from app.core.notifications.service import run_scanners
+from app.core.periodic import run_tasks
 from app.core.tenancy import tenant_session
 
 log = logging.getLogger(__name__)
@@ -38,6 +39,7 @@ async def run_alerts(
         try:
             async with tenant_session(app_maker, tenant_id) as db:
                 await run_scanners(db, tenant_id)
+                await run_tasks(db, tenant_id)  # e.g. standing transfers (FR-TRF-005)
         except Exception as err:  # one tenant's problem must not stop the others
             failed[tenant_id] = type(err).__name__
             log.exception("alerts job failed for a tenant", extra={"tenant_id": str(tenant_id)})

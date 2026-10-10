@@ -178,6 +178,15 @@ class PlanningSettings(Strict):
     lead_day_cost_bp: int = Field(default=0, ge=0, le=5000)  # vendor: price added per lead day
 
 
+class TransferSettings(Strict):
+    """FR-TRF-006: what one outlet charges another for goods it sends. "cost": no charge
+    beyond stock value (one legal entity). "cost_plus": stock value plus a markup, shown on
+    the delivery note and in the charges report (outlets that are separate businesses)."""
+
+    price_mode: Literal["cost", "cost_plus"] = "cost"
+    markup_bp: int = Field(default=0, ge=0, le=100_000)
+
+
 class FinanceSettings(Strict):
     """FR-FIN-003: journal sales, stock, purchases and payments automatically once the books
     are set up. Off: only manual journals (an accountant keeps the books elsewhere)."""
@@ -219,6 +228,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "finance": FinanceSettings,
     "wholesale": WholesaleSettings,
     "planning": PlanningSettings,
+    "transfers": TransferSettings,
 }
 
 
@@ -241,3 +251,4 @@ class AllSettings(BaseModel):
     finance: FinanceSettings
     wholesale: WholesaleSettings
     planning: PlanningSettings
+    transfers: TransferSettings

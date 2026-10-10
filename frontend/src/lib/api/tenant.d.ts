@@ -4242,6 +4242,82 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/transfers/reports/charges': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Charges
+     * @description FR-TRF-006: shipped transfers in the period per pair of outlets, at cost and charged.
+     */
+    get: operations['charges_api_v1_transfers_reports_charges_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/transfers/standing': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Standing */
+    get: operations['list_standing_api_v1_transfers_standing_get']
+    put?: never
+    /** Create Standing */
+    post: operations['create_standing_api_v1_transfers_standing_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/transfers/standing/run': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Run Standing
+     * @description Make the requests that are due now, without waiting for the worker (it runs every
+     *     10 minutes and never makes one twice).
+     */
+    post: operations['run_standing_api_v1_transfers_standing_run_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/transfers/standing/{standing_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Standing */
+    put: operations['update_standing_api_v1_transfers_standing__standing_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/transfers/{transfer_id}': {
     parameters: {
       query?: never
@@ -4581,6 +4657,7 @@ export interface components {
       stock: components['schemas']['StockSettings']
       tables: components['schemas']['TablesSettings']
       tax: components['schemas']['TaxSettings']
+      transfers: components['schemas']['TransferSettings']
       wholesale: components['schemas']['WholesaleSettings']
     }
     /** ApplyCreditIn */
@@ -5081,6 +5158,28 @@ export interface components {
        * @default 0
        */
       sort_order: number
+    }
+    /**
+     * ChargeRow
+     * @description FR-TRF-006: what one outlet charged another for goods shipped in the period.
+     */
+    ChargeRow: {
+      /** Charge */
+      charge: number
+      /** Cost */
+      cost: number
+      /**
+       * From Outlet Id
+       * Format: uuid
+       */
+      from_outlet_id: string
+      /**
+       * To Outlet Id
+       * Format: uuid
+       */
+      to_outlet_id: string
+      /** Transfers */
+      transfers: number
     }
     /** CodeRequest */
     CodeRequest: {
@@ -8536,6 +8635,95 @@ export interface components {
        */
       user_id: string
     }
+    /**
+     * StandingIn
+     * @description The receiving outlet's regular order: which weekdays it needs the goods, and how many
+     *     days before each the request is made.
+     */
+    StandingIn: {
+      /**
+       * From Outlet Id
+       * Format: uuid
+       */
+      from_outlet_id: string
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Lead Days
+       * @default 1
+       */
+      lead_days: number
+      /** Lines */
+      lines: components['schemas']['RequestLine'][]
+      /** Note */
+      note?: string | null
+      /**
+       * To Outlet Id
+       * Format: uuid
+       */
+      to_outlet_id: string
+      /** Weekdays */
+      weekdays: number[]
+    }
+    /** StandingLineOut */
+    StandingLineOut: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /**
+       * Name
+       * @default
+       */
+      name: string
+      /** Qty */
+      qty: string
+      /**
+       * Unit Code
+       * @default
+       */
+      unit_code: string
+    }
+    /** StandingOut */
+    StandingOut: {
+      /**
+       * From Outlet Id
+       * Format: uuid
+       */
+      from_outlet_id: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Lead Days
+       * @default 1
+       */
+      lead_days: number
+      /** Lines */
+      lines: components['schemas']['StandingLineOut'][]
+      /** Next Delivery */
+      next_delivery: string | null
+      /** Note */
+      note?: string | null
+      /**
+       * To Outlet Id
+       * Format: uuid
+       */
+      to_outlet_id: string
+      /** Weekdays */
+      weekdays: number[]
+    }
     /** StationIn */
     StationIn: {
       /** Category Ids */
@@ -9104,6 +9292,8 @@ export interface components {
     TransferLineOut: {
       /** Approved Qty */
       approved_qty: string | null
+      /** Charge */
+      charge?: number | null
       /** Discrepancy Reason */
       discrepancy_reason: string | null
       /**
@@ -9139,6 +9329,8 @@ export interface components {
     TransferOut: {
       /** Adjustment Id */
       adjustment_id: string | null
+      /** Charge Total */
+      charge_total?: number | null
       /**
        * Created At
        * Format: date-time
@@ -9168,6 +9360,8 @@ export interface components {
       shipped_on: string | null
       /** Shipped Value */
       shipped_value: number | null
+      /** Standing Id */
+      standing_id?: string | null
       /** Status */
       status: string
       /**
@@ -9210,6 +9404,25 @@ export interface components {
        * Format: uuid
        */
       to_outlet_id: string
+    }
+    /**
+     * TransferSettings
+     * @description FR-TRF-006: what one outlet charges another for goods it sends. "cost": no charge
+     *     beyond stock value (one legal entity). "cost_plus": stock value plus a markup, shown on
+     *     the delivery note and in the charges report (outlets that are separate businesses).
+     */
+    TransferSettings: {
+      /**
+       * Markup Bp
+       * @default 0
+       */
+      markup_bp: number
+      /**
+       * Price Mode
+       * @default cost
+       * @enum {string}
+       */
+      price_mode: 'cost' | 'cost_plus'
     }
     /** TransferShipIn */
     TransferShipIn: {
@@ -18903,6 +19116,162 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['TransferOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  charges_api_v1_transfers_reports_charges_get: {
+    parameters: {
+      query: {
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChargeRow'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_standing_api_v1_transfers_standing_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StandingOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_standing_api_v1_transfers_standing_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StandingIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StandingOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  run_standing_api_v1_transfers_standing_run_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            [key: string]: number
+          }
+        }
+      }
+    }
+  }
+  update_standing_api_v1_transfers_standing__standing_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        standing_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StandingIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['StandingOut']
         }
       }
       /** @description Validation Error */

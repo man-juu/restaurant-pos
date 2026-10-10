@@ -6,7 +6,8 @@ adjustment through the tenant's approval rules). Stock moves only through invent
 import uuid
 from collections import defaultdict
 from datetime import UTC, datetime
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
+from typing import cast
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core import audit
 from app.core.errors import ConflictError, NotFoundError
 from app.core.settings import service as settings
+from app.core.settings.schemas import TransferSettings
 from app.modules.catalog.interface import item_names, stock_items, tenant_today
 from app.modules.inventory.interface import (
     InLine,
@@ -72,8 +74,8 @@ async def transfer_out(
     out = TransferOut(**fields, lines=lines)
     if show_cost:
         return out
-    hidden = [ln.model_copy(update={"value": None}) for ln in out.lines]
-    return out.model_copy(update={"shipped_value": None, "lines": hidden})
+    hidden = [ln.model_copy(update={"value": None, "charge": None}) for ln in out.lines]
+    return out.model_copy(update={"shipped_value": None, "charge_total": None, "lines": hidden})
 
 
 async def _audit(db: AsyncSession, t: Transfer, user_id: uuid.UUID, action: str) -> None:
@@ -177,14 +179,29 @@ async def ship(
             )
         )
         values[m.doc_line_id] -= m.value
+    markup = await _markup_bp(db, t.tenant_id)
     for ln in lines:
         ln.shipped_qty, ln.value = ln.approved_qty, values[ln.id]
+        ln.charge = _charge(ln.value, markup)
     t.shipped_value = sum(values.values())
+    t.charge_total = sum(ln.charge for ln in lines)
     t.status, t.shipped_by, t.shipped_at = "shipped", user_id, datetime.now(UTC)
     t.shipped_on = data.business_date
     await db.flush()
     await _audit(db, t, user_id, "ship")
     return t
+
+
+async def _markup_bp(db: AsyncSession, tenant_id: uuid.UUID) -> int | None:
+    """FR-TRF-006: None when outlets do not charge each other (transfers at cost)."""
+    conf = cast(TransferSettings, await settings.get_setting(db, tenant_id, "transfers"))
+    return conf.markup_bp if conf.price_mode == "cost_plus" else None
+
+
+def _charge(value: int, markup_bp: int | None) -> int:
+    if markup_bp is None:
+        return 0
+    return int((Decimal(value) * (10_000 + markup_bp) / 10_000).quantize(Decimal(1), ROUND_HALF_UP))
 
 
 def _apply_received(lines: list[TransferLine], data: TransferReceiveIn) -> dict[uuid.UUID, Decimal]:

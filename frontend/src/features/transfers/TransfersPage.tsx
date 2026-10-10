@@ -2,14 +2,25 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useOutletContext } from 'react-router'
 
-import { SelectInput } from '../../components/form'
+import { SelectInput, Tabs } from '../../components/form'
 import { Alert, Button } from '../../components/ui'
-import type { Capabilities } from '../../lib/api/types'
+import type { Capabilities, OutletOut } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
 import { useOutlets } from '../../lib/session'
 import { useTransfers } from './api'
+import { ChargesTab } from './ChargesTab'
 import { RequestForm } from './RequestForm'
+import { StandingTab } from './StandingTab'
 import { type Can, TransferCard } from './TransferCard'
+
+const TABS = ['list', 'standing', 'charges'] as const
+type Tab = (typeof TABS)[number]
+
+const firstActive = (all: OutletOut[]) => all.find((o) => o.is_active)?.id ?? ''
+
+/** The charges report shows costs: only for those who may see them. */
+const visibleTabs = (caps?: Capabilities) =>
+  TABS.filter((k) => k !== 'charges' || Boolean(caps?.permissions.includes('catalog.cost.view')))
 
 function abilities(caps?: Capabilities): Can {
   const has = (code: string) => Boolean(caps?.permissions.includes(code))
@@ -20,15 +31,18 @@ function abilities(caps?: Capabilities): Can {
   }
 }
 
-/** FR-TRF-001 to 004: requests in and out of this outlet, and the next step for each. */
+/** FR-TRF-001 to 006: requests in and out of this outlet, and the next step for each. */
 export function TransfersPage() {
   const { t } = useTranslation()
   const { caps } = useOutletContext<{ caps?: Capabilities }>()
-  const outlets = useOutlets()
+  const all = useOutlets().data ?? []
   const [picked, setPicked] = useState('')
-  const outletId = picked || outlets.data?.find((o) => o.is_active)?.id || ''
-  const names = Object.fromEntries((outlets.data ?? []).map((o) => [o.id, o.name]))
+  const outletId = picked || firstActive(all)
+  const names = Object.fromEntries(all.map((o) => [o.id, o.name]))
   const can = abilities(caps)
+  const currency = caps?.currency ?? 'IDR'
+  const [tab, setTab] = useState<Tab>('list')
+  const tabs = visibleTabs(caps)
   return (
     <div className="flex flex-col gap-5">
       <h1 className="font-display text-3xl font-extrabold">{t('transfers.title')}</h1>
@@ -38,22 +52,22 @@ export function TransfersPage() {
         onChange={(e) => setPicked(e.target.value)}
         className="max-w-sm"
       >
-        {outlets.data?.map((o) => (
+        {all.map((o) => (
           <option key={o.id} value={o.id}>
             {o.name}
           </option>
         ))}
       </SelectInput>
+      <Tabs tabs={tabs} value={tab} onChange={setTab} label={(k) => t(`standing.tabs.${k}`)} />
       {outletId && (
-        <>
-          <RequestArea outletId={outletId} canRequest={can.request} />
-          <TransferList
-            outletId={outletId}
-            names={names}
-            currency={caps?.currency || 'IDR'}
-            can={can}
-          />
-        </>
+        <TabBody
+          tab={tab}
+          outletId={outletId}
+          outlets={all}
+          names={names}
+          currency={currency}
+          can={can}
+        />
       )}
     </div>
   )
@@ -109,5 +123,24 @@ function RequestArea({ outletId, canRequest }: { outletId: string; canRequest: b
     <Button className="self-start" onClick={() => setAsking(true)}>
       {t('transfers.new')}
     </Button>
+  )
+}
+
+function TabBody(p: {
+  tab: Tab
+  outletId: string
+  outlets: OutletOut[]
+  names: Record<string, string>
+  currency: string
+  can: Can
+}) {
+  if (p.tab === 'standing')
+    return <StandingTab outletId={p.outletId} outlets={p.outlets} canRequest={p.can.request} />
+  if (p.tab === 'charges') return <ChargesTab names={p.names} currency={p.currency} />
+  return (
+    <>
+      <RequestArea outletId={p.outletId} canRequest={p.can.request} />
+      <TransferList outletId={p.outletId} names={p.names} currency={p.currency} can={p.can} />
+    </>
   )
 }

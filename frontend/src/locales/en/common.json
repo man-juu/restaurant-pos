@@ -326,7 +326,8 @@
     "location_other_outlet": "That storage place belongs to another outlet.",
     "code_not_found": "Nothing found for this code.",
     "barcode_taken": "Another item already has this barcode.",
-    "duplicate_item": "Each item may appear only once."
+    "duplicate_item": "Each item may appear only once.",
+    "standing_not_found": "Standing order not found."
   },
   "appearance": {
     "open": "Appearance",
@@ -379,7 +380,8 @@
       "devices": "Devices",
       "tables": "Tables",
       "finance": "Books",
-      "planning": "Planning"
+      "planning": "Planning",
+      "transfers": "Transfers"
     },
     "tax": {
       "help": "Rates are set per business; check regional rates with your tax advisor.",
@@ -515,6 +517,13 @@
       "reliability_weight_pct": "Vendor: extra weight for late or short deliveries (%)",
       "lead_day_cost_bp": "Vendor: price added per day of waiting (0.01 %)",
       "help": "Order cost and holding cost give the economic order quantity; set the order cost to 0 to leave it out. Vendors are ranked by price, made dearer by late or short deliveries and long waits as set here."
+    },
+    "transfers": {
+      "mode": "What outlets charge each other",
+      "cost": "Nothing beyond stock value (one business)",
+      "costPlus": "Stock value plus a markup (separate businesses)",
+      "markup": "Markup (%)",
+      "help": "Ask your accountant whether your outlets are separate legal entities. The books keep transfers at cost either way; the charge shows on delivery notes and in the charges report."
     }
   },
   "catalog": {
@@ -1767,5 +1776,39 @@
     "make": "Make ({{unit}})",
     "accept_one": "Plan {{count}} order",
     "accept_other": "Plan {{count}} orders"
+  },
+  "standing": {
+    "tabs": {
+      "list": "Transfers",
+      "standing": "Standing orders",
+      "charges": "Charges"
+    },
+    "weekday": {
+      "0": "Monday",
+      "1": "Tuesday",
+      "2": "Wednesday",
+      "3": "Thursday",
+      "4": "Friday",
+      "5": "Saturday",
+      "6": "Sunday"
+    },
+    "help": "A standing order asks for the same goods on the same weekdays. The request is made automatically the set number of days before, and never twice for one day.",
+    "new": "New standing order",
+    "runNow": "Make due requests now",
+    "made_one": "{{count}} request made.",
+    "made_other": "{{count}} requests made.",
+    "days": "Delivery days",
+    "lead": "Ask this many days before (0 = on the day)",
+    "active": "Active",
+    "save": "Save standing order",
+    "edit": "Change",
+    "line": "{{days}} · asked {{lead}} day(s) before · {{items}} item(s)",
+    "next": "Next delivery: {{date}}",
+    "off": "Switched off",
+    "charged": "Charged to the receiving outlet: {{amount}}",
+    "chargesHelp": "Shipped transfers in the period: stock value and what was charged (Settings → Transfers).",
+    "noCharges": "No shipped transfers in this period.",
+    "chargeLine_one": "{{count}} transfer · cost {{cost}} · charged {{charge}}",
+    "chargeLine_other": "{{count}} transfers · cost {{cost}} · charged {{charge}}"
   }
 }

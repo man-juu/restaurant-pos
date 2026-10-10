@@ -110,6 +110,7 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `platform_settlements` | number, platform channel, outlet, money account, period_from/to, paid_on, gross, commission, fees, adjustments (signed), payout (= gross - commission - fees + adjustments), reference, status posted/reversed (ADR 0.65) |
 | `storage_locations` | outlet, name (unique per outlet), sort_order, is_active (ADR 0.66) |
 | `item_locations` | outlet, item (unique per outlet), storage location: where the item is kept |
+| `standing_transfers`, `standing_transfer_lines` | from and to outlet, weekdays (bit mask, bit 0 = Monday), lead_days, is_active, note; line: item, qty (base unit). `transfers` gains standing_id and standing_for (unique per order and day), `charge_total`; `transfer_lines` gains `charge` (ADR 0.68) |
 | `vendor_price_history` | vendor_id, item_id, price, observed_at, source_doc_id |
 | `vendor_lead_history` | vendor_id, ordered_at, received_at, item_id |
 
