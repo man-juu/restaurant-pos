@@ -112,6 +112,8 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `item_locations` | outlet, item (unique per outlet), storage location: where the item is kept |
 | `standing_transfers`, `standing_transfer_lines` | from and to outlet, weekdays (bit mask, bit 0 = Monday), lead_days, is_active, note; line: item, qty (base unit). `transfers` gains standing_id and standing_for (unique per order and day), `charge_total`; `transfer_lines` gains `charge` (ADR 0.68) |
 | `labor_costs` | outlet, month (first day; unique per outlet), amount, note, updated_by: typed-in labour for prime cost (ADR 0.69) |
+| `data_exports` | status queued/ready/failed, requested_by (member) or requested_by_admin, file_key, byte_size, error (exception type only), finished_at, expires_at (ADR 0.70) |
+| `restore_requests` | platform table: tenant, restore_to, reason, status, requested_by (admin) |
 | `vendor_price_history` | vendor_id, item_id, price, observed_at, source_doc_id |
 | `vendor_lead_history` | vendor_id, ordered_at, received_at, item_id |
 

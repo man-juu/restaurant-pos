@@ -8,6 +8,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
 
 import app.admin.models
+import app.core.exports.models
 import app.core.ai.models
 import app.core.customers.models
 import app.core.flags

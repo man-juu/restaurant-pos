@@ -117,6 +117,14 @@
     "flags": {
       "ai_images": "Free AI images",
       "reports_export": "Report downloads (CSV, Excel)"
+    },
+    "ops": {
+      "title": "Data and restore",
+      "export": "Start a data export for the owner",
+      "exportQueued": "Export queued. The owner downloads it in Settings → Your data.",
+      "restoreTo": "Restore to (date and time)",
+      "reason": "Reason (at least 10 characters)",
+      "restore": "Record restore request"
     }
   },
   "states": {
@@ -327,7 +335,11 @@
     "code_not_found": "Nothing found for this code.",
     "barcode_taken": "Another item already has this barcode.",
     "duplicate_item": "Each item may appear only once.",
-    "standing_not_found": "Standing order not found."
+    "standing_not_found": "Standing order not found.",
+    "export_already_queued": "An export is already being prepared.",
+    "export_limit": "At most 3 exports a day.",
+    "export_not_found": "This export is not available (any more).",
+    "restore_point_in_future": "The restore point must be in the past."
   },
   "appearance": {
     "open": "Appearance",
@@ -382,7 +394,8 @@
       "finance": "Books",
       "planning": "Planning",
       "transfers": "Transfers",
-      "reports": "Reports"
+      "reports": "Reports",
+      "data": "Your data"
     },
     "tax": {
       "help": "Rates are set per business; check regional rates with your tax advisor.",
@@ -529,6 +542,17 @@
     "reports": {
       "popularity": "Menu engineering: popular from this % of a fair share",
       "help": "70 % is the usual rule: with 20 dishes, a dish counts as popular when it sells at least 3,5 % of all portions."
+    },
+    "data": {
+      "help": "Download a copy of all your business data (menu, stock, sales, books…) as a ZIP of JSON files. It is prepared in the background within about ten minutes and can be downloaded for 7 days. Passwords and security codes are never included.",
+      "request": "Prepare a data export",
+      "download": "Download",
+      "byAdmin": "started by support",
+      "status": {
+        "queued": "Requested {{date}}: being prepared…",
+        "ready": "Ready ({{date}})",
+        "failed": "Failed ({{date}}): please try again"
+      }
     }
   },
   "catalog": {

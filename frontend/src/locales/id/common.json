@@ -117,6 +117,14 @@
     "flags": {
       "ai_images": "Gambar AI gratis",
       "reports_export": "Unduhan laporan (CSV, Excel)"
+    },
+    "ops": {
+      "title": "Data dan pemulihan",
+      "export": "Mulai ekspor data untuk pemilik",
+      "exportQueued": "Ekspor diantrekan. Pemilik mengunduhnya di Pengaturan → Data Anda.",
+      "restoreTo": "Pulihkan ke (tanggal dan jam)",
+      "reason": "Alasan (minimal 10 karakter)",
+      "restore": "Catat permintaan pemulihan"
     }
   },
   "states": {
@@ -327,7 +335,11 @@
     "code_not_found": "Tidak ada yang cocok dengan kode ini.",
     "barcode_taken": "Barcode ini sudah dipakai barang lain.",
     "duplicate_item": "Setiap barang hanya boleh muncul sekali.",
-    "standing_not_found": "Order rutin tidak ditemukan."
+    "standing_not_found": "Order rutin tidak ditemukan.",
+    "export_already_queued": "Ekspor sedang disiapkan.",
+    "export_limit": "Maksimal 3 ekspor per hari.",
+    "export_not_found": "Ekspor ini tidak tersedia (lagi).",
+    "restore_point_in_future": "Titik pemulihan harus di masa lalu."
   },
   "appearance": {
     "open": "Tampilan",
@@ -382,7 +394,8 @@
       "finance": "Pembukuan",
       "planning": "Perencanaan",
       "transfers": "Transfer",
-      "reports": "Laporan"
+      "reports": "Laporan",
+      "data": "Data Anda"
     },
     "tax": {
       "help": "Tarif diatur per usaha; periksa tarif daerah dengan konsultan pajak Anda.",
@@ -529,6 +542,17 @@
     "reports": {
       "popularity": "Menu engineering: laris mulai % ini dari porsi wajar",
       "help": "Aturan umum 70 %: dengan 20 menu, sebuah menu dianggap laris bila terjual minimal 3,5 % dari semua porsi."
+    },
+    "data": {
+      "help": "Unduh salinan semua data usaha Anda (menu, stok, penjualan, pembukuan…) sebagai ZIP berisi file JSON. Disiapkan di latar belakang dalam sekitar sepuluh menit dan bisa diunduh selama 7 hari. Kata sandi dan kode keamanan tidak pernah disertakan.",
+      "request": "Siapkan ekspor data",
+      "download": "Unduh",
+      "byAdmin": "dimulai oleh dukungan",
+      "status": {
+        "queued": "Diminta {{date}}: sedang disiapkan…",
+        "ready": "Siap ({{date}})",
+        "failed": "Gagal ({{date}}): silakan coba lagi"
+      }
     }
   },
   "catalog": {

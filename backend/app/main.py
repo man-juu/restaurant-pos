@@ -13,6 +13,7 @@ from app.core.crypto import SecretBox
 from app.core.customers import router as customers_router
 from app.core.db import create_engine, create_sessionmaker
 from app.core.errors import register_error_handlers
+from app.core.exports import router as exports_router
 from app.core.identity import account_router, device_router, google_router, mfa_router
 from app.core.identity import router as identity
 from app.core.logging import configure_logging
@@ -68,6 +69,7 @@ def create_app(
         notifications_router.router,
         customers_router.router,
         audit_router.router,
+        exports_router.router,
         limits_router.router,
         device_router.router,
         device_router.auth_router,

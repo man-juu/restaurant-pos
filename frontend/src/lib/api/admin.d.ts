@@ -178,6 +178,24 @@ export interface paths {
     patch: operations['update_tenant_admin_api_tenants__tenant_id__patch']
     trace?: never
   }
+  '/admin-api/tenants/{tenant_id}/exports': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Exports */
+    get: operations['list_exports_admin_api_tenants__tenant_id__exports_get']
+    put?: never
+    /** Start Export */
+    post: operations['start_export_admin_api_tenants__tenant_id__exports_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/admin-api/tenants/{tenant_id}/flags': {
     parameters: {
       query?: never
@@ -223,6 +241,24 @@ export interface paths {
     /** Put Modules */
     put: operations['put_modules_admin_api_tenants__tenant_id__modules_put']
     post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/admin-api/tenants/{tenant_id}/restore-requests': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Restores */
+    get: operations['list_restores_admin_api_tenants__tenant_id__restore_requests_get']
+    put?: never
+    /** Request Restore */
+    post: operations['request_restore_admin_api_tenants__tenant_id__restore_requests_post']
     delete?: never
     options?: never
     head?: never
@@ -328,6 +364,23 @@ export interface components {
        */
       id: string
     }
+    /** ExportRow */
+    ExportRow: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Finished At */
+      finished_at: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Status */
+      status: string
+    }
     /** FlagsIn */
     FlagsIn: {
       /** Flags */
@@ -374,6 +427,38 @@ export interface components {
     ModulesIn: {
       /** Modules */
       modules: string[]
+    }
+    /** RestoreIn */
+    RestoreIn: {
+      /** Reason */
+      reason: string
+      /**
+       * Restore To
+       * Format: date-time
+       */
+      restore_to: string
+    }
+    /** RestoreRow */
+    RestoreRow: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Reason */
+      reason: string
+      /**
+       * Requested At
+       * Format: date-time
+       */
+      requested_at: string
+      /**
+       * Restore To
+       * Format: date-time
+       */
+      restore_to: string
+      /** Status */
+      status: string
     }
     /** SetupOut */
     SetupOut: {
@@ -859,6 +944,68 @@ export interface operations {
       }
     }
   }
+  list_exports_admin_api_tenants__tenant_id__exports_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        tenant_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExportRow'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  start_export_admin_api_tenants__tenant_id__exports_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        tenant_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      202: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExportRow']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   set_flags_admin_api_tenants__tenant_id__flags_put: {
     parameters: {
       query?: never
@@ -952,6 +1099,72 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_restores_admin_api_tenants__tenant_id__restore_requests_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        tenant_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RestoreRow'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  request_restore_admin_api_tenants__tenant_id__restore_requests_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        tenant_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RestoreIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RestoreRow']
+        }
       }
       /** @description Validation Error */
       422: {

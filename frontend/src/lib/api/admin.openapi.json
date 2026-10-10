@@ -58,6 +58,44 @@
         "title": "Created",
         "type": "object"
       },
+      "ExportRow": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "created_at",
+          "finished_at"
+        ],
+        "title": "ExportRow",
+        "type": "object"
+      },
       "FlagsIn": {
         "additionalProperties": false,
         "properties": {
@@ -167,6 +205,63 @@
           "modules"
         ],
         "title": "ModulesIn",
+        "type": "object"
+      },
+      "RestoreIn": {
+        "properties": {
+          "reason": {
+            "maxLength": 500,
+            "minLength": 10,
+            "title": "Reason",
+            "type": "string"
+          },
+          "restore_to": {
+            "format": "date-time",
+            "title": "Restore To",
+            "type": "string"
+          }
+        },
+        "required": [
+          "restore_to",
+          "reason"
+        ],
+        "title": "RestoreIn",
+        "type": "object"
+      },
+      "RestoreRow": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "requested_at": {
+            "format": "date-time",
+            "title": "Requested At",
+            "type": "string"
+          },
+          "restore_to": {
+            "format": "date-time",
+            "title": "Restore To",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "restore_to",
+          "reason",
+          "status",
+          "requested_at"
+        ],
+        "title": "RestoreRow",
         "type": "object"
       },
       "SetupOut": {
@@ -1013,6 +1108,94 @@
         ]
       }
     },
+    "/admin-api/tenants/{tenant_id}/exports": {
+      "get": {
+        "operationId": "list_exports_admin_api_tenants__tenant_id__exports_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ExportRow"
+                  },
+                  "title": "Response List Exports Admin Api Tenants  Tenant Id  Exports Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Exports",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "start_export_admin_api_tenants__tenant_id__exports_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportRow"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Start Export",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/admin-api/tenants/{tenant_id}/flags": {
       "put": {
         "operationId": "set_flags_admin_api_tenants__tenant_id__flags_put",
@@ -1164,6 +1347,104 @@
           }
         },
         "summary": "Put Modules",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin-api/tenants/{tenant_id}/restore-requests": {
+      "get": {
+        "operationId": "list_restores_admin_api_tenants__tenant_id__restore_requests_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RestoreRow"
+                  },
+                  "title": "Response List Restores Admin Api Tenants  Tenant Id  Restore Requests Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Restores",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "request_restore_admin_api_tenants__tenant_id__restore_requests_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenant_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Tenant Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestoreIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestoreRow"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Request Restore",
         "tags": [
           "admin"
         ]

@@ -80,3 +80,20 @@ class JobFailure(Base):
     tenant_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("tenants.id"))
     error: Mapped[str] = mapped_column(String(200))
     at: Mapped[datetime] = _created_at()
+
+
+class RestoreRequest(Base):
+    """FR-ADM-007: a recorded request to restore a tenant to a point in time. Restoring is a
+    runbook procedure (docs/runbooks/backup-restore.md, point-in-time recovery); this row is
+    the request and its outcome, never an automatic restore. Platform table, admin only."""
+
+    __tablename__ = "restore_requests"
+    __table_args__ = (Index(None, "tenant_id", "requested_at"),)
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    restore_to: Mapped[datetime] = mapped_column()
+    reason: Mapped[str] = mapped_column(String(500))
+    status: Mapped[str] = mapped_column(String(20), server_default="requested")
+    requested_by: Mapped[uuid.UUID] = mapped_column()
+    requested_at: Mapped[datetime] = _created_at()

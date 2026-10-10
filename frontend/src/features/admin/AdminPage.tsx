@@ -8,6 +8,7 @@ import { Alert, Button, Card, Field, Logo, StateBadge } from '../../components/u
 import { ApiError, request, setCsrfToken } from '../../lib/api/client'
 import type { AdminSessionOut, TenantOut } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
+import { TenantOps } from './TenantOps'
 import { TenantUsage } from './TenantUsage'
 
 /** Minimal platform admin UI (slice 0.6/0.7): sign-in with mandatory 2FA and the tenant list.
@@ -193,8 +194,9 @@ function Tenants() {
         </table>
       </div>
       {open && (
-        <div className="p-5">
+        <div className="flex flex-col gap-4 p-5">
           <TenantUsage key={open} tenantId={open} />
+          <TenantOps key={`ops-${open}`} tenantId={open} />
         </div>
       )}
     </Card>

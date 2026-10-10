@@ -10,6 +10,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 import app.modules
 from app.admin.models import JobFailure
+from app.core.config import Settings, get_settings
+from app.core.exports.service import run_queued
 from app.core.invariants import run_checks
 from app.core.models import Subscription, Tenant
 from app.core.modules import discover
@@ -30,16 +32,20 @@ async def active_tenants(admin_db: AsyncSession) -> list[uuid.UUID]:
 
 
 async def run_alerts(
-    tenant_ids: list[uuid.UUID], app_maker: async_sessionmaker[AsyncSession]
+    tenant_ids: list[uuid.UUID],
+    app_maker: async_sessionmaker[AsyncSession],
+    settings: Settings | None = None,
 ) -> dict[uuid.UUID, str]:
     """Returns the tenants that failed, with the error type (the caller records them)."""
     discover(app.modules)  # importing the modules registers their scanners
+    conf = settings or get_settings()
     failed: dict[uuid.UUID, str] = {}
     for tenant_id in tenant_ids:
         try:
             async with tenant_session(app_maker, tenant_id) as db:
                 await run_scanners(db, tenant_id)
                 await run_tasks(db, tenant_id)  # e.g. standing transfers (FR-TRF-005)
+                await run_queued(db, tenant_id, conf)  # data exports (FR-TEN-010)
         except Exception as err:  # one tenant's problem must not stop the others
             failed[tenant_id] = type(err).__name__
             log.exception("alerts job failed for a tenant", extra={"tenant_id": str(tenant_id)})

@@ -2934,6 +2934,74 @@
         "title": "ExpenseOut",
         "type": "object"
       },
+      "ExportOut": {
+        "properties": {
+          "by_admin": {
+            "title": "By Admin",
+            "type": "boolean"
+          },
+          "byte_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Byte Size"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "byte_size",
+          "created_at",
+          "finished_at",
+          "expires_at",
+          "by_admin"
+        ],
+        "title": "ExportOut",
+        "type": "object"
+      },
       "FinanceSettings": {
         "additionalProperties": false,
         "description": "FR-FIN-003: journal sales, stock, purchases and payments automatically once the books\nare set up. Off: only manual journals (an accountant keeps the books elsewhere).",
@@ -29380,6 +29448,87 @@
         "summary": "Set Status",
         "tags": [
           "tables"
+        ]
+      }
+    },
+    "/api/v1/tenant/exports": {
+      "get": {
+        "operationId": "list_exports_api_v1_tenant_exports_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ExportOut"
+                  },
+                  "title": "Response List Exports Api V1 Tenant Exports Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Exports",
+        "tags": [
+          "tenant"
+        ]
+      },
+      "post": {
+        "description": "Queued; the worker builds it within about ten minutes.",
+        "operationId": "request_export_api_v1_tenant_exports_post",
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Request Export",
+        "tags": [
+          "tenant"
+        ]
+      }
+    },
+    "/api/v1/tenant/exports/{export_id}/download": {
+      "get": {
+        "operationId": "download_api_v1_tenant_exports__export_id__download_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "export_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Export Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Download",
+        "tags": [
+          "tenant"
         ]
       }
     },
