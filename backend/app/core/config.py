@@ -56,6 +56,17 @@ class Settings(BaseModel):
     google_client_id: str = ""
     google_client_secret: str = ""
 
+    # Web push to installed apps (FR-NTF-005). Off unless both keys are set; free, no account:
+    # the browser's own push service delivers. Make a key pair once with
+    # `python -m app.admin.cli vapid-keys` and keep the private key secret.
+    vapid_public_key: str = ""  # base64url, uncompressed P-256 point (given to browsers)
+    vapid_private_key: str = ""  # base64url, raw 32-byte P-256 private key
+    vapid_subject: str = "mailto:admin@example.com"  # who push services contact about abuse
+
+    @property
+    def push_enabled(self) -> bool:
+        return bool(self.vapid_public_key and self.vapid_private_key)
+
     @property
     def google_enabled(self) -> bool:
         return bool(self.google_client_id and self.google_client_secret)

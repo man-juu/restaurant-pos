@@ -207,3 +207,10 @@ Security review of the production images, Caddy, compose, backup and deploy pipe
 - Lot trace: outlet scope applies to every node (hidden ones are only counted); lot search escapes `%` and `_`; the walk is bounded (6 levels, 200 batches) so one request cannot scan the whole ledger.
 - Returns cannot take stock below zero; credits apply only to the same vendor's bills, once; a credited return cannot be reversed.
 - Bills: vendor invoice numbers unique per vendor (no double entry); payments append-only with reversal rows; payment cannot exceed the balance; paying is a separate permission (accountant) from entering bills (segregation of duties); every action is audited.
+
+## 2026-10-10: slice 3k (exports, announcements, web push)
+
+- Data export: built as the app role inside the tenant's RLS context; secret columns (hashes, tokens, 2FA secrets, PIN data) and session, idempotency and push tables are left out; the test checks no other tenant's id and no secret column appears. Downloads are `no-store` and audited.
+- Admin export: the admin role can only insert the request (platform_admin policy); it never reads or downloads tenant data.
+- Announcements: plain text only; targeting rows sit under tenant RLS so a tenant cannot see who else was targeted.
+- Web push SSRF: subscription URLs must be HTTPS on known push services, port 443; tested against internal addresses and look-alike hosts. Payload carries only a count and an in-app path.

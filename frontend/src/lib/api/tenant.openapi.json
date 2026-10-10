@@ -2663,6 +2663,21 @@
         "title": "EffectivePrice",
         "type": "object"
       },
+      "EndpointIn": {
+        "properties": {
+          "endpoint": {
+            "maxLength": 1000,
+            "minLength": 10,
+            "title": "Endpoint",
+            "type": "string"
+          }
+        },
+        "required": [
+          "endpoint"
+        ],
+        "title": "EndpointIn",
+        "type": "object"
+      },
       "EntryLine": {
         "additionalProperties": false,
         "description": "An item by id, or by the platform's code (FR-CAT-010).",
@@ -4564,6 +4579,28 @@
           "lines"
         ],
         "title": "JournalOut",
+        "type": "object"
+      },
+      "Keys": {
+        "properties": {
+          "auth": {
+            "maxLength": 100,
+            "minLength": 8,
+            "title": "Auth",
+            "type": "string"
+          },
+          "p256dh": {
+            "maxLength": 200,
+            "minLength": 20,
+            "title": "P256Dh",
+            "type": "string"
+          }
+        },
+        "required": [
+          "p256dh",
+          "auth"
+        ],
+        "title": "Keys",
         "type": "object"
       },
       "KitchenSettings": {
@@ -8344,6 +8381,31 @@
         "title": "PurchasingSettings",
         "type": "object"
       },
+      "PushKey": {
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "public_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Public Key"
+          }
+        },
+        "required": [
+          "enabled",
+          "public_key"
+        ],
+        "title": "PushKey",
+        "type": "object"
+      },
       "QtyLine": {
         "additionalProperties": false,
         "properties": {
@@ -11242,6 +11304,25 @@
           "days_left"
         ],
         "title": "SubscriptionBanner",
+        "type": "object"
+      },
+      "SubscriptionIn": {
+        "properties": {
+          "endpoint": {
+            "maxLength": 1000,
+            "minLength": 10,
+            "title": "Endpoint",
+            "type": "string"
+          },
+          "keys": {
+            "$ref": "#/components/schemas/Keys"
+          }
+        },
+        "required": [
+          "endpoint",
+          "keys"
+        ],
+        "title": "SubscriptionIn",
         "type": "object"
       },
       "Suggestion": {
@@ -27647,6 +27728,95 @@
         "summary": "Add Vendor Item",
         "tags": [
           "purchasing"
+        ]
+      }
+    },
+    "/api/v1/push/key": {
+      "get": {
+        "operationId": "key_api_v1_push_key_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushKey"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Key",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/v1/push/subscription": {
+      "put": {
+        "operationId": "subscribe_api_v1_push_subscription_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscriptionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Subscribe",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/v1/push/subscription/delete": {
+      "post": {
+        "operationId": "unsubscribe_api_v1_push_subscription_delete_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EndpointIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Unsubscribe",
+        "tags": [
+          "notifications"
         ]
       }
     },

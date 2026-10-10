@@ -23,7 +23,14 @@ from app.core.models import Base
 
 KEEP_DAYS = 7
 SKIP_TABLES = frozenset(
-    {"idempotency_keys", "sessions", "user_pins", "impersonation_sessions", "data_exports"}
+    {
+        "idempotency_keys",
+        "sessions",
+        "user_pins",
+        "impersonation_sessions",
+        "data_exports",
+        "push_subscriptions",
+    }
 )
 SECRET_MARKS = ("password", "hash", "secret", "token", "totp", "recovery", "key_enc", "pin_")
 MAX_QUEUED = 1

@@ -3788,6 +3788,57 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/push/key': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Key */
+    get: operations['key_api_v1_push_key_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/push/subscription': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Subscribe */
+    put: operations['subscribe_api_v1_push_subscription_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/push/subscription/delete': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Unsubscribe */
+    post: operations['unsubscribe_api_v1_push_subscription_delete_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/role-limits': {
     parameters: {
       query?: never
@@ -5668,6 +5719,11 @@ export interface components {
        */
       valid_from: string
     }
+    /** EndpointIn */
+    EndpointIn: {
+      /** Endpoint */
+      endpoint: string
+    }
     /**
      * EntryLine
      * @description An item by id, or by the platform's code (FR-CAT-010).
@@ -6393,6 +6449,13 @@ export interface components {
       status: string
       /** Total */
       total: number
+    }
+    /** Keys */
+    Keys: {
+      /** Auth */
+      auth: string
+      /** P256Dh */
+      p256dh: string
     }
     /**
      * KitchenSettings
@@ -7908,6 +7971,13 @@ export interface components {
        */
       require_invoice_attachment: boolean
     }
+    /** PushKey */
+    PushKey: {
+      /** Enabled */
+      enabled: boolean
+      /** Public Key */
+      public_key: string | null
+    }
     /** QtyLine */
     QtyLine: {
       /**
@@ -9110,6 +9180,12 @@ export interface components {
       days_left: number | null
       /** State */
       state: string
+    }
+    /** SubscriptionIn */
+    SubscriptionIn: {
+      /** Endpoint */
+      endpoint: string
+      keys: components['schemas']['Keys']
     }
     /** Suggestion */
     Suggestion: {
@@ -18406,6 +18482,88 @@ export interface operations {
         content: {
           'application/json': components['schemas']['VendorItemOut']
         }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  key_api_v1_push_key_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PushKey']
+        }
+      }
+    }
+  }
+  subscribe_api_v1_push_subscription_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SubscriptionIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  unsubscribe_api_v1_push_subscription_delete_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['EndpointIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Validation Error */
       422: {

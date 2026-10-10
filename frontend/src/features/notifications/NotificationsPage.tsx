@@ -5,6 +5,7 @@ import { Alert, Button, Card } from '../../components/ui'
 import type { NotificationOut } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
 import { useMarkRead, useNotifications } from './api'
+import { PushToggle } from './PushToggle'
 
 /** FR-NTF-001: this user's alerts, newest unread first. */
 export function NotificationsPage() {
@@ -22,6 +23,7 @@ export function NotificationsPage() {
           </Button>
         )}
       </div>
+      <PushToggle />
       {list.error && <Alert>{errorMessage(list.error, t)}</Alert>}
       {list.isSuccess && list.data.length === 0 && (
         <p className="text-ink-soft">{t('notifications.empty')}</p>

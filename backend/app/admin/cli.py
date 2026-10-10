@@ -12,9 +12,12 @@ The daily subscription job is scheduled by the worker/cron in slice 0.8.
 
 import argparse
 import asyncio
+import base64
 import getpass
 from datetime import UTC, datetime
 
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.admin.alerts_job import active_tenants, record_failures, run_alerts, run_invariants
@@ -76,6 +79,19 @@ async def _sync_roles() -> None:
     print(f"Role sync done: {added} permission grant(s) added.")
 
 
+def _b64(data: bytes) -> str:
+    return base64.urlsafe_b64encode(data).rstrip(b"=").decode()
+
+
+def _vapid_keys() -> None:
+    """FR-NTF-005: a new key pair for web push. Put both in the server's environment."""
+    key = ec.generate_private_key(ec.SECP256R1())
+    raw = key.private_numbers().private_value.to_bytes(32, "big")
+    point = key.public_key().public_bytes(Encoding.X962, PublicFormat.UncompressedPoint)
+    print(f"VAPID_PUBLIC_KEY={_b64(point)}")
+    print(f"VAPID_PRIVATE_KEY={_b64(raw)}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(prog="app.admin.cli")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -87,6 +103,7 @@ def main() -> None:
     sub.add_parser("alerts-job")
     sub.add_parser("invariants-job")
     sub.add_parser("sync-roles")
+    sub.add_parser("vapid-keys")
     args = parser.parse_args()
     if args.command == "create-admin":
         asyncio.run(_create_admin(args.email, args.name, args.role))
@@ -96,6 +113,8 @@ def main() -> None:
         asyncio.run(_scan("invariants"))
     elif args.command == "sync-roles":
         asyncio.run(_sync_roles())
+    elif args.command == "vapid-keys":
+        _vapid_keys()
     else:
         asyncio.run(_job())
 

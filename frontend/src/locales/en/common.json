@@ -358,7 +358,8 @@
     "export_not_found": "This export is not available (any more).",
     "restore_point_in_future": "The restore point must be in the past.",
     "announcement_not_found": "This announcement is no longer shown.",
-    "unknown_tenant": "One of the business ids does not exist."
+    "unknown_tenant": "One of the business ids does not exist.",
+    "push_endpoint_not_allowed": "This browser's push service is not supported."
   },
   "appearance": {
     "open": "Appearance",
@@ -1888,5 +1889,10 @@
   },
   "announcements": {
     "dismiss": "Got it"
+  },
+  "push": {
+    "on": "Get notifications on this device",
+    "off": "Stop notifications on this device",
+    "failed": "Notifications could not be switched on. Allow them for this site in the browser settings, then try again."
   }
 }

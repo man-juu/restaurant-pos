@@ -62,3 +62,4 @@ class Notification(Base):
     link: Mapped[str | None] = mapped_column(String(200))  # in-app path, never a full URL
     created_at: Mapped[datetime] = _created_at()
     read_at: Mapped[datetime | None] = mapped_column()
+    pushed_at: Mapped[datetime | None] = mapped_column()  # FR-NTF-005: web push sent

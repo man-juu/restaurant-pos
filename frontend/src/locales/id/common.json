@@ -358,7 +358,8 @@
     "export_not_found": "Ekspor ini tidak tersedia (lagi).",
     "restore_point_in_future": "Titik pemulihan harus di masa lalu.",
     "announcement_not_found": "Pengumuman ini sudah tidak ditampilkan.",
-    "unknown_tenant": "Salah satu id usaha tidak ada."
+    "unknown_tenant": "Salah satu id usaha tidak ada.",
+    "push_endpoint_not_allowed": "Layanan push browser ini tidak didukung."
   },
   "appearance": {
     "open": "Tampilan",
@@ -1888,5 +1889,10 @@
   },
   "announcements": {
     "dismiss": "Mengerti"
+  },
+  "push": {
+    "on": "Terima notifikasi di perangkat ini",
+    "off": "Hentikan notifikasi di perangkat ini",
+    "failed": "Notifikasi tidak bisa diaktifkan. Izinkan notifikasi untuk situs ini di pengaturan browser, lalu coba lagi."
   }
 }

@@ -19,6 +19,11 @@ dependencies = [
     "charset-normalizer==3.5.2",  # reportlab dependency, pinned
     "authlib==1.8.0",  # Sign in with Google: PKCE (ADR 0.57)
     "joserfc==1.7.5",  # authlib dependency, pinned; verifies Google's signed ID token
+    "pywebpush==2.5.0",  # web push to installed apps (FR-NTF-005), owner-approved 2026-10-10
+    "py-vapid==1.9.4",  # pywebpush dependency, pinned: signs the VAPID header
+    "http-ece==1.2.1",  # pywebpush dependency, pinned: encrypts the payload (RFC 8291)
+    "aiohttp==3.14.3",  # pywebpush dependency, pinned (3.14.4 is newer than the 7-day rule)
+    "requests==2.34.2",  # pywebpush dependency, pinned
 ]
 
 [project.optional-dependencies]
@@ -68,7 +73,7 @@ strict = true
 packages = ["app", "tests"]
 
 [[tool.mypy.overrides]]
-module = ["openpyxl", "openpyxl.*", "reportlab", "reportlab.*", "authlib", "authlib.*"]  # no bundled types; avoids another stub dependency
+module = ["openpyxl", "openpyxl.*", "reportlab", "reportlab.*", "authlib", "authlib.*", "pywebpush", "py_vapid"]  # no bundled types; avoids another stub dependency
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

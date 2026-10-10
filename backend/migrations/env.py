@@ -16,6 +16,7 @@ import app.core.flags
 import app.core.identity.device_models
 import app.core.imports.models
 import app.core.notifications.models
+import app.core.notifications.push_models
 import app.core.settings.models
 import app.core.uploads.models
 import app.modules.catalog.models

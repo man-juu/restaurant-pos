@@ -15,6 +15,7 @@ from app.core.exports.service import run_queued
 from app.core.invariants import run_checks
 from app.core.models import Subscription, Tenant
 from app.core.modules import discover
+from app.core.notifications.push import push_new
 from app.core.notifications.service import run_scanners
 from app.core.periodic import run_tasks
 from app.core.tenancy import tenant_session
@@ -46,6 +47,7 @@ async def run_alerts(
                 await run_scanners(db, tenant_id)
                 await run_tasks(db, tenant_id)  # e.g. standing transfers (FR-TRF-005)
                 await run_queued(db, tenant_id, conf)  # data exports (FR-TEN-010)
+                await push_new(db, conf)  # web push for new notifications (FR-NTF-005)
         except Exception as err:  # one tenant's problem must not stop the others
             failed[tenant_id] = type(err).__name__
             log.exception("alerts job failed for a tenant", extra={"tenant_id": str(tenant_id)})
