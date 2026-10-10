@@ -48,6 +48,7 @@ test('accountant sees aging and records a customer payment (FR-SAL-011, FR-FIN-0
         { id: 'o1', name: 'Shop', type: 'branch', timezone: 'Asia/Jakarta', is_active: true },
       ],
       '/api/v1/settings': {
+        finance: { auto_journals: true, mode: 'advanced' },
         payment_methods: { methods: [{ code: 'transfer', kind: 'bank', active: true }] },
       },
       '/api/v1/sales/invoices': [invoice],
@@ -110,6 +111,7 @@ test('accountant records a platform payout and sees what is unsettled (FR-FIN-00
         currency: 'IDR',
         language: 'id',
       },
+      '/api/v1/settings': { finance: { auto_journals: true, mode: 'advanced' } },
       '/api/v1/outlets': [
         { id: 'o1', name: 'Shop', type: 'branch', timezone: 'Asia/Jakarta', is_active: true },
       ],

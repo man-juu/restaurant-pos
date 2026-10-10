@@ -22,6 +22,7 @@ test('accountant sees profit and loss with expenses by category (FR-FIN-001)', a
         currency: 'IDR',
         language: 'id',
       },
+      '/api/v1/settings': { finance: { auto_journals: true, mode: 'advanced' } },
       '/api/v1/outlets': [
         { id: 'o1', name: 'Shop', type: 'branch', timezone: 'Asia/Jakarta', is_active: true },
       ],
@@ -93,6 +94,7 @@ test('accountant posts a balanced journal in the books (FR-FIN-002, 004)', async
         currency: 'IDR',
         language: 'id',
       },
+      '/api/v1/settings': { finance: { auto_journals: true, mode: 'advanced' } },
       '/api/v1/outlets': [
         { id: 'o1', name: 'Shop', type: 'branch', timezone: 'Asia/Jakarta', is_active: true },
       ],

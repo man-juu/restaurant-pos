@@ -33,6 +33,7 @@ async function mock(page: Page, puts: unknown[]) {
         currency: 'IDR',
         language: 'id',
       },
+      '/api/v1/settings': { finance: { auto_journals: true, mode: 'advanced' } },
       '/api/v1/outlets': [
         { id: 'o1', name: 'Shop', type: 'branch', timezone: 'Asia/Jakarta', is_active: true },
       ],
