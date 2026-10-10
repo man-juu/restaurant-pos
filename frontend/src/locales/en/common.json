@@ -1489,6 +1489,29 @@
       "cancelled": "cancelled",
       "void": "voided",
       "refunded": "refunded"
+    },
+    "offline": {
+      "cartNote": "No connection needed. Orders are kept on this device and upload by themselves. An order already open on the server stays there until the connection returns.",
+      "less": "One less",
+      "more": "One more",
+      "tax": "Tax and service",
+      "total": "Total",
+      "method": "Payment",
+      "payLater": "Serve now, pay later",
+      "tendered": "Cash received",
+      "change": "Change: {{amount}}",
+      "finish": "Finish order",
+      "online": "Online",
+      "noConnection": "No connection: selling offline",
+      "workOffline": "Work offline",
+      "pending_one": "{{count}} order waiting to upload",
+      "pending_other": "{{count}} orders waiting to upload",
+      "syncNow": "Upload now",
+      "needsLook_one": "{{count}} order needs a look",
+      "needsLook_other": "{{count}} orders need a look",
+      "refused": "Not accepted by the server ({{code}}). Enter it again on the till.",
+      "leftOpen": "Order {{number}} is open on the server ({{problem}}). Finish it in open orders.",
+      "dismiss": "Dismiss"
     }
   },
   "tables": {
@@ -2002,6 +2025,9 @@
     }
   },
   "changelog": {
+    "2026-10-10e": [
+      "Keep selling when the internet drops: orders wait on the device and upload by themselves"
+    ],
     "title": "What's new",
     "items": {
       "2026-10-10d": [

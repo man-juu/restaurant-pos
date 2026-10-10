@@ -220,3 +220,9 @@ Phase 3 security review (2026-10-10, slices 3e to 3l): no critical or high findi
 - Service worker notification link: only same-origin paths open (blocks `//evil.example`).
 - Manual standing-transfer run now only covers the caller's outlets.
 Open (low): the export secret-column filter is name-based; revisit with a per-column flag if a secret column with an unusual name is ever added.
+
+## Offline till screen (2026-10-10, ADR 0.77)
+
+- The offline queue in localStorage holds order lines and payment amounts only: no tokens, card data or customer details. It is keyed by user, so another person signing in on the same device never uploads someone else's orders under their name.
+- The server trusts nothing from the queue: it re-prices every line, checks permissions (pay needs `sales.order.pay`), outlet access, module state and the 7-day `taken_at` window, and `client_id` (unique per tenant) makes repeated uploads harmless (e2e `offline.spec.ts`: response lost mid-upload, stored once).
+- Performance: one upload at a time, at most every 30 seconds; no new backend query paths.

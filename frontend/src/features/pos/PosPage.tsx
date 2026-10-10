@@ -6,6 +6,7 @@ import { SelectInput } from '../../components/form'
 import { Button } from '../../components/ui'
 import type { Capabilities } from '../../lib/api/types'
 import { useSession } from '../../lib/session'
+import { OfflineSwitch } from './OfflineSwitch'
 import { RefundApprovals } from './RefundApprovals'
 import { ShiftOpen, ShiftSummary } from './ShiftPanel'
 import { Till } from './Till'
@@ -35,16 +36,24 @@ export function PosPage() {
         )}
       </div>
       <TopPanels till={till} showShift={showShift} userId={userId} />
-      {ready && (
-        <Till
+      {ready && userId && (
+        <OfflineSwitch
           key={`${till.outletId}-${till.channelId}`}
+          userId={userId}
           outletId={till.outletId}
           channelId={till.channelId}
           currency={till.currency}
-          can={till.can}
-          methods={till.methods}
-          pos={till.pos}
-        />
+        >
+          <Till
+            key={`${till.outletId}-${till.channelId}`}
+            outletId={till.outletId}
+            channelId={till.channelId}
+            currency={till.currency}
+            can={till.can}
+            methods={till.methods}
+            pos={till.pos}
+          />
+        </OfflineSwitch>
       )}
     </div>
   )

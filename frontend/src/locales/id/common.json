@@ -1489,6 +1489,29 @@
       "cancelled": "dibatalkan",
       "void": "di-void",
       "refunded": "di-refund"
+    },
+    "offline": {
+      "cartNote": "Tidak perlu koneksi. Pesanan disimpan di perangkat ini dan terunggah sendiri. Pesanan yang sudah terbuka di server tetap di sana sampai koneksi kembali.",
+      "less": "Kurangi satu",
+      "more": "Tambah satu",
+      "tax": "Pajak dan layanan",
+      "total": "Total",
+      "method": "Pembayaran",
+      "payLater": "Sajikan dulu, bayar nanti",
+      "tendered": "Uang diterima",
+      "change": "Kembalian: {{amount}}",
+      "finish": "Selesaikan pesanan",
+      "online": "Online",
+      "noConnection": "Tanpa koneksi: berjualan offline",
+      "workOffline": "Kerja offline",
+      "pending_one": "{{count}} pesanan menunggu diunggah",
+      "pending_other": "{{count}} pesanan menunggu diunggah",
+      "syncNow": "Unggah sekarang",
+      "needsLook_one": "{{count}} pesanan perlu dicek",
+      "needsLook_other": "{{count}} pesanan perlu dicek",
+      "refused": "Ditolak server ({{code}}). Masukkan lagi di kasir.",
+      "leftOpen": "Pesanan {{number}} terbuka di server ({{problem}}). Selesaikan di pesanan terbuka.",
+      "dismiss": "Tutup"
     }
   },
   "tables": {
@@ -2002,6 +2025,9 @@
     }
   },
   "changelog": {
+    "2026-10-10e": [
+      "Tetap berjualan saat internet putus: pesanan disimpan di perangkat dan terunggah sendiri"
+    ],
     "title": "Yang baru",
     "items": {
       "2026-10-10d": [
