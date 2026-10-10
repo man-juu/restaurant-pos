@@ -2025,11 +2025,11 @@
     }
   },
   "changelog": {
-    "2026-10-10e": [
-      "Keep selling when the internet drops: orders wait on the device and upload by themselves"
-    ],
     "title": "What's new",
     "items": {
+      "2026-10-10e": [
+        "Keep selling when the internet drops: orders wait on the device and upload by themselves"
+      ],
       "2026-10-10d": [
         "Turn modules on or off per outlet (Settings → Modules)",
         "Finance has a simple mode (the default) and an advanced mode",

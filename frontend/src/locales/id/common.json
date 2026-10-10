@@ -2025,11 +2025,11 @@
     }
   },
   "changelog": {
-    "2026-10-10e": [
-      "Tetap berjualan saat internet putus: pesanan disimpan di perangkat dan terunggah sendiri"
-    ],
     "title": "Yang baru",
     "items": {
+      "2026-10-10e": [
+        "Tetap berjualan saat internet putus: pesanan disimpan di perangkat dan terunggah sendiri"
+      ],
       "2026-10-10d": [
         "Nyalakan atau matikan modul per outlet (Pengaturan → Modul)",
         "Keuangan punya mode sederhana (bawaan) dan mode lanjutan",
