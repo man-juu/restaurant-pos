@@ -2,7 +2,7 @@
 
 from datetime import date
 from decimal import Decimal
-from typing import Any
+from typing import Any, cast
 
 from fastapi.testclient import TestClient
 
@@ -38,7 +38,8 @@ def test_fr_rpt_007_kasavana_smith_classes() -> None:
         "d": (Decimal(5), Decimal(50_000)),  # rare, margin 2.000
     }
     costs = {"a": Decimal(10_000), "b": Decimal(10_000), "c": Decimal(10_000), "d": Decimal(8_000)}
-    rows, totals = _rows(sold, costs, {i: _Name(i) for i in ids}, 70)  # type: ignore[arg-type]
+    names: Any = {i: _Name(i) for i in ids}  # stand-ins for item ids and labels
+    rows, totals = _rows(cast(Any, sold), cast(Any, costs), names, 70)
     assert {r["name"]: r["class"] for r in rows} == {
         "a": "star",
         "b": "plowhorse",
