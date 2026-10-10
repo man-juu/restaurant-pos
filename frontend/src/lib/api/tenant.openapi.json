@@ -213,6 +213,56 @@
         "title": "AdjustmentLineIn",
         "type": "object"
       },
+      "AgingRow": {
+        "description": "One customer or vendor: open balances by how long they are past due.",
+        "properties": {
+          "current": {
+            "title": "Current",
+            "type": "integer"
+          },
+          "days_1_30": {
+            "title": "Days 1 30",
+            "type": "integer"
+          },
+          "days_31_60": {
+            "title": "Days 31 60",
+            "type": "integer"
+          },
+          "days_61_90": {
+            "title": "Days 61 90",
+            "type": "integer"
+          },
+          "over_90": {
+            "title": "Over 90",
+            "type": "integer"
+          },
+          "party_id": {
+            "format": "uuid",
+            "title": "Party Id",
+            "type": "string"
+          },
+          "party_name": {
+            "title": "Party Name",
+            "type": "string"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "party_id",
+          "party_name",
+          "current",
+          "days_1_30",
+          "days_31_60",
+          "days_61_90",
+          "over_90",
+          "total"
+        ],
+        "title": "AgingRow",
+        "type": "object"
+      },
       "AiUsage": {
         "properties": {
           "enabled": {
@@ -409,6 +459,9 @@
           },
           "tax": {
             "$ref": "#/components/schemas/TaxSettings"
+          },
+          "wholesale": {
+            "$ref": "#/components/schemas/WholesaleSettings"
           }
         },
         "required": [
@@ -425,7 +478,8 @@
           "receipt",
           "production",
           "tables",
-          "finance"
+          "finance",
+          "wholesale"
         ],
         "title": "AllSettings",
         "type": "object"
@@ -3234,6 +3288,189 @@
           "expires_at"
         ],
         "title": "InvitationOut",
+        "type": "object"
+      },
+      "InvoiceIn": {
+        "additionalProperties": false,
+        "properties": {
+          "channel_id": {
+            "format": "uuid",
+            "title": "Channel Id",
+            "type": "string"
+          },
+          "customer_id": {
+            "format": "uuid",
+            "title": "Customer Id",
+            "type": "string"
+          },
+          "due_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due Date"
+          },
+          "invoice_date": {
+            "format": "date",
+            "title": "Invoice Date",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/EntryLine"
+            },
+            "maxItems": 500,
+            "minItems": 1,
+            "title": "Lines",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "channel_id",
+          "customer_id",
+          "invoice_date",
+          "lines"
+        ],
+        "title": "InvoiceIn",
+        "type": "object"
+      },
+      "InvoiceLineOut": {
+        "properties": {
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "qty": {
+            "title": "Qty",
+            "type": "string"
+          },
+          "unit_price": {
+            "title": "Unit Price",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "item_id",
+          "qty",
+          "unit_price"
+        ],
+        "title": "InvoiceLineOut",
+        "type": "object"
+      },
+      "InvoiceOut": {
+        "properties": {
+          "balance": {
+            "title": "Balance",
+            "type": "integer"
+          },
+          "customer_id": {
+            "format": "uuid",
+            "title": "Customer Id",
+            "type": "string"
+          },
+          "customer_name": {
+            "title": "Customer Name",
+            "type": "string"
+          },
+          "document_id": {
+            "format": "uuid",
+            "title": "Document Id",
+            "type": "string"
+          },
+          "due_date": {
+            "format": "date",
+            "title": "Due Date",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "invoice_date": {
+            "format": "date",
+            "title": "Invoice Date",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/InvoiceLineOut"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "paid": {
+            "title": "Paid",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "subtotal": {
+            "title": "Subtotal",
+            "type": "integer"
+          },
+          "tax": {
+            "title": "Tax",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "document_id",
+          "number",
+          "customer_id",
+          "customer_name",
+          "outlet_id",
+          "invoice_date",
+          "due_date",
+          "subtotal",
+          "tax",
+          "total",
+          "paid",
+          "balance",
+          "status",
+          "lines"
+        ],
+        "title": "InvoiceOut",
         "type": "object"
       },
       "ItemGroupsIn": {
@@ -7503,6 +7740,48 @@
           "lines"
         ],
         "title": "QuickPurchaseIn",
+        "type": "object"
+      },
+      "ReceiptIn": {
+        "additionalProperties": false,
+        "description": "Money received from the customer against an invoice.",
+        "properties": {
+          "amount": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 1000000000000000.0,
+            "title": "Amount",
+            "type": "integer"
+          },
+          "method": {
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Method",
+            "type": "string"
+          },
+          "paid_on": {
+            "format": "date",
+            "title": "Paid On",
+            "type": "string"
+          },
+          "reference": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference"
+          }
+        },
+        "required": [
+          "paid_on",
+          "amount",
+          "method"
+        ],
+        "title": "ReceiptIn",
         "type": "object"
       },
       "ReceiptLine": {
@@ -12244,6 +12523,21 @@
           "lines"
         ],
         "title": "WasteIn",
+        "type": "object"
+      },
+      "WholesaleSettings": {
+        "additionalProperties": false,
+        "description": "FR-SAL-011: when wholesale invoices fall due unless the invoice says otherwise.",
+        "properties": {
+          "payment_terms_days": {
+            "default": 14,
+            "maximum": 365.0,
+            "minimum": 0.0,
+            "title": "Payment Terms Days",
+            "type": "integer"
+          }
+        },
+        "title": "WholesaleSettings",
         "type": "object"
       },
       "app__modules__finance__gl_schemas__OpeningLine": {
@@ -23647,6 +23941,31 @@
         ]
       }
     },
+    "/api/v1/purchasing/payables/aging": {
+      "get": {
+        "operationId": "payables_aging_api_v1_purchasing_payables_aging_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AgingRow"
+                  },
+                  "title": "Response Payables Aging Api V1 Purchasing Payables Aging Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Payables Aging",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
     "/api/v1/purchasing/quick-purchases": {
       "post": {
         "description": "A retried request (bad connection at the market) never receives the stock twice.",
@@ -24975,6 +25294,368 @@
           }
         },
         "summary": "Reopen Day",
+        "tags": [
+          "sales"
+        ]
+      }
+    },
+    "/api/v1/sales/invoices": {
+      "get": {
+        "operationId": "list_invoices_api_v1_sales_invoices_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "open",
+                    "partially_paid",
+                    "paid",
+                    "void"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "customer_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Customer Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/InvoiceOut"
+                  },
+                  "title": "Response List Invoices Api V1 Sales Invoices Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Invoices",
+        "tags": [
+          "sales"
+        ]
+      },
+      "post": {
+        "operationId": "create_api_v1_sales_invoices_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvoiceIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create",
+        "tags": [
+          "sales"
+        ]
+      }
+    },
+    "/api/v1/sales/invoices/aging": {
+      "get": {
+        "operationId": "aging_api_v1_sales_invoices_aging_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "as_of",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "As Of"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AgingRow"
+                  },
+                  "title": "Response Aging Api V1 Sales Invoices Aging Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Aging",
+        "tags": [
+          "sales"
+        ]
+      }
+    },
+    "/api/v1/sales/invoices/{invoice_id}/payments": {
+      "post": {
+        "operationId": "receive_api_v1_sales_invoices__invoice_id__payments_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "invoice_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Invoice Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReceiptIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Receive",
+        "tags": [
+          "sales"
+        ]
+      }
+    },
+    "/api/v1/sales/invoices/{invoice_id}/payments/{payment_id}/reverse": {
+      "post": {
+        "operationId": "reverse_payment_api_v1_sales_invoices__invoice_id__payments__payment_id__reverse_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "invoice_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Invoice Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "payment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Payment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reverse Payment",
+        "tags": [
+          "sales"
+        ]
+      }
+    },
+    "/api/v1/sales/invoices/{invoice_id}/void": {
+      "post": {
+        "operationId": "void_api_v1_sales_invoices__invoice_id__void_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "invoice_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Invoice Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Void",
         "tags": [
           "sales"
         ]

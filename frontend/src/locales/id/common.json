@@ -312,7 +312,12 @@
     "account_code_exists": "Sudah ada akun dengan kode ini.",
     "system_account_type_fixed": "Akun ini dipakai jurnal otomatis; jenisnya tidak bisa diubah.",
     "journal_not_found": "Jurnal tidak ditemukan.",
-    "role_needs_same_type": "Peran ini butuh akun dengan jenis yang sama."
+    "role_needs_same_type": "Peran ini butuh akun dengan jenis yang sama.",
+    "not_a_wholesale_channel": "Pilih daftar harga grosir.",
+    "due_before_invoice": "Jatuh tempo sebelum tanggal faktur.",
+    "invoice_not_found": "Faktur tidak ditemukan.",
+    "invoice_not_open": "Faktur ini tidak terbuka.",
+    "invoice_has_payments": "Batalkan pembayarannya dulu sebelum membatalkan faktur."
   },
   "appearance": {
     "open": "Tampilan",
@@ -1477,7 +1482,8 @@
       "pl": "Laba rugi",
       "expenses": "Pengeluaran",
       "accounts": "Kas dan bank",
-      "books": "Pembukuan"
+      "books": "Pembukuan",
+      "receivables": "Piutang"
     },
     "pl": {
       "netSales": "Penjualan bersih",
@@ -1625,6 +1631,46 @@
       "equity": "Ekuitas",
       "revenue": "Pendapatan",
       "expense": "Beban"
+    }
+  },
+  "ar": {
+    "new": "Faktur baru",
+    "empty": "Belum ada faktur di outlet ini.",
+    "line": "Jatuh tempo {{due}} · total {{total}} · sisa {{balance}}",
+    "status": {
+      "open": "Terbuka",
+      "partially_paid": "Dibayar sebagian",
+      "paid": "Lunas",
+      "void": "Batal"
+    },
+    "amount": "Jumlah diterima",
+    "method": "Metode",
+    "receive": "Catat pembayaran",
+    "void": "Batalkan faktur",
+    "aging": {
+      "receivable": "Piutang pelanggan",
+      "payable": "Utang ke pemasok",
+      "none": "Tidak ada saldo terbuka.",
+      "party": "Nama",
+      "current": "Belum jatuh tempo",
+      "days_1_30": "1–30 hari",
+      "days_31_60": "31–60 hari",
+      "days_61_90": "61–90 hari",
+      "over_90": "Lebih dari 90 hari",
+      "total": "Total"
+    },
+    "form": {
+      "customer": "Pelanggan (nama atau telepon)",
+      "change": "Ganti",
+      "addCustomer": "Tambah pelanggan “{{name}}”",
+      "channel": "Daftar harga",
+      "date": "Tanggal faktur",
+      "addItem": "Tambah barang",
+      "qty": "Jumlah",
+      "price": "Harga satuan (kosong: daftar harga)",
+      "remove": "Hapus",
+      "save": "Buat faktur",
+      "noChannel": "Tambahkan saluran penjualan grosir di katalog terlebih dahulu."
     }
   }
 }

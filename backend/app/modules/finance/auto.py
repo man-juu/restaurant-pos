@@ -203,6 +203,20 @@ async def on_bill_paid(db: AsyncSession, event: Event) -> None:
     )
 
 
+async def on_receivable_paid(db: AsyncSession, event: Event) -> None:
+    """A wholesale customer paid (FR-FIN-006): Dr cash or bank, Cr receivable."""
+    d = event.data
+    day = date.fromisoformat(str(d["paid_on"]))
+    if not await ready(db, event.tenant_id, day):
+        return
+    roles = await _roles(db)
+    cash = PAYMENT_ROLES.get(str(d["method_kind"]), "bank")
+    amount = int(cast(int, d["amount"]))
+    lines = _pair(roles, cash, "receivable", amount, uuid.UUID(str(d["outlet_id"])))
+    source = ("customer_payment", uuid.UUID(str(d["receivable_id"])))
+    await _post(db, event, day, source, lines, "customer payment")
+
+
 # ─── Finance's own documents (expenses, money moved between accounts) ─────────
 
 MONEY_ROLES = {"cash": "cash", "petty_cash": "cash", "bank": "bank"}

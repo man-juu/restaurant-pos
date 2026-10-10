@@ -10,6 +10,8 @@ DISCOUNT_APPLY = "sales.discount.apply"  # up to the role's limit (basis points)
 ORDER_VOID = "sales.order.void"  # void sent lines or an unpaid order, with a reason
 ORDER_REFUND = "sales.order.refund"  # refund a paid order (approval by rule)
 STAFF_VIEW = "sales.staff.view"  # FR-RPT-012: sales by staff member
+INVOICE_VIEW = "sales.invoice.view"  # FR-SAL-011, FR-FIN-006: wholesale invoices, AR aging
+INVOICE_MANAGE = "sales.invoice.manage"  # create and void invoices, record customer payments
 
 ALL = (
     DAY_VIEW,
@@ -24,6 +26,8 @@ ALL = (
     ORDER_VOID,
     ORDER_REFUND,
     STAFF_VIEW,
+    INVOICE_VIEW,
+    INVOICE_MANAGE,
 )
 
 # docs/03 matrix: "Record manual daily sales": owner/co-owner Y, manager O, cashier O.
@@ -45,6 +49,8 @@ ROLE_TEMPLATES: dict[str, tuple[str, ...]] = {
         ORDER_VOID,
         ORDER_REFUND,
         STAFF_VIEW,
+        INVOICE_VIEW,
+        INVOICE_MANAGE,
     ),
     "cashier": (
         DAY_VIEW,
@@ -57,7 +63,7 @@ ROLE_TEMPLATES: dict[str, tuple[str, ...]] = {
         ORDER_REFUND,
     ),
     "waiter": (ORDER_CREATE,),
-    "accountant": (DAY_VIEW, REPORT_VIEW, SHIFT_VIEW, STAFF_VIEW),
+    "accountant": (DAY_VIEW, REPORT_VIEW, SHIFT_VIEW, STAFF_VIEW, INVOICE_VIEW, INVOICE_MANAGE),
     "viewer": (DAY_VIEW, REPORT_VIEW),
 }
 

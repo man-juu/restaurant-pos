@@ -26,6 +26,7 @@ import app.modules.production.models
 import app.modules.purchasing.ap_models
 import app.modules.purchasing.models
 import app.modules.sales.models
+import app.modules.sales.wholesale_models
 import app.modules.tables.booking_models
 import app.modules.tables.models
 import app.modules.transfers.models  # noqa: F401 - module tables

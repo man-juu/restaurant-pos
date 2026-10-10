@@ -312,7 +312,12 @@
     "account_code_exists": "An account with this code already exists.",
     "system_account_type_fixed": "This account is used by automatic journals; its type cannot change.",
     "journal_not_found": "Journal not found.",
-    "role_needs_same_type": "This role needs an account of the same type."
+    "role_needs_same_type": "This role needs an account of the same type.",
+    "not_a_wholesale_channel": "Pick a wholesale price list.",
+    "due_before_invoice": "The due date is before the invoice date.",
+    "invoice_not_found": "Invoice not found.",
+    "invoice_not_open": "This invoice is not open.",
+    "invoice_has_payments": "Reverse its payments before voiding."
   },
   "appearance": {
     "open": "Appearance",
@@ -1477,7 +1482,8 @@
       "pl": "Profit and loss",
       "expenses": "Expenses",
       "accounts": "Cash and bank",
-      "books": "Books"
+      "books": "Books",
+      "receivables": "Receivables"
     },
     "pl": {
       "netSales": "Net sales",
@@ -1625,6 +1631,46 @@
       "equity": "Equity",
       "revenue": "Revenue",
       "expense": "Expense"
+    }
+  },
+  "ar": {
+    "new": "New invoice",
+    "empty": "No invoices at this outlet yet.",
+    "line": "Due {{due}} · total {{total}} · open {{balance}}",
+    "status": {
+      "open": "Open",
+      "partially_paid": "Part paid",
+      "paid": "Paid",
+      "void": "Void"
+    },
+    "amount": "Amount received",
+    "method": "Method",
+    "receive": "Record payment",
+    "void": "Void invoice",
+    "aging": {
+      "receivable": "Customers owe us",
+      "payable": "We owe vendors",
+      "none": "Nothing outstanding.",
+      "party": "Name",
+      "current": "Not due",
+      "days_1_30": "1–30 days",
+      "days_31_60": "31–60 days",
+      "days_61_90": "61–90 days",
+      "over_90": "Over 90 days",
+      "total": "Total"
+    },
+    "form": {
+      "customer": "Customer (name or phone)",
+      "change": "Change",
+      "addCustomer": "Add customer “{{name}}”",
+      "channel": "Price list",
+      "date": "Invoice date",
+      "addItem": "Add item",
+      "qty": "Quantity",
+      "price": "Unit price (blank: price list)",
+      "remove": "Remove",
+      "save": "Create invoice",
+      "noChannel": "Add a wholesale sales channel in the catalog first."
     }
   }
 }

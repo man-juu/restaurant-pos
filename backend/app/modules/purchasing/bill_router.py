@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
 
 from app.core.access.policy import Principal, require
+from app.core.aging import AgingRow
 from app.core.idempotency import (
     remember,
     replay_or_none,
@@ -120,6 +121,14 @@ async def void_bill(bill_id: uuid.UUID, request: Request, p: Manage) -> VendorBi
         bill = await _bill(db, p, bill_id)
         await bills.void_bill(db, bill, user_id=p.user_id)
         return await bills.bill_out(db, bill)
+
+
+@router.get("/payables/aging", response_model=list[AgingRow])
+async def payables_aging(request: Request, p: View) -> list[AgingRow]:
+    async with _db(request, p) as db:
+        today = await tenant_today(db, p.tenant_id)
+        scope = None if p.all_outlets else set(p.outlet_ids)
+        return await bills.payables_aging(db, scope, today)
 
 
 @router.get("/payables", response_model=list[PayableRow])

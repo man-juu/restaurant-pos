@@ -6,6 +6,7 @@ from app.modules.sales.receipt_router import router as receipt_router
 from app.modules.sales.report_router import router as report_router
 from app.modules.sales.router import router
 from app.modules.sales.shift_router import router as shift_router
+from app.modules.sales.wholesale_router import router as wholesale_router
 
 MANIFEST = ModuleManifest(
     name="sales",
@@ -17,6 +18,7 @@ MANIFEST = ModuleManifest(
         pos_actions_router,
         receipt_router,
         shift_router,
+        wholesale_router,
     ),
     permissions=permissions.ALL,
     role_templates=permissions.ROLE_TEMPLATES,

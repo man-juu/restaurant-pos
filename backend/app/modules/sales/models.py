@@ -26,7 +26,7 @@ from app.core.models import Base, _check_in, _created_at, _id
 
 DAY_STATUSES = ("open", "locked")
 DOC_STATUSES = ("posted", "replaced", "reversed")
-SOURCES = ("manual_day", "pos")
+SOURCES = ("manual_day", "pos", "wholesale")
 SHIFT_STATUSES = ("open", "closed")
 ORDER_STATUSES = ("open", "paid", "cancelled", "void", "refunded")
 LINE_STATUSES = ("new", "sent", "void")

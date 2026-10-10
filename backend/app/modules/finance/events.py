@@ -5,7 +5,7 @@ depend on that module, and the handlers simply never run where it is off."""
 from app.core.events import subscribe
 from app.modules.finance import auto
 from app.modules.inventory.interface import STOCK_POSTED
-from app.modules.sales.interface import DOCUMENT_POSTED, DOCUMENT_REVERSED
+from app.modules.sales.interface import DOCUMENT_POSTED, DOCUMENT_REVERSED, RECEIVABLE_PAID
 
 RECEIPT_POSTED = "purchasing.receipt.posted"
 RECEIPT_REVERSED = "purchasing.receipt.reversed"
@@ -19,3 +19,4 @@ def register() -> None:
     subscribe(RECEIPT_POSTED, "finance", auto.on_receipt)
     subscribe(RECEIPT_REVERSED, "finance", auto.on_receipt_reversed)
     subscribe(BILL_PAID, "finance", auto.on_bill_paid)
+    subscribe(RECEIVABLE_PAID, "finance", auto.on_receivable_paid)

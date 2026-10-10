@@ -3194,6 +3194,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/purchasing/payables/aging': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Payables Aging */
+    get: operations['payables_aging_api_v1_purchasing_payables_aging_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/purchasing/quick-purchases': {
     parameters: {
       query?: never
@@ -3560,6 +3577,92 @@ export interface paths {
     put?: never
     /** Reopen Day */
     post: operations['reopen_day_api_v1_sales_days__outlet_id___on__reopen_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/invoices': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Invoices */
+    get: operations['list_invoices_api_v1_sales_invoices_get']
+    put?: never
+    /** Create */
+    post: operations['create_api_v1_sales_invoices_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/invoices/aging': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Aging */
+    get: operations['aging_api_v1_sales_invoices_aging_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/invoices/{invoice_id}/payments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Receive */
+    post: operations['receive_api_v1_sales_invoices__invoice_id__payments_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/invoices/{invoice_id}/payments/{payment_id}/reverse': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reverse Payment */
+    post: operations['reverse_payment_api_v1_sales_invoices__invoice_id__payments__payment_id__reverse_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/invoices/{invoice_id}/void': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Void */
+    post: operations['void_api_v1_sales_invoices__invoice_id__void_post']
     delete?: never
     options?: never
     head?: never
@@ -4105,6 +4208,31 @@ export interface components {
        */
       unit_id: string
     }
+    /**
+     * AgingRow
+     * @description One customer or vendor: open balances by how long they are past due.
+     */
+    AgingRow: {
+      /** Current */
+      current: number
+      /** Days 1 30 */
+      days_1_30: number
+      /** Days 31 60 */
+      days_31_60: number
+      /** Days 61 90 */
+      days_61_90: number
+      /** Over 90 */
+      over_90: number
+      /**
+       * Party Id
+       * Format: uuid
+       */
+      party_id: string
+      /** Party Name */
+      party_name: string
+      /** Total */
+      total: number
+    }
     /** AiUsage */
     AiUsage: {
       /** Enabled */
@@ -4197,6 +4325,7 @@ export interface components {
       stock: components['schemas']['StockSettings']
       tables: components['schemas']['TablesSettings']
       tax: components['schemas']['TaxSettings']
+      wholesale: components['schemas']['WholesaleSettings']
     }
     /** ApplyCreditIn */
     ApplyCreditIn: {
@@ -5346,6 +5475,98 @@ export interface components {
        * Format: uuid
        */
       id: string
+    }
+    /** InvoiceIn */
+    InvoiceIn: {
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /**
+       * Customer Id
+       * Format: uuid
+       */
+      customer_id: string
+      /** Due Date */
+      due_date?: string | null
+      /**
+       * Invoice Date
+       * Format: date
+       */
+      invoice_date: string
+      /** Lines */
+      lines: components['schemas']['EntryLine'][]
+      /** Note */
+      note?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
+    /** InvoiceLineOut */
+    InvoiceLineOut: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: string
+      /** Unit Price */
+      unit_price: number
+    }
+    /** InvoiceOut */
+    InvoiceOut: {
+      /** Balance */
+      balance: number
+      /**
+       * Customer Id
+       * Format: uuid
+       */
+      customer_id: string
+      /** Customer Name */
+      customer_name: string
+      /**
+       * Document Id
+       * Format: uuid
+       */
+      document_id: string
+      /**
+       * Due Date
+       * Format: date
+       */
+      due_date: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Invoice Date
+       * Format: date
+       */
+      invoice_date: string
+      /** Lines */
+      lines: components['schemas']['InvoiceLineOut'][]
+      /** Number */
+      number: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Paid */
+      paid: number
+      /** Status */
+      status: string
+      /** Subtotal */
+      subtotal: number
+      /** Tax */
+      tax: number
+      /** Total */
+      total: number
     }
     /** ItemGroupsIn */
     ItemGroupsIn: {
@@ -6947,6 +7168,23 @@ export interface components {
       vendor_id?: string | null
       /** Vendor Name */
       vendor_name?: string | null
+    }
+    /**
+     * ReceiptIn
+     * @description Money received from the customer against an invoice.
+     */
+    ReceiptIn: {
+      /** Amount */
+      amount: number
+      /** Method */
+      method: string
+      /**
+       * Paid On
+       * Format: date
+       */
+      paid_on: string
+      /** Reference */
+      reference?: string | null
     }
     /** ReceiptLine */
     ReceiptLine: {
@@ -8848,6 +9086,17 @@ export interface components {
        * @enum {string}
        */
       reason_code: 'spoilage' | 'expired' | 'preparation_loss' | 'damaged' | 'staff_meal' | 'other'
+    }
+    /**
+     * WholesaleSettings
+     * @description FR-SAL-011: when wholesale invoices fall due unless the invoice says otherwise.
+     */
+    WholesaleSettings: {
+      /**
+       * Payment Terms Days
+       * @default 14
+       */
+      payment_terms_days: number
     }
     /** OpeningLine */
     app__modules__finance__gl_schemas__OpeningLine: {
@@ -15783,6 +16032,26 @@ export interface operations {
       }
     }
   }
+  payables_aging_api_v1_purchasing_payables_aging_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AgingRow'][]
+        }
+      }
+    }
+  }
   quick_purchase_api_v1_purchasing_quick_purchases_post: {
     parameters: {
       query?: never
@@ -16542,6 +16811,205 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['DayOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_invoices_api_v1_sales_invoices_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        status?: ('open' | 'partially_paid' | 'paid' | 'void') | null
+        customer_id?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['InvoiceOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_api_v1_sales_invoices_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['InvoiceIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['InvoiceOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  aging_api_v1_sales_invoices_aging_get: {
+    parameters: {
+      query?: {
+        as_of?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AgingRow'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  receive_api_v1_sales_invoices__invoice_id__payments_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path: {
+        invoice_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReceiptIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['InvoiceOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reverse_payment_api_v1_sales_invoices__invoice_id__payments__payment_id__reverse_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        invoice_id: string
+        payment_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['InvoiceOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  void_api_v1_sales_invoices__invoice_id__void_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        invoice_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['InvoiceOut']
         }
       }
       /** @description Validation Error */

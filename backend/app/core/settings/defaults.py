@@ -56,6 +56,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
                 "vendor_return": {"prefix": "RTN", "padding": 5, "reset": "yearly"},
                 "vendor_bill": {"prefix": "BILL", "padding": 5, "reset": "yearly"},
                 "journal": {"prefix": "JE", "padding": 6, "reset": "yearly"},
+                "wholesale_invoice": {"prefix": "INV", "padding": 5, "reset": "yearly"},
             }
         },
         "session": {"idle_minutes": 60},
@@ -97,6 +98,7 @@ FALLBACK: dict[str, Any] = {
         "allow_overbooking": False,
     },
     "finance": {"auto_journals": True},
+    "wholesale": {"payment_terms_days": 14},
 }
 
 

@@ -159,6 +159,12 @@ class ProductionSettings(Strict):
     prep_includes_requests: bool = True
 
 
+class WholesaleSettings(Strict):
+    """FR-SAL-011: when wholesale invoices fall due unless the invoice says otherwise."""
+
+    payment_terms_days: int = Field(default=14, ge=0, le=365)
+
+
 class FinanceSettings(Strict):
     """FR-FIN-003: journal sales, stock, purchases and payments automatically once the books
     are set up. Off: only manual journals (an accountant keeps the books elsewhere)."""
@@ -198,6 +204,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "production": ProductionSettings,
     "tables": TablesSettings,
     "finance": FinanceSettings,
+    "wholesale": WholesaleSettings,
 }
 
 
@@ -218,3 +225,4 @@ class AllSettings(BaseModel):
     production: ProductionSettings
     tables: TablesSettings
     finance: FinanceSettings
+    wholesale: WholesaleSettings

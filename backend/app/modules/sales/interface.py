@@ -23,6 +23,7 @@ from app.modules.sales.events import (
 from app.modules.sales.models import PosLineModifier, PosOrder, PosOrderLine
 from app.modules.sales.money_reports import PeriodTotals, period_totals
 from app.modules.sales.pos_schemas import PosOrderCreateIn
+from app.modules.sales.wholesale import RECEIVABLE_PAID
 
 __all__ = [
     "DOCUMENT_POSTED",
@@ -31,6 +32,7 @@ __all__ = [
     "LINES_VOIDED",
     "ORDER_CLOSED",
     "ORDER_PAID",
+    "RECEIVABLE_PAID",
     "DocumentMoney",
     "LineDetail",
     "OrderState",

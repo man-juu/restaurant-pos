@@ -12,6 +12,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import audit
+from app.core.aging import AgingRow, age
 from app.core.errors import ConflictError, NotFoundError
 from app.core.settings import service as settings
 from app.core.settings.schemas import PaymentMethodSettings, PurchasingSettings
@@ -338,3 +339,24 @@ async def payables(
         )
         for b in rows
     ]
+
+
+async def payables_aging(
+    db: AsyncSession, outlet_ids: set[uuid.UUID] | None, today: date
+) -> list[AgingRow]:
+    """FR-FIN-006: what is owed per vendor, by how long it is past due."""
+    stmt = select(VendorBill).where(VendorBill.status.in_(("open", "partially_paid")))
+    if outlet_ids is not None:
+        stmt = stmt.where(VendorBill.outlet_id.in_(outlet_ids))
+    rows = list(await db.scalars(stmt.limit(5000)))
+    sums = age(((b.vendor_id, b.due_date, balance(b)) for b in rows), today)
+    names = dict(
+        (await db.execute(select(Vendor.id, Vendor.name).where(Vendor.id.in_(sums)))).all()
+    )
+    return sorted(
+        (
+            AgingRow(party_id=v, party_name=names.get(v, ""), total=sum(b.values()), **b)
+            for v, b in sums.items()
+        ),
+        key=lambda a: -a.total,
+    )
