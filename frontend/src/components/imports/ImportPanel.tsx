@@ -1,6 +1,7 @@
 import { type ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import type { ImportCheck } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
 import {
   type ImportKind,
@@ -22,6 +23,8 @@ export function ImportPanel({
   options = {},
   children,
   onClose,
+  template = true,
+  extra,
 }: {
   kind: ImportKind
   title: string
@@ -29,13 +32,15 @@ export function ImportPanel({
   options?: Record<string, string>
   children?: ReactNode
   onClose: () => void
+  template?: boolean // false: the file comes from elsewhere (a platform export)
+  extra?: (data: ImportCheck) => ReactNode // more about a clean check, e.g. days found
 }) {
   const { t } = useTranslation()
   const [file, setFile] = useState<File | null>(null)
   const check = useCheckImport(kind, options)
   const commit = useCommitImport(kind, options)
   const tooBig = Boolean(file && file.size > MAX_IMPORT_BYTES)
-  const ready = check.data && check.data.errors.length === 0 && check.data.rows_ok > 0
+  const ready = isReady(check.data)
 
   const choose = (next: File | undefined) => {
     setFile(next ?? null)
@@ -53,22 +58,11 @@ export function ImportPanel({
       </div>
       <p className="text-sm text-muted">{help}</p>
       {children}
-      <FilePicker kind={kind} onFile={choose} />
+      <FilePicker kind={template ? kind : null} onFile={choose} />
       {tooBig && <Alert>{t('catalog.import.tooBig')}</Alert>}
       <Problems errors={[check.error, commit.error]} />
-      {check.data && (
-        <CheckResult
-          rowsOk={check.data.rows_ok}
-          errors={check.data.errors}
-          newCategories={check.data.new_categories ?? []}
-        />
-      )}
-      <CommitButton
-        commit={commit}
-        file={file}
-        ready={Boolean(ready)}
-        rows={check.data?.rows_ok ?? 0}
-      />
+      {check.data && <CheckView data={check.data} extra={extra} />}
+      <CommitButton commit={commit} file={file} ready={ready} rows={check.data?.rows_ok ?? 0} />
     </Card>
   )
 }
@@ -77,20 +71,22 @@ function FilePicker({
   kind,
   onFile,
 }: {
-  kind: ImportKind
+  kind: ImportKind | null
   onFile: (file: File | undefined) => void
 }) {
   const { t } = useTranslation()
   return (
     <>
-      <div className="flex flex-wrap gap-3 text-sm font-semibold">
-        <a className="text-accent underline" href={templateUrl(kind, 'xlsx')}>
-          {t('catalog.import.templateXlsx')}
-        </a>
-        <a className="text-accent underline" href={templateUrl(kind, 'csv')}>
-          {t('catalog.import.templateCsv')}
-        </a>
-      </div>
+      {kind && (
+        <div className="flex flex-wrap gap-3 text-sm font-semibold">
+          <a className="text-accent underline" href={templateUrl(kind, 'xlsx')}>
+            {t('catalog.import.templateXlsx')}
+          </a>
+          <a className="text-accent underline" href={templateUrl(kind, 'csv')}>
+            {t('catalog.import.templateCsv')}
+          </a>
+        </div>
+      )}
       <label className="flex flex-col gap-1 text-sm font-semibold text-ink-soft">
         {t('catalog.import.file')}
         <input
@@ -143,6 +139,28 @@ function CommitButton({
     >
       {t('catalog.import.confirm', { count: rows })}
     </Button>
+  )
+}
+
+const isReady = (data?: ImportCheck) =>
+  Boolean(data && data.errors.length === 0 && data.rows_ok > 0)
+
+function CheckView({
+  data,
+  extra,
+}: {
+  data: ImportCheck
+  extra?: (data: ImportCheck) => ReactNode
+}) {
+  return (
+    <>
+      <CheckResult
+        rowsOk={data.rows_ok}
+        errors={data.errors}
+        newCategories={data.new_categories ?? []}
+      />
+      {data.errors.length === 0 && extra?.(data)}
+    </>
   )
 }
 

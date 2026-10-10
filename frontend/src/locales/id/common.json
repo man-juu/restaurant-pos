@@ -359,7 +359,8 @@
     "restore_point_in_future": "Titik pemulihan harus di masa lalu.",
     "announcement_not_found": "Pengumuman ini sudah tidak ditampilkan.",
     "unknown_tenant": "Salah satu id usaha tidak ada.",
-    "push_endpoint_not_allowed": "Layanan push browser ini tidak didukung."
+    "push_endpoint_not_allowed": "Layanan push browser ini tidak didukung.",
+    "mapping_not_found": "Simpan dulu kolom mana berisi apa untuk platform ini."
   },
   "appearance": {
     "open": "Tampilan",
@@ -796,7 +797,13 @@
         "sku_taken": "SKU sudah ada atau berulang di file",
         "storage_type": "jenis penyimpanan",
         "shelf_life_days": "umur simpan (hari)",
-        "translations": "nama (EN atau ID)"
+        "translations": "nama (EN atau ID)",
+        "date": "tanggal",
+        "code": "kode item (tidak ada di kanal ini atau SKU)",
+        "qty": "jumlah",
+        "amount": "nominal",
+        "too_many_days": "lebih dari 62 hari dalam satu file",
+        "day_locked": "hari itu terkunci"
       },
       "openRecipes": "Impor resep",
       "recipesTitle": "Impor resep dari Excel atau CSV",
@@ -1268,6 +1275,28 @@
     "status": {
       "open": "Terbuka",
       "locked": "Terkunci"
+    },
+    "platform": {
+      "open": "Impor file penjualan platform",
+      "title": "File penjualan platform",
+      "help": "Unggah ekspor penjualan dari GrabFood, GoFood, ShopeeFood atau platform lain. Baris dijumlahkan per hari dan item; penjualan tiap hari menggantikan entri kanal ini pada hari itu, dan stok berkurang sesuai resep.",
+      "mapHelp": "Beri tahu sekali kolom mana berisi apa. Pilih file contoh untuk memilih dari nama kolomnya. Kode item dicocokkan dengan kode platform di kanal ini, lalu SKU item.",
+      "sample": "File contoh (untuk membaca nama kolom)",
+      "fields": {
+        "date_column": "Kolom tanggal",
+        "code_column": "Kolom kode item",
+        "qty_column": "Kolom jumlah",
+        "amount_column": "Kolom nominal (opsional)"
+      },
+      "dateFormat": "Format tanggal",
+      "formats": {
+        "dmy": "hari/bulan/tahun",
+        "mdy": "bulan/hari/tahun",
+        "ymd": "tahun-bulan-hari"
+      },
+      "saveMap": "Simpan kolom",
+      "editMap": "Ubah kolom",
+      "replaces": "menggantikan entri yang sudah ada"
     }
   },
   "reports": {
@@ -2027,6 +2056,9 @@
   "changelog": {
     "title": "Yang baru",
     "items": {
+      "2026-10-10f": [
+        "Impor file penjualan GrabFood, GoFood atau ShopeeFood di halaman Penjualan; kolomnya diingat per platform"
+      ],
       "2026-10-10e": [
         "Tetap berjualan saat internet putus: pesanan disimpan di perangkat dan terunggah sendiri"
       ],

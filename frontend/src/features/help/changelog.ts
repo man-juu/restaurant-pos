@@ -1,6 +1,7 @@
 /** FR-X-007: what changed, newest first. Text lives in the locale files under
  * `changelog.<id>`; add an entry with each release. */
 export const CHANGELOG = [
+  { id: '2026-10-10f', date: '2026-10-10' }, // platform sales files
   { id: '2026-10-10e', date: '2026-10-10' }, // offline till
   { id: '2026-10-10d', date: '2026-10-10' }, // modules per outlet, simple finance
   { id: '2026-10-10c', date: '2026-10-10' }, // exports, announcements, push, help

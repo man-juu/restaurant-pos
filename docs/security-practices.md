@@ -226,3 +226,9 @@ Open (low): the export secret-column filter is name-based; revisit with a per-co
 - The offline queue in localStorage holds order lines and payment amounts only: no tokens, card data or customer details. It is keyed by user, so another person signing in on the same device never uploads someone else's orders under their name.
 - The server trusts nothing from the queue: it re-prices every line, checks permissions (pay needs `sales.order.pay`), outlet access, module state and the 7-day `taken_at` window, and `client_id` (unique per tenant) makes repeated uploads harmless (e2e `offline.spec.ts`: response lost mid-upload, stored once).
 - Performance: one upload at a time, at most every 30 seconds; no new backend query paths.
+
+## Platform sales file import (2026-10-10, ADR 0.78)
+
+- Files go through the shared reader (5 MB, 2000 rows, 40 columns, zip-bomb guard); cells are text only, and dates, quantities and amounts are parsed strictly (bad values are row errors, never guesses).
+- Outlet scope on check, import and undo (`require_outlet`, 404 out of scope); the channel must belong to the tenant (RLS plus the visible-channel check); mapping saves are audited.
+- Bounded work per request: at most 62 day entries per file. The check runs the real save in a rolled-back savepoint.

@@ -115,3 +115,62 @@ test('cashier enters a GoFood day with a promo (FR-SAL-002)', async ({ page }) =
     reported_total: 225000,
   })
 })
+
+test('owner maps a platform file once, checks it and imports it (FR-IMP-004)', async ({ page }) => {
+  await mock(page)
+  let saved: Body | null = null
+  const posts: string[] = []
+  await page.route('**/api/v1/sales/platform-imports/**', async (route) => {
+    const req = route.request()
+    const url = new URL(req.url())
+    const json = (data: unknown, status = 200) => route.fulfill({ status, json: data })
+    if (url.pathname.endsWith('/mappings/c1')) {
+      if (req.method() === 'PUT') saved = { ...(req.postDataJSON() as Body), channel_id: 'c1' }
+      return saved ? json(saved) : json({ code: 'mapping_not_found' }, 404)
+    }
+    posts.push(url.pathname)
+    if (url.pathname.endsWith('/columns')) return json(['order date', 'item code', 'qty'])
+    if (url.pathname.endsWith('/check'))
+      return json({
+        rows_ok: 2,
+        errors: [],
+        days: [{ business_date: '2026-03-05', total: 67500, replaces: true }],
+      })
+    return json({ code: 'not_found' }, 404)
+  })
+  await page.route('**/api/v1/sales/platform-imports?*', (route) => {
+    posts.push('commit')
+    return route.fulfill({
+      status: 201,
+      json: {
+        id: 'b1',
+        kind: 'platform_sales',
+        file_name: 'gofood.csv',
+        status: 'committed',
+        row_count: 2,
+        created_at: '2026-03-06T10:00:00Z',
+        reverted_at: null,
+      },
+    })
+  })
+  await page.goto('/sales')
+  await page.getByRole('button', { name: 'EN' }).click()
+  await page.getByRole('button', { name: 'Import a platform sales file' }).click()
+  await page.getByLabel('Date column').fill('order date')
+  await page.getByLabel('Item code column').fill('item code')
+  await page.getByLabel('Quantity column').fill('qty')
+  await page.getByRole('button', { name: 'Save columns' }).click()
+  await expect(page.getByRole('button', { name: 'Change columns' })).toBeVisible()
+  expect(saved).toMatchObject({
+    date_column: 'order date',
+    amount_column: null,
+    date_format: 'dmy',
+  })
+
+  const file = { name: 'gofood.csv', mimeType: 'text/csv', buffer: Buffer.from('a,b\n1,2\n') }
+  await page.getByLabel(/^File \(.xlsx/).setInputFiles(file)
+  await expect(page.getByText(/replaces the entry already there/)).toBeVisible()
+  await page.getByRole('button', { name: /Import 2 items/ }).click()
+  await expect(page.getByText('2 items imported.')).toBeVisible()
+  expect(posts).toEqual(['/api/v1/sales/platform-imports/check', 'commit'])
+})

@@ -11,7 +11,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.models import Base, _check_in, _created_at, _id
 
-IMPORT_KINDS = ("items", "recipes", "vendors", "opening_stock")
+IMPORT_KINDS = ("items", "recipes", "vendors", "opening_stock", "platform_sales")
 IMPORT_STATUSES = ("committed", "reverted")
 
 

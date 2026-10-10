@@ -91,17 +91,34 @@ async def _replace_previous(db: AsyncSession, data: DayEntryIn, user_id: uuid.UU
         SalesDocument.status == "posted",
     )
     old = await db.scalar(stmt.with_for_update())
-    if old is None:
-        return
+    if old is not None:
+        await _withdraw(db, old, user_id, "replaced")
+
+
+async def _withdraw(db: AsyncSession, old: SalesDocument, user_id: uuid.UUID, status: str) -> None:
+    """Give the stock back and mark the document; the journal follows the event."""
     p = Posting(old.tenant_id, old.outlet_id, user_id, DOC, old.id, old.business_date)
     try:
         await reverse(db, p, DOC, old.id)
     except ConflictError as err:  # untracked items only: no stock was taken
         if err.code != "nothing_to_reverse":
             raise
-    old.status = "replaced"
+    old.status = status
     await db.flush()
     await doc_events.reversed_(db, old, user_id)
+
+
+async def undo_entry(db: AsyncSession, doc_id: uuid.UUID, user_id: uuid.UUID) -> bool:
+    """Withdraw a day entry (an undone import). False when a later entry already replaced it."""
+    doc = await db.get(SalesDocument, doc_id, with_for_update=True)
+    if doc is None or doc.status != "posted":
+        return False
+    day = await get_day(db, doc.tenant_id, doc.outlet_id, doc.business_date, lock=True)
+    if day.status == "locked":
+        raise ConflictError("day_locked", details={"date": doc.business_date.isoformat()})
+    await _withdraw(db, doc, user_id, "reversed")
+    await _audit(db, doc, user_id, "undo")
+    return True
 
 
 async def take_stock(

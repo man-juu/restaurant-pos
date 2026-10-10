@@ -359,7 +359,8 @@
     "restore_point_in_future": "The restore point must be in the past.",
     "announcement_not_found": "This announcement is no longer shown.",
     "unknown_tenant": "One of the business ids does not exist.",
-    "push_endpoint_not_allowed": "This browser's push service is not supported."
+    "push_endpoint_not_allowed": "This browser's push service is not supported.",
+    "mapping_not_found": "Save which columns hold what for this platform first."
   },
   "appearance": {
     "open": "Appearance",
@@ -796,7 +797,13 @@
         "sku_taken": "SKU already exists or repeats in the file",
         "storage_type": "storage type",
         "shelf_life_days": "shelf life (days)",
-        "translations": "name (EN or ID)"
+        "translations": "name (EN or ID)",
+        "date": "date",
+        "code": "item code (not on this channel or a SKU)",
+        "qty": "quantity",
+        "amount": "amount",
+        "too_many_days": "more than 62 days in one file",
+        "day_locked": "that day is locked"
       },
       "openRecipes": "Import recipes",
       "recipesTitle": "Import recipes from Excel or CSV",
@@ -1268,6 +1275,28 @@
     "status": {
       "open": "Open",
       "locked": "Locked"
+    },
+    "platform": {
+      "open": "Import a platform sales file",
+      "title": "Platform sales file",
+      "help": "Upload the sales export from GrabFood, GoFood, ShopeeFood or another platform. Rows are added up per day and item; each day's sales replace any entry for this channel on that day, and stock comes off by recipe.",
+      "mapHelp": "Tell us once which columns hold what. Pick a sample file to choose from its column names. Item codes match the platform codes on this channel, then item SKUs.",
+      "sample": "Sample file (to read its column names)",
+      "fields": {
+        "date_column": "Date column",
+        "code_column": "Item code column",
+        "qty_column": "Quantity column",
+        "amount_column": "Amount column (optional)"
+      },
+      "dateFormat": "Dates are written as",
+      "formats": {
+        "dmy": "day/month/year",
+        "mdy": "month/day/year",
+        "ymd": "year-month-day"
+      },
+      "saveMap": "Save columns",
+      "editMap": "Change columns",
+      "replaces": "replaces the entry already there"
     }
   },
   "reports": {
@@ -2027,6 +2056,9 @@
   "changelog": {
     "title": "What's new",
     "items": {
+      "2026-10-10f": [
+        "Import GrabFood, GoFood or ShopeeFood sales files on the Sales page; the columns are remembered per platform"
+      ],
       "2026-10-10e": [
         "Keep selling when the internet drops: orders wait on the device and upload by themselves"
       ],

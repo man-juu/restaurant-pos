@@ -17,6 +17,10 @@ export const IMPORTS = {
     invalidates: [['items'], ['imports'], ['categories']],
   },
   recipes: { base: '/api/v1/catalog/imports/recipes', invalidates: [['imports'], ['boms']] },
+  platform: {
+    base: '/api/v1/sales/platform-imports',
+    invalidates: [['salesDay'], ['stock'], ['platformImports']],
+  },
   opening: { base: '/api/v1/inventory/imports/opening', invalidates: [['stock'], ['openings']] },
 } satisfies Record<string, ImportKind>
 

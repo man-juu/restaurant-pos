@@ -4122,6 +4122,98 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/sales/platform-imports': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Run Import */
+    post: operations['run_import_api_v1_sales_platform_imports_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/platform-imports/check': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Check Import */
+    post: operations['check_import_api_v1_sales_platform_imports_check_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/platform-imports/columns': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * File Columns
+     * @description The file's header, so the mapping can be picked from real column names.
+     */
+    post: operations['file_columns_api_v1_sales_platform_imports_columns_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/platform-imports/mappings/{channel_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Mapping */
+    get: operations['get_mapping_api_v1_sales_platform_imports_mappings__channel_id__get']
+    /** Save Mapping */
+    put: operations['save_mapping_api_v1_sales_platform_imports_mappings__channel_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/sales/platform-imports/{batch_id}/revert': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Revert Import
+     * @description Withdraws each day entry the file made (stock comes back); days replaced since stay.
+     */
+    post: operations['revert_import_api_v1_sales_platform_imports__batch_id__revert_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/sales/reports/breakdown': {
     parameters: {
       query?: never
@@ -5465,6 +5557,45 @@ export interface components {
       /** Code */
       code: string
     }
+    /** ColumnMapIn */
+    ColumnMapIn: {
+      /** Amount Column */
+      amount_column?: string | null
+      /** Code Column */
+      code_column: string
+      /** Date Column */
+      date_column: string
+      /**
+       * Date Format
+       * @default dmy
+       * @enum {string}
+       */
+      date_format: 'ymd' | 'dmy' | 'mdy'
+      /** Qty Column */
+      qty_column: string
+    }
+    /** ColumnMapOut */
+    ColumnMapOut: {
+      /** Amount Column */
+      amount_column?: string | null
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /** Code Column */
+      code_column: string
+      /** Date Column */
+      date_column: string
+      /**
+       * Date Format
+       * @default dmy
+       * @enum {string}
+       */
+      date_format: 'ymd' | 'dmy' | 'mdy'
+      /** Qty Column */
+      qty_column: string
+    }
     /** ComboIn */
     ComboIn: {
       /** Parts */
@@ -5710,6 +5841,18 @@ export interface components {
       outlet_id: string
       /** Status */
       status: string
+    }
+    /** DayTotalOut */
+    DayTotalOut: {
+      /**
+       * Business Date
+       * Format: date
+       */
+      business_date: string
+      /** Replaces */
+      replaces: boolean
+      /** Total */
+      total: number
     }
     /** DecisionIn */
     DecisionIn: {
@@ -7582,6 +7725,17 @@ export interface components {
        * @default 30
        */
       reliability_weight_pct: number
+    }
+    /** PlatformCheckOut */
+    PlatformCheckOut: {
+      /** Days */
+      days: components['schemas']['DayTotalOut'][]
+      /** Errors */
+      errors: {
+        [key: string]: unknown
+      }[]
+      /** Rows Ok */
+      rows_ok: number
     }
     /** PosLineIn */
     PosLineIn: {
@@ -19320,6 +19474,200 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['InvoiceOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  run_import_api_v1_sales_platform_imports_post: {
+    parameters: {
+      query: {
+        file_name: string
+        outlet_id: string
+        channel_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ImportBatchOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  check_import_api_v1_sales_platform_imports_check_post: {
+    parameters: {
+      query: {
+        file_name: string
+        outlet_id: string
+        channel_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlatformCheckOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  file_columns_api_v1_sales_platform_imports_columns_post: {
+    parameters: {
+      query: {
+        file_name: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': string[]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_mapping_api_v1_sales_platform_imports_mappings__channel_id__get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        channel_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ColumnMapOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  save_mapping_api_v1_sales_platform_imports_mappings__channel_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        channel_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ColumnMapIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ColumnMapOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  revert_import_api_v1_sales_platform_imports__batch_id__revert_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        batch_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ImportBatchOut']
         }
       }
       /** @description Validation Error */

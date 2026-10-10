@@ -10,6 +10,7 @@ import { todayIso } from '../catalog/labels'
 import { useDay } from './api'
 import { DaySummary } from './DaySummary'
 import { EntryGrid } from './EntryGrid'
+import { PlatformImport } from './platform/PlatformImport'
 
 interface Option {
   id: string
@@ -127,6 +128,7 @@ function DayBody({
           currency={currency}
         />
       )}
+      {canEnter && <PlatformImport outletId={outletId} channelId={channelId} currency={currency} />}
     </>
   )
 }
