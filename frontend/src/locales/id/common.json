@@ -300,7 +300,18 @@
     "customer_erased": "Data tamu ini sudah dihapus.",
     "reservation_not_found": "Reservasi tidak ditemukan.",
     "waitlist_entry_not_found": "Tidak ada di antrean.",
-    "customer_not_found": "Tamu tidak ditemukan."
+    "customer_not_found": "Tamu tidak ditemukan.",
+    "ledger_not_set_up": "Mulai pembukuan dulu (Keuangan, Pembukuan).",
+    "ledger_already_set_up": "Pembukuan sudah disiapkan.",
+    "journal_not_balanced": "Debit dan kredit harus sama.",
+    "journal_needs_two_lines": "Jurnal butuh minimal dua baris.",
+    "journal_line_one_side": "Setiap baris hanya debit atau kredit.",
+    "before_books_start": "Tanggal ini sebelum pembukuan dimulai.",
+    "period_closed": "Bulan itu sudah ditutup. Buka kembali dulu.",
+    "period_has_pending_journals": "Setujui atau tolak dulu jurnal yang menunggu di bulan ini.",
+    "account_code_exists": "Sudah ada akun dengan kode ini.",
+    "system_account_type_fixed": "Akun ini dipakai jurnal otomatis; jenisnya tidak bisa diubah.",
+    "journal_not_found": "Jurnal tidak ditemukan."
   },
   "appearance": {
     "open": "Tampilan",
@@ -1453,7 +1464,8 @@
     "tabs": {
       "pl": "Laba rugi",
       "expenses": "Pengeluaran",
-      "accounts": "Kas dan bank"
+      "accounts": "Kas dan bank",
+      "books": "Pembukuan"
     },
     "pl": {
       "netSales": "Penjualan bersih",
@@ -1531,5 +1543,62 @@
     "wait_other": "Sekitar {{count}} menit",
     "table": "Meja",
     "left": "Pergi"
+  },
+  "books": {
+    "notSetUp": "Pembukuan belum disiapkan. Pemilik atau akuntan memulainya di sini.",
+    "setupHelp": "Pilih tanggal mulai pembukuan dan saldo kas serta bank di hari itu. Saldo awal lain (stok, utang, peralatan) bisa dicatat sebagai jurnal di hari yang sama. Dokumen sebelum tanggal mulai tidak dijurnal.",
+    "start": "Pembukuan mulai",
+    "openingCash": "Kas di hari itu",
+    "openingBank": "Saldo bank di hari itu",
+    "startBooks": "Mulai pembukuan",
+    "since": "Pembukuan sejak {{date}}",
+    "views": {
+      "journals": "Jurnal",
+      "statements": "Laporan",
+      "periods": "Bulan"
+    },
+    "newJournal": "Jurnal baru",
+    "noJournals": "Tidak ada jurnal di periode ini.",
+    "date": "Tanggal",
+    "memo": "Keterangan",
+    "account": "Akun",
+    "pickAccount": "Pilih akun",
+    "debit": "Debit",
+    "credit": "Kredit",
+    "totals": "Debit {{debit}} · kredit {{credit}}",
+    "addLine": "Tambah baris",
+    "save": "Simpan jurnal",
+    "close": "Tutup",
+    "approve": "Setujui",
+    "reject": "Tolak",
+    "reverse": "Balik",
+    "status": {
+      "submitted": "Menunggu persetujuan",
+      "posted": "Diposting",
+      "rejected": "Ditolak"
+    },
+    "source": {
+      "manual": "Jurnal manual",
+      "opening": "Saldo awal"
+    },
+    "trial": "Neraca saldo",
+    "sheet": "Neraca",
+    "assets": "Aset",
+    "earnings": "Laba tahun berjalan (belum ditutup)",
+    "liabilitiesEquity": "Kewajiban dan ekuitas",
+    "flow": "Arus kas",
+    "flowRows": {
+      "opening": "Kas awal",
+      "operating": "Dari operasi",
+      "investing": "Investasi",
+      "financing": "Pendanaan",
+      "closing": "Kas akhir"
+    },
+    "period": {
+      "open": "Terbuka",
+      "closed": "Ditutup"
+    },
+    "closeMonth": "Tutup bulan",
+    "reopen": "Buka kembali"
   }
 }

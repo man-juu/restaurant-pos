@@ -300,7 +300,18 @@
     "customer_erased": "This guest's details were erased.",
     "reservation_not_found": "Reservation not found.",
     "waitlist_entry_not_found": "Not on the waitlist.",
-    "customer_not_found": "Guest not found."
+    "customer_not_found": "Guest not found.",
+    "ledger_not_set_up": "Start the books first (Finance, Books).",
+    "ledger_already_set_up": "The books are already set up.",
+    "journal_not_balanced": "Debits and credits must be equal.",
+    "journal_needs_two_lines": "A journal needs at least two lines.",
+    "journal_line_one_side": "Each line is either a debit or a credit.",
+    "before_books_start": "This date is before the books start.",
+    "period_closed": "That month is closed. Reopen it first.",
+    "period_has_pending_journals": "Approve or reject the waiting journals of this month first.",
+    "account_code_exists": "An account with this code already exists.",
+    "system_account_type_fixed": "This account is used by automatic journals; its type cannot change.",
+    "journal_not_found": "Journal not found."
   },
   "appearance": {
     "open": "Appearance",
@@ -1453,7 +1464,8 @@
     "tabs": {
       "pl": "Profit and loss",
       "expenses": "Expenses",
-      "accounts": "Cash and bank"
+      "accounts": "Cash and bank",
+      "books": "Books"
     },
     "pl": {
       "netSales": "Net sales",
@@ -1531,5 +1543,62 @@
     "wait_other": "About {{count}} minutes",
     "table": "Table",
     "left": "Left"
+  },
+  "books": {
+    "notSetUp": "The books are not set up yet. An owner or accountant starts them here.",
+    "setupHelp": "Choose the day the books start and the cash and bank you have on that day. Other opening balances (stock, debts, equipment) can be entered as journals on the same day. Documents dated before the start are not journaled.",
+    "start": "Books start on",
+    "openingCash": "Cash on hand that day",
+    "openingBank": "Bank balance that day",
+    "startBooks": "Start the books",
+    "since": "Books since {{date}}",
+    "views": {
+      "journals": "Journals",
+      "statements": "Statements",
+      "periods": "Months"
+    },
+    "newJournal": "New journal",
+    "noJournals": "No journals in this period.",
+    "date": "Date",
+    "memo": "Description",
+    "account": "Account",
+    "pickAccount": "Choose an account",
+    "debit": "Debit",
+    "credit": "Credit",
+    "totals": "Debit {{debit}} · credit {{credit}}",
+    "addLine": "Add line",
+    "save": "Save journal",
+    "close": "Close",
+    "approve": "Approve",
+    "reject": "Reject",
+    "reverse": "Reverse",
+    "status": {
+      "submitted": "Waiting for approval",
+      "posted": "Posted",
+      "rejected": "Rejected"
+    },
+    "source": {
+      "manual": "Manual journal",
+      "opening": "Opening balances"
+    },
+    "trial": "Trial balance",
+    "sheet": "Balance sheet",
+    "assets": "Assets",
+    "earnings": "Profit this year (not yet closed)",
+    "liabilitiesEquity": "Liabilities and equity",
+    "flow": "Cash flow",
+    "flowRows": {
+      "opening": "Cash at start",
+      "operating": "From operations",
+      "investing": "Investing",
+      "financing": "Financing",
+      "closing": "Cash at end"
+    },
+    "period": {
+      "open": "Open",
+      "closed": "Closed"
+    },
+    "closeMonth": "Close month",
+    "reopen": "Reopen"
   }
 }

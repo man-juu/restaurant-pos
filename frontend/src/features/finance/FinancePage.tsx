@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useOutletContext } from 'react-router'
 
@@ -7,15 +7,16 @@ import type { Capabilities } from '../../lib/api/types'
 import { useOutlets } from '../../lib/session'
 import { todayIso } from '../catalog/labels'
 import { AccountsTab } from './AccountsTab'
+import { BooksTab } from './books/BooksTab'
 import { ExpensesTab } from './ExpensesTab'
 import { ProfitLoss } from './ProfitLoss'
 
-const TABS = ['pl', 'expenses', 'accounts'] as const
+const TABS = ['pl', 'expenses', 'accounts', 'books'] as const
 type Tab = (typeof TABS)[number]
 
 const monthStart = () => `${todayIso().slice(0, 8)}01`
 
-/** FR-FIN-001: profit and loss, expenses and money accounts. */
+/** FR-FIN-001 to 005, 009: profit and loss, expenses, money accounts and the books. */
 export function FinancePage() {
   const { t } = useTranslation()
   const { caps } = useOutletContext<{ caps?: Capabilities }>()
@@ -57,24 +58,53 @@ export function FinancePage() {
       </div>
       <Tabs tabs={TABS} value={tab} onChange={setTab} label={(k) => t(`finance.tabs.${k}`)} />
       <div role="tabpanel">
-        {tab === 'pl' && <ProfitLoss outletId={outletId} from={from} to={to} currency={currency} />}
-        {tab === 'expenses' && (
-          <ExpensesTab
-            outletId={outletId}
-            from={from}
-            to={to}
-            currency={currency}
-            canCreate={can('finance.expense.create')}
-          />
-        )}
-        {tab === 'accounts' && (
-          <AccountsTab
-            currency={currency}
-            canManage={can('finance.account.manage')}
-            canMove={can('finance.expense.create')}
-          />
-        )}
+        <Panel tab={tab} ctx={{ outletId, from, to, currency, can }} />
       </div>
     </div>
   )
+}
+
+type Ctx = {
+  outletId: string
+  from: string
+  to: string
+  currency: string
+  can: (code: string) => boolean
+}
+
+/** One entry per tab: a lookup table instead of a chain of conditions. */
+const PANELS: Record<Tab, (c: Ctx) => ReactNode> = {
+  pl: (c) => <ProfitLoss outletId={c.outletId} from={c.from} to={c.to} currency={c.currency} />,
+  expenses: (c) => (
+    <ExpensesTab
+      outletId={c.outletId}
+      from={c.from}
+      to={c.to}
+      currency={c.currency}
+      canCreate={c.can('finance.expense.create')}
+    />
+  ),
+  accounts: (c) => (
+    <AccountsTab
+      currency={c.currency}
+      canManage={c.can('finance.account.manage')}
+      canMove={c.can('finance.expense.create')}
+    />
+  ),
+  books: (c) => (
+    <BooksTab
+      from={c.from}
+      to={c.to}
+      currency={c.currency}
+      can={{
+        setup: c.can('finance.ledger.setup'),
+        post: c.can('finance.journal.create'),
+        close: c.can('finance.period.close'),
+      }}
+    />
+  ),
+}
+
+function Panel({ tab, ctx }: { tab: Tab; ctx: Ctx }) {
+  return PANELS[tab](ctx)
 }
