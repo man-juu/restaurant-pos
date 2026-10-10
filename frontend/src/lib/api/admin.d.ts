@@ -4,6 +4,44 @@
  */
 
 export interface paths {
+  '/admin-api/announcements': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List All */
+    get: operations['list_all_admin_api_announcements_get']
+    put?: never
+    /** Create */
+    post: operations['create_admin_api_announcements_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/admin-api/announcements/{announcement_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Update
+     * @description Change or end one (set ends_at to now to take it down).
+     */
+    put: operations['update_admin_api_announcements__announcement_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/admin-api/auth/login': {
     parameters: {
       query?: never
@@ -351,6 +389,69 @@ export interface components {
       /** Role */
       role: string
     }
+    /** AnnouncementIn */
+    AnnouncementIn: {
+      /** Body En */
+      body_en: string
+      /** Body Id */
+      body_id: string
+      /**
+       * Ends At
+       * Format: date-time
+       */
+      ends_at: string
+      /**
+       * Level
+       * @default info
+       * @enum {string}
+       */
+      level: 'info' | 'warning'
+      /**
+       * Starts At
+       * Format: date-time
+       */
+      starts_at: string
+      /** Tenant Ids */
+      tenant_ids?: string[]
+      /** Title En */
+      title_en: string
+      /** Title Id */
+      title_id: string
+    }
+    /** AnnouncementRow */
+    AnnouncementRow: {
+      /** Body En */
+      body_en: string
+      /** Body Id */
+      body_id: string
+      /**
+       * Ends At
+       * Format: date-time
+       */
+      ends_at: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Level
+       * @default info
+       * @enum {string}
+       */
+      level: 'info' | 'warning'
+      /**
+       * Starts At
+       * Format: date-time
+       */
+      starts_at: string
+      /** Tenant Ids */
+      tenant_ids?: string[]
+      /** Title En */
+      title_en: string
+      /** Title Id */
+      title_id: string
+    }
     /** CodeIn */
     CodeIn: {
       /** Code */
@@ -641,6 +742,94 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+  list_all_admin_api_announcements_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AnnouncementRow'][]
+        }
+      }
+    }
+  }
+  create_admin_api_announcements_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AnnouncementIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AnnouncementRow']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  update_admin_api_announcements__announcement_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        announcement_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AnnouncementIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AnnouncementRow']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   login_admin_api_auth_login_post: {
     parameters: {
       query?: never

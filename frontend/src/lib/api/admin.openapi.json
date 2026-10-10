@@ -29,6 +29,144 @@
         "title": "AdminSessionOut",
         "type": "object"
       },
+      "AnnouncementIn": {
+        "properties": {
+          "body_en": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Body En",
+            "type": "string"
+          },
+          "body_id": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Body Id",
+            "type": "string"
+          },
+          "ends_at": {
+            "format": "date-time",
+            "title": "Ends At",
+            "type": "string"
+          },
+          "level": {
+            "default": "info",
+            "enum": [
+              "info",
+              "warning"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "starts_at": {
+            "format": "date-time",
+            "title": "Starts At",
+            "type": "string"
+          },
+          "tenant_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 500,
+            "title": "Tenant Ids",
+            "type": "array"
+          },
+          "title_en": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Title En",
+            "type": "string"
+          },
+          "title_id": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Title Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title_en",
+          "title_id",
+          "body_en",
+          "body_id",
+          "starts_at",
+          "ends_at"
+        ],
+        "title": "AnnouncementIn",
+        "type": "object"
+      },
+      "AnnouncementRow": {
+        "properties": {
+          "body_en": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Body En",
+            "type": "string"
+          },
+          "body_id": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Body Id",
+            "type": "string"
+          },
+          "ends_at": {
+            "format": "date-time",
+            "title": "Ends At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "level": {
+            "default": "info",
+            "enum": [
+              "info",
+              "warning"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "starts_at": {
+            "format": "date-time",
+            "title": "Starts At",
+            "type": "string"
+          },
+          "tenant_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 500,
+            "title": "Tenant Ids",
+            "type": "array"
+          },
+          "title_en": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Title En",
+            "type": "string"
+          },
+          "title_id": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Title Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title_en",
+          "title_id",
+          "body_en",
+          "body_id",
+          "starts_at",
+          "ends_at",
+          "id"
+        ],
+        "title": "AnnouncementRow",
+        "type": "object"
+      },
       "CodeIn": {
         "properties": {
           "code": {
@@ -739,6 +877,124 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/admin-api/announcements": {
+      "get": {
+        "operationId": "list_all_admin_api_announcements_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AnnouncementRow"
+                  },
+                  "title": "Response List All Admin Api Announcements Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List All",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "create_admin_api_announcements_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnnouncementIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnnouncementRow"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin-api/announcements/{announcement_id}": {
+      "put": {
+        "description": "Change or end one (set ends_at to now to take it down).",
+        "operationId": "update_admin_api_announcements__announcement_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "announcement_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Announcement Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnnouncementIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnnouncementRow"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/admin-api/auth/login": {
       "post": {
         "operationId": "login_admin_api_auth_login_post",

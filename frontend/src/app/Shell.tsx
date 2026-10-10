@@ -13,6 +13,7 @@ import type { Capabilities, SessionInfo } from '../lib/api/types'
 import { type NavItem, navItems } from './nav'
 import { MyPinDialog } from '../features/auth/MyPinDialog'
 import { useCapabilities, useLogout, useSession, useSwitchTenant } from '../lib/session'
+import { AnnouncementBanner } from './AnnouncementBanner'
 
 export function Shell() {
   const session = useSession()
@@ -26,6 +27,7 @@ export function Shell() {
       <SideNav items={items} />
       <main className="flex min-w-0 flex-[999_1_560px] flex-col gap-6 px-4 py-5 sm:px-8">
         <SubscriptionBanner caps={caps.data} />
+        <AnnouncementBanner />
         <TopBar session={session.data} />
         <InstallPrompt />
         <Outlet context={{ session: session.data, caps: caps.data }} />

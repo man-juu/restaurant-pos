@@ -8,6 +8,7 @@ from app.core import audit_router, health, tenant_router
 from app.core.access import limits_router
 from app.core.access.permissions import build_registry
 from app.core.access.policy import assert_all_routes_declared, include
+from app.core.announcements import router as announcements_router
 from app.core.config import Settings, get_settings
 from app.core.crypto import SecretBox
 from app.core.customers import router as customers_router
@@ -70,6 +71,7 @@ def create_app(
         customers_router.router,
         audit_router.router,
         exports_router.router,
+        announcements_router.router,
         limits_router.router,
         device_router.router,
         device_router.auth_router,

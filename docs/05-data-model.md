@@ -114,6 +114,7 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `labor_costs` | outlet, month (first day; unique per outlet), amount, note, updated_by: typed-in labour for prime cost (ADR 0.69) |
 | `data_exports` | status queued/ready/failed, requested_by (member) or requested_by_admin, file_key, byte_size, error (exception type only), finished_at, expires_at (ADR 0.70) |
 | `restore_requests` | platform table: tenant, restore_to, reason, status, requested_by (admin) |
+| `announcements`, `announcement_targets`, `announcement_dismissals` | platform announcement (titles and bodies EN/ID, level, starts_at, ends_at, all_tenants); target per tenant (RLS); dismissal per tenant and user (ADR 0.71) |
 | `vendor_price_history` | vendor_id, item_id, price, observed_at, source_doc_id |
 | `vendor_lead_history` | vendor_id, ordered_at, received_at, item_id |
 

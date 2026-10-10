@@ -39,6 +39,40 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/announcements': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Mine */
+    get: operations['mine_api_v1_announcements_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/announcements/{announcement_id}/dismiss': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Dismiss */
+    post: operations['dismiss_api_v1_announcements__announcement_id__dismiss_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/approval-rules': {
     parameters: {
       query?: never
@@ -4757,6 +4791,25 @@ export interface components {
       tax: components['schemas']['TaxSettings']
       transfers: components['schemas']['TransferSettings']
       wholesale: components['schemas']['WholesaleSettings']
+    }
+    /** AnnouncementOut */
+    AnnouncementOut: {
+      /** Body */
+      body: string
+      /**
+       * Ends At
+       * Format: date-time
+       */
+      ends_at: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Level */
+      level: string
+      /** Title */
+      title: string
     }
     /** ApplyCreditIn */
     ApplyCreditIn: {
@@ -10341,6 +10394,66 @@ export interface operations {
       header?: never
       path: {
         rule_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  mine_api_v1_announcements_get: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AnnouncementOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  dismiss_api_v1_announcements__announcement_id__dismiss_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        announcement_id: string
       }
       cookie?: never
     }

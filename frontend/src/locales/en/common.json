@@ -125,6 +125,23 @@
       "restoreTo": "Restore to (date and time)",
       "reason": "Reason (at least 10 characters)",
       "restore": "Record restore request"
+    },
+    "announce": {
+      "title": "Announcements",
+      "title_en": "Title (English)",
+      "title_id": "Title (Indonesian)",
+      "body_en": "Message (English)",
+      "body_id": "Message (Indonesian)",
+      "starts": "Show from",
+      "ends": "Show until",
+      "level": "Kind",
+      "info": "Information",
+      "warning": "Warning",
+      "targets": "Only these business ids (empty: everyone)",
+      "publish": "Publish announcement",
+      "all": "everyone",
+      "some_one": "{{count}} business",
+      "some_other": "{{count}} businesses"
     }
   },
   "states": {
@@ -339,7 +356,9 @@
     "export_already_queued": "An export is already being prepared.",
     "export_limit": "At most 3 exports a day.",
     "export_not_found": "This export is not available (any more).",
-    "restore_point_in_future": "The restore point must be in the past."
+    "restore_point_in_future": "The restore point must be in the past.",
+    "announcement_not_found": "This announcement is no longer shown.",
+    "unknown_tenant": "One of the business ids does not exist."
   },
   "appearance": {
     "open": "Appearance",
@@ -1866,5 +1885,8 @@
     "help": "Wages, overtime, meals and benefits for this outlet's staff in the month. Saving the same month again replaces it.",
     "saved": "Saved.",
     "save": "Save labour"
+  },
+  "announcements": {
+    "dismiss": "Got it"
   }
 }

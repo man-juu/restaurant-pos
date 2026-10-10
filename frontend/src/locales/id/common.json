@@ -125,6 +125,23 @@
       "restoreTo": "Pulihkan ke (tanggal dan jam)",
       "reason": "Alasan (minimal 10 karakter)",
       "restore": "Catat permintaan pemulihan"
+    },
+    "announce": {
+      "title": "Pengumuman",
+      "title_en": "Judul (Inggris)",
+      "title_id": "Judul (Indonesia)",
+      "body_en": "Pesan (Inggris)",
+      "body_id": "Pesan (Indonesia)",
+      "starts": "Tampil mulai",
+      "ends": "Tampil sampai",
+      "level": "Jenis",
+      "info": "Informasi",
+      "warning": "Peringatan",
+      "targets": "Hanya id usaha ini (kosong: semua)",
+      "publish": "Terbitkan pengumuman",
+      "all": "semua",
+      "some_one": "{{count}} usaha",
+      "some_other": "{{count}} usaha"
     }
   },
   "states": {
@@ -339,7 +356,9 @@
     "export_already_queued": "Ekspor sedang disiapkan.",
     "export_limit": "Maksimal 3 ekspor per hari.",
     "export_not_found": "Ekspor ini tidak tersedia (lagi).",
-    "restore_point_in_future": "Titik pemulihan harus di masa lalu."
+    "restore_point_in_future": "Titik pemulihan harus di masa lalu.",
+    "announcement_not_found": "Pengumuman ini sudah tidak ditampilkan.",
+    "unknown_tenant": "Salah satu id usaha tidak ada."
   },
   "appearance": {
     "open": "Tampilan",
@@ -1866,5 +1885,8 @@
     "help": "Gaji, lembur, makan dan tunjangan staf outlet ini dalam sebulan. Menyimpan bulan yang sama lagi akan menggantinya.",
     "saved": "Tersimpan.",
     "save": "Simpan biaya tenaga kerja"
+  },
+  "announcements": {
+    "dismiss": "Mengerti"
   }
 }

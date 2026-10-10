@@ -8,6 +8,7 @@ import { Alert, Button, Card, Field, Logo, StateBadge } from '../../components/u
 import { ApiError, request, setCsrfToken } from '../../lib/api/client'
 import type { AdminSessionOut, TenantOut } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
+import { AdminAnnouncements } from './AdminAnnouncements'
 import { TenantOps } from './TenantOps'
 import { TenantUsage } from './TenantUsage'
 
@@ -48,7 +49,10 @@ export function AdminPage() {
         </div>
       </header>
       {session.isPending ? null : ready ? (
-        <Tenants />
+        <>
+          <Tenants />
+          <AdminAnnouncements />
+        </>
       ) : (
         <AdminSignIn state={session.data?.mfa_state} onSession={onSession} />
       )}
