@@ -7,6 +7,7 @@ import type { SuggestionGroup } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
 import { todayIso } from '../catalog/labels'
 import { useSaveOrder } from './orderApi'
+import { SuggestionRow } from './VendorRanking'
 
 const useSuggestions = (outletId: string, lang: string) =>
   useQuery({
@@ -17,8 +18,6 @@ const useSuggestions = (outletId: string, lang: string) =>
         `/api/v1/purchasing/reorder-suggestions?outlet_id=${outletId}&lang=${lang.slice(0, 2)}`,
       ),
   })
-
-const n = (v: string | null | undefined) => String(Number(v ?? 0))
 
 /** FR-INV-013: what to reorder, per vendor; one tap makes a draft PO to check and send. */
 export function ReorderTab({ outletId, onDrafted }: { outletId: string; onDrafted: () => void }) {
@@ -73,15 +72,7 @@ function Group({
       <h2 className="font-bold">{group.vendor_name ?? t('purchasing.reorder.noVendor')}</h2>
       <ul className="text-sm">
         {group.lines.map((l) => (
-          <li key={l.item_id}>
-            {t('purchasing.reorder.line', {
-              name: l.name,
-              have: n(l.on_hand),
-              point: n(l.reorder_point),
-              need: n(l.suggested),
-              unit: l.unit_code,
-            })}
-          </li>
+          <SuggestionRow key={l.item_id} line={l} />
         ))}
       </ul>
       {save.error ? <Alert>{errorMessage(save.error, t)}</Alert> : null}

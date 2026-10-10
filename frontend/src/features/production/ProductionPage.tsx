@@ -12,8 +12,12 @@ import { useProduction } from './api'
 import { PlanForm } from './PlanForm'
 import { PrepTab } from './PrepTab'
 import { ProductionCard } from './ProductionCard'
+import { SuggestTab } from './SuggestTab'
 
-/** FR-PRD-001 to 004: plan what the kitchen makes today, then record what came out. */
+const TABS = ['plan', 'suggest', 'prep'] as const
+type Tab = (typeof TABS)[number]
+
+/** FR-PRD-001 to 005: plan what the kitchen makes today, then record what came out. */
 export function ProductionPage() {
   const { t } = useTranslation()
   const { caps } = useOutletContext<{ caps?: Capabilities }>()
@@ -21,7 +25,7 @@ export function ProductionPage() {
   const outlets = useOutlets()
   const [picked, setPicked] = useState('')
   const [date, setDate] = useState(todayIso)
-  const [tab, setTab] = useState<'plan' | 'prep'>('plan')
+  const [tab, setTab] = useState<Tab>('plan')
   const outletId = picked || outlets.data?.find((o) => o.is_active)?.id || ''
   const can = { manage: has('production.order.manage'), reverse: has('production.order.reverse') }
   return (
@@ -46,12 +50,7 @@ export function ProductionPage() {
           onChange={(e) => setDate(e.target.value)}
         />
       </div>
-      <Tabs
-        tabs={['plan', 'prep'] as const}
-        value={tab}
-        onChange={setTab}
-        label={(k) => t(`production.tabs.${k}`)}
-      />
+      <Tabs tabs={TABS} value={tab} onChange={setTab} label={(k) => t(`production.tabs.${k}`)} />
       {outletId && (
         <TabBody
           tab={tab}
@@ -96,7 +95,7 @@ function TabBody({
   tab,
   ...rest
 }: {
-  tab: 'plan' | 'prep'
+  tab: Tab
   outletId: string
   date: string
   currency: string
@@ -104,6 +103,8 @@ function TabBody({
 }) {
   if (tab === 'prep')
     return <PrepTab outletId={rest.outletId} date={rest.date} canPlan={rest.can.manage} />
+  if (tab === 'suggest')
+    return <SuggestTab outletId={rest.outletId} date={rest.date} canPlan={rest.can.manage} />
   return <PlanTab {...rest} />
 }
 

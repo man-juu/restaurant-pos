@@ -7,6 +7,7 @@ import type { Capabilities } from '../../lib/api/types'
 import { useOutlets } from '../../lib/session'
 import { AdjustmentsTab } from './AdjustmentsTab'
 import { CountsTab } from './CountsTab'
+import { ForecastTab } from './ForecastTab'
 import { LevelsTab } from './LevelsTab'
 import { LocationsTab } from './locations/LocationsTab'
 import { OpeningTab } from './OpeningTab'
@@ -64,6 +65,10 @@ const TABS: Record<
     visible: () => true,
     render: (o) => <ProducibleTab outletId={o} />,
   },
+  forecast: {
+    visible: () => true,
+    render: (o) => <ForecastTab outletId={o} />,
+  },
   levels: {
     visible: () => true,
     render: (o, a) => (
@@ -91,7 +96,7 @@ function access(caps?: Capabilities): Access {
   return { has, showCost: has('catalog.cost.view'), currency: caps?.currency ?? 'IDR' }
 }
 
-/** FR-INV-001 to 009, 014, 017, 019: stock per outlet and the documents that change it. */
+/** FR-INV-001 to 009, 014, 017 to 019: stock per outlet and the documents that change it. */
 export function InventoryPage() {
   const { t } = useTranslation()
   const { caps } = useOutletContext<{ caps?: Capabilities }>()

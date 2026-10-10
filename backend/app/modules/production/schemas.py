@@ -83,3 +83,37 @@ class PrepRow(BaseModel):
     requested: Decimal = Decimal(0)  # open requests from other outlets, due by the day
     planned: Decimal  # already planned for the day, not made yet
     suggested: Decimal  # par + requested - on hand - planned, never below 0
+
+
+class PlanRow(BaseModel):
+    """FR-PRD-005: one item to make in the coming days, all in the base unit."""
+
+    item_id: uuid.UUID
+    sku: str
+    name: str
+    unit_code: str
+    par_qty: Decimal
+    on_hand: Decimal
+    requested: Decimal  # open requests from other outlets due in the plan days
+    forecast_use: Decimal  # this outlet's own expected use (FR-INV-018)
+    planned: Decimal  # already planned, not made yet
+    suggested: Decimal
+    can_make: Decimal | None  # what the ingredients on hand allow; None: not limited
+
+
+class PlanOut(BaseModel):
+    days: int
+    rows: list[PlanRow]
+
+
+class PlanAcceptLine(Strict):
+    item_id: uuid.UUID
+    qty: Qty
+
+
+class PlanAcceptIn(Strict):
+    """Turn chosen suggestions into planned production orders for one day."""
+
+    outlet_id: uuid.UUID
+    production_date: date
+    lines: list[PlanAcceptLine] = Field(min_length=1, max_length=100)

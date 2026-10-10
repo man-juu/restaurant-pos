@@ -165,6 +165,19 @@ class WholesaleSettings(Strict):
     payment_terms_days: int = Field(default=14, ge=0, le=365)
 
 
+class PlanningSettings(Strict):
+    """FR-INV-018, FR-PRD-005, FR-PUR-007: how forecasts, order quantities, the production
+    plan and vendor suggestions are worked out. Every business tunes these to its own way."""
+
+    forecast_weeks: int = Field(default=8, ge=2, le=26)  # history the forecast looks at
+    forecast_min_days: int = Field(default=28, ge=7, le=180)  # less history: plain averages
+    order_cost: int = Field(default=0, ge=0, le=10**12)  # minor units per order; 0 = no EOQ
+    holding_cost_pct: int = Field(default=25, ge=1, le=200)  # of unit cost, per year
+    plan_days: int = Field(default=3, ge=1, le=14)  # how far ahead the production plan looks
+    reliability_weight_pct: int = Field(default=30, ge=0, le=200)  # vendor: late or short
+    lead_day_cost_bp: int = Field(default=0, ge=0, le=5000)  # vendor: price added per lead day
+
+
 class FinanceSettings(Strict):
     """FR-FIN-003: journal sales, stock, purchases and payments automatically once the books
     are set up. Off: only manual journals (an accountant keeps the books elsewhere)."""
@@ -205,6 +218,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "tables": TablesSettings,
     "finance": FinanceSettings,
     "wholesale": WholesaleSettings,
+    "planning": PlanningSettings,
 }
 
 
@@ -226,3 +240,4 @@ class AllSettings(BaseModel):
     tables: TablesSettings
     finance: FinanceSettings
     wholesale: WholesaleSettings
+    planning: PlanningSettings

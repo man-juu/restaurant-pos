@@ -325,7 +325,8 @@
     "location_not_found": "Tempat simpan tidak ditemukan.",
     "location_other_outlet": "Tempat simpan itu milik outlet lain.",
     "code_not_found": "Tidak ada yang cocok dengan kode ini.",
-    "barcode_taken": "Barcode ini sudah dipakai barang lain."
+    "barcode_taken": "Barcode ini sudah dipakai barang lain.",
+    "duplicate_item": "Setiap barang hanya boleh muncul sekali."
   },
   "appearance": {
     "open": "Tampilan",
@@ -377,7 +378,8 @@
       "catalog": "HPP",
       "devices": "Perangkat",
       "tables": "Meja",
-      "finance": "Pembukuan"
+      "finance": "Pembukuan",
+      "planning": "Perencanaan"
     },
     "tax": {
       "help": "Tarif diatur per usaha; periksa tarif daerah dengan konsultan pajak Anda.",
@@ -503,6 +505,16 @@
     "finance": {
       "auto": "Jurnal otomatis untuk penjualan, stok, pembelian dan pembayaran",
       "help": "Hanya setelah pembukuan disiapkan (Keuangan, Pembukuan). Mati: akuntan mencatat jurnal manual."
+    },
+    "planning": {
+      "forecast_weeks": "Perkiraan melihat ke belakang (minggu)",
+      "forecast_min_days": "Riwayat minimum untuk tren (hari)",
+      "order_cost": "Biaya satu kali pesan (0 = tanpa jumlah pesan)",
+      "holding_cost_pct": "Biaya simpan per tahun (% harga satuan)",
+      "plan_days": "Rencana produksi melihat ke depan (hari)",
+      "reliability_weight_pct": "Pemasok: bobot tambahan untuk kirim terlambat atau kurang (%)",
+      "lead_day_cost_bp": "Pemasok: tambahan harga per hari menunggu (0,01 %)",
+      "help": "Biaya pesan dan biaya simpan menghasilkan jumlah pesan ekonomis; isi biaya pesan 0 untuk tidak memakainya. Pemasok diurutkan menurut harga, dibuat lebih mahal oleh kiriman terlambat atau kurang dan waktu tunggu yang lama sesuai pengaturan ini."
     }
   },
   "catalog": {
@@ -772,7 +784,8 @@
       "levels": "Level",
       "producible": "Bisa dibuat",
       "trace": "Telusur lot",
-      "locations": "Lokasi"
+      "locations": "Lokasi",
+      "forecast": "Perkiraan"
     },
     "empty": "Belum ada stok tercatat di outlet ini.",
     "negative": "Di bawah nol: pemakaian melebihi stok yang tercatat masuk",
@@ -1084,7 +1097,8 @@
     },
     "tabs": {
       "plan": "Rencana dan hasil",
-      "prep": "Daftar persiapan"
+      "prep": "Daftar persiapan",
+      "suggest": "Saran"
     },
     "prep": {
       "help": "Barang di bawah level par atau diminta outlet lain untuk hari ini, dikurangi stok dan yang sudah direncanakan.",
@@ -1732,5 +1746,26 @@
     "item": "Label barang",
     "batches": "Semua label batch",
     "one": "Label"
+  },
+  "planning": {
+    "eoq": "Jumlah pesan: {{qty}} {{unit}}",
+    "compareVendors": "Bandingkan pemasok",
+    "hideVendors": "Sembunyikan pemasok",
+    "noVendors": "Belum ada pemasok untuk barang ini.",
+    "noHistory": "belum ada riwayat",
+    "preferred": "utama",
+    "vendorLine": "{{rank}}. {{name}}: {{price}} per {{unit}}, tunggu {{lead}} hari, tepat waktu {{onTime}}, lengkap {{fill}}",
+    "forecastHelp": "Perkiraan pemakaian {{days}} hari ke depan, dari rata-rata per hari dalam seminggu dengan tren terbaru.",
+    "forecastEmpty": "Belum ada pemakaian di sini akhir-akhir ini.",
+    "forecastLine": "minggu depan {{week}} {{unit}} · {{daily}} {{unit}}/hari · stok {{have}} {{unit}}",
+    "trend": "tren {{pct}} %",
+    "shortHistory": "riwayat pendek: rata-rata biasa",
+    "planHelp": "Saran untuk {{days}} hari ke depan: par + permintaan cabang + pemakaian sendiri - stok - yang sudah direncanakan.",
+    "planEmpty": "Tidak ada yang perlu dibuat: stok dan rencana produksi sudah cukup.",
+    "planLine": "par {{par}} · stok {{have}} · diminta {{asked}} · pakai sendiri {{own}} · direncanakan {{planned}} {{unit}}",
+    "limited": "Bahan yang ada hanya cukup untuk {{qty}} {{unit}}",
+    "make": "Buat ({{unit}})",
+    "accept_one": "Rencanakan {{count}} order",
+    "accept_other": "Rencanakan {{count}} order"
   }
 }

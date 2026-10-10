@@ -74,6 +74,7 @@ class Need:
     reorder_point: Decimal
     suggested: Decimal  # base unit, enough to reach the target
     avg_daily: Decimal
+    eoq: Decimal | None = None  # FR-INV-018, base unit, when the tenant set an order cost
 
 
 async def reorder_needs(db: AsyncSession, outlet_id: uuid.UUID, today: date) -> list[Need]:

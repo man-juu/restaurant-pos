@@ -1919,6 +1919,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/inventory/forecast': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Forecast
+     * @description FR-INV-018: items used here in the last weeks, with what they should need next.
+     */
+    get: operations['forecast_api_v1_inventory_forecast_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/inventory/imports/opening': {
     parameters: {
       query?: never
@@ -3077,6 +3097,43 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/production/plan': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Suggestion */
+    get: operations['suggestion_api_v1_production_plan_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/production/plan/accept': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Accept
+     * @description One planned production order per chosen line (FR-PRD-001).
+     */
+    post: operations['accept_api_v1_production_plan_accept_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/production/prep-list': {
     parameters: {
       query?: never
@@ -3560,6 +3617,26 @@ export interface paths {
     put?: never
     /** Reverse Return */
     post: operations['reverse_return_api_v1_purchasing_returns__return_id__reverse_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/purchasing/vendor-ranking': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Vendor Ranking
+     * @description FR-PUR-007: the vendors that sell an item, best first by price, lead time, reliability.
+     */
+    get: operations['vendor_ranking_api_v1_purchasing_vendor_ranking_get']
+    put?: never
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -4494,6 +4571,7 @@ export interface components {
       kitchen: components['schemas']['KitchenSettings']
       numbering: components['schemas']['NumberingSettings']
       payment_methods: components['schemas']['PaymentMethodSettings']
+      planning: components['schemas']['PlanningSettings']
       pos: components['schemas']['PosSettings']
       production: components['schemas']['ProductionSettings']
       purchasing: components['schemas']['PurchasingSettings']
@@ -5513,6 +5591,33 @@ export interface components {
        * @default 0
        */
       sort_order: number
+    }
+    /**
+     * ForecastRow
+     * @description FR-INV-018: expected use per day ahead, in the base unit, with EOQ when set up.
+     */
+    ForecastRow: {
+      /** Daily */
+      daily: string
+      /** Days */
+      days: string[]
+      /** Enough History */
+      enough_history: boolean
+      /** Eoq */
+      eoq: string | null
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Name */
+      name: string
+      /** On Hand */
+      on_hand: string
+      /** Trend */
+      trend: string
+      /** Unit Code */
+      unit_code: string
     }
     /** GenerateIn */
     GenerateIn: {
@@ -6806,6 +6911,114 @@ export interface components {
        * Format: uuid
        */
       user_id: string
+    }
+    /**
+     * PlanAcceptIn
+     * @description Turn chosen suggestions into planned production orders for one day.
+     */
+    PlanAcceptIn: {
+      /** Lines */
+      lines: components['schemas']['PlanAcceptLine'][]
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /**
+       * Production Date
+       * Format: date
+       */
+      production_date: string
+    }
+    /** PlanAcceptLine */
+    PlanAcceptLine: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Qty */
+      qty: number | string
+    }
+    /** PlanOut */
+    PlanOut: {
+      /** Days */
+      days: number
+      /** Rows */
+      rows: components['schemas']['PlanRow'][]
+    }
+    /**
+     * PlanRow
+     * @description FR-PRD-005: one item to make in the coming days, all in the base unit.
+     */
+    PlanRow: {
+      /** Can Make */
+      can_make: string | null
+      /** Forecast Use */
+      forecast_use: string
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Name */
+      name: string
+      /** On Hand */
+      on_hand: string
+      /** Par Qty */
+      par_qty: string
+      /** Planned */
+      planned: string
+      /** Requested */
+      requested: string
+      /** Sku */
+      sku: string
+      /** Suggested */
+      suggested: string
+      /** Unit Code */
+      unit_code: string
+    }
+    /**
+     * PlanningSettings
+     * @description FR-INV-018, FR-PRD-005, FR-PUR-007: how forecasts, order quantities, the production
+     *     plan and vendor suggestions are worked out. Every business tunes these to its own way.
+     */
+    PlanningSettings: {
+      /**
+       * Forecast Min Days
+       * @default 28
+       */
+      forecast_min_days: number
+      /**
+       * Forecast Weeks
+       * @default 8
+       */
+      forecast_weeks: number
+      /**
+       * Holding Cost Pct
+       * @default 25
+       */
+      holding_cost_pct: number
+      /**
+       * Lead Day Cost Bp
+       * @default 0
+       */
+      lead_day_cost_bp: number
+      /**
+       * Order Cost
+       * @default 0
+       */
+      order_cost: number
+      /**
+       * Plan Days
+       * @default 3
+       */
+      plan_days: number
+      /**
+       * Reliability Weight Pct
+       * @default 30
+       */
+      reliability_weight_pct: number
     }
     /** PosLineIn */
     PosLineIn: {
@@ -8494,6 +8707,8 @@ export interface components {
     }
     /** SuggestionLine */
     SuggestionLine: {
+      /** Eoq */
+      eoq?: string | null
       /**
        * Item Id
        * Format: uuid
@@ -9440,6 +9655,31 @@ export interface components {
        * Format: uuid
        */
       vendor_id: string
+    }
+    /**
+     * VendorScoreOut
+     * @description FR-PUR-007: one vendor for one item, best first.
+     */
+    VendorScoreOut: {
+      /** Effective */
+      effective: string
+      /** Fill Pct */
+      fill_pct: string | null
+      /** Lead Days */
+      lead_days: string | null
+      /** On Time Pct */
+      on_time_pct: string | null
+      /** Per Base */
+      per_base: string
+      /** Preferred */
+      preferred: boolean
+      /**
+       * Vendor Id
+       * Format: uuid
+       */
+      vendor_id: string
+      /** Vendor Name */
+      vendor_name: string
     }
     /** VoidIn */
     VoidIn: {
@@ -13775,6 +14015,39 @@ export interface operations {
       }
     }
   }
+  forecast_api_v1_inventory_forecast_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        days?: number
+        lang?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ForecastRow'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   import_opening_api_v1_inventory_imports_opening_post: {
     parameters: {
       query: {
@@ -16216,6 +16489,75 @@ export interface operations {
       }
     }
   }
+  suggestion_api_v1_production_plan_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+        lang?: 'en' | 'id'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  accept_api_v1_production_plan_accept_post: {
+    parameters: {
+      query?: {
+        lang?: 'en' | 'id'
+      }
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PlanAcceptIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProductionOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   prep_list_api_v1_production_prep_list_get: {
     parameters: {
       query: {
@@ -17225,6 +17567,37 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['VendorReturnOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  vendor_ranking_api_v1_purchasing_vendor_ranking_get: {
+    parameters: {
+      query: {
+        item_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VendorScoreOut'][]
         }
       }
       /** @description Validation Error */

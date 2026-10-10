@@ -184,6 +184,7 @@ class SuggestionLine(BaseModel):
     on_hand: Decimal
     reorder_point: Decimal
     suggested: Decimal  # base unit
+    eoq: Decimal | None = None  # FR-INV-018: economic order quantity, base unit
     order_qty: Decimal | None  # in order_unit_id, rounded up to whole packs
     order_unit_id: uuid.UUID | None
     unit_price: int | None  # per order unit, from the vendor's current price
@@ -195,3 +196,16 @@ class SuggestionGroup(BaseModel):
     vendor_id: uuid.UUID | None
     vendor_name: str | None
     lines: list[SuggestionLine]
+
+
+class VendorScoreOut(BaseModel):
+    """FR-PUR-007: one vendor for one item, best first."""
+
+    vendor_id: uuid.UUID
+    vendor_name: str
+    per_base: Decimal  # current price per base unit
+    lead_days: Decimal | None  # actual average, last 180 days
+    on_time_pct: Decimal | None
+    fill_pct: Decimal | None
+    effective: Decimal  # price after the lateness and lead-time weights
+    preferred: bool

@@ -1,8 +1,8 @@
 """Reorder suggestions (FR-INV-013): items at or below their reorder point at an outlet,
 grouped by vendor, with quantities in the vendor's packs, ready to become a draft PO.
 
-Vendor per item: the vendor item marked preferred, else the cheapest per base unit among
-active vendors' current prices. Prices and packs are the latest from each vendor."""
+Vendor per item: the vendor item marked preferred, else the best-ranked vendor by price, lead
+time and reliability (FR-PUR-007). Prices and packs are the latest from each vendor."""
 
 import uuid
 from collections import defaultdict
@@ -14,8 +14,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.catalog.interface import base_factors, item_names, tenant_today
-from app.modules.inventory.interface import Need, reorder_needs
-from app.modules.purchasing.models import Vendor, VendorItem
+from app.modules.inventory.interface import Need, needs_with_eoq
+from app.modules.purchasing import vendor_rank
+from app.modules.purchasing.models import Vendor
 from app.modules.purchasing.schemas import SuggestionGroup, SuggestionLine
 
 
@@ -30,32 +31,23 @@ class Offer:
     per_base: Decimal  # price per base unit, to compare vendors
 
 
-async def _offers(db: AsyncSession, ids: set[uuid.UUID], today: date) -> dict[uuid.UUID, Offer]:
-    stmt = (
-        select(VendorItem)
-        .join(Vendor, Vendor.id == VendorItem.vendor_id)
-        .where(VendorItem.item_id.in_(ids), VendorItem.valid_from <= today, Vendor.is_active)
-        .order_by(VendorItem.valid_from.desc())
-    )
-    latest: dict[tuple[uuid.UUID, uuid.UUID, uuid.UUID], VendorItem] = {}
-    for vi in await db.scalars(stmt):
-        latest.setdefault((vi.item_id, vi.vendor_id, vi.pack_unit_id), vi)
-    factors = await base_factors(db, {(vi.item_id, vi.pack_unit_id) for vi in latest.values()})
+async def _offers(
+    db: AsyncSession, tenant_id: uuid.UUID, ids: set[uuid.UUID], today: date
+) -> dict[uuid.UUID, Offer]:
+    """The preferred vendor item, else the best-ranked vendor (FR-PUR-007)."""
     best: dict[uuid.UUID, Offer] = {}
-    for vi in latest.values():
-        base = vi.pack_qty * factors[(vi.item_id, vi.pack_unit_id)]
-        offer = Offer(
+    for item_id, ranked in (await vendor_rank.scores(db, tenant_id, ids, today)).items():
+        pick = next((s for s in ranked if s.preferred), ranked[0])
+        vi = pick.vendor_item
+        best[item_id] = Offer(
             vi.vendor_id,
             vi.pack_qty,
             vi.pack_unit_id,
             vi.price,
             vi.min_order_qty,
             vi.is_preferred,
-            Decimal(vi.price) / base,
+            pick.per_base,
         )
-        now = best.get(vi.item_id)
-        if now is None or (offer.preferred, -offer.per_base) > (now.preferred, -now.per_base):
-            best[vi.item_id] = offer
     return best
 
 
@@ -77,6 +69,7 @@ def _line(
         on_hand=need.on_hand,
         reorder_point=need.reorder_point,
         suggested=need.suggested,
+        eoq=need.eoq,
         order_qty=order_qty,
         order_unit_id=unit,
         unit_price=unit_price,
@@ -87,9 +80,9 @@ async def suggestions(
     db: AsyncSession, tenant_id: uuid.UUID, outlet_id: uuid.UUID, language: str
 ) -> list[SuggestionGroup]:
     today = await tenant_today(db, tenant_id)
-    needs = await reorder_needs(db, outlet_id, today)
+    needs = await needs_with_eoq(db, outlet_id, today)
     ids = {n.item_id for n in needs}
-    offers = await _offers(db, ids, today)
+    offers = await _offers(db, tenant_id, ids, today)
     factors = await base_factors(db, {(i, o.pack_unit_id) for i, o in offers.items()})
     names = await item_names(db, tenant_id, language, ids)
     groups: dict[uuid.UUID | None, list[SuggestionLine]] = defaultdict(list)

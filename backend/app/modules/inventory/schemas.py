@@ -126,3 +126,17 @@ class ProducibleRow(BaseModel):
     can_make: Decimal
     limiting_item_id: uuid.UUID | None
     limiting_name: str | None
+
+
+class ForecastRow(BaseModel):
+    """FR-INV-018: expected use per day ahead, in the base unit, with EOQ when set up."""
+
+    item_id: uuid.UUID
+    name: str
+    unit_code: str
+    enough_history: bool  # false: plain four-week averages, no trend
+    trend: Decimal
+    daily: Decimal
+    days: list[Decimal]  # from tomorrow
+    on_hand: Decimal
+    eoq: Decimal | None

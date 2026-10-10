@@ -325,7 +325,8 @@
     "location_not_found": "Storage place not found.",
     "location_other_outlet": "That storage place belongs to another outlet.",
     "code_not_found": "Nothing found for this code.",
-    "barcode_taken": "Another item already has this barcode."
+    "barcode_taken": "Another item already has this barcode.",
+    "duplicate_item": "Each item may appear only once."
   },
   "appearance": {
     "open": "Appearance",
@@ -377,7 +378,8 @@
       "catalog": "Food cost",
       "devices": "Devices",
       "tables": "Tables",
-      "finance": "Books"
+      "finance": "Books",
+      "planning": "Planning"
     },
     "tax": {
       "help": "Rates are set per business; check regional rates with your tax advisor.",
@@ -503,6 +505,16 @@
     "finance": {
       "auto": "Journal sales, stock, purchases and payments automatically",
       "help": "Only after the books are set up (Finance, Books). Off: the accountant enters journals by hand."
+    },
+    "planning": {
+      "forecast_weeks": "Forecast looks back (weeks)",
+      "forecast_min_days": "History needed for a trend (days)",
+      "order_cost": "Cost of placing one order (0 = no order quantity)",
+      "holding_cost_pct": "Yearly holding cost (% of unit cost)",
+      "plan_days": "Production plan looks ahead (days)",
+      "reliability_weight_pct": "Vendor: extra weight for late or short deliveries (%)",
+      "lead_day_cost_bp": "Vendor: price added per day of waiting (0.01 %)",
+      "help": "Order cost and holding cost give the economic order quantity; set the order cost to 0 to leave it out. Vendors are ranked by price, made dearer by late or short deliveries and long waits as set here."
     }
   },
   "catalog": {
@@ -772,7 +784,8 @@
       "levels": "Levels",
       "producible": "Can make",
       "trace": "Lot trace",
-      "locations": "Locations"
+      "locations": "Locations",
+      "forecast": "Forecast"
     },
     "empty": "No stock recorded at this outlet yet.",
     "negative": "Below zero: more was used than was recorded in",
@@ -1084,7 +1097,8 @@
     },
     "tabs": {
       "plan": "Plan and record",
-      "prep": "Prep list"
+      "prep": "Prep list",
+      "suggest": "Suggested"
     },
     "prep": {
       "help": "Items below their par level or requested by other outlets for today, minus stock and what is already planned.",
@@ -1732,5 +1746,26 @@
     "item": "Item label",
     "batches": "All batch labels",
     "one": "Label"
+  },
+  "planning": {
+    "eoq": "Order quantity: {{qty}} {{unit}}",
+    "compareVendors": "Compare vendors",
+    "hideVendors": "Hide vendors",
+    "noVendors": "No vendor sells this item yet.",
+    "noHistory": "no history",
+    "preferred": "preferred",
+    "vendorLine": "{{rank}}. {{name}}: {{price}} per {{unit}}, lead {{lead}} days, on time {{onTime}}, complete {{fill}}",
+    "forecastHelp": "Expected use over the next {{days}} days, from weekday averages with the recent trend.",
+    "forecastEmpty": "Nothing has been used here lately.",
+    "forecastLine": "next week {{week}} {{unit}} · {{daily}} {{unit}}/day · on hand {{have}} {{unit}}",
+    "trend": "trend {{pct}} %",
+    "shortHistory": "short history: plain averages",
+    "planHelp": "Suggested for the next {{days}} days: par level + branch requests + own expected use - stock - already planned.",
+    "planEmpty": "Nothing to make: stock and planned production cover the coming days.",
+    "planLine": "par {{par}} · on hand {{have}} · requested {{asked}} · own use {{own}} · planned {{planned}} {{unit}}",
+    "limited": "Ingredients on hand allow only {{qty}} {{unit}}",
+    "make": "Make ({{unit}})",
+    "accept_one": "Plan {{count}} order",
+    "accept_other": "Plan {{count}} orders"
   }
 }

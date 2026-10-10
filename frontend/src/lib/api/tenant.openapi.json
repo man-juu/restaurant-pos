@@ -433,6 +433,9 @@
           "payment_methods": {
             "$ref": "#/components/schemas/PaymentMethodSettings"
           },
+          "planning": {
+            "$ref": "#/components/schemas/PlanningSettings"
+          },
           "pos": {
             "$ref": "#/components/schemas/PosSettings"
           },
@@ -479,7 +482,8 @@
           "production",
           "tables",
           "finance",
-          "wholesale"
+          "wholesale",
+          "planning"
         ],
         "title": "AllSettings",
         "type": "object"
@@ -2971,6 +2975,76 @@
           "id"
         ],
         "title": "FloorOut",
+        "type": "object"
+      },
+      "ForecastRow": {
+        "description": "FR-INV-018: expected use per day ahead, in the base unit, with EOQ when set up.",
+        "properties": {
+          "daily": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Daily",
+            "type": "string"
+          },
+          "days": {
+            "items": {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "enough_history": {
+            "title": "Enough History",
+            "type": "boolean"
+          },
+          "eoq": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Eoq"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "on_hand": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "On Hand",
+            "type": "string"
+          },
+          "trend": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Trend",
+            "type": "string"
+          },
+          "unit_code": {
+            "title": "Unit Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "name",
+          "unit_code",
+          "enough_history",
+          "trend",
+          "daily",
+          "days",
+          "on_hand",
+          "eoq"
+        ],
+        "title": "ForecastRow",
         "type": "object"
       },
       "GenerateIn": {
@@ -6349,6 +6423,224 @@
           "pin"
         ],
         "title": "PinLoginIn",
+        "type": "object"
+      },
+      "PlanAcceptIn": {
+        "additionalProperties": false,
+        "description": "Turn chosen suggestions into planned production orders for one day.",
+        "properties": {
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/PlanAcceptLine"
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "title": "Lines",
+            "type": "array"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "production_date": {
+            "format": "date",
+            "title": "Production Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outlet_id",
+          "production_date",
+          "lines"
+        ],
+        "title": "PlanAcceptIn",
+        "type": "object"
+      },
+      "PlanAcceptLine": {
+        "additionalProperties": false,
+        "properties": {
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "qty": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Qty"
+          }
+        },
+        "required": [
+          "item_id",
+          "qty"
+        ],
+        "title": "PlanAcceptLine",
+        "type": "object"
+      },
+      "PlanOut": {
+        "properties": {
+          "days": {
+            "title": "Days",
+            "type": "integer"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/PlanRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          }
+        },
+        "required": [
+          "days",
+          "rows"
+        ],
+        "title": "PlanOut",
+        "type": "object"
+      },
+      "PlanRow": {
+        "description": "FR-PRD-005: one item to make in the coming days, all in the base unit.",
+        "properties": {
+          "can_make": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Can Make"
+          },
+          "forecast_use": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Forecast Use",
+            "type": "string"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "on_hand": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "On Hand",
+            "type": "string"
+          },
+          "par_qty": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Par Qty",
+            "type": "string"
+          },
+          "planned": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Planned",
+            "type": "string"
+          },
+          "requested": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Requested",
+            "type": "string"
+          },
+          "sku": {
+            "title": "Sku",
+            "type": "string"
+          },
+          "suggested": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Suggested",
+            "type": "string"
+          },
+          "unit_code": {
+            "title": "Unit Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "sku",
+          "name",
+          "unit_code",
+          "par_qty",
+          "on_hand",
+          "requested",
+          "forecast_use",
+          "planned",
+          "suggested",
+          "can_make"
+        ],
+        "title": "PlanRow",
+        "type": "object"
+      },
+      "PlanningSettings": {
+        "additionalProperties": false,
+        "description": "FR-INV-018, FR-PRD-005, FR-PUR-007: how forecasts, order quantities, the production\nplan and vendor suggestions are worked out. Every business tunes these to its own way.",
+        "properties": {
+          "forecast_min_days": {
+            "default": 28,
+            "maximum": 180.0,
+            "minimum": 7.0,
+            "title": "Forecast Min Days",
+            "type": "integer"
+          },
+          "forecast_weeks": {
+            "default": 8,
+            "maximum": 26.0,
+            "minimum": 2.0,
+            "title": "Forecast Weeks",
+            "type": "integer"
+          },
+          "holding_cost_pct": {
+            "default": 25,
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Holding Cost Pct",
+            "type": "integer"
+          },
+          "lead_day_cost_bp": {
+            "default": 0,
+            "maximum": 5000.0,
+            "minimum": 0.0,
+            "title": "Lead Day Cost Bp",
+            "type": "integer"
+          },
+          "order_cost": {
+            "default": 0,
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Order Cost",
+            "type": "integer"
+          },
+          "plan_days": {
+            "default": 3,
+            "maximum": 14.0,
+            "minimum": 1.0,
+            "title": "Plan Days",
+            "type": "integer"
+          },
+          "reliability_weight_pct": {
+            "default": 30,
+            "maximum": 200.0,
+            "minimum": 0.0,
+            "title": "Reliability Weight Pct",
+            "type": "integer"
+          }
+        },
+        "title": "PlanningSettings",
         "type": "object"
       },
       "PosLineIn": {
@@ -10535,6 +10827,18 @@
       },
       "SuggestionLine": {
         "properties": {
+          "eoq": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Eoq"
+          },
           "item_id": {
             "format": "uuid",
             "title": "Item Id",
@@ -12898,6 +13202,82 @@
           "lines"
         ],
         "title": "VendorReturnOut",
+        "type": "object"
+      },
+      "VendorScoreOut": {
+        "description": "FR-PUR-007: one vendor for one item, best first.",
+        "properties": {
+          "effective": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Effective",
+            "type": "string"
+          },
+          "fill_pct": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fill Pct"
+          },
+          "lead_days": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lead Days"
+          },
+          "on_time_pct": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "On Time Pct"
+          },
+          "per_base": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Per Base",
+            "type": "string"
+          },
+          "preferred": {
+            "title": "Preferred",
+            "type": "boolean"
+          },
+          "vendor_id": {
+            "format": "uuid",
+            "title": "Vendor Id",
+            "type": "string"
+          },
+          "vendor_name": {
+            "title": "Vendor Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vendor_id",
+          "vendor_name",
+          "per_base",
+          "lead_days",
+          "on_time_pct",
+          "fill_pct",
+          "effective",
+          "preferred"
+        ],
+        "title": "VendorScoreOut",
         "type": "object"
       },
       "VoidIn": {
@@ -19859,6 +20239,77 @@
         ]
       }
     },
+    "/api/v1/inventory/forecast": {
+      "get": {
+        "description": "FR-INV-018: items used here in the last weeks, with what they should need next.",
+        "operationId": "forecast_api_v1_inventory_forecast_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "default": 7,
+              "maximum": 28,
+              "minimum": 1,
+              "title": "Days",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ForecastRow"
+                  },
+                  "title": "Response Forecast Api V1 Inventory Forecast Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Forecast",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
     "/api/v1/inventory/imports/opening": {
       "post": {
         "operationId": "import_opening_api_v1_inventory_imports_opening_post",
@@ -24160,6 +24611,141 @@
         ]
       }
     },
+    "/api/v1/production/plan": {
+      "get": {
+        "operationId": "suggestion_api_v1_production_plan_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Suggestion",
+        "tags": [
+          "production"
+        ]
+      }
+    },
+    "/api/v1/production/plan/accept": {
+      "post": {
+        "description": "One planned production order per chosen line (FR-PRD-001).",
+        "operationId": "accept_api_v1_production_plan_accept_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "default": "en",
+              "enum": [
+                "en",
+                "id"
+              ],
+              "title": "Lang",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanAcceptIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProductionOut"
+                  },
+                  "title": "Response Accept Api V1 Production Plan Accept Post",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Accept",
+        "tags": [
+          "production"
+        ]
+      }
+    },
     "/api/v1/production/prep-list": {
       "get": {
         "operationId": "prep_list_api_v1_production_prep_list_get",
@@ -25887,6 +26473,54 @@
           }
         },
         "summary": "Reverse Return",
+        "tags": [
+          "purchasing"
+        ]
+      }
+    },
+    "/api/v1/purchasing/vendor-ranking": {
+      "get": {
+        "description": "FR-PUR-007: the vendors that sell an item, best first by price, lead time, reliability.",
+        "operationId": "vendor_ranking_api_v1_purchasing_vendor_ranking_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VendorScoreOut"
+                  },
+                  "title": "Response Vendor Ranking Api V1 Purchasing Vendor Ranking Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Vendor Ranking",
         "tags": [
           "purchasing"
         ]

@@ -100,6 +100,15 @@ FALLBACK: dict[str, Any] = {
     },
     "finance": {"auto_journals": True},
     "wholesale": {"payment_terms_days": 14},
+    "planning": {
+        "forecast_weeks": 8,
+        "forecast_min_days": 28,
+        "order_cost": 0,
+        "holding_cost_pct": 25,
+        "plan_days": 3,
+        "reliability_weight_pct": 30,
+        "lead_day_cost_bp": 0,
+    },
 }
 
 
