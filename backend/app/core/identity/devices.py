@@ -5,7 +5,9 @@ Security choices, briefly:
   SHA-256 hash is stored, like session tokens. Revoking a device stops it at once.
 - A PIN works only on a registered device, only for people who completed a full sign-in
   there, never for roles that require 2FA (owners), and locks after 5 wrong tries for 15
-  minutes. A per-device limit stops guessing across many staff accounts.
+  minutes; after 3 such locks in a row the PIN is blocked until a manager resets it, and
+  the owner and managers are notified. A per-device limit stops guessing across many staff
+  accounts.
 - The device is looked up by token through a narrow SECURITY DEFINER function (no tenant
   is known yet); everything after that runs in that tenant's RLS session.
 """
@@ -23,12 +25,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.identity import service
 from app.core.identity.device_models import Device, DeviceUser, UserPin
 from app.core.identity.passwords import hash_password, verify_password
+from app.core.notifications import service as notifications
 
 DEVICE_COOKIE = "__Host-pos_device"
 DEVICE_COOKIE_DAYS = 400  # browsers cap cookie lifetime around 400 days
 PIN = re.compile(r"^\d{4,6}$")
 PIN_MAX_FAILURES = 5
 PIN_LOCK = timedelta(minutes=15)
+PIN_MAX_LOCKOUTS = 3  # then blocked until a manager resets it (about 15 guesses in total)
 DEVICE_MAX_FAILURES = 20  # across all staff on one device
 
 
@@ -133,7 +137,7 @@ async def pin_staff(db: AsyncSession, device: DeviceRef) -> list[tuple[uuid.UUID
 
 
 class PinResult:
-    OK, WRONG, LOCKED, NOT_ALLOWED = "ok", "wrong", "locked", "not_allowed"
+    OK, WRONG, LOCKED, NOT_ALLOWED, BLOCKED = "ok", "wrong", "locked", "not_allowed", "blocked"
 
 
 async def check_pin(
@@ -147,16 +151,37 @@ async def check_pin(
         await verify_password(None, pin)
         return PinResult.NOT_ALLOWED, None
     now = datetime.now(UTC)
+    if row.blocked_at is not None:
+        return PinResult.BLOCKED, None
     if row.locked_until is not None and row.locked_until > now:
         return PinResult.LOCKED, row.locked_until
     if await verify_password(row.pin_hash, pin):
-        row.failed_count, row.locked_until = 0, None
+        row.failed_count, row.locked_until, row.lockouts = 0, None, 0
         await db.execute(
             text("UPDATE devices SET last_seen_at = now() WHERE id = :id"), {"id": device.id}
         )
         return PinResult.OK, None
+    return await _wrong(db, row, device, user_id, now)
+
+
+async def _wrong(
+    db: AsyncSession, row: UserPin, device: DeviceRef, user_id: uuid.UUID, now: datetime
+) -> tuple[str, datetime | None]:
+    """A wrong PIN: count it, lock after 5, block after 3 locks in a row."""
     row.failed_count += 1
-    if row.failed_count >= PIN_MAX_FAILURES:
-        row.failed_count, row.locked_until = 0, now + PIN_LOCK
-        return PinResult.LOCKED, row.locked_until
-    return PinResult.WRONG, None
+    if row.failed_count < PIN_MAX_FAILURES:
+        return PinResult.WRONG, None
+    row.failed_count, row.lockouts = 0, row.lockouts + 1
+    if row.lockouts >= PIN_MAX_LOCKOUTS:
+        row.blocked_at = now
+        await _tell_managers(db, device, user_id)
+        return PinResult.BLOCKED, None
+    row.locked_until = now + PIN_LOCK
+    return PinResult.LOCKED, row.locked_until
+
+
+async def _tell_managers(db: AsyncSession, device: DeviceRef, user_id: uuid.UUID) -> None:
+    name = await db.scalar(text("SELECT name FROM users WHERE id = :id"), {"id": user_id})
+    users = await notifications.recipients(db, "pin_blocked", device.outlet_id, "tenant.pin.reset")
+    params = {"name": name or "", "device": device.name}
+    await notifications.notify(db, device.tenant_id, users, "pin_blocked", params, "/settings")

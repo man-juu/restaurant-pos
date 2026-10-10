@@ -40,7 +40,8 @@
       "button": "Masuk dengan Google",
       "or": "atau dengan email dan kata sandi",
       "failed": "Tidak bisa masuk dengan Google. Silakan coba lagi.",
-      "noAccount": "Akun Google ini belum diundang ke bisnis mana pun. Minta pemilik mengundang email ini."
+      "noAccount": "Akun Google ini belum diundang ke bisnis mana pun. Minta pemilik mengundang email ini.",
+      "locked": "Terlalu banyak kata sandi salah di akun ini. Coba lagi nanti."
     }
   },
   "nav": {
@@ -289,7 +290,9 @@
     "already_credited": "Retur yang sudah dikreditkan tidak bisa dibatalkan.",
     "receipt_mismatch": "Penerimaan berasal dari pemasok atau outlet lain.",
     "return_reversed": "Retur ini sudah dibatalkan.",
-    "already_void": "Tagihan ini sudah dibatalkan."
+    "already_void": "Tagihan ini sudah dibatalkan.",
+    "pin_blocked": "PIN ini diblokir karena terlalu sering salah. Minta manajer mengatur ulang.",
+    "refund_method_mismatch": "Kembalikan dana dengan cara pelanggan membayar."
   },
   "appearance": {
     "open": "Tampilan",
@@ -1097,7 +1100,8 @@
       "count_variance": "Hitung {{number}} selisih senilai {{amount}} (biaya rata-rata)",
       "food_cost_above_target": "{{item}}: HPP {{pct}} % di {{channel}}, target {{target}} %. Biaya terbesar: {{cause}}",
       "approval_requested": "{{number}} menunggu persetujuan Anda",
-      "subscription_state": "Status langganan Anda sekarang: {{state}}"
+      "subscription_state": "Status langganan Anda sekarang: {{state}}",
+      "pin_blocked": "PIN {{name}} terlalu sering salah di {{device}} dan diblokir. Atur ulang di Pengaturan, Perangkat."
     }
   },
   "sales": {

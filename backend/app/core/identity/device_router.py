@@ -6,7 +6,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request, Response
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
-from sqlalchemy import select, update
+from sqlalchemy import func, select, update
 
 from app.core.access.policy import Principal, public, require, require_member
 from app.core.config import Settings
@@ -23,7 +23,7 @@ from app.core.identity.web import (
     session_info,
     set_session_cookie,
 )
-from app.core.models import Outlet, User
+from app.core.models import Outlet, User, UserSession
 from app.core.tenancy import tenant_session
 
 router = APIRouter(prefix="/api/v1", tags=["devices"])
@@ -37,6 +37,10 @@ Pin = Annotated[str, StringConstraints(pattern=r"^\d{4,6}$")]
 
 class PinNotAllowed(AppError):
     status_code, code = 403, "pin_not_allowed"
+
+
+class PinBlocked(AppError):
+    status_code, code = 403, "pin_blocked"  # a manager must reset it
 
 
 class DeviceIn(BaseModel):
@@ -120,6 +124,13 @@ async def revoke_device(device_id: uuid.UUID, request: Request, p: Manage) -> No
         )
         if not done.rowcount:
             raise NotFoundError("device_not_found")
+    async with request.app.state.sessionmaker() as db, db.begin():
+        # PIN sessions opened on this till end now, not at their idle timeout.
+        await db.execute(
+            update(UserSession)
+            .where(UserSession.device_id == device_id, UserSession.revoked_at.is_(None))
+            .values(revoked_at=func.now())
+        )
     await audit_auth(request, p.tenant_id, "device.revoke", p.user_id, device=str(device_id))
 
 
@@ -198,6 +209,8 @@ async def pin_login(body: PinLoginIn, request: Request, response: Response) -> S
             await audit_auth(
                 request, device.tenant_id, "auth.pin_failed", body.user_id, device=str(device.id)
             )
+        if result == devices.PinResult.BLOCKED:
+            raise PinBlocked()
         if result == devices.PinResult.LOCKED:
             raise TooManyAttempts(details={"retry_at": locked.isoformat() if locked else None})
         raise InvalidCredentials()
@@ -215,6 +228,7 @@ async def pin_login(body: PinLoginIn, request: Request, response: Response) -> S
             ip=ip,
             user_agent=user_agent,
             settings=settings,
+            device_id=device.id,
         )
         info = await session_info(db, user, row)
     await audit_auth(

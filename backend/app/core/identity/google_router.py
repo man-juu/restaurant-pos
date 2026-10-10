@@ -90,6 +90,9 @@ async def google_callback(
     settings = _settings(request)
     ip, user_agent = client_info(request)
     async with request.app.state.sessionmaker() as db, db.begin():
+        # A locked account stays locked whichever way someone signs in (review 2l).
+        if await service.locked_until(db, [service.throttle_key("acct", email)]):
+            return _to_login(request, "locked")
         user = await service.find_user(db, email)
         members = await service.active_memberships(db, user.id) if user else []
         if user is None or user.status != "active" or not members:

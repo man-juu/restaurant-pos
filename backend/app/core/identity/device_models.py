@@ -62,4 +62,7 @@ class UserPin(Base):
     pin_hash: Mapped[str] = mapped_column(Text)  # Argon2id, like passwords
     failed_count: Mapped[int] = mapped_column(server_default="0")
     locked_until: Mapped[datetime | None] = mapped_column()
+    # Lockouts in a row; after PIN_MAX_LOCKOUTS the PIN is blocked until a manager resets it.
+    lockouts: Mapped[int] = mapped_column(server_default="0")
+    blocked_at: Mapped[datetime | None] = mapped_column()
     set_at: Mapped[datetime] = _created_at()

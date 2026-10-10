@@ -97,6 +97,7 @@ async def create_session(
     user_agent: str | None,
     settings: Settings,
     mfa_state: str = "ok",
+    device_id: uuid.UUID | None = None,
 ) -> tuple[str, UserSession]:
     token = secrets.token_urlsafe(TOKEN_BYTES)
     row = UserSession(
@@ -105,6 +106,7 @@ async def create_session(
         active_tenant_id=tenant_id,
         csrf_token=secrets.token_urlsafe(32),
         mfa_state=mfa_state,
+        device_id=device_id,
         expires_at=datetime.now().astimezone() + timedelta(hours=settings.session_absolute_hours),
         ip=ip,
         user_agent=(user_agent or "")[:256] or None,

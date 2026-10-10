@@ -18,14 +18,16 @@ Method: three parallel read-only reviews of the Phase 2 code. Every finding was 
 | Medium | A bill could take another outlet's receipts, by naming them or through the PO. | Receipts must be at the bill's outlet. | `test_vendor_payables.py` (FR-PUR-008 test) |
 | Medium | A credit note could be applied across outlets. | The credit must be from the bill's own outlet. | covered by the same check |
 
-## Recorded, not fixed yet (low)
+## Low findings, fixed on 2026-10-10
 
-- **Refund method:** a refund method is not tied to how the order was paid. A QRIS sale could be refunded as cash from the drawer. Approval rules still apply. Next step: allow only methods used on the order, or require approval when the method differs.
-- **Idempotency keys:** keys are per tenant, and the stored answer is replayed before the outlet check. Exploiting this needs a random UUID from another user. Next step: bind the key to the user.
-- **Open orders:** quantity changes and removal of unsent lines are not audited. The discount abuse above is now blocked at payment.
-- **Device revoke:** revoking a device stops new PIN sign-ins at once, but does not end sessions already opened on it. Those end at the idle timeout (default 60 min). Next step: store the device on the session and revoke them together.
-- **PIN guessing:** a patient attacker holding a device cookie can guess about 480 PINs a day, because the 15-minute lock repeats. Next step: lock for good after 3 lockouts until a manager resets, and notify the owner.
-- **Google sign-in and lockout:** Google sign-in ignores the password lockout. This is by design, because the lockout stops password guessing, and Google proves identity separately.
+| Finding | Fix | Test |
+| --- | --- | --- |
+| Refund method not tied to how the order was paid | Refunds go back by a method used on the order; owners and co-owners may choose another | `test_fr_sal_008_refund_needs_another_persons_approval` |
+| Idempotency keys replayable by another user | Stored fingerprint is bound to the signed-in user | `test_an_idempotency_key_replays_only_for_the_same_user` |
+| Quantity changes and removal of unsent lines not audited | `sales.order.line_qty` and `sales.order.line_remove` audit entries | `test_discount_rechecked_at_payment_when_the_order_shrank` |
+| Revoking a device left its PIN sessions alive | Sessions remember their device (migration 0036); revoking ends them, also after a tenant switch | `test_revoking_a_device_ends_its_pin_sessions` |
+| Slow PIN guessing (about 480 a day) | After 3 lockouts in a row the PIN is blocked until a manager resets it; owners and managers are notified (migration 0037) | `test_a_pin_guessed_too_often_is_blocked_until_reset` |
+| Google sign-in ignored the account lockout | A locked account stays locked for Google sign-in too | covered by the shared lockout check |
 
 ## Checked and fine (summary)
 

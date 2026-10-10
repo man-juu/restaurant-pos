@@ -24,7 +24,13 @@ from app.core.settings import service as settings
 from app.core.settings.schemas import PaymentMethodSettings
 from app.modules.catalog.interface import tenant_today
 from app.modules.inventory.interface import Posting, reverse
-from app.modules.sales.models import PosOrder, PosOrderLine, SalesDocument, SalesRefund
+from app.modules.sales.models import (
+    Payment,
+    PosOrder,
+    PosOrderLine,
+    SalesDocument,
+    SalesRefund,
+)
 from app.modules.sales.orders import _audit
 from app.modules.sales.payments import DOC as SALE_DOC
 from app.modules.sales.payments import option_changes, stock_quantities
@@ -59,6 +65,16 @@ async def _method_kind(db: AsyncSession, tenant_id: uuid.UUID, code: str) -> str
     raise NotFoundError("payment_method_not_found", details={"method": code})
 
 
+async def _check_method(db: AsyncSession, order: PosOrder, method: str, *, owner: bool) -> None:
+    """Money goes back the way it came (security review 2l): a QRIS sale is not refunded as
+    cash from the drawer. Owners may choose another way (a customer without the app)."""
+    if owner:
+        return
+    paid = set(await db.scalars(select(Payment.method_code).where(Payment.order_id == order.id)))
+    if method not in paid:
+        raise ConflictError("refund_method_mismatch", details={"paid_with": sorted(paid)})
+
+
 async def _template(db: AsyncSession, role_id: uuid.UUID) -> str | None:
     return cast(str | None, await db.scalar(select(Role.template_key).where(Role.id == role_id)))
 
@@ -69,6 +85,8 @@ async def request_refund(
     if order.status != "paid" or order.document_id is None:
         raise ConflictError("wrong_status", details={"status": order.status})
     doc = cast(SalesDocument, await db.get(SalesDocument, order.document_id))
+    owner = await _template(db, p.role_id) in NO_APPROVAL
+    await _check_method(db, order, data.method, owner=owner)
     refund = SalesRefund(
         tenant_id=order.tenant_id,
         order_id=order.id,
@@ -92,7 +110,7 @@ async def request_refund(
     await _audit(
         db, order, p.user_id, "refund_request", {"amount": refund.amount, "reason": data.reason}
     )
-    if await _template(db, p.role_id) in NO_APPROVAL:
+    if owner:
         await _execute(db, refund, order, p.user_id)
         return refund
     link = f"/pos?refund={refund.id}"

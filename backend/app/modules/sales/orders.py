@@ -156,20 +156,36 @@ async def _line(db: AsyncSession, order: PosOrder, line_id: uuid.UUID) -> PosOrd
 
 
 async def update_line(
-    db: AsyncSession, order: PosOrder, line_id: uuid.UUID, data: PosLineUpdateIn
+    db: AsyncSession,
+    order: PosOrder,
+    line_id: uuid.UUID,
+    data: PosLineUpdateIn,
+    user_id: uuid.UUID,
 ) -> None:
     require_open(order)
     line = await _line(db, order, line_id)
+    before = line.qty
     line.qty, line.note = data.qty, data.note
     await db.flush()
+    if before != data.qty:  # quantity changes are audited (security review 2l)
+        detail: dict[str, object] = {"line": str(line.id), "from": str(before), "to": str(data.qty)}
+        await _audit(db, order, user_id, "line_qty", detail)
 
 
-async def remove_line(db: AsyncSession, order: PosOrder, line_id: uuid.UUID) -> None:
+async def remove_line(
+    db: AsyncSession, order: PosOrder, line_id: uuid.UUID, user_id: uuid.UUID
+) -> None:
     require_open(order)
     line = await _line(db, order, line_id)
+    detail: dict[str, object] = {
+        "line": str(line.id),
+        "item": str(line.item_id),
+        "qty": str(line.qty),
+    }
     await db.execute(delete(PosLineModifier).where(PosLineModifier.line_id == line.id))
     await db.delete(line)
     await db.flush()
+    await _audit(db, order, user_id, "line_remove", detail)
 
 
 async def send(db: AsyncSession, order: PosOrder, user_id: uuid.UUID) -> int:

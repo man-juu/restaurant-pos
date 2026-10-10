@@ -12,6 +12,7 @@ from tests.factories import add_member, add_outlet, drop_tenant, seed_tenant
 from tests.test_auth import owner
 from tests.test_inventory import HASH, PW, login
 from tests.test_purchasing import client as client
+from tests.test_purchasing import tenant_sql
 
 COOKIE = "__Host-pos_device"
 
@@ -139,3 +140,47 @@ def test_set_pin_password_guesses_are_throttled(client: TestClient, world: dict[
         for _ in range(8)
     ]
     assert 429 in codes  # the same lockout as the sign-in page
+
+
+def test_revoking_a_device_ends_its_pin_sessions(client: TestClient, world: dict[str, Any]) -> None:
+    m = login(client, world["manager_a"])
+    made = client.post(
+        "/api/v1/devices", json={"name": "Till", "outlet_id": str(world["shop"])}, headers=m
+    ).json()
+    token = client.cookies.get(COOKIE)
+    assert token
+    h = on_device(client, token, world["cashier_a"])
+    client.put("/api/v1/me/pin", json={"pin": "2468", "password": PW}, headers=h)
+    client.post("/api/v1/devices/this/enrol", headers=h)
+    assert pin_login(client, world["cashier_id"], "2468").status_code == 200
+    pin_session = client.cookies.get("__Host-session")
+    m = login(client, world["manager_a"])
+    assert client.delete(f"/api/v1/devices/{made['id']}", headers=m).status_code == 204
+    client.cookies.clear()
+    client.cookies.set("__Host-session", pin_session or "")
+    assert client.get("/api/v1/auth/session").status_code == 401  # ended with the device
+
+
+def test_a_pin_guessed_too_often_is_blocked_until_reset(
+    client: TestClient, world: dict[str, Any]
+) -> None:
+    """Security review 2l: three lockouts in a row block the PIN for good (no slow guessing
+    at about 480 tries a day); managers are notified and reset it."""
+    m = login(client, world["manager_a"])
+    client.post(
+        "/api/v1/devices", json={"name": "Till", "outlet_id": str(world["shop"])}, headers=m
+    )
+    token = client.cookies.get(COOKIE)
+    assert token
+    h = on_device(client, token, world["cashier_a"])
+    client.put("/api/v1/me/pin", json={"pin": "1357", "password": PW}, headers=h)
+    client.post("/api/v1/devices/this/enrol", headers=h)
+    codes = []
+    for _ in range(3):
+        codes += [pin_login(client, world["cashier_id"], "0000").status_code for _ in range(5)]
+        tenant_sql(world["a"], "UPDATE user_pins SET locked_until = NULL")  # 15 minutes pass
+    assert codes[4] == 429 and codes[-1] == 403
+    blocked = pin_login(client, world["cashier_id"], "1357")  # even the right PIN
+    assert blocked.status_code == 403 and blocked.json()["code"] == "pin_blocked"
+    told = tenant_sql(world["a"], "SELECT count(*) FROM notifications WHERE kind = 'pin_blocked'")
+    assert told[0][0] >= 1  # the manager hears about it

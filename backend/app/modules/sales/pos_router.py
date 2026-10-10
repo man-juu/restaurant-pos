@@ -183,7 +183,7 @@ async def update_line(
 ) -> PosOrderOut:
     async with _db(request, p) as db:
         order = await _scoped(db, p, order_id)
-        await orders.update_line(db, order, line_id, body)
+        await orders.update_line(db, order, line_id, body, p.user_id)
         return await full_out(db, order, lang)
 
 
@@ -193,7 +193,7 @@ async def remove_line(
 ) -> PosOrderOut:
     async with _db(request, p) as db:
         order = await _scoped(db, p, order_id)
-        await orders.remove_line(db, order, line_id)
+        await orders.remove_line(db, order, line_id, p.user_id)
         return await full_out(db, order, lang)
 
 

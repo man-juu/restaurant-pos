@@ -17,6 +17,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import AppError, ConflictError
+from app.core.logging import user_id_var
 from app.core.models import IdempotencyKey
 
 
@@ -54,6 +55,13 @@ async def request_fingerprint(request: Request) -> str:
     return digest.hexdigest()
 
 
+def _bound(request_hash: str) -> str:
+    """The fingerprint tied to the signed-in user of the current tenant session (security
+    review 2l): another user who learns a key cannot replay someone else's stored answer."""
+    user = user_id_var.get() or ""
+    return hashlib.sha256(f"{user}:{request_hash}".encode()).hexdigest()
+
+
 @dataclass(frozen=True)
 class StoredResponse:
     status: int
@@ -72,7 +80,7 @@ async def replay_or_none(
     ).scalar_one_or_none()
     if row is None or row.response_status is None:
         return None
-    if row.request_hash != request_hash:
+    if row.request_hash != _bound(request_hash):
         raise ConflictError("idempotency_key_reused")
     return StoredResponse(row.response_status, row.response_body)
 
@@ -92,7 +100,7 @@ async def remember(
         insert(IdempotencyKey).values(
             tenant_id=tenant_id,
             key=key,
-            request_hash=request_hash,
+            request_hash=_bound(request_hash),
             response_status=status,
             response_body=body,
         )

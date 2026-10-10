@@ -40,7 +40,8 @@
       "button": "Sign in with Google",
       "or": "or with email and password",
       "failed": "Could not sign in with Google. Please try again.",
-      "noAccount": "This Google account is not invited to any business. Ask the owner to invite this email."
+      "noAccount": "This Google account is not invited to any business. Ask the owner to invite this email.",
+      "locked": "Too many wrong passwords on this account. Try again later."
     }
   },
   "nav": {
@@ -289,7 +290,9 @@
     "already_credited": "A credited return cannot be undone.",
     "receipt_mismatch": "The receipt is from another vendor or outlet.",
     "return_reversed": "This return was reversed.",
-    "already_void": "This bill is already void."
+    "already_void": "This bill is already void.",
+    "pin_blocked": "This PIN is blocked after too many wrong tries. Ask a manager to reset it.",
+    "refund_method_mismatch": "Refund the way the customer paid."
   },
   "appearance": {
     "open": "Appearance",
@@ -1097,7 +1100,8 @@
       "count_variance": "Count {{number}} differs by {{amount}} (at average cost)",
       "food_cost_above_target": "{{item}}: food cost {{pct}} % on {{channel}}, target {{target}} %. Biggest cost: {{cause}}",
       "approval_requested": "{{number}} is waiting for your approval",
-      "subscription_state": "Your subscription is now: {{state}}"
+      "subscription_state": "Your subscription is now: {{state}}",
+      "pin_blocked": "{{name}}'s PIN was guessed wrong too often on {{device}} and is blocked. Reset it under Settings, Devices."
     }
   },
   "sales": {

@@ -2,6 +2,7 @@
 refunds with manager approval (FR-SAL-008); never approving one's own refund; cash refunds
 lower the drawer's expected cash; isolation."""
 
+import uuid
 from collections.abc import Iterator
 from typing import Any
 
@@ -13,6 +14,7 @@ from tests.test_auth_mfa import enroll_as
 from tests.test_inventory import HASH, PW, login
 from tests.test_pos import POS, new_order, post
 from tests.test_purchasing import client as client
+from tests.test_purchasing import tenant_sql
 from tests.test_sales_days import menu as menu
 from tests.test_sales_days import on_hand
 
@@ -151,6 +153,10 @@ def test_fr_sal_008_refund_needs_another_persons_approval(
         f"/orders/{order['id']}/pay",
         {"payments": [{"method": "cash", "amount": 27_500}]},
     )
+    # Money goes back the way it came: not by QRIS for a cash sale (security review 2l).
+    other = {"reason": "Wrong dish", "stock_effect": "return", "method": "qris"}
+    wrong = post(client, h, f"/orders/{order['id']}/refund", other)
+    assert wrong.json()["code"] == "refund_method_mismatch"
     ask = {"reason": "Wrong dish", "stock_effect": "return", "method": "cash"}
     asked = post(client, h, f"/orders/{order['id']}/refund", ask).json()
     assert asked["status"] == "paid" and asked["refund"]["status"] == "requested"
@@ -240,3 +246,21 @@ def test_discount_rechecked_at_payment_when_the_order_shrank(
         client, h, f"/orders/{oid}/pay", {"payments": [{"method": "cash", "amount": total}]}
     )
     assert paid.status_code == 403 and paid.json()["details"]["limit"] == 1000
+    sql = "SELECT 1 FROM audit_log WHERE action = 'sales.order.line_qty'"
+    changed = tenant_sql(world["a"], sql)
+    assert len(changed) == 1  # the quantity change is on record
+
+
+def test_an_idempotency_key_replays_only_for_the_same_user(
+    client: TestClient, world: dict[str, Any], menu: dict[str, Any]
+) -> None:
+    """Security review 2l: someone else who learns a key gets no stored answer."""
+    h = login(client, world["cashier_a"])
+    order = new_order(client, h, world, menu)
+    key = str(uuid.uuid4())
+    body = {"item_id": menu["nasi"], "qty": "1"}
+    first = post(client, h, f"/orders/{order['id']}/lines", body, key)
+    assert post(client, h, f"/orders/{order['id']}/lines", body, key).json() == first.json()
+    m = login(client, world["manager_a"])
+    other = post(client, m, f"/orders/{order['id']}/lines", body, key)
+    assert other.status_code == 409 and other.json()["code"] == "idempotency_key_reused"

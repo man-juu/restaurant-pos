@@ -181,6 +181,7 @@ async def switch_tenant(
         members = await service.active_memberships(db, auth.user_id)
         if body.tenant_id not in {m.tenant_id for m in members}:
             raise NotFoundError()  # 404, not 403: don't confirm that the tenant exists
+        old = await db.get(UserSession, auth.session_id)
         await service.revoke(db, session_id=auth.session_id, user_id=auth.user_id)
         token, row = await service.create_session(
             db,
@@ -189,6 +190,7 @@ async def switch_tenant(
             ip=ip,
             user_agent=user_agent,
             settings=settings,
+            device_id=old.device_id if old else None,  # still ends when the till is revoked
         )
         user = (await db.execute(select(User).where(User.id == auth.user_id))).scalar_one()
         info = await session_info(db, user, row)

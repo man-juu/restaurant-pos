@@ -49,10 +49,16 @@ async def void_line(
     require_open(order)
     line = await open_line(db, order, line_id)
     if line.status == "new":
-        # Not cooked yet: simply take it off (no reason needed, nothing to write off).
+        # Not cooked yet: simply take it off (no reason needed, nothing to write off), audited.
+        detail: dict[str, object] = {
+            "line": str(line.id),
+            "item": str(line.item_id),
+            "qty": str(line.qty),
+        }
         await db.execute(delete(PosLineModifier).where(PosLineModifier.line_id == line.id))
         await db.delete(line)
         await db.flush()
+        await _audit(db, order, user_id, "line_remove", detail)
         return
     _mark(line, reason, user_id)
     await db.flush()

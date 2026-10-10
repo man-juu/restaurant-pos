@@ -257,6 +257,7 @@ class UserSession(Base):
     __tablename__ = "sessions"
     __table_args__ = (
         Index(None, "user_id", "revoked_at"),
+        Index(None, "device_id"),
         _check_in("mfa_state", ("ok", "verify", "enroll")),
     )
 
@@ -268,6 +269,8 @@ class UserSession(Base):
     # "ok": full access; "verify": password checked, TOTP code still needed; "enroll": the
     # user's role requires TOTP and none is set up yet. Only auth endpoints accept the latter two.
     mfa_state: Mapped[str] = mapped_column(Text, server_default="ok")
+    # The shared till a PIN session was opened on: revoking the device ends it (review 2l).
+    device_id: Mapped[uuid.UUID | None] = mapped_column()
     created_at: Mapped[datetime] = _created_at()
     last_seen_at: Mapped[datetime] = mapped_column(server_default=func.now())
     expires_at: Mapped[datetime] = mapped_column()  # absolute timeout
