@@ -158,8 +158,9 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 
 | Table | Key columns | Notes |
 | --- | --- | --- |
-| `accounts` | tenant_id, code, name, type (asset, liability, equity, revenue, expense), parent_id, is_active | Seeded from a template |
-| `journal_entries` | tenant_id, outlet_id, date, source_doc_type, source_doc_id, status, reversed_by | Append-only once posted |
+| `gl_accounts` | tenant_id, code, name, type (asset, liability, equity, revenue, expense), parent_id, system_key, is_active | Seeded from a template (finance/coa.py) |
+| `ledger_setups` | tenant_id, start_date, template, opening_entry_id | One per tenant (FR-FIN-009) |
+| `journal_entries` | tenant_id, number, outlet_id, entry_date, memo, source_doc_type, source_doc_id, status (submitted, posted, rejected), total, reverses_id, attachment_id | Posted entries never change; corrections reverse |
 | `journal_lines` | entry_id, account_id, debit, credit, outlet_id, memo | Constraint: entry debits equal credits |
 | `posting_rules` | tenant_id, event_type, debit_account, credit_account, conditions | Configurable mapping |
 | `accounting_periods` | tenant_id, year, month, status (open, closed) | |

@@ -1,6 +1,117 @@
 {
   "components": {
     "schemas": {
+      "AccountIn": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "maxLength": 20,
+            "minLength": 1,
+            "title": "Code",
+            "type": "string"
+          },
+          "is_active": {
+            "default": true,
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Id"
+          },
+          "type": {
+            "enum": [
+              "asset",
+              "liability",
+              "equity",
+              "revenue",
+              "expense"
+            ],
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "type"
+        ],
+        "title": "AccountIn",
+        "type": "object"
+      },
+      "AccountOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Id"
+          },
+          "system_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "System Key"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "type",
+          "parent_id",
+          "system_key",
+          "is_active"
+        ],
+        "title": "AccountOut",
+        "type": "object"
+      },
       "AdjustmentIn": {
         "additionalProperties": false,
         "properties": {
@@ -574,6 +685,59 @@
         "title": "AvailabilityIn",
         "type": "object"
       },
+      "BalanceSheet": {
+        "properties": {
+          "as_of": {
+            "format": "date",
+            "title": "As Of",
+            "type": "string"
+          },
+          "assets": {
+            "items": {
+              "$ref": "#/components/schemas/TrialRow"
+            },
+            "title": "Assets",
+            "type": "array"
+          },
+          "current_earnings": {
+            "title": "Current Earnings",
+            "type": "integer"
+          },
+          "equity": {
+            "items": {
+              "$ref": "#/components/schemas/TrialRow"
+            },
+            "title": "Equity",
+            "type": "array"
+          },
+          "liabilities": {
+            "items": {
+              "$ref": "#/components/schemas/TrialRow"
+            },
+            "title": "Liabilities",
+            "type": "array"
+          },
+          "total_assets": {
+            "title": "Total Assets",
+            "type": "integer"
+          },
+          "total_liabilities_equity": {
+            "title": "Total Liabilities Equity",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "as_of",
+          "assets",
+          "liabilities",
+          "equity",
+          "current_earnings",
+          "total_assets",
+          "total_liabilities_equity"
+        ],
+        "title": "BalanceSheet",
+        "type": "object"
+      },
       "BankDetails": {
         "properties": {
           "bank_details": {
@@ -1126,6 +1290,52 @@
           "language"
         ],
         "title": "Capabilities",
+        "type": "object"
+      },
+      "CashFlow": {
+        "description": "Direct method from the cash and bank accounts: money in and out by the kind of\naccount on the other side of each entry.",
+        "properties": {
+          "closing": {
+            "title": "Closing",
+            "type": "integer"
+          },
+          "financing": {
+            "title": "Financing",
+            "type": "integer"
+          },
+          "investing": {
+            "title": "Investing",
+            "type": "integer"
+          },
+          "opening": {
+            "title": "Opening",
+            "type": "integer"
+          },
+          "operating": {
+            "title": "Operating",
+            "type": "integer"
+          },
+          "since": {
+            "format": "date",
+            "title": "Since",
+            "type": "string"
+          },
+          "until": {
+            "format": "date",
+            "title": "Until",
+            "type": "string"
+          }
+        },
+        "required": [
+          "since",
+          "until",
+          "opening",
+          "operating",
+          "investing",
+          "financing",
+          "closing"
+        ],
+        "title": "CashFlow",
         "type": "object"
       },
       "CatalogSettings": {
@@ -3551,6 +3761,215 @@
         "title": "ItemUpdate",
         "type": "object"
       },
+      "JournalIn": {
+        "additionalProperties": false,
+        "properties": {
+          "attachment_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attachment Id"
+          },
+          "entry_date": {
+            "format": "date",
+            "title": "Entry Date",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/LineIn"
+            },
+            "maxItems": 100,
+            "minItems": 2,
+            "title": "Lines",
+            "type": "array"
+          },
+          "memo": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Memo"
+          },
+          "outlet_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outlet Id"
+          }
+        },
+        "required": [
+          "entry_date",
+          "lines"
+        ],
+        "title": "JournalIn",
+        "type": "object"
+      },
+      "JournalLineOut": {
+        "properties": {
+          "account_id": {
+            "format": "uuid",
+            "title": "Account Id",
+            "type": "string"
+          },
+          "credit": {
+            "title": "Credit",
+            "type": "integer"
+          },
+          "debit": {
+            "title": "Debit",
+            "type": "integer"
+          },
+          "memo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Memo"
+          },
+          "outlet_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outlet Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "outlet_id",
+          "debit",
+          "credit",
+          "memo"
+        ],
+        "title": "JournalLineOut",
+        "type": "object"
+      },
+      "JournalOut": {
+        "properties": {
+          "attachment_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attachment Id"
+          },
+          "entry_date": {
+            "format": "date",
+            "title": "Entry Date",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/JournalLineOut"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "memo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Memo"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "outlet_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outlet Id"
+          },
+          "reverses_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reverses Id"
+          },
+          "source_doc_type": {
+            "title": "Source Doc Type",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "entry_date",
+          "memo",
+          "outlet_id",
+          "source_doc_type",
+          "status",
+          "total",
+          "reverses_id",
+          "attachment_id",
+          "lines"
+        ],
+        "title": "JournalOut",
+        "type": "object"
+      },
       "KitchenSettings": {
         "additionalProperties": false,
         "description": "FR-KDS-004: when a ticket counts as late, and how long a bumped one can be recalled.",
@@ -3870,6 +4289,59 @@
           "limits"
         ],
         "title": "LimitsIn",
+        "type": "object"
+      },
+      "LineIn": {
+        "additionalProperties": false,
+        "properties": {
+          "account_id": {
+            "format": "uuid",
+            "title": "Account Id",
+            "type": "string"
+          },
+          "credit": {
+            "default": 0,
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Credit",
+            "type": "integer"
+          },
+          "debit": {
+            "default": 0,
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Debit",
+            "type": "integer"
+          },
+          "memo": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Memo"
+          },
+          "outlet_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outlet Id"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "LineIn",
         "type": "object"
       },
       "LoginRequest": {
@@ -4444,7 +4916,7 @@
           },
           "lines": {
             "items": {
-              "$ref": "#/components/schemas/OpeningLine"
+              "$ref": "#/components/schemas/app__modules__inventory__schemas__OpeningLine"
             },
             "maxItems": 500,
             "minItems": 1,
@@ -4463,80 +4935,6 @@
           "lines"
         ],
         "title": "OpeningIn",
-        "type": "object"
-      },
-      "OpeningLine": {
-        "additionalProperties": false,
-        "description": "Stock counted when starting with the system. Quantity and cost per `unit_id`.",
-        "properties": {
-          "expiry_date": {
-            "anyOf": [
-              {
-                "format": "date",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Expiry Date"
-          },
-          "item_id": {
-            "format": "uuid",
-            "title": "Item Id",
-            "type": "string"
-          },
-          "lot_code": {
-            "anyOf": [
-              {
-                "maxLength": 64,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Lot Code"
-          },
-          "qty": {
-            "anyOf": [
-              {
-                "exclusiveMinimum": 0.0,
-                "type": "number"
-              },
-              {
-                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
-                "type": "string"
-              }
-            ],
-            "title": "Qty"
-          },
-          "unit_cost": {
-            "anyOf": [
-              {
-                "minimum": 0.0,
-                "type": "number"
-              },
-              {
-                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,19}0*$)\\d{0,12}\\.\\d{0,6}0*$)",
-                "type": "string"
-              }
-            ],
-            "title": "Unit Cost"
-          },
-          "unit_id": {
-            "format": "uuid",
-            "title": "Unit Id",
-            "type": "string"
-          }
-        },
-        "required": [
-          "item_id",
-          "qty",
-          "unit_id",
-          "unit_cost"
-        ],
-        "title": "OpeningLine",
         "type": "object"
       },
       "OptionIn": {
@@ -5365,6 +5763,29 @@
           "reverses_id"
         ],
         "title": "PaymentOut",
+        "type": "object"
+      },
+      "PeriodOut": {
+        "properties": {
+          "month": {
+            "title": "Month",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "year": {
+            "title": "Year",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "year",
+          "month",
+          "status"
+        ],
+        "title": "PeriodOut",
         "type": "object"
       },
       "PhotoOut": {
@@ -7923,6 +8344,33 @@
         "title": "ReturnLineOut",
         "type": "object"
       },
+      "ReverseIn": {
+        "additionalProperties": false,
+        "properties": {
+          "entry_date": {
+            "format": "date",
+            "title": "Entry Date",
+            "type": "string"
+          },
+          "memo": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Memo"
+          }
+        },
+        "required": [
+          "entry_date"
+        ],
+        "title": "ReverseIn",
+        "type": "object"
+      },
       "RoleLimitsOut": {
         "properties": {
           "limits": {
@@ -8498,6 +8946,68 @@
           "business_date"
         ],
         "title": "SetOnHandIn",
+        "type": "object"
+      },
+      "SetupIn": {
+        "additionalProperties": false,
+        "description": "FR-FIN-009: the books start on `start_date`; opening balances as of that day. The\ndifference between debits and credits goes to \"opening balance equity\".",
+        "properties": {
+          "opening": {
+            "items": {
+              "$ref": "#/components/schemas/app__modules__finance__gl_schemas__OpeningLine"
+            },
+            "maxItems": 200,
+            "title": "Opening",
+            "type": "array"
+          },
+          "start_date": {
+            "format": "date",
+            "title": "Start Date",
+            "type": "string"
+          },
+          "template": {
+            "const": "id_fnb",
+            "default": "id_fnb",
+            "title": "Template",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start_date"
+        ],
+        "title": "SetupIn",
+        "type": "object"
+      },
+      "SetupOut": {
+        "properties": {
+          "opening_entry_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Opening Entry Id"
+          },
+          "start_date": {
+            "format": "date",
+            "title": "Start Date",
+            "type": "string"
+          },
+          "template": {
+            "title": "Template",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start_date",
+          "template",
+          "opening_entry_id"
+        ],
+        "title": "SetupOut",
         "type": "object"
       },
       "ShiftCloseIn": {
@@ -10430,6 +10940,50 @@
         "title": "TranslationOut",
         "type": "object"
       },
+      "TrialRow": {
+        "properties": {
+          "account_id": {
+            "format": "uuid",
+            "title": "Account Id",
+            "type": "string"
+          },
+          "balance": {
+            "title": "Balance",
+            "type": "integer"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "credit": {
+            "title": "Credit",
+            "type": "integer"
+          },
+          "debit": {
+            "title": "Debit",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "code",
+          "name",
+          "type",
+          "debit",
+          "credit",
+          "balance"
+        ],
+        "title": "TrialRow",
+        "type": "object"
+      },
       "UnitIn": {
         "additionalProperties": false,
         "properties": {
@@ -11635,6 +12189,36 @@
         "title": "WasteIn",
         "type": "object"
       },
+      "app__modules__finance__gl_schemas__OpeningLine": {
+        "additionalProperties": false,
+        "properties": {
+          "account_code": {
+            "maxLength": 20,
+            "minLength": 1,
+            "title": "Account Code",
+            "type": "string"
+          },
+          "credit": {
+            "default": 0,
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Credit",
+            "type": "integer"
+          },
+          "debit": {
+            "default": 0,
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Debit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "account_code"
+        ],
+        "title": "OpeningLine",
+        "type": "object"
+      },
       "app__modules__inventory__schemas__MovementOut": {
         "properties": {
           "batch_id": {
@@ -11738,6 +12322,80 @@
           "reverses_id"
         ],
         "title": "MovementOut",
+        "type": "object"
+      },
+      "app__modules__inventory__schemas__OpeningLine": {
+        "additionalProperties": false,
+        "description": "Stock counted when starting with the system. Quantity and cost per `unit_id`.",
+        "properties": {
+          "expiry_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expiry Date"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          },
+          "lot_code": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lot Code"
+          },
+          "qty": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,14}|(?=[\\d.]{1,19}0*$)\\d{0,14}\\.\\d{0,4}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Qty"
+          },
+          "unit_cost": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,19}0*$)\\d{0,12}\\.\\d{0,6}0*$)",
+                "type": "string"
+              }
+            ],
+            "title": "Unit Cost"
+          },
+          "unit_id": {
+            "format": "uuid",
+            "title": "Unit Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "qty",
+          "unit_id",
+          "unit_cost"
+        ],
+        "title": "OpeningLine",
         "type": "object"
       },
       "app__modules__sales__pos_schemas__MovementOut": {
@@ -16579,6 +17237,738 @@
           }
         },
         "summary": "Reverse Expense",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/accounts": {
+      "get": {
+        "operationId": "accounts_api_v1_finance_gl_accounts_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AccountOut"
+                  },
+                  "title": "Response Accounts Api V1 Finance Gl Accounts Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Accounts",
+        "tags": [
+          "finance"
+        ]
+      },
+      "post": {
+        "operationId": "add_account_api_v1_finance_gl_accounts_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Add Account",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/accounts/{account_id}": {
+      "put": {
+        "operationId": "edit_account_api_v1_finance_gl_accounts__account_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "account_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Account Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Edit Account",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/balance-sheet": {
+      "get": {
+        "operationId": "balance_sheet_api_v1_finance_gl_balance_sheet_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "as_of",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "As Of",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceSheet"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Balance Sheet",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/cash-flow": {
+      "get": {
+        "operationId": "cash_flow_api_v1_finance_gl_cash_flow_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "since",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Since",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "until",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Until",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CashFlow"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cash Flow",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/journals": {
+      "get": {
+        "operationId": "journals_api_v1_finance_gl_journals_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "since",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Since",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "until",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Until",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^(submitted|posted|rejected)$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/JournalOut"
+                  },
+                  "title": "Response Journals Api V1 Finance Gl Journals Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Journals",
+        "tags": [
+          "finance"
+        ]
+      },
+      "post": {
+        "operationId": "add_journal_api_v1_finance_gl_journals_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JournalIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JournalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Add Journal",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/journals/{entry_id}/approve": {
+      "post": {
+        "operationId": "approve_api_v1_finance_gl_journals__entry_id__approve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JournalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Approve",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/journals/{entry_id}/reject": {
+      "post": {
+        "operationId": "reject_api_v1_finance_gl_journals__entry_id__reject_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JournalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reject",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/journals/{entry_id}/reverse": {
+      "post": {
+        "operationId": "reverse_api_v1_finance_gl_journals__entry_id__reverse_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReverseIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JournalOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reverse",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/periods": {
+      "get": {
+        "operationId": "periods_api_v1_finance_gl_periods_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PeriodOut"
+                  },
+                  "title": "Response Periods Api V1 Finance Gl Periods Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Periods",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/periods/{year}/{month}/close": {
+      "post": {
+        "operationId": "close_api_v1_finance_gl_periods__year___month__close_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "year",
+            "required": true,
+            "schema": {
+              "maximum": 2100,
+              "minimum": 2000,
+              "title": "Year",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "month",
+            "required": true,
+            "schema": {
+              "maximum": 12,
+              "minimum": 1,
+              "title": "Month",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeriodOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Close",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/periods/{year}/{month}/reopen": {
+      "post": {
+        "operationId": "reopen_api_v1_finance_gl_periods__year___month__reopen_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "year",
+            "required": true,
+            "schema": {
+              "maximum": 2100,
+              "minimum": 2000,
+              "title": "Year",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "month",
+            "required": true,
+            "schema": {
+              "maximum": 12,
+              "minimum": 1,
+              "title": "Month",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeriodOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reopen",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/setup": {
+      "get": {
+        "operationId": "get_setup_api_v1_finance_gl_setup_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/SetupOut"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Get Setup Api V1 Finance Gl Setup Get"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Setup",
+        "tags": [
+          "finance"
+        ]
+      },
+      "post": {
+        "operationId": "setup_api_v1_finance_gl_setup_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetupIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Setup",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/trial-balance": {
+      "get": {
+        "operationId": "trial_balance_api_v1_finance_gl_trial_balance_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "until",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Until",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "since",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Since"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TrialRow"
+                  },
+                  "title": "Response Trial Balance Api V1 Finance Gl Trial Balance Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Trial Balance",
         "tags": [
           "finance"
         ]

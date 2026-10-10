@@ -1393,6 +1393,230 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/finance/gl/accounts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Accounts */
+    get: operations['accounts_api_v1_finance_gl_accounts_get']
+    put?: never
+    /** Add Account */
+    post: operations['add_account_api_v1_finance_gl_accounts_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/gl/accounts/{account_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Edit Account */
+    put: operations['edit_account_api_v1_finance_gl_accounts__account_id__put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/gl/balance-sheet': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Balance Sheet */
+    get: operations['balance_sheet_api_v1_finance_gl_balance_sheet_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/gl/cash-flow': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Cash Flow */
+    get: operations['cash_flow_api_v1_finance_gl_cash_flow_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/gl/journals': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Journals */
+    get: operations['journals_api_v1_finance_gl_journals_get']
+    put?: never
+    /** Add Journal */
+    post: operations['add_journal_api_v1_finance_gl_journals_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/gl/journals/{entry_id}/approve': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Approve */
+    post: operations['approve_api_v1_finance_gl_journals__entry_id__approve_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/gl/journals/{entry_id}/reject': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reject */
+    post: operations['reject_api_v1_finance_gl_journals__entry_id__reject_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/gl/journals/{entry_id}/reverse': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reverse */
+    post: operations['reverse_api_v1_finance_gl_journals__entry_id__reverse_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/gl/periods': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Periods */
+    get: operations['periods_api_v1_finance_gl_periods_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/gl/periods/{year}/{month}/close': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Close */
+    post: operations['close_api_v1_finance_gl_periods__year___month__close_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/gl/periods/{year}/{month}/reopen': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reopen */
+    post: operations['reopen_api_v1_finance_gl_periods__year___month__reopen_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/gl/setup': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Setup */
+    get: operations['get_setup_api_v1_finance_gl_setup_get']
+    put?: never
+    /** Setup */
+    post: operations['setup_api_v1_finance_gl_setup_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/gl/trial-balance': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Trial Balance */
+    get: operations['trial_balance_api_v1_finance_gl_trial_balance_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/finance/profit-loss': {
     parameters: {
       query?: never
@@ -3783,6 +4007,45 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    /** AccountIn */
+    AccountIn: {
+      /** Code */
+      code: string
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /** Name */
+      name: string
+      /** Parent Id */
+      parent_id?: string | null
+      /**
+       * Type
+       * @enum {string}
+       */
+      type: 'asset' | 'liability' | 'equity' | 'revenue' | 'expense'
+    }
+    /** AccountOut */
+    AccountOut: {
+      /** Code */
+      code: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Is Active */
+      is_active: boolean
+      /** Name */
+      name: string
+      /** Parent Id */
+      parent_id: string | null
+      /** System Key */
+      system_key: string | null
+      /** Type */
+      type: string
+    }
     /** AdjustmentIn */
     AdjustmentIn: {
       /**
@@ -4023,6 +4286,26 @@ export interface components {
       /** Is Available */
       is_available: boolean
     }
+    /** BalanceSheet */
+    BalanceSheet: {
+      /**
+       * As Of
+       * Format: date
+       */
+      as_of: string
+      /** Assets */
+      assets: components['schemas']['TrialRow'][]
+      /** Current Earnings */
+      current_earnings: number
+      /** Equity */
+      equity: components['schemas']['TrialRow'][]
+      /** Liabilities */
+      liabilities: components['schemas']['TrialRow'][]
+      /** Total Assets */
+      total_assets: number
+      /** Total Liabilities Equity */
+      total_liabilities_equity: number
+    }
     /** BankDetails */
     BankDetails: {
       /** Bank Details */
@@ -4244,6 +4527,33 @@ export interface components {
        * Format: uuid
        */
       tenant_id: string
+    }
+    /**
+     * CashFlow
+     * @description Direct method from the cash and bank accounts: money in and out by the kind of
+     *     account on the other side of each entry.
+     */
+    CashFlow: {
+      /** Closing */
+      closing: number
+      /** Financing */
+      financing: number
+      /** Investing */
+      investing: number
+      /** Opening */
+      opening: number
+      /** Operating */
+      operating: number
+      /**
+       * Since
+       * Format: date
+       */
+      since: string
+      /**
+       * Until
+       * Format: date
+       */
+      until: string
     }
     /**
      * CatalogSettings
@@ -5177,6 +5487,69 @@ export interface components {
       /** Version */
       version: number
     }
+    /** JournalIn */
+    JournalIn: {
+      /** Attachment Id */
+      attachment_id?: string | null
+      /**
+       * Entry Date
+       * Format: date
+       */
+      entry_date: string
+      /** Lines */
+      lines: components['schemas']['LineIn'][]
+      /** Memo */
+      memo?: string | null
+      /** Outlet Id */
+      outlet_id?: string | null
+    }
+    /** JournalLineOut */
+    JournalLineOut: {
+      /**
+       * Account Id
+       * Format: uuid
+       */
+      account_id: string
+      /** Credit */
+      credit: number
+      /** Debit */
+      debit: number
+      /** Memo */
+      memo: string | null
+      /** Outlet Id */
+      outlet_id: string | null
+    }
+    /** JournalOut */
+    JournalOut: {
+      /** Attachment Id */
+      attachment_id: string | null
+      /**
+       * Entry Date
+       * Format: date
+       */
+      entry_date: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Lines */
+      lines: components['schemas']['JournalLineOut'][]
+      /** Memo */
+      memo: string | null
+      /** Number */
+      number: string
+      /** Outlet Id */
+      outlet_id: string | null
+      /** Reverses Id */
+      reverses_id: string | null
+      /** Source Doc Type */
+      source_doc_type: string
+      /** Status */
+      status: string
+      /** Total */
+      total: number
+    }
     /**
      * KitchenSettings
      * @description FR-KDS-004: when a ticket counts as late, and how long a bumped one can be recalled.
@@ -5269,6 +5642,28 @@ export interface components {
       limits: {
         [key: string]: number | null
       }
+    }
+    /** LineIn */
+    LineIn: {
+      /**
+       * Account Id
+       * Format: uuid
+       */
+      account_id: string
+      /**
+       * Credit
+       * @default 0
+       */
+      credit: number
+      /**
+       * Debit
+       * @default 0
+       */
+      debit: number
+      /** Memo */
+      memo?: string | null
+      /** Outlet Id */
+      outlet_id?: string | null
     }
     /** LoginRequest */
     LoginRequest: {
@@ -5527,36 +5922,12 @@ export interface components {
        */
       business_date: string
       /** Lines */
-      lines: components['schemas']['OpeningLine'][]
+      lines: components['schemas']['app__modules__inventory__schemas__OpeningLine'][]
       /**
        * Outlet Id
        * Format: uuid
        */
       outlet_id: string
-    }
-    /**
-     * OpeningLine
-     * @description Stock counted when starting with the system. Quantity and cost per `unit_id`.
-     */
-    OpeningLine: {
-      /** Expiry Date */
-      expiry_date?: string | null
-      /**
-       * Item Id
-       * Format: uuid
-       */
-      item_id: string
-      /** Lot Code */
-      lot_code?: string | null
-      /** Qty */
-      qty: number | string
-      /** Unit Cost */
-      unit_cost: number | string
-      /**
-       * Unit Id
-       * Format: uuid
-       */
-      unit_id: string
     }
     /** OptionIn */
     OptionIn: {
@@ -5873,6 +6244,15 @@ export interface components {
       reference: string | null
       /** Reverses Id */
       reverses_id: string | null
+    }
+    /** PeriodOut */
+    PeriodOut: {
+      /** Month */
+      month: number
+      /** Status */
+      status: string
+      /** Year */
+      year: number
     }
     /** PhotoOut */
     PhotoOut: {
@@ -6845,6 +7225,16 @@ export interface components {
       /** Qty */
       qty: string
     }
+    /** ReverseIn */
+    ReverseIn: {
+      /**
+       * Entry Date
+       * Format: date
+       */
+      entry_date: string
+      /** Memo */
+      memo?: string | null
+    }
     /** RoleLimitsOut */
     RoleLimitsOut: {
       /** Limits */
@@ -7099,6 +7489,38 @@ export interface components {
        * Format: uuid
        */
       unit_id: string
+    }
+    /**
+     * SetupIn
+     * @description FR-FIN-009: the books start on `start_date`; opening balances as of that day. The
+     *     difference between debits and credits goes to "opening balance equity".
+     */
+    SetupIn: {
+      /** Opening */
+      opening?: components['schemas']['app__modules__finance__gl_schemas__OpeningLine'][]
+      /**
+       * Start Date
+       * Format: date
+       */
+      start_date: string
+      /**
+       * Template
+       * @default id_fnb
+       * @constant
+       */
+      template: 'id_fnb'
+    }
+    /** SetupOut */
+    SetupOut: {
+      /** Opening Entry Id */
+      opening_entry_id: string | null
+      /**
+       * Start Date
+       * Format: date
+       */
+      start_date: string
+      /** Template */
+      template: string
     }
     /** ShiftCloseIn */
     ShiftCloseIn: {
@@ -7900,6 +8322,26 @@ export interface components {
       /** Name */
       name: string
     }
+    /** TrialRow */
+    TrialRow: {
+      /**
+       * Account Id
+       * Format: uuid
+       */
+      account_id: string
+      /** Balance */
+      balance: number
+      /** Code */
+      code: string
+      /** Credit */
+      credit: number
+      /** Debit */
+      debit: number
+      /** Name */
+      name: string
+      /** Type */
+      type: string
+    }
     /** UnitIn */
     UnitIn: {
       /** Code */
@@ -8365,6 +8807,21 @@ export interface components {
        */
       reason_code: 'spoilage' | 'expired' | 'preparation_loss' | 'damaged' | 'staff_meal' | 'other'
     }
+    /** OpeningLine */
+    app__modules__finance__gl_schemas__OpeningLine: {
+      /** Account Code */
+      account_code: string
+      /**
+       * Credit
+       * @default 0
+       */
+      credit: number
+      /**
+       * Debit
+       * @default 0
+       */
+      debit: number
+    }
     /** MovementOut */
     app__modules__inventory__schemas__MovementOut: {
       /** Batch Id */
@@ -8406,6 +8863,30 @@ export interface components {
       unit_cost: string | null
       /** Value */
       value: number | null
+    }
+    /**
+     * OpeningLine
+     * @description Stock counted when starting with the system. Quantity and cost per `unit_id`.
+     */
+    app__modules__inventory__schemas__OpeningLine: {
+      /** Expiry Date */
+      expiry_date?: string | null
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string
+      /** Lot Code */
+      lot_code?: string | null
+      /** Qty */
+      qty: number | string
+      /** Unit Cost */
+      unit_cost: number | string
+      /**
+       * Unit Id
+       * Format: uuid
+       */
+      unit_id: string
     }
     /** MovementOut */
     app__modules__sales__pos_schemas__MovementOut: {
@@ -11486,6 +11967,489 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ExpenseOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  accounts_api_v1_finance_gl_accounts_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AccountOut'][]
+        }
+      }
+    }
+  }
+  add_account_api_v1_finance_gl_accounts_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AccountIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AccountOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  edit_account_api_v1_finance_gl_accounts__account_id__put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        account_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AccountIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AccountOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  balance_sheet_api_v1_finance_gl_balance_sheet_get: {
+    parameters: {
+      query: {
+        as_of: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BalanceSheet']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  cash_flow_api_v1_finance_gl_cash_flow_get: {
+    parameters: {
+      query: {
+        since: string
+        until: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CashFlow']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  journals_api_v1_finance_gl_journals_get: {
+    parameters: {
+      query: {
+        since: string
+        until: string
+        status?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JournalOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  add_journal_api_v1_finance_gl_journals_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['JournalIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JournalOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  approve_api_v1_finance_gl_journals__entry_id__approve_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entry_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JournalOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reject_api_v1_finance_gl_journals__entry_id__reject_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entry_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JournalOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reverse_api_v1_finance_gl_journals__entry_id__reverse_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entry_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReverseIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JournalOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  periods_api_v1_finance_gl_periods_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PeriodOut'][]
+        }
+      }
+    }
+  }
+  close_api_v1_finance_gl_periods__year___month__close_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        year: number
+        month: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PeriodOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reopen_api_v1_finance_gl_periods__year___month__reopen_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        year: number
+        month: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PeriodOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_setup_api_v1_finance_gl_setup_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SetupOut'] | null
+        }
+      }
+    }
+  }
+  setup_api_v1_finance_gl_setup_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetupIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SetupOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  trial_balance_api_v1_finance_gl_trial_balance_get: {
+    parameters: {
+      query: {
+        until: string
+        since?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TrialRow'][]
         }
       }
       /** @description Validation Error */

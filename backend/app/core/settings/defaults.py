@@ -55,6 +55,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
                 "expense": {"prefix": "EXP", "padding": 5, "reset": "yearly"},
                 "vendor_return": {"prefix": "RTN", "padding": 5, "reset": "yearly"},
                 "vendor_bill": {"prefix": "BILL", "padding": 5, "reset": "yearly"},
+                "journal": {"prefix": "JE", "padding": 6, "reset": "yearly"},
             }
         },
         "session": {"idle_minutes": 60},
