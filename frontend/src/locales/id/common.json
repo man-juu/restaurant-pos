@@ -317,7 +317,10 @@
     "due_before_invoice": "Jatuh tempo sebelum tanggal faktur.",
     "invoice_not_found": "Faktur tidak ditemukan.",
     "invoice_not_open": "Faktur ini tidak terbuka.",
-    "invoice_has_payments": "Batalkan pembayarannya dulu sebelum membatalkan faktur."
+    "invoice_has_payments": "Batalkan pembayarannya dulu sebelum membatalkan faktur.",
+    "not_a_platform_channel": "Pilih saluran platform pesan-antar.",
+    "settlement_not_found": "Pencairan tidak ditemukan.",
+    "outlet_required": "Pilih outlet."
   },
   "appearance": {
     "open": "Tampilan",
@@ -1483,7 +1486,8 @@
       "expenses": "Pengeluaran",
       "accounts": "Kas dan bank",
       "books": "Pembukuan",
-      "receivables": "Piutang"
+      "receivables": "Piutang",
+      "platforms": "Pencairan platform"
     },
     "pl": {
       "netSales": "Penjualan bersih",
@@ -1671,6 +1675,31 @@
       "remove": "Hapus",
       "save": "Buat faktur",
       "noChannel": "Tambahkan saluran penjualan grosir di katalog terlebih dahulu."
+    }
+  },
+  "settle": {
+    "platform": "Platform",
+    "new": "Catat pencairan",
+    "noPlatform": "Tambahkan saluran platform pesan-antar di katalog terlebih dahulu.",
+    "noBank": "Tambahkan rekening bank di Kas dan bank terlebih dahulu.",
+    "gross": "Penjualan kotor di laporan",
+    "commission": "Komisi",
+    "fees": "Biaya lain",
+    "adjustments": "Penyesuaian (minus untuk potongan)",
+    "account": "Masuk ke",
+    "paidOn": "Tanggal cair",
+    "reference": "Nomor laporan",
+    "payout": "Pencairan: {{amount}}",
+    "save": "Simpan pencairan",
+    "booked": "Pembukuan kita: {{orders}} penjualan, {{amount}}",
+    "settled": "Sudah cair: {{count}} pencairan, {{amount}} kotor",
+    "costs": "Komisi dan biaya {{amount}} ({{pct}} %)",
+    "difference": "Belum cair: {{amount}}",
+    "line": "Kotor {{gross}} · cair {{payout}}",
+    "reverse": "Batalkan",
+    "status": {
+      "posted": "Tercatat",
+      "reversed": "Dibatalkan"
     }
   }
 }

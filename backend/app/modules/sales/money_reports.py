@@ -98,3 +98,19 @@ async def period_totals(
     )
     net, service, tax, cost, docs = (await db.execute(stmt)).one()
     return PeriodTotals(int(net), int(service), int(tax), int(cost), int(docs))
+
+
+async def channel_total(
+    db: AsyncSession, period: Period, channel_id: uuid.UUID, outlet_id: uuid.UUID
+) -> tuple[int, int]:
+    """What the books expect from one sales channel at one outlet: posted documents and their
+    gross total (FR-FIN-007, the platform receivable to reconcile payouts against)."""
+    stmt = _live(
+        select(func.count(SalesDocument.id), func.coalesce(func.sum(SalesDocument.total), 0)).where(
+            SalesDocument.channel_id == channel_id
+        ),
+        period,
+        [outlet_id],
+    )
+    docs, total = (await db.execute(stmt)).one()
+    return int(docs), int(total)

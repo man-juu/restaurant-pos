@@ -19,6 +19,7 @@ import app.core.uploads.models
 import app.modules.catalog.models
 import app.modules.finance.gl_models
 import app.modules.finance.models
+import app.modules.finance.settlement_models
 import app.modules.inventory.doc_models
 import app.modules.inventory.models
 import app.modules.kitchen.models

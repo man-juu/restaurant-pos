@@ -111,6 +111,9 @@ Examples:
 | `sales.day.lock` | Lock a sales day |
 | `finance.journal.post` / `reverse` | Manual journals |
 | `finance.period.close` | Close an accounting period |
+| `finance.settlement.manage` | Record and reverse delivery-platform payouts (FR-FIN-007) |
+| `sales.invoice.view` | See wholesale invoices and receivables aging (FR-SAL-011, FR-FIN-006) |
+| `sales.invoice.manage` | Create and void wholesale invoices; record customer payments |
 | `tenant.user.manage` | Invite, edit, deactivate users |
 | `tenant.settings.configure` | Settings, tax, payment methods |
 | `audit.log.view` | See the audit log |

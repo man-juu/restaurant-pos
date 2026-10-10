@@ -7,6 +7,7 @@ LEDGER_VIEW = "finance.ledger.view"  # chart, journals, trial balance and statem
 LEDGER_SETUP = "finance.ledger.setup"  # start date, opening balances, chart of accounts
 JOURNAL_CREATE = "finance.journal.create"  # manual journals and reversals; decide approvals
 PERIOD_CLOSE = "finance.period.close"  # close and reopen months
+SETTLEMENT_MANAGE = "finance.settlement.manage"  # record and reverse platform payouts
 
 ALL = (
     EXPENSE_VIEW,
@@ -17,6 +18,7 @@ ALL = (
     LEDGER_SETUP,
     JOURNAL_CREATE,
     PERIOD_CLOSE,
+    SETTLEMENT_MANAGE,
 )
 
 # docs/03 matrix "Journals, expenses, period close": owner, co-owner, accountant Y;

@@ -317,7 +317,10 @@
     "due_before_invoice": "The due date is before the invoice date.",
     "invoice_not_found": "Invoice not found.",
     "invoice_not_open": "This invoice is not open.",
-    "invoice_has_payments": "Reverse its payments before voiding."
+    "invoice_has_payments": "Reverse its payments before voiding.",
+    "not_a_platform_channel": "Pick a delivery-platform channel.",
+    "settlement_not_found": "Payout not found.",
+    "outlet_required": "Pick an outlet."
   },
   "appearance": {
     "open": "Appearance",
@@ -1483,7 +1486,8 @@
       "expenses": "Expenses",
       "accounts": "Cash and bank",
       "books": "Books",
-      "receivables": "Receivables"
+      "receivables": "Receivables",
+      "platforms": "Platform payouts"
     },
     "pl": {
       "netSales": "Net sales",
@@ -1671,6 +1675,31 @@
       "remove": "Remove",
       "save": "Create invoice",
       "noChannel": "Add a wholesale sales channel in the catalog first."
+    }
+  },
+  "settle": {
+    "platform": "Platform",
+    "new": "Record payout",
+    "noPlatform": "Add a delivery-platform channel in the catalog first.",
+    "noBank": "Add a bank account under Cash and bank first.",
+    "gross": "Gross sales on the statement",
+    "commission": "Commission",
+    "fees": "Other fees",
+    "adjustments": "Adjustments (minus for deductions)",
+    "account": "Paid into",
+    "paidOn": "Paid on",
+    "reference": "Statement reference",
+    "payout": "Payout: {{amount}}",
+    "save": "Save payout",
+    "booked": "Our books: {{orders}} sales, {{amount}}",
+    "settled": "Settled: {{count}} payouts, {{amount}} gross",
+    "costs": "Commission and fees {{amount}} ({{pct}} %)",
+    "difference": "Not yet settled: {{amount}}",
+    "line": "Gross {{gross}} · payout {{payout}}",
+    "reverse": "Reverse",
+    "status": {
+      "posted": "Posted",
+      "reversed": "Reversed"
     }
   }
 }

@@ -107,6 +107,7 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `vendor_payments` | bill, paid_on, amount (negative = reversal of `reverses_id`), method code, reference; append-only |
 | `receivables` | wholesale sales document (unique), customer, outlet, invoice_date, due_date, total, paid, status open/partially_paid/paid/void (ADR 0.64) |
 | `receivable_payments` | receivable, paid_on, amount (negative = reversal of `reverses_id`), method code, reference; append-only |
+| `platform_settlements` | number, platform channel, outlet, money account, period_from/to, paid_on, gross, commission, fees, adjustments (signed), payout (= gross - commission - fees + adjustments), reference, status posted/reversed (ADR 0.65) |
 | `vendor_price_history` | vendor_id, item_id, price, observed_at, source_doc_id |
 | `vendor_lead_history` | vendor_id, ordered_at, received_at, item_id |
 

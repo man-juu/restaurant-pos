@@ -12,7 +12,7 @@ from app.core import audit
 from app.core.errors import ConflictError, NotFoundError
 from app.core.reports import Period
 from app.core.settings import service as settings
-from app.modules.finance import auto
+from app.modules.finance import auto, settlements
 from app.modules.finance.models import Expense, ExpenseCategory, MoneyAccount, MoneyTransfer
 from app.modules.finance.schemas import (
     ExpenseCategoryIn,
@@ -111,6 +111,7 @@ async def balances(db: AsyncSession) -> list[MoneyAccountOut]:
             )
         ).all()
     )
+    payouts = await settlements.payouts_by_account(db)
     return [
         MoneyAccountOut(
             id=a.id,
@@ -122,7 +123,8 @@ async def balances(db: AsyncSession) -> list[MoneyAccountOut]:
             balance=a.opening_balance
             + int(in_.get(a.id, 0))
             - int(out_.get(a.id, 0))
-            - int(spent.get(a.id, 0)),
+            - int(spent.get(a.id, 0))
+            + payouts.get(a.id, 0),
         )
         for a in accounts
     ]

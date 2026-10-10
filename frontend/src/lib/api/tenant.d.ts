@@ -1657,6 +1657,61 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/finance/settlements': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Settlements */
+    get: operations['list_settlements_api_v1_finance_settlements_get']
+    put?: never
+    /** Create */
+    post: operations['create_api_v1_finance_settlements_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/settlements/reconcile': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Reconcile
+     * @description Booked platform sales against payouts, for one outlet (`outlet_id`) and period.
+     */
+    get: operations['reconcile_api_v1_finance_settlements_reconcile_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/finance/settlements/{settlement_id}/reverse': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reverse */
+    post: operations['reverse_api_v1_finance_settlements__settlement_id__reverse_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/finance/transfers': {
     parameters: {
       query?: never
@@ -7336,6 +7391,32 @@ export interface components {
       /** Unit Price */
       unit_price?: number | null
     }
+    /**
+     * ReconcileOut
+     * @description Our books against the platform's statements for one channel, outlet and period.
+     */
+    ReconcileOut: {
+      /** Adjustments */
+      adjustments: number
+      /** Booked Gross */
+      booked_gross: number
+      /** Commission */
+      commission: number
+      /** Commission Pct */
+      commission_pct: string | null
+      /** Difference */
+      difference: number
+      /** Fees */
+      fees: number
+      /** Orders */
+      orders: number
+      /** Payout */
+      payout: number
+      /** Settled Gross */
+      settled_gross: number
+      /** Settlements */
+      settlements: number
+    }
     /** RecoveryCodesOut */
     RecoveryCodesOut: {
       /** Recovery Codes */
@@ -7769,6 +7850,114 @@ export interface components {
        * Format: uuid
        */
       unit_id: string
+    }
+    /** SettlementIn */
+    SettlementIn: {
+      /**
+       * Account Id
+       * Format: uuid
+       */
+      account_id: string
+      /**
+       * Adjustments
+       * @default 0
+       */
+      adjustments: number
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /**
+       * Commission
+       * @default 0
+       */
+      commission: number
+      /**
+       * Fees
+       * @default 0
+       */
+      fees: number
+      /** Gross */
+      gross: number
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /**
+       * Paid On
+       * Format: date
+       */
+      paid_on: string
+      /** Payout */
+      payout: number
+      /**
+       * Period From
+       * Format: date
+       */
+      period_from: string
+      /**
+       * Period To
+       * Format: date
+       */
+      period_to: string
+      /** Reference */
+      reference?: string | null
+    }
+    /** SettlementOut */
+    SettlementOut: {
+      /**
+       * Account Id
+       * Format: uuid
+       */
+      account_id: string
+      /** Adjustments */
+      adjustments: number
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /** Commission */
+      commission: number
+      /** Fees */
+      fees: number
+      /** Gross */
+      gross: number
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Number */
+      number: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /**
+       * Paid On
+       * Format: date
+       */
+      paid_on: string
+      /** Payout */
+      payout: number
+      /**
+       * Period From
+       * Format: date
+       */
+      period_from: string
+      /**
+       * Period To
+       * Format: date
+       */
+      period_to: string
+      /** Reference */
+      reference: string | null
+      /** Status */
+      status: string
     }
     /**
      * SetupIn
@@ -12810,6 +12999,138 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ProfitLossOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  list_settlements_api_v1_finance_settlements_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SettlementOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_api_v1_finance_settlements_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SettlementIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SettlementOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reconcile_api_v1_finance_settlements_reconcile_get: {
+    parameters: {
+      query: {
+        channel_id: string
+        from: string
+        to: string
+        outlet_id?: string | null
+        format?: 'json' | 'csv' | 'xlsx'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReconcileOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  reverse_api_v1_finance_settlements__settlement_id__reverse_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        settlement_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SettlementOut']
         }
       }
       /** @description Validation Error */

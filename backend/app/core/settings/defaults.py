@@ -57,6 +57,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
                 "vendor_bill": {"prefix": "BILL", "padding": 5, "reset": "yearly"},
                 "journal": {"prefix": "JE", "padding": 6, "reset": "yearly"},
                 "wholesale_invoice": {"prefix": "INV", "padding": 5, "reset": "yearly"},
+                "platform_settlement": {"prefix": "SET", "padding": 5, "reset": "yearly"},
             }
         },
         "session": {"idle_minutes": 60},

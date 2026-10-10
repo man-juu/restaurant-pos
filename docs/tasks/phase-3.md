@@ -9,7 +9,7 @@ Order: front of house first (reservations build on tables), then the books (each
 | 3c | General ledger: chart of accounts (Indonesian F&B template), journals, periods, trial balance, balance sheet, cash flow; manual journals with approval and attachments; period close; finance start date and opening balances | FR-FIN-002, 004, 005, 009 | done 2026-10-10 (chart needs an accountant review; attachments by upload id, upload screen later) |
 | 3d | Automatic journals from operations by configurable posting rules | FR-FIN-003 | done 2026-10-10 |
 | 3e | AP and AR sub-ledgers with aging; wholesale customers and invoices with payments | FR-FIN-006, FR-SAL-011 | done 2026-10-10 |
-| 3f | Delivery-platform settlement: gross sales, commission and fees, payouts reconciled | FR-FIN-007 | |
+| 3f | Delivery-platform settlement: gross sales, commission and fees, payouts reconciled | FR-FIN-007 | done 2026-10-10 |
 | 3g | Storage locations with counts per location; barcode and QR labels, scanning on receive, transfer and count | FR-INV-017, 019 | |
 | 3h | Forecast and EOQ, production plan suggestion, best-vendor suggestion | FR-INV-018, FR-PRD-005, FR-PUR-007 | |
 | 3i | Standing transfer orders by weekday; optional internal transfer pricing | FR-TRF-005, 006 | |

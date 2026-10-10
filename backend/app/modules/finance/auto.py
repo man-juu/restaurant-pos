@@ -59,7 +59,7 @@ async def ready(db: AsyncSession, tenant_id: uuid.UUID, day: date) -> bool:
     return conf.auto_journals
 
 
-async def _roles(db: AsyncSession) -> dict[str, uuid.UUID]:
+async def account_roles(db: AsyncSession) -> dict[str, uuid.UUID]:
     rows = await db.execute(
         select(GlAccount.system_key, GlAccount.id).where(GlAccount.system_key.is_not(None))
     )
@@ -98,7 +98,7 @@ async def on_stock(db: AsyncSession, event: Event) -> None:
     day = date.fromisoformat(str(d["business_date"]))
     if d["doc_type"] in STOCK_SKIP or not await ready(db, event.tenant_id, day):
         return
-    roles = await _roles(db)
+    roles = await account_roles(db)
     outlet = uuid.UUID(str(d["outlet_id"]))
     lines: list[ledger.Line] = []
     for kind, value in cast(dict[str, int], d["values"]).items():
@@ -119,7 +119,7 @@ async def on_sale(db: AsyncSession, event: Event) -> None:
     m = await document_money(db, uuid.UUID(str(event.data["document_id"])))
     if not await ready(db, event.tenant_id, m.business_date):
         return
-    roles = await _roles(db)
+    roles = await account_roles(db)
     received = dict(m.paid) or {"_channel": m.total}
     debits = [
         ledger.Line(
@@ -174,7 +174,7 @@ async def on_receipt(db: AsyncSession, event: Event) -> None:
     day = date.fromisoformat(str(d["business_date"]))
     if not await ready(db, event.tenant_id, day):
         return
-    roles = await _roles(db)
+    roles = await account_roles(db)
     credit = "payable" if d["on_account"] else "cash"
     lines = _pair(
         roles, "inventory", credit, int(cast(int, d["total"])), uuid.UUID(str(d["outlet_id"]))
@@ -193,7 +193,7 @@ async def on_bill_paid(db: AsyncSession, event: Event) -> None:
     day = date.fromisoformat(str(d["paid_on"]))
     if not await ready(db, event.tenant_id, day):
         return
-    roles = await _roles(db)
+    roles = await account_roles(db)
     cash = PAYMENT_ROLES.get(str(d["method_kind"]), "bank")
     lines = _pair(
         roles, "payable", cash, int(cast(int, d["amount"])), uuid.UUID(str(d["outlet_id"]))
@@ -209,7 +209,7 @@ async def on_receivable_paid(db: AsyncSession, event: Event) -> None:
     day = date.fromisoformat(str(d["paid_on"]))
     if not await ready(db, event.tenant_id, day):
         return
-    roles = await _roles(db)
+    roles = await account_roles(db)
     cash = PAYMENT_ROLES.get(str(d["method_kind"]), "bank")
     amount = int(cast(int, d["amount"]))
     lines = _pair(roles, cash, "receivable", amount, uuid.UUID(str(d["outlet_id"])))
@@ -226,7 +226,7 @@ async def journal_expense(db: AsyncSession, row: Expense, user_id: uuid.UUID) ->
     """Dr the category's account (else other expenses), Cr the cash or bank it was paid from."""
     if not await ready(db, row.tenant_id, row.spent_on):
         return
-    roles = await _roles(db)
+    roles = await account_roles(db)
     category = await db.get(ExpenseCategory, row.category_id)
     paid_from = await db.get(MoneyAccount, row.account_id)
     expense = (
@@ -247,7 +247,7 @@ async def journal_transfer(db: AsyncSession, row: MoneyTransfer, user_id: uuid.U
         return
     kinds = [await db.get(MoneyAccount, i) for i in (row.from_account_id, row.to_account_id)]
     source, target = (MONEY_ROLES.get(k.kind if k else "cash", "cash") for k in kinds)
-    lines = _pair(await _roles(db), target, source, row.amount, None)
+    lines = _pair(await account_roles(db), target, source, row.amount, None)
     if lines:
         head = ledger.Head(row.moved_on, "money_transfer", row.id, None, None)
         await ledger.write(db, tenant_id=row.tenant_id, user_id=user_id, head=head, lines=lines)

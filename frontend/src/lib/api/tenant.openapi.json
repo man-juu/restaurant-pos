@@ -8218,6 +8218,72 @@
         "title": "ReceiveLineIn",
         "type": "object"
       },
+      "ReconcileOut": {
+        "description": "Our books against the platform's statements for one channel, outlet and period.",
+        "properties": {
+          "adjustments": {
+            "title": "Adjustments",
+            "type": "integer"
+          },
+          "booked_gross": {
+            "title": "Booked Gross",
+            "type": "integer"
+          },
+          "commission": {
+            "title": "Commission",
+            "type": "integer"
+          },
+          "commission_pct": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commission Pct"
+          },
+          "difference": {
+            "title": "Difference",
+            "type": "integer"
+          },
+          "fees": {
+            "title": "Fees",
+            "type": "integer"
+          },
+          "orders": {
+            "title": "Orders",
+            "type": "integer"
+          },
+          "payout": {
+            "title": "Payout",
+            "type": "integer"
+          },
+          "settled_gross": {
+            "title": "Settled Gross",
+            "type": "integer"
+          },
+          "settlements": {
+            "title": "Settlements",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "orders",
+          "booked_gross",
+          "settled_gross",
+          "difference",
+          "commission",
+          "fees",
+          "adjustments",
+          "payout",
+          "commission_pct",
+          "settlements"
+        ],
+        "title": "ReconcileOut",
+        "type": "object"
+      },
       "RecoveryCodesOut": {
         "properties": {
           "recovery_codes": {
@@ -9282,6 +9348,195 @@
           "business_date"
         ],
         "title": "SetOnHandIn",
+        "type": "object"
+      },
+      "SettlementIn": {
+        "additionalProperties": false,
+        "properties": {
+          "account_id": {
+            "format": "uuid",
+            "title": "Account Id",
+            "type": "string"
+          },
+          "adjustments": {
+            "default": 0,
+            "maximum": 1000000000000000.0,
+            "minimum": -1000000000000000.0,
+            "title": "Adjustments",
+            "type": "integer"
+          },
+          "channel_id": {
+            "format": "uuid",
+            "title": "Channel Id",
+            "type": "string"
+          },
+          "commission": {
+            "default": 0,
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Commission",
+            "type": "integer"
+          },
+          "fees": {
+            "default": 0,
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Fees",
+            "type": "integer"
+          },
+          "gross": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Gross",
+            "type": "integer"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "paid_on": {
+            "format": "date",
+            "title": "Paid On",
+            "type": "string"
+          },
+          "payout": {
+            "maximum": 1000000000000000.0,
+            "minimum": 0.0,
+            "title": "Payout",
+            "type": "integer"
+          },
+          "period_from": {
+            "format": "date",
+            "title": "Period From",
+            "type": "string"
+          },
+          "period_to": {
+            "format": "date",
+            "title": "Period To",
+            "type": "string"
+          },
+          "reference": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference"
+          }
+        },
+        "required": [
+          "channel_id",
+          "outlet_id",
+          "account_id",
+          "period_from",
+          "period_to",
+          "paid_on",
+          "gross",
+          "payout"
+        ],
+        "title": "SettlementIn",
+        "type": "object"
+      },
+      "SettlementOut": {
+        "properties": {
+          "account_id": {
+            "format": "uuid",
+            "title": "Account Id",
+            "type": "string"
+          },
+          "adjustments": {
+            "title": "Adjustments",
+            "type": "integer"
+          },
+          "channel_id": {
+            "format": "uuid",
+            "title": "Channel Id",
+            "type": "string"
+          },
+          "commission": {
+            "title": "Commission",
+            "type": "integer"
+          },
+          "fees": {
+            "title": "Fees",
+            "type": "integer"
+          },
+          "gross": {
+            "title": "Gross",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "paid_on": {
+            "format": "date",
+            "title": "Paid On",
+            "type": "string"
+          },
+          "payout": {
+            "title": "Payout",
+            "type": "integer"
+          },
+          "period_from": {
+            "format": "date",
+            "title": "Period From",
+            "type": "string"
+          },
+          "period_to": {
+            "format": "date",
+            "title": "Period To",
+            "type": "string"
+          },
+          "reference": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "channel_id",
+          "outlet_id",
+          "account_id",
+          "period_from",
+          "period_to",
+          "paid_on",
+          "gross",
+          "commission",
+          "fees",
+          "adjustments",
+          "payout",
+          "reference",
+          "status"
+        ],
+        "title": "SettlementOut",
         "type": "object"
       },
       "SetupIn": {
@@ -18460,6 +18715,249 @@
           }
         },
         "summary": "Profit Loss",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/settlements": {
+      "get": {
+        "operationId": "list_settlements_api_v1_finance_settlements_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SettlementOut"
+                  },
+                  "title": "Response List Settlements Api V1 Finance Settlements Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Settlements",
+        "tags": [
+          "finance"
+        ]
+      },
+      "post": {
+        "operationId": "create_api_v1_finance_settlements_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettlementIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettlementOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/settlements/reconcile": {
+      "get": {
+        "description": "Booked platform sales against payouts, for one outlet (`outlet_id`) and period.",
+        "operationId": "reconcile_api_v1_finance_settlements_reconcile_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "channel_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Channel Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "From",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "To",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Outlet Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "json",
+              "enum": [
+                "json",
+                "csv",
+                "xlsx"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconcileOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reconcile",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/settlements/{settlement_id}/reverse": {
+      "post": {
+        "operationId": "reverse_api_v1_finance_settlements__settlement_id__reverse_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "settlement_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Settlement Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettlementOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reverse",
         "tags": [
           "finance"
         ]

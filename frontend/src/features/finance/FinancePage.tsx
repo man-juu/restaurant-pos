@@ -11,13 +11,14 @@ import { BooksTab } from './books/BooksTab'
 import { ExpensesTab } from './ExpensesTab'
 import { ProfitLoss } from './ProfitLoss'
 import { ReceivablesTab } from './receivables/ReceivablesTab'
+import { SettlementsTab } from './settlements/SettlementsTab'
 
-const TABS = ['pl', 'expenses', 'accounts', 'receivables', 'books'] as const
+const TABS = ['pl', 'expenses', 'accounts', 'receivables', 'platforms', 'books'] as const
 type Tab = (typeof TABS)[number]
 
 const monthStart = () => `${todayIso().slice(0, 8)}01`
 
-/** FR-FIN-001 to 006, 009: profit and loss, expenses, money accounts, receivables, books. */
+/** FR-FIN-001 to 007, 009: profit and loss, expenses, money accounts, receivables, books. */
 export function FinancePage() {
   const { t } = useTranslation()
   const { caps } = useOutletContext<{ caps?: Capabilities }>()
@@ -101,6 +102,15 @@ const PANELS: Record<Tab, (c: Ctx) => ReactNode> = {
         manage: c.can('sales.invoice.manage'),
         payables: c.can('purchasing.bill.view'),
       }}
+    />
+  ),
+  platforms: (c) => (
+    <SettlementsTab
+      outletId={c.outletId}
+      from={c.from}
+      to={c.to}
+      currency={c.currency}
+      canManage={c.can('finance.settlement.manage')}
     />
   ),
   books: (c) => (
