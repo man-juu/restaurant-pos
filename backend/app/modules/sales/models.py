@@ -215,6 +215,7 @@ class PosOrder(Base):
             name="discount",
         ),
         Index(None, "tenant_id", "outlet_id", "status"),
+        UniqueConstraint("tenant_id", "client_id"),
     )
 
     id: Mapped[uuid.UUID] = _id()
@@ -222,6 +223,10 @@ class PosOrder(Base):
     outlet_id: Mapped[uuid.UUID] = mapped_column()
     channel_id: Mapped[uuid.UUID] = mapped_column()
     number: Mapped[str] = mapped_column(String(40))
+    # FR-SAL-013: set for orders taken offline; the till's own id makes the sync idempotent.
+    client_id: Mapped[uuid.UUID | None] = mapped_column()
+    taken_at: Mapped[datetime | None] = mapped_column()  # on the till, while offline
+    sync_problem: Mapped[str | None] = mapped_column(Text)  # why it could not be paid at sync
     status: Mapped[str] = mapped_column(Text, server_default="open")
     label: Mapped[str | None] = mapped_column(String(60))  # customer name or pager number
     note: Mapped[str | None] = mapped_column(Text)

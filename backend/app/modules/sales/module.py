@@ -1,6 +1,7 @@
 from app.core.modules import ModuleManifest
 from app.core.subledger import register_subledger
 from app.modules.sales import permissions
+from app.modules.sales.offline_router import router as offline_router
 from app.modules.sales.pos_actions_router import router as pos_actions_router
 from app.modules.sales.pos_router import router as pos_router
 from app.modules.sales.receipt_router import router as receipt_router
@@ -20,6 +21,7 @@ MANIFEST = ModuleManifest(
         router,
         report_router,
         pos_router,
+        offline_router,
         pos_actions_router,
         receipt_router,
         shift_router,

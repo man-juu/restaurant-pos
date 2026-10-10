@@ -75,6 +75,10 @@ def ask(
     return client.post(T, json=body, headers={**h, "Idempotency-Key": key or str(uuid.uuid4())})
 
 
+def _items(page: Any) -> list[dict[str, Any]]:
+    return list(page["items"] if isinstance(page, dict) else page)
+
+
 def stock(client: TestClient, h: dict[str, str], outlet: Any) -> dict[str, dict[str, Any]]:
     return {
         r["sku"]: r
@@ -97,6 +101,9 @@ def test_fr_trf_001_to_004_request_approve_ship_receive_with_damage(
     assert client.post(f"{T}/{t['id']}/approve", json={}, headers=shop).status_code == 404
 
     kitchen = login(client, world["store_kitchen"])
+    # The central kitchen is told of the request; the shop hears back when it is handled.
+    told = client.get("/api/v1/notifications", headers=kitchen).json()
+    assert any(n["kind"] == "transfer_requested" for n in _items(told))
     body = {"lines": [{"item_id": items["rice"], "qty": "4000"}]}
     ok = client.post(f"{T}/{t['id']}/approve", json=body, headers=kitchen)
     assert ok.status_code == 200 and ok.json()["status"] == "approved"
@@ -108,6 +115,13 @@ def test_fr_trf_001_to_004_request_approve_ship_receive_with_damage(
     note = client.get(f"{T}/{t['id']}/delivery-note?lang=id", headers=shop)
     assert note.status_code == 200 and note.content.startswith(b"%PDF")
 
+    shop = login(client, world["store_shop"])
+    back = _items(client.get("/api/v1/notifications", headers=shop).json())
+    assert {n["params"]["action"] for n in back if n["kind"] == "transfer_updated"} == {
+        "approve",
+        "ship",
+    }
+    kitchen = login(client, world["store_kitchen"])
     # FR-TRF-003: 200 g of beef arrived damaged; a reason is required.
     shop = login(client, world["store_shop"])  # one session per client: sign in again
     beef: dict[str, str] = {"item_id": items["beef"], "qty": "2800"}

@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import audit
 from app.core.errors import ConflictError, NotFoundError
+from app.core.notifications.service import notify, recipients
 from app.core.settings import service as settings
 from app.core.settings.schemas import TransferSettings
 from app.modules.catalog.interface import item_names, stock_items, tenant_today
@@ -29,6 +30,7 @@ from app.modules.inventory.interface import (
     visible_outlet,
 )
 from app.modules.transfers.models import Transfer, TransferLine, TransferPick
+from app.modules.transfers.permissions import APPROVE
 from app.modules.transfers.schemas import (
     TransferApproveIn,
     TransferLineOut,
@@ -78,7 +80,20 @@ async def transfer_out(
     return out.model_copy(update={"shipped_value": None, "charge_total": None, "lines": hidden})
 
 
+async def _tell(db: AsyncSession, t: Transfer, user_id: uuid.UUID, action: str) -> None:
+    """The source (central kitchen) hears of a new request; the requester hears what the
+    source did with it (approved, maybe with changed quantities, shipped, rejected)."""
+    params = {"number": t.number, "action": action}
+    link = "/transfers"
+    if action == "request":
+        users = await recipients(db, "transfer_requested", t.from_outlet_id, APPROVE, any_role=True)
+        await notify(db, t.tenant_id, users - {user_id}, "transfer_requested", params, link)
+    elif action != "receive" and t.requested_by != user_id:
+        await notify(db, t.tenant_id, {t.requested_by}, "transfer_updated", params, link)
+
+
 async def _audit(db: AsyncSession, t: Transfer, user_id: uuid.UUID, action: str) -> None:
+    await _tell(db, t, user_id, action)
     await audit.record(
         db,
         tenant_id=t.tenant_id,

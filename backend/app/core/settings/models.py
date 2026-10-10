@@ -75,6 +75,7 @@ ALERT_TYPES = (
     "count_variance",
     "food_cost_above_target",
     "approval_requested",
+    "transfer_requested",  # a branch asks the central kitchen for stock
 )
 
 

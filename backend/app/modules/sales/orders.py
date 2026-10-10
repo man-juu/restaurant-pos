@@ -104,13 +104,14 @@ def _check_options(groups: list[SaleGroup], picked: list[uuid.UUID]) -> None:
 
 
 async def add_line(
-    db: AsyncSession, order: PosOrder, *, user_id: uuid.UUID, data: PosLineIn
+    db: AsyncSession, order: PosOrder, *, user_id: uuid.UUID, data: PosLineIn, served: bool = False
 ) -> PosOrderLine:
+    """`served`: a synced offline order (FR-SAL-013); the food is out, sold-out is moot."""
     require_open(order)
     item = (await stock_items(db, {data.item_id})).get(data.item_id)
     if item is None or not item.is_active or item.type != "menu":
         raise NotFoundError("item_not_found")
-    if not item.is_available or await sold_out_at(db, order.outlet_id, {item.id}):
+    if not served and (not item.is_available or await sold_out_at(db, order.outlet_id, {item.id})):
         raise ConflictError("item_sold_out")
     today = await tenant_today(db, order.tenant_id)
     price = (await prices_on(db, order.channel_id, {item.id}, today, order.outlet_id)).get(item.id)

@@ -2701,6 +2701,40 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/pos/offline/orders': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Sync Order */
+    post: operations['sync_order_api_v1_pos_offline_orders_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/pos/offline/pack': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Pack */
+    get: operations['get_pack_api_v1_pos_offline_pack_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/pos/orders': {
     parameters: {
       query?: never
@@ -4797,6 +4831,7 @@ export interface components {
         | 'count_variance'
         | 'food_cost_above_target'
         | 'approval_requested'
+        | 'transfer_requested'
       /**
        * Channel
        * @default in_app
@@ -4823,6 +4858,7 @@ export interface components {
         | 'count_variance'
         | 'food_cost_above_target'
         | 'approval_requested'
+        | 'transfer_requested'
       /**
        * Channel
        * @default in_app
@@ -6929,6 +6965,81 @@ export interface components {
         [key: string]: components['schemas']['NumberingFormat']
       }
     }
+    /** OfflineOrderIn */
+    OfflineOrderIn: {
+      /**
+       * Channel Id
+       * Format: uuid
+       */
+      channel_id: string
+      /**
+       * Client Id
+       * Format: uuid
+       */
+      client_id: string
+      /** Label */
+      label?: string | null
+      /** Lines */
+      lines: components['schemas']['PosLineIn'][]
+      /** Note */
+      note?: string | null
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      payment?: components['schemas']['PosPayIn'] | null
+      /**
+       * Taken At
+       * Format: date-time
+       */
+      taken_at: string
+    }
+    /**
+     * OfflinePackOut
+     * @description Totals are worked out on the till with the same rules as the server (docs/05).
+     */
+    OfflinePackOut: {
+      /** Cash Rounding Step */
+      cash_rounding_step: number
+      /** Channel Code */
+      channel_code: string
+      /** Enabled */
+      enabled: boolean
+      /** Methods */
+      methods: components['schemas']['PaymentMethod'][]
+      service_charge: components['schemas']['ServiceChargeSettings']
+      tax: components['schemas']['TaxSettings']
+      /** Tips Enabled */
+      tips_enabled: boolean
+    }
+    /** OfflineSyncOut */
+    OfflineSyncOut: {
+      /**
+       * Client Id
+       * Format: uuid
+       */
+      client_id: string
+      /** Number */
+      number: string
+      /**
+       * Order Id
+       * Format: uuid
+       */
+      order_id: string
+      /** Problem */
+      problem?: string | null
+      /**
+       * Skipped Lines
+       * @default 0
+       */
+      skipped_lines: number
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'open' | 'paid' | 'cancelled'
+    }
     /** OpeningIn */
     OpeningIn: {
       /**
@@ -7636,6 +7747,11 @@ export interface components {
        * @default 0
        */
       cash_rounding_step: number
+      /**
+       * Offline Enabled
+       * @default true
+       */
+      offline_enabled: boolean
       /**
        * Require Shift
        * @default true
@@ -16052,6 +16168,70 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  sync_order_api_v1_pos_offline_orders_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OfflineOrderIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OfflineSyncOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_pack_api_v1_pos_offline_pack_get: {
+    parameters: {
+      query: {
+        channel_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OfflinePackOut']
+        }
       }
       /** @description Validation Error */
       422: {

@@ -80,7 +80,11 @@ async def recipients(
     alert_type: str,
     outlet_id: uuid.UUID | None,
     permission: str | None = None,
+    *,
+    any_role: bool = False,
 ) -> set[uuid.UUID]:
+    """Who gets `alert_type`: the alert rules, or by default the owner, co-owner and manager
+    roles (`any_role`: every role holding `permission`, e.g. the central kitchen's store)."""
     rules = (
         await db.execute(
             select(AlertRule.recipient_role_id, AlertRule.recipient_user_id).where(
@@ -91,9 +95,9 @@ async def recipients(
     role_ids = {r for r, _ in rules if r}
     user_ids = {u for _, u in rules if u}
     if not rules:
-        stmt = select(Role.id).where(
-            Role.template_key.in_(DEFAULT_ROLES), Role.tenant_id.is_not(None)
-        )
+        stmt = select(Role.id).where(Role.tenant_id.is_not(None))
+        if not any_role:
+            stmt = stmt.where(Role.template_key.in_(DEFAULT_ROLES))
         role_ids = set(await db.scalars(stmt))
     return await members(db, outlet_id, role_ids=role_ids, user_ids=user_ids, permission=permission)
 

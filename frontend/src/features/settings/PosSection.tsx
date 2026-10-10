@@ -11,6 +11,7 @@ const STEP = /^\d{1,6}$/
 const DEFAULTS = {
   require_shift: true,
   tips_enabled: false,
+  offline_enabled: true,
   cash_rounding_step: 0,
   void_stock_effect: 'waste' as 'waste' | 'none',
 }
@@ -22,6 +23,7 @@ export function PosSection({ data, canEdit }: { data: AllSettings; canEdit: bool
   const pos = { ...DEFAULTS, ...data.pos }
   const [requireShift, setRequireShift] = useState(pos.require_shift)
   const [tips, setTips] = useState(pos.tips_enabled)
+  const [offline, setOffline] = useState(pos.offline_enabled)
   const [step, setStep] = useState(String(pos.cash_rounding_step))
   const [voidEffect, setVoidEffect] = useState(pos.void_stock_effect)
   const valid = STEP.test(step) && Number(step) <= 100_000
@@ -34,6 +36,7 @@ export function PosSection({ data, canEdit }: { data: AllSettings; canEdit: bool
           onChange={setRequireShift}
         />
         <CheckInput label={t('settings.pos.tips')} checked={tips} onChange={setTips} />
+        <CheckInput label={t('settings.pos.offline')} checked={offline} onChange={setOffline} />
         <TextInput
           label={t('settings.pos.roundingStep')}
           inputMode="numeric"
@@ -59,6 +62,7 @@ export function PosSection({ data, canEdit }: { data: AllSettings; canEdit: bool
             save.mutate({
               require_shift: requireShift,
               tips_enabled: tips,
+              offline_enabled: offline,
               cash_rounding_step: Number(step),
               void_stock_effect: voidEffect,
             })

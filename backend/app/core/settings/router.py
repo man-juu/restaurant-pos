@@ -52,6 +52,7 @@ AlertType = Literal[
     "count_variance",
     "food_cost_above_target",
     "approval_requested",
+    "transfer_requested",
 ]
 assert set(DocumentType.__args__) == set(APPROVAL_DOCUMENTS)  # type: ignore[attr-defined]  # noqa: S101
 assert set(AlertType.__args__) == set(ALERT_TYPES)  # type: ignore[attr-defined]  # noqa: S101

@@ -143,6 +143,8 @@ class PosSettings(Strict):
     # FR-SAL-008: a voided line that was already sent was cooked: write its ingredients off as
     # waste, or not (when the kitchen reuses it).
     void_stock_effect: Literal["waste", "none"] = "waste"
+    # FR-SAL-013: tills may take orders while the connection is down and sync them later.
+    offline_enabled: bool = True
 
 
 class KitchenSettings(Strict):

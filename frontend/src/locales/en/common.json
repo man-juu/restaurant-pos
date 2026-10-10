@@ -511,6 +511,7 @@
     },
     "pos": {
       "requireShift": "Payments need an open cash shift",
+      "offline": "Tills can keep taking orders without internet and sync later",
       "tips": "Allow tips",
       "roundingStep": "Round cash bills to (0 = off, e.g. 100)",
       "help": "Rounding applies only when the whole bill is paid in cash; the difference is recorded on the sale. Tips are kept apart from sales.",
@@ -1210,6 +1211,11 @@
     "readAll": "Mark all as read",
     "empty": "No notifications yet.",
     "open": "Open",
+    "actions": {
+      "approve": "approved (check the quantities)",
+      "ship": "shipped",
+      "cancel": "rejected or cancelled"
+    },
     "kinds": {
       "negative_stock": "{{item}} is below zero: {{qty}} {{unit}}",
       "below_reorder_point": "{{item}} is at {{qty}} {{unit}}, reorder point {{point}}",
@@ -1219,6 +1225,8 @@
       "count_variance": "Count {{number}} differs by {{amount}} (at average cost)",
       "food_cost_above_target": "{{item}}: food cost {{pct}} % on {{channel}}, target {{target}} %. Biggest cost: {{cause}}",
       "approval_requested": "{{number}} is waiting for your approval",
+      "transfer_requested": "Stock request {{number}} is waiting for the central kitchen",
+      "transfer_updated": "Stock request {{number}}: {{action}}",
       "subscription_state": "Your subscription is now: {{state}}",
       "pin_blocked": "{{name}}'s PIN was guessed wrong too often on {{device}} and is blocked. Reset it under Settings, Devices."
     }

@@ -10,6 +10,7 @@ const DEFAULT_POS: PosSettings = {
   require_shift: true,
   cash_rounding_step: 0,
   tips_enabled: false,
+  offline_enabled: true,
   void_stock_effect: 'waste',
 }
 

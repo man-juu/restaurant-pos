@@ -43,7 +43,9 @@ function Item({ n, onOpen }: { n: NotificationOut; onOpen: () => void }) {
   return (
     <li>
       <Card className={n.read_at ? 'opacity-70' : 'border-accent'}>
-        <p className="font-semibold">{t(`notifications.kinds.${n.kind}`, n.params)}</p>
+        <p className="font-semibold">
+          {t(`notifications.kinds.${n.kind}`, withAction(n.params, t))}
+        </p>
         <p className="text-sm text-ink-soft">{when}</p>
         {n.link?.startsWith('/') && (
           <Link
@@ -57,4 +59,12 @@ function Item({ n, onOpen }: { n: NotificationOut; onOpen: () => void }) {
       </Card>
     </li>
   )
+}
+
+/** A transfer notice names what happened ("approve"); show it in the reader's language. */
+function withAction(params: Record<string, unknown>, t: (key: string) => string) {
+  const action = params.action
+  return typeof action === 'string'
+    ? { ...params, action: t(`notifications.actions.${action}`) }
+    : params
 }

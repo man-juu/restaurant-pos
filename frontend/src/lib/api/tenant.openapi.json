@@ -308,7 +308,8 @@
               "negative_stock",
               "count_variance",
               "food_cost_above_target",
-              "approval_requested"
+              "approval_requested",
+              "transfer_requested"
             ],
             "title": "Alert Type",
             "type": "string"
@@ -364,7 +365,8 @@
               "negative_stock",
               "count_variance",
               "food_cost_above_target",
-              "approval_requested"
+              "approval_requested",
+              "transfer_requested"
             ],
             "title": "Alert Type",
             "type": "string"
@@ -5713,6 +5715,180 @@
         "title": "NumberingSettings",
         "type": "object"
       },
+      "OfflineOrderIn": {
+        "additionalProperties": false,
+        "properties": {
+          "channel_id": {
+            "format": "uuid",
+            "title": "Channel Id",
+            "type": "string"
+          },
+          "client_id": {
+            "format": "uuid",
+            "title": "Client Id",
+            "type": "string"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "maxLength": 60,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/PosLineIn"
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "title": "Lines",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "payment": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PosPayIn"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "taken_at": {
+            "format": "date-time",
+            "title": "Taken At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_id",
+          "outlet_id",
+          "channel_id",
+          "taken_at",
+          "lines"
+        ],
+        "title": "OfflineOrderIn",
+        "type": "object"
+      },
+      "OfflinePackOut": {
+        "description": "Totals are worked out on the till with the same rules as the server (docs/05).",
+        "properties": {
+          "cash_rounding_step": {
+            "title": "Cash Rounding Step",
+            "type": "integer"
+          },
+          "channel_code": {
+            "title": "Channel Code",
+            "type": "string"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "methods": {
+            "items": {
+              "$ref": "#/components/schemas/PaymentMethod"
+            },
+            "title": "Methods",
+            "type": "array"
+          },
+          "service_charge": {
+            "$ref": "#/components/schemas/ServiceChargeSettings"
+          },
+          "tax": {
+            "$ref": "#/components/schemas/TaxSettings"
+          },
+          "tips_enabled": {
+            "title": "Tips Enabled",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enabled",
+          "channel_code",
+          "tax",
+          "service_charge",
+          "cash_rounding_step",
+          "tips_enabled",
+          "methods"
+        ],
+        "title": "OfflinePackOut",
+        "type": "object"
+      },
+      "OfflineSyncOut": {
+        "properties": {
+          "client_id": {
+            "format": "uuid",
+            "title": "Client Id",
+            "type": "string"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "order_id": {
+            "format": "uuid",
+            "title": "Order Id",
+            "type": "string"
+          },
+          "problem": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Problem"
+          },
+          "skipped_lines": {
+            "default": 0,
+            "title": "Skipped Lines",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "paid",
+              "cancelled"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_id",
+          "order_id",
+          "number",
+          "status"
+        ],
+        "title": "OfflineSyncOut",
+        "type": "object"
+      },
       "OpeningIn": {
         "additionalProperties": false,
         "properties": {
@@ -7526,6 +7702,11 @@
             "minimum": 0.0,
             "title": "Cash Rounding Step",
             "type": "integer"
+          },
+          "offline_enabled": {
+            "default": true,
+            "title": "Offline Enabled",
+            "type": "boolean"
           },
           "require_shift": {
             "default": true,
@@ -23507,6 +23688,90 @@
         "summary": "Reset Pin",
         "tags": [
           "devices"
+        ]
+      }
+    },
+    "/api/v1/pos/offline/orders": {
+      "post": {
+        "operationId": "sync_order_api_v1_pos_offline_orders_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfflineOrderIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfflineSyncOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Sync Order",
+        "tags": [
+          "pos"
+        ]
+      }
+    },
+    "/api/v1/pos/offline/pack": {
+      "get": {
+        "operationId": "get_pack_api_v1_pos_offline_pack_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "channel_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Channel Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfflinePackOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Pack",
+        "tags": [
+          "pos"
         ]
       }
     },

@@ -511,6 +511,7 @@
     },
     "pos": {
       "requireShift": "Pembayaran perlu shift kas yang terbuka",
+      "offline": "Kasir tetap bisa menerima pesanan tanpa internet dan sinkron nanti",
       "tips": "Izinkan tip",
       "roundingStep": "Bulatkan tagihan tunai ke (0 = mati, mis. 100)",
       "help": "Pembulatan hanya berlaku jika seluruh tagihan dibayar tunai; selisihnya dicatat pada penjualan. Tip dicatat terpisah dari penjualan.",
@@ -1210,6 +1211,11 @@
     "readAll": "Tandai semua sudah dibaca",
     "empty": "Belum ada notifikasi.",
     "open": "Buka",
+    "actions": {
+      "approve": "disetujui (cek jumlahnya)",
+      "ship": "dikirim",
+      "cancel": "ditolak atau dibatalkan"
+    },
     "kinds": {
       "negative_stock": "{{item}} di bawah nol: {{qty}} {{unit}}",
       "below_reorder_point": "{{item}} tinggal {{qty}} {{unit}}, titik pesan ulang {{point}}",
@@ -1219,6 +1225,8 @@
       "count_variance": "Hitung {{number}} selisih senilai {{amount}} (biaya rata-rata)",
       "food_cost_above_target": "{{item}}: HPP {{pct}} % di {{channel}}, target {{target}} %. Biaya terbesar: {{cause}}",
       "approval_requested": "{{number}} menunggu persetujuan Anda",
+      "transfer_requested": "Permintaan stok {{number}} menunggu dapur pusat",
+      "transfer_updated": "Permintaan stok {{number}}: {{action}}",
       "subscription_state": "Status langganan Anda sekarang: {{state}}",
       "pin_blocked": "PIN {{name}} terlalu sering salah di {{device}} dan diblokir. Atur ulang di Pengaturan, Perangkat."
     }
