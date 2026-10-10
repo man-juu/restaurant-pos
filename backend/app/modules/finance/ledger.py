@@ -143,7 +143,7 @@ async def entry_lines(db: AsyncSession, entry_id: uuid.UUID) -> list[JournalLine
 
 
 async def reverse(
-    db: AsyncSession, entry: JournalEntry, *, user_id: uuid.UUID, on: date, memo: str | None
+    db: AsyncSession, entry: JournalEntry, *, user_id: uuid.UUID | None, on: date, memo: str | None
 ) -> JournalEntry:
     """A posted entry is never changed: the correction swaps debits and credits."""
     if entry.status != "posted":

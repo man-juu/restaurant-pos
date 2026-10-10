@@ -229,3 +229,23 @@ async def set_period(
 
 def _next_month(year: int, month: int) -> date:
     return date(year + month // 12, month % 12 + 1, 1)
+
+
+async def give_role(
+    db: AsyncSession, *, tenant_id: uuid.UUID, user_id: uuid.UUID, account: GlAccount, key: str
+) -> GlAccount:
+    """FR-FIN-003 posting rules: automatic journals use the account holding a role ("cash",
+    "sales", ...). Giving the role to another account of the same type changes the rule."""
+    holder = await account_by_key(db, key)
+    if holder.id == account.id:
+        return account
+    if holder.type != account.type or not account.is_active:
+        raise ConflictError("role_needs_same_type", details={"type": holder.type})
+    holder.system_key = None
+    await db.flush()
+    account.system_key = key
+    await db.flush()
+    await _audit(
+        db, tenant_id, user_id, "account.role", account.id, {"role": key, "from": holder.code}
+    )
+    return account

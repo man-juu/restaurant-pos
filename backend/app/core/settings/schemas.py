@@ -159,6 +159,13 @@ class ProductionSettings(Strict):
     prep_includes_requests: bool = True
 
 
+class FinanceSettings(Strict):
+    """FR-FIN-003: journal sales, stock, purchases and payments automatically once the books
+    are set up. Off: only manual journals (an accountant keeps the books elsewhere)."""
+
+    auto_journals: bool = True
+
+
 class TablesSettings(Strict):
     """FR-TBL-006 to 008: how long a party usually stays; after how many minutes a booking
     whose guests have not come is shown as late (staff then mark it a no-show)."""
@@ -190,6 +197,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "receipt": ReceiptSettings,
     "production": ProductionSettings,
     "tables": TablesSettings,
+    "finance": FinanceSettings,
 }
 
 
@@ -209,3 +217,4 @@ class AllSettings(BaseModel):
     receipt: ReceiptSettings
     production: ProductionSettings
     tables: TablesSettings
+    finance: FinanceSettings

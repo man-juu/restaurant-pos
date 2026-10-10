@@ -281,6 +281,12 @@ async def channel_code(db: AsyncSession, channel_id: uuid.UUID) -> str:
     return channel.code
 
 
+async def channel_kind(db: AsyncSession, channel_id: uuid.UUID) -> str:
+    """dine_in, takeaway, platform or wholesale, also for a channel switched off since."""
+    kind = await db.scalar(select(Channel.kind).where(Channel.id == channel_id))
+    return str(kind or "dine_in")
+
+
 async def channel_names(db: AsyncSession) -> dict[uuid.UUID, str]:
     return {row[0]: row[1] for row in (await db.execute(select(Channel.id, Channel.name))).all()}
 

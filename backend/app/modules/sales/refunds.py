@@ -24,6 +24,7 @@ from app.core.settings import service as settings
 from app.core.settings.schemas import PaymentMethodSettings
 from app.modules.catalog.interface import tenant_today
 from app.modules.inventory.interface import Posting, reverse
+from app.modules.sales import doc_events
 from app.modules.sales.models import (
     Payment,
     PosOrder,
@@ -179,6 +180,7 @@ async def _execute(
         p = Posting(order.tenant_id, order.outlet_id, user_id, DOC, refund.id, today)
         waste, _ = await take_stock(db, p, qty, "waste")
     doc.status, order.status = "reversed", "refunded"
+    await doc_events.reversed_(db, doc, user_id)
     refund.shift_id = await _drawer(db, refund, user_id)
     mark_decided(refund, "done", user_id)
     await db.flush()

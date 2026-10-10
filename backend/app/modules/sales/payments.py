@@ -16,7 +16,7 @@ from app.core.settings import service as settings
 from app.core.settings.pricing import round_half_up_div
 from app.core.settings.schemas import PaymentMethod, PaymentMethodSettings, PosSettings
 from app.modules.catalog.interface import option_ingredients, tenant_today
-from app.modules.sales import discounts
+from app.modules.sales import discounts, doc_events
 from app.modules.sales.events import ORDER_PAID
 from app.modules.sales.models import (
     Payment,
@@ -226,5 +226,6 @@ async def pay(
     order.shift_id = shift.id if shift else None
     await db.flush()
     await _audit(db, order, user_id, "pay", {"total": doc.total, "tip": data.tip})
+    await doc_events.posted(db, doc, user_id)
     await announce(db, order, user_id, ORDER_PAID)
     return doc, payments

@@ -31,6 +31,7 @@ class MoneyAccountOut(MoneyAccountIn):
 class ExpenseCategoryIn(In):
     name: Name
     is_active: bool = True
+    gl_account_id: uuid.UUID | None = None  # ledger account for these expenses (books)
 
 
 class ExpenseCategoryOut(ExpenseCategoryIn):

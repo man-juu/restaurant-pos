@@ -1,0 +1,67 @@
+"""Announce sales documents to finance (FR-FIN-003) and let it read what it needs."""
+
+import uuid
+from dataclasses import dataclass
+from datetime import date
+
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.events import Event, publish
+from app.modules.catalog.interface import channel_kind
+from app.modules.sales.events import DOCUMENT_POSTED, DOCUMENT_REVERSED
+from app.modules.sales.models import Payment, SalesDocument
+
+
+async def posted(db: AsyncSession, doc: SalesDocument, user_id: uuid.UUID | None) -> None:
+    await publish(db, Event(DOCUMENT_POSTED, doc.tenant_id, user_id, {"document_id": doc.id}))
+
+
+async def reversed_(db: AsyncSession, doc: SalesDocument, user_id: uuid.UUID | None) -> None:
+    await publish(db, Event(DOCUMENT_REVERSED, doc.tenant_id, user_id, {"document_id": doc.id}))
+
+
+@dataclass(frozen=True)
+class DocumentMoney:
+    """A sales document's money, for its journal."""
+
+    id: uuid.UUID
+    number: str
+    outlet_id: uuid.UUID
+    business_date: date
+    channel_kind: str  # dine_in, takeaway, platform, wholesale
+    subtotal: int
+    discount: int
+    service_charge: int
+    tax: int
+    tip: int
+    rounding: int
+    total: int  # subtotal - discount + service charge + tax
+    paid: dict[str, int]  # payment method kind -> amount; empty for a daily sales entry
+
+
+async def document_money(db: AsyncSession, document_id: uuid.UUID) -> DocumentMoney:
+    doc = await db.get(SalesDocument, document_id)
+    if doc is None:
+        raise LookupError(document_id)
+    stmt = (
+        select(Payment.kind, func.sum(Payment.amount))
+        .where(Payment.document_id == doc.id)
+        .group_by(Payment.kind)
+    )
+    paid = {k: int(v) for k, v in (await db.execute(stmt)).all()}
+    return DocumentMoney(
+        id=doc.id,
+        number=doc.number,
+        outlet_id=doc.outlet_id,
+        business_date=doc.business_date,
+        channel_kind=await channel_kind(db, doc.channel_id),
+        subtotal=doc.subtotal,
+        discount=doc.discount,
+        service_charge=doc.service_charge,
+        tax=doc.tax,
+        tip=doc.tip,
+        rounding=doc.rounding,
+        total=doc.total,
+        paid=paid,
+    )

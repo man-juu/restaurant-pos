@@ -30,6 +30,7 @@ from app.modules.catalog.platform_map import item_ids_by_code
 from app.modules.catalog.prices import (
     channel_code,
     channel_info,
+    channel_kind,
     channel_names,
     prices_on,
     tenant_today,
@@ -46,6 +47,7 @@ __all__ = [
     "base_factors",
     "channel_code",
     "channel_info",
+    "channel_kind",
     "channel_names",
     "combo_parts",
     "consumption",

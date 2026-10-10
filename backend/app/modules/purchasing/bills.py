@@ -16,7 +16,7 @@ from app.core.errors import ConflictError, NotFoundError
 from app.core.settings import service as settings
 from app.core.settings.schemas import PaymentMethodSettings, PurchasingSettings
 from app.modules.inventory.interface import visible_outlet
-from app.modules.purchasing import bill_match
+from app.modules.purchasing import bill_match, events
 from app.modules.purchasing.ap_models import (
     VendorBill,
     VendorBillLine,
@@ -173,7 +173,8 @@ async def pay(
     methods = cast(
         PaymentMethodSettings, await settings.get_setting(db, bill.tenant_id, "payment_methods")
     )
-    if data.method not in {m.code for m in methods.methods if m.active}:
+    kinds = {m.code: m.kind for m in methods.methods if m.active}
+    if data.method not in kinds:
         raise NotFoundError("payment_method_not_found")
     if data.amount > balance(bill):
         raise ConflictError("payment_exceeds_balance", details={"balance": balance(bill)})
@@ -185,6 +186,16 @@ async def pay(
     _settle(bill)
     await db.flush()
     await _audit(db, bill, user_id, "pay", {"amount": data.amount, "method": data.method})
+    await events.bill_paid(
+        db,
+        tenant_id=bill.tenant_id,
+        user_id=user_id,
+        bill_id=bill.id,
+        outlet_id=bill.outlet_id,
+        day=data.paid_on,
+        amount=data.amount,
+        method_kind=kinds[data.method],
+    )
     return row
 
 
@@ -212,7 +223,24 @@ async def reverse_payment(
     _settle(bill)
     await db.flush()
     await _audit(db, bill, user_id, "reverse_payment", {"amount": original.amount})
+    await events.bill_paid(
+        db,
+        tenant_id=bill.tenant_id,
+        user_id=user_id,
+        bill_id=bill.id,
+        outlet_id=bill.outlet_id,
+        day=on,
+        amount=-original.amount,
+        method_kind=await _kind_of(db, bill.tenant_id, original.method),
+    )
     return row
+
+
+async def _kind_of(db: AsyncSession, tenant_id: uuid.UUID, code: str) -> str:
+    methods = cast(
+        PaymentMethodSettings, await settings.get_setting(db, tenant_id, "payment_methods")
+    )
+    return next((m.kind for m in methods.methods if m.code == code), "cash")
 
 
 async def apply_credit(

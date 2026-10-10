@@ -311,7 +311,8 @@
     "period_has_pending_journals": "Setujui atau tolak dulu jurnal yang menunggu di bulan ini.",
     "account_code_exists": "Sudah ada akun dengan kode ini.",
     "system_account_type_fixed": "Akun ini dipakai jurnal otomatis; jenisnya tidak bisa diubah.",
-    "journal_not_found": "Jurnal tidak ditemukan."
+    "journal_not_found": "Jurnal tidak ditemukan.",
+    "role_needs_same_type": "Peran ini butuh akun dengan jenis yang sama."
   },
   "appearance": {
     "open": "Tampilan",
@@ -361,7 +362,9 @@
       "purchasing": "Pembelian",
       "production": "Produksi",
       "catalog": "HPP",
-      "devices": "Perangkat"
+      "devices": "Perangkat",
+      "tables": "Meja",
+      "finance": "Pembukuan"
     },
     "tax": {
       "help": "Tarif diatur per usaha; periksa tarif daerah dengan konsultan pajak Anda.",
@@ -478,6 +481,15 @@
       "paper": "Lebar kertas printer",
       "help": "Dipakai di struk cetak dan struk PDF.",
       "mm": "{{mm}} mm"
+    },
+    "tables": {
+      "dwell": "Lama tamu biasanya duduk (menit)",
+      "late": "Reservasi terlambat setelah (menit)",
+      "overbooking": "Izinkan meja dipesan dua kali untuk jam yang sama"
+    },
+    "finance": {
+      "auto": "Jurnal otomatis untuk penjualan, stok, pembelian dan pembayaran",
+      "help": "Hanya setelah pembukuan disiapkan (Keuangan, Pembukuan). Mati: akuntan mencatat jurnal manual."
     }
   },
   "catalog": {
@@ -1555,7 +1567,8 @@
     "views": {
       "journals": "Jurnal",
       "statements": "Laporan",
-      "periods": "Bulan"
+      "periods": "Bulan",
+      "chart": "Daftar akun"
     },
     "newJournal": "Jurnal baru",
     "noJournals": "Tidak ada jurnal di periode ini.",
@@ -1599,6 +1612,19 @@
       "closed": "Ditutup"
     },
     "closeMonth": "Tutup bulan",
-    "reopen": "Buka kembali"
+    "reopen": "Buka kembali",
+    "code": "Kode",
+    "name": "Nama",
+    "type": "Jenis",
+    "addAccount": "Tambah akun",
+    "role": "dipakai untuk: {{role}}",
+    "giveRole": "Pakai untuk",
+    "types": {
+      "asset": "Aset",
+      "liability": "Kewajiban",
+      "equity": "Ekuitas",
+      "revenue": "Pendapatan",
+      "expense": "Beban"
+    }
   }
 }

@@ -371,6 +371,9 @@
           "catalog": {
             "$ref": "#/components/schemas/CatalogSettings"
           },
+          "finance": {
+            "$ref": "#/components/schemas/FinanceSettings"
+          },
           "kitchen": {
             "$ref": "#/components/schemas/KitchenSettings"
           },
@@ -421,7 +424,8 @@
           "kitchen",
           "receipt",
           "production",
-          "tables"
+          "tables",
+          "finance"
         ],
         "title": "AllSettings",
         "type": "object"
@@ -2555,6 +2559,18 @@
       "ExpenseCategoryIn": {
         "additionalProperties": false,
         "properties": {
+          "gl_account_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gl Account Id"
+          },
           "is_active": {
             "default": true,
             "title": "Is Active",
@@ -2576,6 +2592,18 @@
       "ExpenseCategoryOut": {
         "additionalProperties": false,
         "properties": {
+          "gl_account_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gl Account Id"
+          },
           "id": {
             "format": "uuid",
             "title": "Id",
@@ -2770,6 +2798,19 @@
           "status"
         ],
         "title": "ExpenseOut",
+        "type": "object"
+      },
+      "FinanceSettings": {
+        "additionalProperties": false,
+        "description": "FR-FIN-003: journal sales, stock, purchases and payments automatically once the books\nare set up. Off: only manual journals (an accountant keeps the books elsewhere).",
+        "properties": {
+          "auto_journals": {
+            "default": true,
+            "title": "Auto Journals",
+            "type": "boolean"
+          }
+        },
+        "title": "FinanceSettings",
         "type": "object"
       },
       "FloorIn": {
@@ -8369,6 +8410,22 @@
           "entry_date"
         ],
         "title": "ReverseIn",
+        "type": "object"
+      },
+      "RoleIn": {
+        "additionalProperties": false,
+        "properties": {
+          "system_key": {
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "System Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "system_key"
+        ],
+        "title": "RoleIn",
         "type": "object"
       },
       "RoleLimitsOut": {
@@ -17354,6 +17411,60 @@
           }
         },
         "summary": "Edit Account",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/finance/gl/accounts/{account_id}/role": {
+      "put": {
+        "description": "Which account automatic journals use for a role (the posting rules, FR-FIN-003).",
+        "operationId": "give_role_api_v1_finance_gl_accounts__account_id__role_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "account_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Account Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Give Role",
         "tags": [
           "finance"
         ]

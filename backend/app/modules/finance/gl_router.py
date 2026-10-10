@@ -5,6 +5,7 @@ from datetime import date
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Path, Query, Request
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -92,6 +93,25 @@ async def edit_account(
             raise NotFoundError("account_not_found")
         row = await books.save_account(
             db, tenant_id=p.tenant_id, user_id=p.user_id, data=body, account=found
+        )
+        return AccountOut.model_validate(row, from_attributes=True)
+
+
+class RoleIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    system_key: str = Field(min_length=1, max_length=40)
+
+
+@router.put("/accounts/{account_id}/role", response_model=AccountOut)
+async def give_role(account_id: uuid.UUID, body: RoleIn, request: Request, p: Setup) -> AccountOut:
+    """Which account automatic journals use for a role (the posting rules, FR-FIN-003)."""
+    async with _db(request, p) as db:
+        found = await db.get(GlAccount, account_id, with_for_update=True)
+        if found is None:
+            raise NotFoundError("account_not_found")
+        row = await books.give_role(
+            db, tenant_id=p.tenant_id, user_id=p.user_id, account=found, key=body.system_key
         )
         return AccountOut.model_validate(row, from_attributes=True)
 

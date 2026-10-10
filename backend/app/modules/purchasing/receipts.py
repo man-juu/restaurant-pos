@@ -18,6 +18,7 @@ from app.core.settings.schemas import PurchasingSettings
 from app.core.uploads.models import Upload
 from app.modules.catalog.interface import StockItem, base_factors, stock_items
 from app.modules.inventory.interface import InLine, Posting, receive, reverse, visible_outlet
+from app.modules.purchasing import events
 from app.modules.purchasing.models import (
     GoodsReceipt,
     GoodsReceiptLine,
@@ -153,6 +154,7 @@ async def post_receipt(
             "po_id": str(head.po_id) if head.po_id else None,
         },
     )
+    await events.receipt(db, events.RECEIPT_POSTED, receipt, user_id)
     return receipt
 
 
@@ -196,6 +198,7 @@ async def reverse_receipt(
         target_id=receipt.id,
         summary={"number": receipt.number},
     )
+    await events.receipt(db, events.RECEIPT_REVERSED, receipt, user_id)
     return receipt
 
 

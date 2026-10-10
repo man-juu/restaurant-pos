@@ -96,6 +96,7 @@ FALLBACK: dict[str, Any] = {
         "no_show_after_minutes": 15,
         "allow_overbooking": False,
     },
+    "finance": {"auto_journals": True},
 }
 
 

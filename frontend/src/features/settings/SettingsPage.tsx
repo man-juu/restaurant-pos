@@ -12,6 +12,7 @@ import { CatalogSection } from './CatalogSection'
 import { DevicesSection } from './DevicesSection'
 import { KitchenSection } from './KitchenSection'
 import { LimitsSection } from './LimitsSection'
+import { FinanceSection, TablesSection } from './MoreSections'
 import { PosSection } from './PosSection'
 import { ProductionSection } from './ProductionSection'
 import { PurchasingSection } from './PurchasingSection'
@@ -28,6 +29,8 @@ const SECTIONS = {
   payments: (p: Props) => <PaymentsSection {...p} />,
   pos: (p: Props) => <PosSection {...p} />,
   kitchen: (p: Props) => <KitchenSection {...p} />,
+  tables: (p: Props) => <TablesSection {...p} />,
+  finance: (p: Props) => <FinanceSection {...p} />,
   receipt: (p: Props) => <ReceiptSection {...p} />,
   devices: () => <DevicesSection />,
   numbering: (p: Props) => <NumberingSection data={p.data} />,

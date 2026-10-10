@@ -31,6 +31,7 @@ from app.modules.inventory.interface import (
     reverse,
     visible_outlet,
 )
+from app.modules.sales import doc_events
 from app.modules.sales.models import SalesDay, SalesDocument, SalesLine
 from app.modules.sales.schemas import DayEntryIn, EntryLine
 
@@ -100,6 +101,7 @@ async def _replace_previous(db: AsyncSession, data: DayEntryIn, user_id: uuid.UU
             raise
     old.status = "replaced"
     await db.flush()
+    await doc_events.reversed_(db, old, user_id)
 
 
 async def take_stock(
@@ -197,6 +199,7 @@ async def enter_day(
     )
     await db.flush()
     await _audit(db, doc, user_id, "enter")
+    await doc_events.posted(db, doc, user_id)
     return doc
 
 

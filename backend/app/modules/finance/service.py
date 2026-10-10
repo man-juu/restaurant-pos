@@ -12,6 +12,7 @@ from app.core import audit
 from app.core.errors import ConflictError, NotFoundError
 from app.core.reports import Period
 from app.core.settings import service as settings
+from app.modules.finance import auto
 from app.modules.finance.models import Expense, ExpenseCategory, MoneyAccount, MoneyTransfer
 from app.modules.finance.schemas import (
     ExpenseCategoryIn,
@@ -141,7 +142,7 @@ async def save_category(
         if found is None:
             raise NotFoundError("category_not_found")
         row = found
-        row.name, row.is_active = data.name, data.is_active
+        row.name, row.is_active, row.gl_account_id = data.name, data.is_active, data.gl_account_id
     await _save(db, row, "category_name_taken")
     await _record(
         db, tenant_id, user_id, "category.save", "expense_category", row.id, {"name": row.name}
@@ -181,6 +182,7 @@ async def add_expense(
         {"number": number, "amount": data.amount},
         data.outlet_id,
     )
+    await auto.journal_expense(db, row, user_id)
     return row
 
 
@@ -199,6 +201,7 @@ async def reverse_expense(db: AsyncSession, row: Expense, user_id: uuid.UUID) ->
         {"number": row.number, "amount": row.amount},
         row.outlet_id,
     )
+    await auto.reverse_own(db, row.tenant_id, user_id, "expense", row.id)
 
 
 async def transfer(
@@ -213,6 +216,7 @@ async def transfer(
     await _record(
         db, tenant_id, user_id, "transfer", "money_transfer", row.id, {"amount": data.amount}
     )
+    await auto.journal_transfer(db, row, user_id)
     return row
 
 

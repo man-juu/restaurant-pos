@@ -21,6 +21,7 @@ from sqlalchemy.orm import aliased
 
 from app.core.errors import AppError, ConflictError
 from app.modules.catalog.interface import StockItem, stock_items
+from app.modules.inventory.events import announce
 from app.modules.inventory.models import (
     INBOUND,
     OUTBOUND,
@@ -231,6 +232,7 @@ async def receive(
             )
         )
     await db.flush()
+    await announce(db, movements)  # finance journals it (FR-FIN-003)
     return movements
 
 
@@ -315,6 +317,7 @@ async def consume(
             )
         cost.qty_on_hand_for_avg -= ln.qty  # consumption never changes the average
     await db.flush()
+    await announce(db, result.movements)  # finance journals it (FR-FIN-003)
     return result
 
 
@@ -383,4 +386,5 @@ async def reverse(
             )
         )
     await db.flush()
+    await announce(db, out)  # finance journals it (FR-FIN-003)
     return out

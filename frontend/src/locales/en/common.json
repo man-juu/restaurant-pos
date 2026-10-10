@@ -311,7 +311,8 @@
     "period_has_pending_journals": "Approve or reject the waiting journals of this month first.",
     "account_code_exists": "An account with this code already exists.",
     "system_account_type_fixed": "This account is used by automatic journals; its type cannot change.",
-    "journal_not_found": "Journal not found."
+    "journal_not_found": "Journal not found.",
+    "role_needs_same_type": "This role needs an account of the same type."
   },
   "appearance": {
     "open": "Appearance",
@@ -361,7 +362,9 @@
       "purchasing": "Purchasing",
       "production": "Production",
       "catalog": "Food cost",
-      "devices": "Devices"
+      "devices": "Devices",
+      "tables": "Tables",
+      "finance": "Books"
     },
     "tax": {
       "help": "Rates are set per business; check regional rates with your tax advisor.",
@@ -478,6 +481,15 @@
       "paper": "Printer paper width",
       "help": "Used on printed receipts and the receipt PDF.",
       "mm": "{{mm}} mm"
+    },
+    "tables": {
+      "dwell": "Usual time a party stays (minutes)",
+      "late": "A booking is late after (minutes)",
+      "overbooking": "Allow booking a table twice for the same time"
+    },
+    "finance": {
+      "auto": "Journal sales, stock, purchases and payments automatically",
+      "help": "Only after the books are set up (Finance, Books). Off: the accountant enters journals by hand."
     }
   },
   "catalog": {
@@ -1555,7 +1567,8 @@
     "views": {
       "journals": "Journals",
       "statements": "Statements",
-      "periods": "Months"
+      "periods": "Months",
+      "chart": "Chart of accounts"
     },
     "newJournal": "New journal",
     "noJournals": "No journals in this period.",
@@ -1599,6 +1612,19 @@
       "closed": "Closed"
     },
     "closeMonth": "Close month",
-    "reopen": "Reopen"
+    "reopen": "Reopen",
+    "code": "Code",
+    "name": "Name",
+    "type": "Type",
+    "addAccount": "Add account",
+    "role": "used for: {{role}}",
+    "giveRole": "Use for",
+    "types": {
+      "asset": "Asset",
+      "liability": "Liability",
+      "equity": "Equity",
+      "revenue": "Revenue",
+      "expense": "Expense"
+    }
   }
 }

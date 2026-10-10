@@ -1428,6 +1428,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/finance/gl/accounts/{account_id}/role': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Give Role
+     * @description Which account automatic journals use for a role (the posting rules, FR-FIN-003).
+     */
+    put: operations['give_role_api_v1_finance_gl_accounts__account_id__role_put']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/finance/gl/balance-sheet': {
     parameters: {
       query?: never
@@ -4164,6 +4184,7 @@ export interface components {
      */
     AllSettings: {
       catalog: components['schemas']['CatalogSettings']
+      finance: components['schemas']['FinanceSettings']
       kitchen: components['schemas']['KitchenSettings']
       numbering: components['schemas']['NumberingSettings']
       payment_methods: components['schemas']['PaymentMethodSettings']
@@ -5021,6 +5042,8 @@ export interface components {
     }
     /** ExpenseCategoryIn */
     ExpenseCategoryIn: {
+      /** Gl Account Id */
+      gl_account_id?: string | null
       /**
        * Is Active
        * @default true
@@ -5031,6 +5054,8 @@ export interface components {
     }
     /** ExpenseCategoryOut */
     ExpenseCategoryOut: {
+      /** Gl Account Id */
+      gl_account_id?: string | null
       /**
        * Id
        * Format: uuid
@@ -5117,6 +5142,18 @@ export interface components {
       status: 'posted' | 'reversed'
       /** Upload Id */
       upload_id?: string | null
+    }
+    /**
+     * FinanceSettings
+     * @description FR-FIN-003: journal sales, stock, purchases and payments automatically once the books
+     *     are set up. Off: only manual journals (an accountant keeps the books elsewhere).
+     */
+    FinanceSettings: {
+      /**
+       * Auto Journals
+       * @default true
+       */
+      auto_journals: boolean
     }
     /** FloorIn */
     FloorIn: {
@@ -7234,6 +7271,11 @@ export interface components {
       entry_date: string
       /** Memo */
       memo?: string | null
+    }
+    /** RoleIn */
+    RoleIn: {
+      /** System Key */
+      system_key: string
     }
     /** RoleLimitsOut */
     RoleLimitsOut: {
@@ -12045,6 +12087,41 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['AccountIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AccountOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  give_role_api_v1_finance_gl_accounts__account_id__role_put: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        account_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RoleIn']
       }
     }
     responses: {

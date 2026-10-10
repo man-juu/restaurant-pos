@@ -54,6 +54,8 @@ class ExpenseCategory(Base):
     tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
     name: Mapped[str] = mapped_column(String(80))
     is_active: Mapped[bool] = mapped_column(server_default="true")
+    # FR-FIN-003: the ledger account its expenses are journaled to (None: other expenses).
+    gl_account_id: Mapped[uuid.UUID | None] = mapped_column()
 
 
 class Expense(Base):
