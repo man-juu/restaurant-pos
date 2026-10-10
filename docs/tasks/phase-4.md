@@ -15,7 +15,7 @@ duplicates); gateway reconciliation matches settlements.
 | 4c | Import delivery-platform sales files with a saved column mapping | FR-IMP-004 | done 2026-10-10 |
 | 4d | Loyalty points and vouchers | FR-SAL-016 | done 2026-10-10 (Loyalty module, page and till) |
 | 4e | Scheduled report email | FR-RPT-009 | skipped by the owner (2026-10-10) |
-| 4f | Public booking page and reminders | FR-TBL-010 | |
+| 4f | Public booking page and reminders | FR-TBL-010 | done 2026-10-10 (booking links, `/book/<token>`, WhatsApp reminder text) |
 | 4g | Payment gateway (QRIS, e-wallet) | FR-SAL-014 | skipped by the owner (2026-10-10) |
 | 4h | WhatsApp notifications | FR-NTF-004 | skipped by the owner (2026-10-10) |
 | 4i | Delivery-platform integration | FR-SAL-015 | not pursued: Grab and GoFood APIs are partner-only; 4c file import instead |

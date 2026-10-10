@@ -88,8 +88,15 @@ async def booked(
 
 
 async def book(
-    db: AsyncSession, *, tenant_id: uuid.UUID, user_id: uuid.UUID, data: ReservationIn
+    db: AsyncSession,
+    *,
+    tenant_id: uuid.UUID,
+    user_id: uuid.UUID | None,
+    data: ReservationIn,
+    source: str = "staff",
 ) -> Reservation:
+    """`user_id` None with source "online": the guest booked on the public page; their
+    customer record must already be chosen (`data.guest.customer_id`)."""
     conf = await rules(db, tenant_id)
     duration = data.duration_min or conf.default_dwell_minutes
     tables = await load_tables(db, data.outlet_id, data.table_ids, lock=True)
@@ -99,7 +106,11 @@ async def book(
     clash = await booked(db, {t.id for t in tables}, data.starts_at, end)
     if clash and not conf.allow_overbooking:
         raise ConflictError("table_already_booked", details={"table_ids": sorted(map(str, clash))})
-    who = await guest(db, tenant_id, user_id, data.guest)
+    who = (
+        await customers.get(db, data.guest.customer_id)
+        if user_id is None and data.guest.customer_id
+        else await guest(db, tenant_id, _staff(user_id), data.guest)
+    )
     row = Reservation(
         tenant_id=tenant_id,
         outlet_id=data.outlet_id,
@@ -108,6 +119,7 @@ async def book(
         starts_at=data.starts_at,
         duration_min=duration,
         notes=data.notes,
+        source=source,
         created_by=user_id,
     )
     db.add(row)
@@ -120,13 +132,24 @@ async def book(
     return row
 
 
+def _staff(user_id: uuid.UUID | None) -> uuid.UUID:
+    if user_id is None:
+        raise ConflictError("guest_name_required")
+    return user_id
+
+
 async def _audit(
-    db: AsyncSession, r: Reservation, user_id: uuid.UUID, verb: str, extra: dict[str, object]
+    db: AsyncSession,
+    r: Reservation,
+    user_id: uuid.UUID | None,
+    verb: str,
+    extra: dict[str, object],
 ) -> None:
     await audit.record(
         db,
         tenant_id=r.tenant_id,
         user_id=user_id,
+        actor_type="user" if user_id else "guest",
         outlet_id=r.outlet_id,
         action=f"tables.reservation.{verb}",
         target_type="reservation",
@@ -245,6 +268,8 @@ async def outs(db: AsyncSession, rows: list[Reservation]) -> list[ReservationOut
             notes=r.notes,
             table_ids=[t for rid, t in links if rid == r.id],
             session_id=r.session_id,
+            source=r.source,
+            reminded_at=r.reminded_at,
         )
         for r in rows
     ]
@@ -261,21 +286,25 @@ async def suggest(
         )
     )
     taken = await booked(db, {t.id for t in tables}, start, start + timedelta(minutes=minutes))
-    free = [t for t in tables if t.id not in taken]
-    singles = sorted((t for t in free if t.capacity >= party), key=lambda t: t.capacity)
-    options = [[t] for t in singles]
-    if not options:
-        pairs = [
-            list(p)
-            for p in combinations(free, 2)
-            if p[0].floor_id == p[1].floor_id and p[0].capacity + p[1].capacity >= party
-        ]
-        options = sorted(pairs, key=lambda p: sum(t.capacity for t in p))
     return [
         Suggestion(
             table_ids=[t.id for t in o],
             names=[t.name for t in o],
             capacity=sum(t.capacity for t in o),
         )
-        for o in options[:5]
+        for o in options([t for t in tables if t.id not in taken], party)
     ]
+
+
+def options(free: list[DiningTable], party: int) -> list[list[DiningTable]]:
+    """Smallest single table that fits first; else pairs on one floor. At most five."""
+    singles = sorted((t for t in free if t.capacity >= party), key=lambda t: t.capacity)
+    found = [[t] for t in singles]
+    if not found:
+        pairs = [
+            list(p)
+            for p in combinations(free, 2)
+            if p[0].floor_id == p[1].floor_id and p[0].capacity + p[1].capacity >= party
+        ]
+        found = sorted(pairs, key=lambda p: sum(t.capacity for t in p))
+    return found[:5]

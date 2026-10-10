@@ -234,6 +234,29 @@ class LoyaltySettings(Strict):
     voucher_valid_days: int = Field(default=90, ge=0, le=3650)  # 0 = never expires
 
 
+class BookingSettings(Strict):
+    """FR-TBL-010: what guests may book on the public booking page, and the reminder text
+    staff send. Times are minutes after midnight in the business's time zone."""
+
+    opens_min: int = Field(default=600, ge=0, le=1439)  # 10:00, first bookable time
+    closes_min: int = Field(default=1260, ge=1, le=1440)  # 21:00, last bookable start
+    slot_minutes: int = Field(default=30, ge=5, le=240)
+    min_notice_minutes: int = Field(default=60, ge=0, le=10_080)
+    days_ahead: int = Field(default=30, ge=1, le=365)
+    max_party: int = Field(default=8, ge=1, le=200)
+    max_open_per_phone: int = Field(default=2, ge=1, le=20)  # stops one number booking a lot
+    reminder_text: str = Field(
+        default="Hi {name}, see you at {outlet} on {date} at {time} for {party}.",
+        max_length=500,
+    )
+
+    @model_validator(mode="after")
+    def _hours(self) -> "BookingSettings":
+        if self.closes_min <= self.opens_min:
+            raise ValueError("closes_min must be after opens_min")
+        return self
+
+
 SETTINGS: dict[str, type[Strict]] = {
     "tax": TaxSettings,
     "service_charge": ServiceChargeSettings,
@@ -254,6 +277,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "transfers": TransferSettings,
     "reports": ReportSettings,
     "loyalty": LoyaltySettings,
+    "booking": BookingSettings,
 }
 
 
@@ -279,3 +303,4 @@ class AllSettings(BaseModel):
     transfers: TransferSettings
     reports: ReportSettings
     loyalty: LoyaltySettings
+    booking: BookingSettings

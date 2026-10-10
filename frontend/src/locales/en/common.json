@@ -369,7 +369,11 @@
     "voucher_not_found": "No voucher with this code.",
     "voucher_not_active": "This voucher is used, void or expired.",
     "voucher_too_small": "The voucher is worth less than this amount.",
-    "voucher_code_clash": "Please try again."
+    "voucher_code_clash": "Please try again.",
+    "booking_closed": "This booking page is not available.",
+    "slot_not_available": "That time is no longer free. Please pick another.",
+    "too_many_bookings": "This phone already has bookings waiting. Contact the restaurant to change them.",
+    "booking_link_not_found": "Booking link not found."
   },
   "appearance": {
     "open": "Appearance",
@@ -427,7 +431,8 @@
       "transfers": "Transfers",
       "reports": "Reports",
       "data": "Your data",
-      "loyalty": "Loyalty"
+      "loyalty": "Loyalty",
+      "booking": "Online booking"
     },
     "outletModules": {
       "help": "Turn modules on or off per outlet. A module that needs another (for example sales needs stock) switches it on with it.",
@@ -616,6 +621,26 @@
       "help": "Guests earn a point for each amount of net sales (before service and tax). Points become a voucher code that pays at the till with the voucher payment method.",
       "method": "Voucher",
       "addMethod": "Add voucher payment method"
+    },
+    "booking": {
+      "opens": "First booking time",
+      "closes": "Last booking time",
+      "slot_minutes": "Minutes between times",
+      "min_notice_minutes": "Minimum notice (minutes)",
+      "days_ahead": "Days ahead guests can book",
+      "max_party": "Largest party online",
+      "max_open_per_phone": "Open online bookings per phone",
+      "reminder_text": "Reminder text",
+      "help": "The reminder can use {name}, {outlet}, {date}, {time} and {party}. Online bookings arrive as Pending: confirm them on the Tables page.",
+      "links": "Booking links",
+      "outlet": "Outlet",
+      "newLink": "Make a booking link",
+      "copyOnce": "Copy this address now: it is shown only once. Share it on Instagram, Google Maps or WhatsApp.",
+      "copy": "Copy",
+      "linkLine": "Link …{{hint}} · made {{date}}",
+      "off": "Switched off",
+      "disable": "Switch off",
+      "offConfirm": "Tap again to switch off for good"
     }
   },
   "catalog": {
@@ -1761,7 +1786,11 @@
     "wait_one": "About {{count}} minute",
     "wait_other": "About {{count}} minutes",
     "table": "Table",
-    "left": "Left"
+    "left": "Left",
+    "online": "Online",
+    "remind": "Reminder",
+    "remindAgain": "Remind again",
+    "openWhatsApp": "Open in WhatsApp"
   },
   "books": {
     "notSetUp": "The books are not set up yet. An owner or accountant starts them here.",
@@ -2078,6 +2107,9 @@
   "changelog": {
     "title": "What's new",
     "items": {
+      "2026-10-10i": [
+        "Online booking: share a booking link; guests pick a free time themselves, and staff send reminders through WhatsApp"
+      ],
       "2026-10-10h": [
         "Loyalty: guests earn points on the paid receipt, turn them into voucher codes, and pay with them at the till"
       ],
@@ -2173,5 +2205,23 @@
     "void": "Void",
     "give": "Give loyalty points",
     "earned": "{{points}} points given. Balance: {{balance}}"
+  },
+  "book": {
+    "titlePlain": "Book a table",
+    "title": "Book a table at {{outlet}}",
+    "closed": "This booking page is not available.",
+    "day": "Day",
+    "party": "Guests",
+    "time": "Time",
+    "loading": "Looking for free tables…",
+    "noTimes": "No free times on this day for this many guests. Try another day.",
+    "name": "Your name",
+    "phone": "Phone (WhatsApp)",
+    "notes": "Notes (optional)",
+    "consent": "I agree that the restaurant keeps my name and phone for this booking",
+    "submit": "Book",
+    "done": "Booking received",
+    "doneLine": "{{when}} for {{party}} guests.",
+    "pendingHelp": "The restaurant will confirm it and may send you a reminder."
   }
 }

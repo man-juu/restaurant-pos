@@ -6,6 +6,7 @@ import { Alert, Button, StateBadge } from '../../components/ui'
 import type { ReservationOut } from '../../lib/api/types'
 import { errorMessage } from '../../lib/errors'
 import { useBookingAction, useReservations } from './bookingApi'
+import { ReminderButton } from './ReminderButton'
 import { ReservationForm } from './ReservationForm'
 import { useNow } from './useFloorView'
 
@@ -91,6 +92,7 @@ function ReservationRow({ r, channelId, tableName, canManage }: RowProps) {
           {r.notes && <p className="text-sm">{r.notes}</p>}
         </div>
         <div className="flex gap-2">
+          {r.source === 'online' && <StateBadge state="info" label={t('bookings.online')} />}
           {late && <StateBadge state="late" label={t('bookings.late')} />}
           <StateBadge state={r.status} label={t(`bookings.status.${r.status}`)} />
         </div>
@@ -131,6 +133,7 @@ function Actions({ r, channelId }: { r: ReservationOut; channelId: string }) {
       <Button variant="ghost" disabled={act.isPending} onClick={() => status('cancelled')}>
         {t('bookings.cancel')}
       </Button>
+      <ReminderButton r={r} />
       {act.error && <Alert>{errorMessage(act.error, t)}</Alert>}
     </div>
   )

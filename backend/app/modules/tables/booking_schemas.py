@@ -45,6 +45,8 @@ class ReservationOut(BaseModel):
     notes: str | None
     table_ids: list[uuid.UUID]
     session_id: uuid.UUID | None
+    source: str = "staff"  # "online": booked by the guest on the public page (FR-TBL-010)
+    reminded_at: datetime | None = None
 
 
 class StatusIn(In):

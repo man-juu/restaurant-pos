@@ -71,6 +71,18 @@ DEFAULTS: dict[str, dict[str, Any]] = {
             "void_stock_effect": "waste",
         },
         "receipt": {"header": "", "footer": "Terima kasih!", "paper_mm": 58},
+        "booking": {
+            "opens_min": 600,
+            "closes_min": 1260,
+            "slot_minutes": 30,
+            "min_notice_minutes": 60,
+            "days_ahead": 30,
+            "max_party": 8,
+            "max_open_per_phone": 2,
+            "reminder_text": (
+                "Halo {name}, kami tunggu di {outlet} pada {date} pukul {time} untuk {party} orang."
+            ),
+        },
     }
 }
 
@@ -116,6 +128,16 @@ FALLBACK: dict[str, Any] = {
         "point_value": 100,
         "min_redeem_points": 100,
         "voucher_valid_days": 90,
+    },
+    "booking": {
+        "opens_min": 600,
+        "closes_min": 1260,
+        "slot_minutes": 30,
+        "min_notice_minutes": 60,
+        "days_ahead": 30,
+        "max_party": 8,
+        "max_open_per_phone": 2,
+        "reminder_text": "Hi {name}, see you at {outlet} on {date} at {time} for {party}.",
     },
 }
 

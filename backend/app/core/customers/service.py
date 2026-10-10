@@ -28,12 +28,13 @@ def normal_phone(raw: str | None, country_code: str = "62") -> str | None:
     return digits or None
 
 
-async def _audit(db: AsyncSession, c: Customer, user_id: uuid.UUID, verb: str) -> None:
+async def _audit(db: AsyncSession, c: Customer, user_id: uuid.UUID | None, verb: str) -> None:
     # No name or phone in the audit summary: the log is append-only and must not keep PII.
     await audit.record(
         db,
         tenant_id=c.tenant_id,
         user_id=user_id,
+        actor_type="user" if user_id else "guest",  # None: the guest, on the booking page
         action=f"customers.customer.{verb}",
         target_type="customer",
         target_id=c.id,
@@ -59,7 +60,7 @@ async def save(
     db: AsyncSession,
     *,
     tenant_id: uuid.UUID,
-    user_id: uuid.UUID,
+    user_id: uuid.UUID | None,
     name: str,
     phone: str | None,
     consent: bool,

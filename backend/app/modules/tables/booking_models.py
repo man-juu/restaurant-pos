@@ -3,7 +3,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, ForeignKey, ForeignKeyConstraint, Index, Text
+from sqlalchemy import CheckConstraint, ForeignKey, ForeignKeyConstraint, Index, LargeBinary, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.models import Base, _check_in, _created_at, _id
@@ -12,6 +12,7 @@ from app.core.models import Base, _check_in, _created_at, _id
 RESERVATION_STATUSES = ("pending", "confirmed", "seated", "completed", "no_show", "cancelled")
 HOLDING = ("pending", "confirmed", "seated")  # these keep their tables for their time
 WAIT_STATUSES = ("waiting", "seated", "left")
+SOURCES = ("staff", "online")  # online: made by the guest on the public booking page
 
 
 def _fk(column: str, table: str) -> ForeignKeyConstraint:
@@ -25,6 +26,7 @@ class Reservation(Base):
         _fk("customer_id", "customers"),
         _fk("session_id", "table_sessions"),
         _check_in("status", RESERVATION_STATUSES),
+        _check_in("source", SOURCES),
         CheckConstraint("party_size > 0", name="party_size"),
         CheckConstraint("duration_min > 0", name="duration"),
         Index(None, "tenant_id", "outlet_id", "starts_at"),
@@ -41,7 +43,9 @@ class Reservation(Base):
     status: Mapped[str] = mapped_column(Text, server_default="pending")
     notes: Mapped[str | None] = mapped_column(Text)
     session_id: Mapped[uuid.UUID | None] = mapped_column()  # set when the party is seated
-    created_by: Mapped[uuid.UUID] = mapped_column()
+    source: Mapped[str] = mapped_column(Text, server_default="staff")
+    reminded_at: Mapped[datetime | None] = mapped_column()  # FR-TBL-010: staff sent a reminder
+    created_by: Mapped[uuid.UUID | None] = mapped_column()  # None: booked online by the guest
     created_at: Mapped[datetime] = _created_at()
 
 
@@ -79,3 +83,24 @@ class WaitlistEntry(Base):
     seated_at: Mapped[datetime | None] = mapped_column()
     session_id: Mapped[uuid.UUID | None] = mapped_column()
     created_by: Mapped[uuid.UUID] = mapped_column()
+
+
+class BookingLink(Base):
+    """FR-TBL-010: a public booking page for one outlet. Only the SHA-256 of the link token is
+    stored, so a database leak does not reveal working links; switching a link off is final."""
+
+    __tablename__ = "booking_links"
+    __table_args__ = (
+        _fk("outlet_id", "outlets"),
+        Index(None, "tenant_id", "outlet_id"),
+        Index(None, "token_hash", unique=True),
+    )
+
+    id: Mapped[uuid.UUID] = _id()
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    outlet_id: Mapped[uuid.UUID] = mapped_column()
+    token_hash: Mapped[bytes] = mapped_column(LargeBinary)
+    token_hint: Mapped[str] = mapped_column(Text)  # last 4 characters, to tell links apart
+    created_by: Mapped[uuid.UUID] = mapped_column()
+    created_at: Mapped[datetime] = _created_at()
+    disabled_at: Mapped[datetime | None] = mapped_column()

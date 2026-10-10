@@ -246,3 +246,13 @@ Open (low): the export secret-column filter is name-based; revisit with a per-co
 - Voucher codes come from `secrets` (8 characters, 32^8 combinations, no look-alike letters); lookup needs a staff permission. Vouchers are checked and used up inside the payment transaction, with the row locked, so one code cannot pay twice even from two tills at once.
 - Tenant RLS on both tables; a test checks another tenant sees neither guest nor voucher, and that a cashier cannot issue vouchers.
 - Performance: balance is one indexed sum per guest; payment adds one indexed lookup per voucher tender.
+
+## Public booking page (2026-10-10, ADR 0.81)
+
+- The only unauthenticated tenant write. The tenant and outlet come from the link token on the server; the guest never sends a tenant or outlet ID. Tokens are 24 random characters; only the SHA-256 is stored and the full address is shown once. Malformed, unknown and switched-off tokens all return the same 404 (no way to tell them apart).
+- The cross-tenant lookup is one SECURITY DEFINER function owned by `pos_auth` that returns only the matching live link (same pattern as device tokens); everything after it runs under RLS as `pos_app`.
+- Same gates as a signed-in call: suspended or read-only subscription, module off for the tenant or outlet, and inactive outlet all close the page.
+- Abuse: 10 bookings per IP per hour (hashed throttle key), open online bookings per phone (setting), party size, days ahead and opening hours checked on the server (the slot must be one the server offers), consent required, idempotency key. Add a Cloudflare rate-limit rule for `/api/v1/public/` at launch.
+- An existing guest found by phone keeps their name: a stranger cannot rename a customer by booking with their number. The response returns no table names or internal IDs other than the booking's own.
+- Reminder text is filled by plain replacement, not `str.format`, so a template cannot reach Python attributes; the wa.me link is built on the client with `encodeURIComponent` and opened with `rel="noopener noreferrer"`.
+- Performance: the slot list is two queries for the whole day (tables, holds), not one per time; the booking itself reuses the locked booking path.

@@ -12,6 +12,9 @@ const AdminPage = lazy(() =>
 const ChangelogPage = lazy(() =>
   import('../features/help/ChangelogPage').then((m) => ({ default: m.ChangelogPage })),
 )
+const BookPage = lazy(() =>
+  import('../features/booking/BookPage').then((m) => ({ default: m.BookPage })),
+)
 const LoginPage = lazy(() =>
   import('../features/auth/LoginPage').then((m) => ({ default: m.LoginPage })),
 )
@@ -68,6 +71,7 @@ const page = (element: ReactNode) => <Suspense fallback={null}>{element}</Suspen
 
 export const routes = [
   { path: '/login', element: page(<LoginPage />) },
+  { path: '/book/:token', element: page(<BookPage />) },
   { path: '/admin', element: page(<AdminPage />) },
   {
     path: '/',

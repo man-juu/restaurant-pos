@@ -155,7 +155,8 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `table_sessions` | outlet_id, channel_id, status, party_size, opened_by, opened_at, closed_at, merged_into |
 | `table_session_tables` | session_id, table_id, active (one active session per table) |
 | `table_session_orders` | session_id, order_id (POS orders of the party) |
-| `reservations` | outlet, customer_id, party_size, starts_at, duration_min, status, notes, table_ids |
+| `reservations` | outlet, customer_id, party_size, starts_at, duration_min, status, notes, table_ids, source (staff/online), reminded_at; created_by NULL for online bookings |
+| `booking_links` | outlet_id, token_hash (SHA-256, unique), token_hint, created_by, disabled_at (switched off for good; never deleted). Read before tenant context only through `booking_link_target(bytea)` (ADR 0.81) |
 
 ### 2.7a Kitchen
 

@@ -472,6 +472,41 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/bookings/links': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Links */
+    get: operations['list_links_api_v1_bookings_links_get']
+    put?: never
+    /** Create Link */
+    post: operations['create_link_api_v1_bookings_links_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/bookings/links/{link_id}/disable': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Disable Link */
+    post: operations['disable_link_api_v1_bookings_links__link_id__disable_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/bookings/reservations': {
     parameters: {
       query?: never
@@ -484,6 +519,23 @@ export interface paths {
     put?: never
     /** Book */
     post: operations['book_api_v1_bookings_reservations_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/bookings/reservations/{reservation_id}/remind': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Remind */
+    post: operations['remind_api_v1_bookings_reservations__reservation_id__remind_post']
     delete?: never
     options?: never
     head?: never
@@ -3459,6 +3511,41 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/public/booking/{token}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Page */
+    get: operations['page_api_v1_public_booking__token__get']
+    put?: never
+    /** Book */
+    post: operations['book_api_v1_public_booking__token__post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/public/booking/{token}/slots': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Slots */
+    get: operations['slots_api_v1_public_booking__token__slots_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/purchasing/attachments': {
     parameters: {
       query?: never
@@ -5137,6 +5224,7 @@ export interface components {
      * @description Response of GET /settings, typed so the generated frontend client knows every field.
      */
     AllSettings: {
+      booking: components['schemas']['BookingSettings']
       catalog: components['schemas']['CatalogSettings']
       finance: components['schemas']['FinanceSettings']
       kitchen: components['schemas']['KitchenSettings']
@@ -5521,6 +5609,73 @@ export interface components {
        * Format: uuid
        */
       yield_unit_id: string
+    }
+    /**
+     * BookedOut
+     * @description What the guest sees: no table names, no internal IDs beyond the booking's own.
+     */
+    BookedOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Party Size */
+      party_size: number
+      /**
+       * Starts At
+       * Format: date-time
+       */
+      starts_at: string
+      /** Status */
+      status: string
+    }
+    /**
+     * BookingSettings
+     * @description FR-TBL-010: what guests may book on the public booking page, and the reminder text
+     *     staff send. Times are minutes after midnight in the business's time zone.
+     */
+    BookingSettings: {
+      /**
+       * Closes Min
+       * @default 1260
+       */
+      closes_min: number
+      /**
+       * Days Ahead
+       * @default 30
+       */
+      days_ahead: number
+      /**
+       * Max Open Per Phone
+       * @default 2
+       */
+      max_open_per_phone: number
+      /**
+       * Max Party
+       * @default 8
+       */
+      max_party: number
+      /**
+       * Min Notice Minutes
+       * @default 60
+       */
+      min_notice_minutes: number
+      /**
+       * Opens Min
+       * @default 600
+       */
+      opens_min: number
+      /**
+       * Reminder Text
+       * @default Hi {name}, see you at {outlet} on {date} at {time} for {party}.
+       */
+      reminder_text: string
+      /**
+       * Slot Minutes
+       * @default 30
+       */
+      slot_minutes: number
     }
     /** BudgetIn */
     BudgetIn: {
@@ -7100,6 +7255,28 @@ export interface components {
       /** Outlet Id */
       outlet_id?: string | null
     }
+    /** LinkOut */
+    LinkOut: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Disabled At */
+      disabled_at: string | null
+      /** Hint */
+      hint: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
     /** LocationIn */
     LocationIn: {
       /**
@@ -7381,6 +7558,38 @@ export interface components {
        */
       transfer: 'allow' | 'warn' | 'block'
     }
+    /** NewLinkIn */
+    NewLinkIn: {
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+    }
+    /** NewLinkOut */
+    NewLinkOut: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Disabled At */
+      disabled_at: string | null
+      /** Hint */
+      hint: string
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /**
+       * Outlet Id
+       * Format: uuid
+       */
+      outlet_id: string
+      /** Token */
+      token: string
+    }
     /** NotificationOut */
     NotificationOut: {
       /**
@@ -7504,6 +7713,27 @@ export interface components {
        * @enum {string}
        */
       status: 'open' | 'paid' | 'cancelled'
+    }
+    /** OnlineIn */
+    OnlineIn: {
+      /**
+       * Consent
+       * @constant
+       */
+      consent: true
+      /** Name */
+      name: string
+      /** Notes */
+      notes?: string | null
+      /** Party Size */
+      party_size: number
+      /** Phone */
+      phone: string
+      /**
+       * Starts At
+       * Format: date-time
+       */
+      starts_at: string
     }
     /** OpeningIn */
     OpeningIn: {
@@ -7722,6 +7952,19 @@ export interface components {
       timezone: string
       /** Type */
       type: string
+    }
+    /** PageOut */
+    PageOut: {
+      /** Business */
+      business: string
+      /** Days Ahead */
+      days_ahead: number
+      /** Max Party */
+      max_party: number
+      /** Outlet */
+      outlet: string
+      /** Timezone */
+      timezone: string
     }
     /** Page[AuditRow] */
     Page_AuditRow_: {
@@ -8947,6 +9190,13 @@ export interface components {
       /** Stock Effect */
       stock_effect: string
     }
+    /** ReminderOut */
+    ReminderOut: {
+      /** Message */
+      message: string
+      /** Phone */
+      phone: string | null
+    }
     /** Report */
     Report: {
       /** Columns */
@@ -9041,8 +9291,15 @@ export interface components {
       outlet_id: string
       /** Party Size */
       party_size: number
+      /** Reminded At */
+      reminded_at?: string | null
       /** Session Id */
       session_id: string | null
+      /**
+       * Source
+       * @default staff
+       */
+      source: string
       /**
        * Starts At
        * Format: date-time
@@ -11882,6 +12139,101 @@ export interface operations {
       }
     }
   }
+  list_links_api_v1_bookings_links_get: {
+    parameters: {
+      query: {
+        outlet_id: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LinkOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  create_link_api_v1_bookings_links_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['NewLinkIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['NewLinkOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  disable_link_api_v1_bookings_links__link_id__disable_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        link_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LinkOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   list_day_api_v1_bookings_reservations_get: {
     parameters: {
       query: {
@@ -11934,6 +12286,37 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ReservationOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  remind_api_v1_bookings_reservations__reservation_id__remind_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        reservation_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReminderOut']
         }
       }
       /** @description Validation Error */
@@ -18471,6 +18854,108 @@ export interface operations {
         }
         content: {
           'application/json': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  page_api_v1_public_booking__token__get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        token: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PageOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  book_api_v1_public_booking__token__post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path: {
+        token: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OnlineIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BookedOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  slots_api_v1_public_booking__token__slots_get: {
+    parameters: {
+      query: {
+        day: string
+        party_size: number
+      }
+      header?: never
+      path: {
+        token: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': string[]
         }
       }
       /** @description Validation Error */

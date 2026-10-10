@@ -369,7 +369,11 @@
     "voucher_not_found": "Tidak ada voucher dengan kode ini.",
     "voucher_not_active": "Voucher ini sudah dipakai, dibatalkan, atau kedaluwarsa.",
     "voucher_too_small": "Nilai voucher kurang dari jumlah ini.",
-    "voucher_code_clash": "Silakan coba lagi."
+    "voucher_code_clash": "Silakan coba lagi.",
+    "booking_closed": "Halaman pemesanan ini tidak tersedia.",
+    "slot_not_available": "Jam itu sudah tidak kosong. Silakan pilih yang lain.",
+    "too_many_bookings": "Nomor ini sudah punya reservasi yang menunggu. Hubungi restoran untuk mengubahnya.",
+    "booking_link_not_found": "Tautan reservasi tidak ditemukan."
   },
   "appearance": {
     "open": "Tampilan",
@@ -427,7 +431,8 @@
       "transfers": "Transfer",
       "reports": "Laporan",
       "data": "Data Anda",
-      "loyalty": "Loyalitas"
+      "loyalty": "Loyalitas",
+      "booking": "Reservasi online"
     },
     "outletModules": {
       "help": "Nyalakan atau matikan modul per outlet. Modul yang butuh modul lain (misalnya penjualan butuh stok) ikut menyalakannya.",
@@ -616,6 +621,26 @@
       "help": "Tamu mendapat satu poin untuk setiap jumlah penjualan bersih (sebelum servis dan pajak). Poin menjadi kode voucher yang dibayarkan di kasir dengan metode voucher.",
       "method": "Voucher",
       "addMethod": "Tambah metode bayar voucher"
+    },
+    "booking": {
+      "opens": "Jam reservasi pertama",
+      "closes": "Jam reservasi terakhir",
+      "slot_minutes": "Jarak antar jam (menit)",
+      "min_notice_minutes": "Pemberitahuan minimum (menit)",
+      "days_ahead": "Berapa hari ke depan bisa dipesan",
+      "max_party": "Rombongan terbesar online",
+      "max_open_per_phone": "Reservasi online aktif per nomor HP",
+      "reminder_text": "Teks pengingat",
+      "help": "Pengingat bisa memakai {name}, {outlet}, {date}, {time} dan {party}. Reservasi online masuk sebagai Menunggu: konfirmasi di halaman Meja.",
+      "links": "Tautan reservasi",
+      "outlet": "Outlet",
+      "newLink": "Buat tautan reservasi",
+      "copyOnce": "Salin alamat ini sekarang: hanya ditampilkan sekali. Bagikan di Instagram, Google Maps atau WhatsApp.",
+      "copy": "Salin",
+      "linkLine": "Tautan …{{hint}} · dibuat {{date}}",
+      "off": "Dimatikan",
+      "disable": "Matikan",
+      "offConfirm": "Ketuk lagi untuk mematikan permanen"
     }
   },
   "catalog": {
@@ -1761,7 +1786,11 @@
     "wait_one": "Sekitar {{count}} menit",
     "wait_other": "Sekitar {{count}} menit",
     "table": "Meja",
-    "left": "Pergi"
+    "left": "Pergi",
+    "online": "Online",
+    "remind": "Pengingat",
+    "remindAgain": "Ingatkan lagi",
+    "openWhatsApp": "Buka di WhatsApp"
   },
   "books": {
     "notSetUp": "Pembukuan belum disiapkan. Pemilik atau akuntan memulainya di sini.",
@@ -2078,6 +2107,9 @@
   "changelog": {
     "title": "Yang baru",
     "items": {
+      "2026-10-10i": [
+        "Reservasi online: bagikan tautan reservasi; tamu memilih jam kosong sendiri, dan staf mengirim pengingat lewat WhatsApp"
+      ],
       "2026-10-10h": [
         "Loyalitas: tamu mendapat poin dari struk, menukarnya jadi kode voucher, dan membayar dengannya di kasir"
       ],
@@ -2173,5 +2205,23 @@
     "void": "Batalkan",
     "give": "Beri poin loyalitas",
     "earned": "{{points}} poin diberikan. Saldo: {{balance}}"
+  },
+  "book": {
+    "titlePlain": "Pesan meja",
+    "title": "Pesan meja di {{outlet}}",
+    "closed": "Halaman pemesanan ini tidak tersedia.",
+    "day": "Tanggal",
+    "party": "Jumlah tamu",
+    "time": "Jam",
+    "loading": "Mencari meja kosong…",
+    "noTimes": "Tidak ada jam kosong di tanggal ini untuk jumlah tamu ini. Coba tanggal lain.",
+    "name": "Nama Anda",
+    "phone": "Nomor HP (WhatsApp)",
+    "notes": "Catatan (opsional)",
+    "consent": "Saya setuju restoran menyimpan nama dan nomor HP saya untuk pemesanan ini",
+    "submit": "Pesan",
+    "done": "Pemesanan diterima",
+    "doneLine": "{{when}} untuk {{party}} tamu.",
+    "pendingHelp": "Restoran akan mengonfirmasi dan mungkin mengirim pengingat."
   }
 }

@@ -420,6 +420,9 @@
       "AllSettings": {
         "description": "Response of GET /settings, typed so the generated frontend client knows every field.",
         "properties": {
+          "booking": {
+            "$ref": "#/components/schemas/BookingSettings"
+          },
           "catalog": {
             "$ref": "#/components/schemas/CatalogSettings"
           },
@@ -497,7 +500,8 @@
           "planning",
           "transfers",
           "reports",
-          "loyalty"
+          "loyalty",
+          "booking"
         ],
         "title": "AllSettings",
         "type": "object"
@@ -1392,6 +1396,100 @@
           "yield_unit_id"
         ],
         "title": "BomSummary",
+        "type": "object"
+      },
+      "BookedOut": {
+        "description": "What the guest sees: no table names, no internal IDs beyond the booking's own.",
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "party_size": {
+            "title": "Party Size",
+            "type": "integer"
+          },
+          "starts_at": {
+            "format": "date-time",
+            "title": "Starts At",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "starts_at",
+          "party_size",
+          "status"
+        ],
+        "title": "BookedOut",
+        "type": "object"
+      },
+      "BookingSettings": {
+        "additionalProperties": false,
+        "description": "FR-TBL-010: what guests may book on the public booking page, and the reminder text\nstaff send. Times are minutes after midnight in the business's time zone.",
+        "properties": {
+          "closes_min": {
+            "default": 1260,
+            "maximum": 1440.0,
+            "minimum": 1.0,
+            "title": "Closes Min",
+            "type": "integer"
+          },
+          "days_ahead": {
+            "default": 30,
+            "maximum": 365.0,
+            "minimum": 1.0,
+            "title": "Days Ahead",
+            "type": "integer"
+          },
+          "max_open_per_phone": {
+            "default": 2,
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Max Open Per Phone",
+            "type": "integer"
+          },
+          "max_party": {
+            "default": 8,
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Max Party",
+            "type": "integer"
+          },
+          "min_notice_minutes": {
+            "default": 60,
+            "maximum": 10080.0,
+            "minimum": 0.0,
+            "title": "Min Notice Minutes",
+            "type": "integer"
+          },
+          "opens_min": {
+            "default": 600,
+            "maximum": 1439.0,
+            "minimum": 0.0,
+            "title": "Opens Min",
+            "type": "integer"
+          },
+          "reminder_text": {
+            "default": "Hi {name}, see you at {outlet} on {date} at {time} for {party}.",
+            "maxLength": 500,
+            "title": "Reminder Text",
+            "type": "string"
+          },
+          "slot_minutes": {
+            "default": 30,
+            "maximum": 240.0,
+            "minimum": 5.0,
+            "title": "Slot Minutes",
+            "type": "integer"
+          }
+        },
+        "title": "BookingSettings",
         "type": "object"
       },
       "BudgetIn": {
@@ -5513,6 +5611,50 @@
         "title": "LineIn",
         "type": "object"
       },
+      "LinkOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "disabled_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disabled At"
+          },
+          "hint": {
+            "title": "Hint",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "outlet_id",
+          "hint",
+          "created_at",
+          "disabled_at"
+        ],
+        "title": "LinkOut",
+        "type": "object"
+      },
       "LocationIn": {
         "additionalProperties": false,
         "properties": {
@@ -6103,6 +6245,70 @@
         "title": "NegativeStockPolicy",
         "type": "object"
       },
+      "NewLinkIn": {
+        "additionalProperties": false,
+        "properties": {
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outlet_id"
+        ],
+        "title": "NewLinkIn",
+        "type": "object"
+      },
+      "NewLinkOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "disabled_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disabled At"
+          },
+          "hint": {
+            "title": "Hint",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "outlet_id": {
+            "format": "uuid",
+            "title": "Outlet Id",
+            "type": "string"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "outlet_id",
+          "hint",
+          "created_at",
+          "disabled_at",
+          "token"
+        ],
+        "title": "NewLinkOut",
+        "type": "object"
+      },
       "NotificationOut": {
         "properties": {
           "created_at": {
@@ -6380,6 +6586,61 @@
           "status"
         ],
         "title": "OfflineSyncOut",
+        "type": "object"
+      },
+      "OnlineIn": {
+        "additionalProperties": false,
+        "properties": {
+          "consent": {
+            "const": true,
+            "title": "Consent",
+            "type": "boolean"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "party_size": {
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Party Size",
+            "type": "integer"
+          },
+          "phone": {
+            "maxLength": 30,
+            "minLength": 8,
+            "pattern": "^[0-9+\\-() ]+$",
+            "title": "Phone",
+            "type": "string"
+          },
+          "starts_at": {
+            "format": "date-time",
+            "title": "Starts At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "phone",
+          "party_size",
+          "starts_at",
+          "consent"
+        ],
+        "title": "OnlineIn",
         "type": "object"
       },
       "OpeningIn": {
@@ -6923,6 +7184,39 @@
           "is_active"
         ],
         "title": "OutletOut",
+        "type": "object"
+      },
+      "PageOut": {
+        "properties": {
+          "business": {
+            "title": "Business",
+            "type": "string"
+          },
+          "days_ahead": {
+            "title": "Days Ahead",
+            "type": "integer"
+          },
+          "max_party": {
+            "title": "Max Party",
+            "type": "integer"
+          },
+          "outlet": {
+            "title": "Outlet",
+            "type": "string"
+          },
+          "timezone": {
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "business",
+          "outlet",
+          "timezone",
+          "max_party",
+          "days_ahead"
+        ],
+        "title": "PageOut",
         "type": "object"
       },
       "Page_AuditRow_": {
@@ -10107,6 +10401,31 @@
         "title": "RefundOut",
         "type": "object"
       },
+      "ReminderOut": {
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          }
+        },
+        "required": [
+          "message",
+          "phone"
+        ],
+        "title": "ReminderOut",
+        "type": "object"
+      },
       "Report": {
         "properties": {
           "columns": {
@@ -10311,6 +10630,18 @@
             "title": "Party Size",
             "type": "integer"
           },
+          "reminded_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reminded At"
+          },
           "session_id": {
             "anyOf": [
               {
@@ -10322,6 +10653,11 @@
               }
             ],
             "title": "Session Id"
+          },
+          "source": {
+            "default": "staff",
+            "title": "Source",
+            "type": "string"
           },
           "starts_at": {
             "format": "date-time",
@@ -16561,6 +16897,135 @@
         ]
       }
     },
+    "/api/v1/bookings/links": {
+      "get": {
+        "operationId": "list_links_api_v1_bookings_links_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "outlet_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Outlet Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LinkOut"
+                  },
+                  "title": "Response List Links Api V1 Bookings Links Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Links",
+        "tags": [
+          "tables"
+        ]
+      },
+      "post": {
+        "operationId": "create_link_api_v1_bookings_links_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewLinkIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewLinkOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Link",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/bookings/links/{link_id}/disable": {
+      "post": {
+        "operationId": "disable_link_api_v1_bookings_links__link_id__disable_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "link_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Link Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Disable Link",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
     "/api/v1/bookings/reservations": {
       "get": {
         "operationId": "list_day_api_v1_bookings_reservations_get",
@@ -16652,6 +17117,49 @@
           }
         },
         "summary": "Book",
+        "tags": [
+          "tables"
+        ]
+      }
+    },
+    "/api/v1/bookings/reservations/{reservation_id}/remind": {
+      "post": {
+        "operationId": "remind_api_v1_bookings_reservations__reservation_id__remind_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "reservation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Reservation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReminderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Remind",
         "tags": [
           "tables"
         ]
@@ -27516,6 +28024,182 @@
         "summary": "Prep List Pdf",
         "tags": [
           "production"
+        ]
+      }
+    },
+    "/api/v1/public/booking/{token}": {
+      "get": {
+        "operationId": "page_api_v1_public_booking__token__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "title": "Token",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Page",
+        "tags": [
+          "booking"
+        ]
+      },
+      "post": {
+        "operationId": "book_api_v1_public_booking__token__post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "title": "Token",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OnlineIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookedOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Book",
+        "tags": [
+          "booking"
+        ]
+      }
+    },
+    "/api/v1/public/booking/{token}/slots": {
+      "get": {
+        "operationId": "slots_api_v1_public_booking__token__slots_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "title": "Token",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "day",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Day",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "party_size",
+            "required": true,
+            "schema": {
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Party Size",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "title": "Response Slots Api V1 Public Booking  Token  Slots Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Slots",
+        "tags": [
+          "booking"
         ]
       }
     },
