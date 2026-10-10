@@ -1,6 +1,8 @@
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { CheckInput, SelectInput, TextInput } from '../../components/form'
+import type { UnitOut } from '../../lib/api/types'
 import { useCategories, useUnits } from './api'
 import type { DraftProblem, ItemDraft } from './itemDraft'
 import { ITEM_TYPES, STORAGE_TYPES } from './labels'
@@ -74,26 +76,38 @@ export function IdentityFields({ d, set, issues }: FieldsProps) {
   )
 }
 
+/** Menu items are sold by the portion: their unit is always "pcs", so the form hides it.
+ * Ingredients and semi-finished items keep a real unit (g, ml, pcs, or the tenant's own). */
+function useMenuPortion(d: ItemDraft, set: (p: Partial<ItemDraft>) => void, units?: UnitOut[]) {
+  const pcs = units?.find((u) => u.code === 'pcs')?.id
+  useEffect(() => {
+    if (d.type === 'menu' && !d.base_unit_id && pcs) set({ base_unit_id: pcs })
+  }, [d.type, d.base_unit_id, pcs, set])
+}
+
 /** Base unit, storage, shelf life, allergens and flags. */
 export function StockFields({ d, set, issues, isNew }: FieldsProps) {
   const { t } = useTranslation()
   const units = useUnits()
+  useMenuPortion(d, set, units.data)
   return (
     <>
-      <SelectInput
-        label={t('catalog.item.baseUnit')}
-        value={d.base_unit_id}
-        // The server refuses a new base unit: it would rescale every recorded quantity.
-        disabled={!isNew}
-        onChange={(e) => set({ base_unit_id: e.target.value })}
-      >
-        <option value="">{t('catalog.item.chooseUnit')}</option>
-        {units.data?.map((u) => (
-          <option key={u.id} value={u.id}>
-            {`${u.code} (${u.name})`}
-          </option>
-        ))}
-      </SelectInput>
+      {d.type !== 'menu' && (
+        <SelectInput
+          label={t('catalog.item.baseUnit')}
+          value={d.base_unit_id}
+          // The server refuses a new base unit: it would rescale every recorded quantity.
+          disabled={!isNew}
+          onChange={(e) => set({ base_unit_id: e.target.value })}
+        >
+          <option value="">{t('catalog.item.chooseUnit')}</option>
+          {units.data?.map((u) => (
+            <option key={u.id} value={u.id}>
+              {`${u.code} (${u.name})`}
+            </option>
+          ))}
+        </SelectInput>
+      )}
       <SelectInput
         label={t('catalog.item.storage')}
         value={d.storage_type}
