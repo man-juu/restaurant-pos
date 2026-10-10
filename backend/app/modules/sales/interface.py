@@ -11,7 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.sales import orders
-from app.modules.sales.doc_events import DocumentMoney, document_money
+from app.modules.sales.doc_events import DocumentMoney, document_money, tenders_of_kind
 from app.modules.sales.events import (
     DOCUMENT_POSTED,
     DOCUMENT_REVERSED,
@@ -44,6 +44,7 @@ __all__ = [
     "open_order",
     "order_states",
     "period_totals",
+    "tenders_of_kind",
 ]
 
 

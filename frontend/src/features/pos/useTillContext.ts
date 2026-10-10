@@ -44,6 +44,8 @@ export function useTillContext(caps?: Capabilities) {
     discount: has('sales.discount.apply'),
     void: has('sales.order.void'),
     refund: has('sales.order.refund'),
+    // Loyalty is a module of its own: no permission where the business switched it off.
+    earn: has('loyalty.points.earn'),
   }
   const place = usePlace()
   const { pos, methods } = useTillSettings()

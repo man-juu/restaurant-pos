@@ -15,6 +15,7 @@ import { KitchenSection } from './KitchenSection'
 import { LimitsSection } from './LimitsSection'
 import { FinanceSection, ReportsSection, TablesSection } from './MoreSections'
 import { OutletModulesSection } from './OutletModulesSection'
+import { LoyaltySection } from './LoyaltySection'
 import { PlanningSection } from './PlanningSection'
 import { PosSection } from './PosSection'
 import { ProductionSection } from './ProductionSection'
@@ -36,6 +37,7 @@ const SECTIONS = {
   kitchen: (p: Props) => <KitchenSection {...p} />,
   tables: (p: Props) => <TablesSection {...p} />,
   finance: (p: Props) => <FinanceSection {...p} />,
+  loyalty: (p: Props) => <LoyaltySection {...p} />,
   receipt: (p: Props) => <ReceiptSection {...p} />,
   devices: () => <DevicesSection />,
   data: () => <DataSection />,

@@ -224,6 +224,16 @@ class ReceiptSettings(Strict):
     paper_mm: Literal[58, 80] = 58  # most Bluetooth printers in Indonesia are 58 mm
 
 
+class LoyaltySettings(Strict):
+    """FR-SAL-016: how guests earn points and what a point is worth when turned into a voucher.
+    Every number is the business's own choice."""
+
+    earn_per: int = Field(default=10_000, ge=1, le=10**9)  # net sales per point earned
+    point_value: int = Field(default=100, ge=1, le=10**9)  # money one point is worth
+    min_redeem_points: int = Field(default=100, ge=1, le=10**9)
+    voucher_valid_days: int = Field(default=90, ge=0, le=3650)  # 0 = never expires
+
+
 SETTINGS: dict[str, type[Strict]] = {
     "tax": TaxSettings,
     "service_charge": ServiceChargeSettings,
@@ -243,6 +253,7 @@ SETTINGS: dict[str, type[Strict]] = {
     "planning": PlanningSettings,
     "transfers": TransferSettings,
     "reports": ReportSettings,
+    "loyalty": LoyaltySettings,
 }
 
 
@@ -267,3 +278,4 @@ class AllSettings(BaseModel):
     planning: PlanningSettings
     transfers: TransferSettings
     reports: ReportSettings
+    loyalty: LoyaltySettings

@@ -6,6 +6,7 @@ export interface TenderDraft {
   method: string
   amount: string
   tendered: string
+  reference?: string // voucher code, when the method is a voucher
 }
 
 /** docs/05 rule 6.5, same as the server: round a cash bill half up to the step. */
@@ -27,6 +28,8 @@ interface Tender {
   amount: number | null
   tendered: number | null
   cash: boolean
+  reference: string | null
+  voucher: boolean
 }
 
 function parse(rows: TenderDraft[], kinds: Map<string, string>, currency: string, due: number) {
@@ -36,11 +39,16 @@ function parse(rows: TenderDraft[], kinds: Map<string, string>, currency: string
     amount: rows.length === 1 ? due : parseMoney(r.amount, currency),
     tendered: r.tendered.trim() === '' ? null : parseMoney(r.tendered, currency),
     cash: kinds.get(r.method) === 'cash',
+    reference: r.reference?.trim() || null,
+    voucher: kinds.get(r.method) === 'voucher',
   }))
 }
 
 const tenderOk = (t: Tender) =>
-  t.amount !== null && t.amount > 0 && (!t.cash || t.tendered === null || t.tendered >= t.amount)
+  t.amount !== null &&
+  t.amount > 0 &&
+  (!t.cash || t.tendered === null || t.tendered >= t.amount) &&
+  (!t.voucher || t.reference !== null)
 
 /** What the customer owes, the change, and the request body once everything adds up. */
 export function payPlan(input: {
@@ -71,6 +79,7 @@ export function payPlan(input: {
           method: t.method,
           amount: t.amount ?? 0,
           tendered: t.cash ? (t.tendered ?? t.amount) : null,
+          ...(t.reference ? { reference: t.reference } : {}),
         })),
       }
     : null

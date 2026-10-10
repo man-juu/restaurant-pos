@@ -25,7 +25,8 @@ export function TenderRow({
   onRemove?: () => void
 }) {
   const { t } = useTranslation()
-  const cash = methods.find((m) => m.code === row.method)?.kind === 'cash'
+  const kind = methods.find((m) => m.code === row.method)?.kind
+  const cash = kind === 'cash'
   return (
     <div className="flex flex-col gap-2 rounded-xl border border-line p-3">
       <div className="flex flex-wrap gap-2" role="group" aria-label={t('pos.method')}>
@@ -52,6 +53,14 @@ export function TenderRow({
           inputMode="numeric"
           value={row.amount}
           onChange={(e) => onChange({ ...row, amount: e.target.value })}
+        />
+      )}
+      {kind === 'voucher' && (
+        <TextInput
+          label={t('pos.voucherCode')}
+          autoCapitalize="characters"
+          value={row.reference ?? ''}
+          onChange={(e) => onChange({ ...row, reference: e.target.value })}
         />
       )}
       {cash && (

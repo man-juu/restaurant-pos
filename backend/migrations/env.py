@@ -27,6 +27,7 @@ import app.modules.inventory.doc_models
 import app.modules.inventory.location_models
 import app.modules.inventory.models
 import app.modules.kitchen.models
+import app.modules.loyalty.models
 import app.modules.production.models
 import app.modules.purchasing.ap_models
 import app.modules.purchasing.models

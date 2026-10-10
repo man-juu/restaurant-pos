@@ -238,3 +238,11 @@ Open (low): the export secret-column filter is name-based; revisit with a per-co
 - Outlet scope on save and read (`require_outlet`, plus the visible-outlet check in the service); tenant RLS on `budgets`; a test checks another tenant cannot save or read.
 - Amounts are bounded integers (0 to 10^15, extra fields refused); saves are audited with the figures.
 - Performance: the report runs four indexed aggregate queries for the period, no per-row loops.
+
+## Loyalty (2026-10-10, ADR 0.80)
+
+- Points: only paid till receipts earn, once per receipt (unique index), only for receipts at an outlet the caller works at; erased guests cannot earn or spend. Every earn, redeem, issue and void is audited.
+- Spending points locks the guest row (no double spend from two tills) and takes an idempotency key; balances can never go negative.
+- Voucher codes come from `secrets` (8 characters, 32^8 combinations, no look-alike letters); lookup needs a staff permission. Vouchers are checked and used up inside the payment transaction, with the row locked, so one code cannot pay twice even from two tills at once.
+- Tenant RLS on both tables; a test checks another tenant sees neither guest nor voucher, and that a cashier cannot issue vouchers.
+- Performance: balance is one indexed sum per guest; payment adds one indexed lookup per voucher tender.

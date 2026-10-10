@@ -35,6 +35,9 @@ const NotificationsPage = lazy(() =>
     default: m.NotificationsPage,
   })),
 )
+const LoyaltyPage = lazy(() =>
+  import('../features/loyalty/LoyaltyPage').then((m) => ({ default: m.LoyaltyPage })),
+)
 const PosPage = lazy(() => import('../features/pos/PosPage').then((m) => ({ default: m.PosPage })))
 const TablesPage = lazy(() =>
   import('../features/tables/TablesPage').then((m) => ({ default: m.TablesPage })),
@@ -81,6 +84,7 @@ export const routes = [
       { path: 'notifications', element: page(<NotificationsPage />) },
       { path: 'pos', element: page(<PosPage />) },
       { path: 'tables', element: page(<TablesPage />) },
+      { path: 'loyalty', element: page(<LoyaltyPage />) },
       { path: 'kitchen', element: page(<KitchenPage />) },
       { path: 'finance', element: page(<FinancePage />) },
       { path: 'sales', element: page(<SalesPage />) },

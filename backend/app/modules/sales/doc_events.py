@@ -38,6 +38,8 @@ class DocumentMoney:
     rounding: int
     total: int  # subtotal - discount + service charge + tax
     paid: dict[str, int]  # payment method kind -> amount; empty for a daily sales entry
+    source: str = "pos"  # pos, manual_day, ...
+    status: str = "posted"
 
 
 async def document_money(db: AsyncSession, document_id: uuid.UUID) -> DocumentMoney:
@@ -64,4 +66,16 @@ async def document_money(db: AsyncSession, document_id: uuid.UUID) -> DocumentMo
         rounding=doc.rounding,
         total=doc.total,
         paid=paid,
+        source=doc.source,
+        status=doc.status,
     )
+
+
+async def tenders_of_kind(
+    db: AsyncSession, document_id: uuid.UUID, kind: str
+) -> list[tuple[str | None, int]]:
+    """(reference, amount) of each payment of this kind on a document, e.g. voucher codes."""
+    stmt = select(Payment.reference, Payment.amount).where(
+        Payment.document_id == document_id, Payment.kind == kind
+    )
+    return [(ref, int(amount)) for ref, amount in (await db.execute(stmt)).all()]

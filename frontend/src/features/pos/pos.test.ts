@@ -48,6 +48,20 @@ describe('pay plan (FR-SAL-006)', () => {
     expect(ok.body?.payments.map((p) => p.amount)).toEqual([50_000, 16_000])
   })
 
+  it('needs a code for a voucher tender and sends it (FR-SAL-016)', () => {
+    const withVoucher: PaymentMethod[] = [
+      ...methods,
+      { code: 'v', name: 'Voucher', kind: 'voucher', active: true },
+    ]
+    const input = { total: 20_000, tip: 0, methods: withVoucher, roundingStep: 0, currency: 'IDR' }
+    const row = { method: 'v', amount: '', tendered: '' }
+    expect(payPlan({ ...input, rows: [row] }).body).toBeNull()
+    const ok = payPlan({ ...input, rows: [{ ...row, reference: ' ab12-cd34 ' }] })
+    expect(ok.body?.payments).toEqual([
+      { method: 'v', amount: 20_000, tendered: null, reference: 'ab12-cd34' },
+    ])
+  })
+
   it('offers exact cash and the next round notes', () => {
     expect(quickCash(66_000)).toEqual([66_000, 70_000, 80_000, 100_000])
   })

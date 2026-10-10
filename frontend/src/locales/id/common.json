@@ -61,7 +61,8 @@
     "pos": "Kasir",
     "tables": "Meja",
     "kitchen": "Dapur",
-    "finance": "Keuangan"
+    "finance": "Keuangan",
+    "loyalty": "Loyalitas"
   },
   "shell": {
     "business": "Usaha",
@@ -360,7 +361,15 @@
     "announcement_not_found": "Pengumuman ini sudah tidak ditampilkan.",
     "unknown_tenant": "Salah satu id usaha tidak ada.",
     "push_endpoint_not_allowed": "Layanan push browser ini tidak didukung.",
-    "mapping_not_found": "Simpan dulu kolom mana berisi apa untuk platform ini."
+    "mapping_not_found": "Simpan dulu kolom mana berisi apa untuk platform ini.",
+    "points_not_enough": "Poin tidak cukup.",
+    "points_below_minimum": "Poin terlalu sedikit untuk voucher.",
+    "points_already_given": "Poin struk ini sudah diberikan ke tamu lain.",
+    "document_not_eligible": "Hanya struk kasir yang lunas yang mendapat poin.",
+    "voucher_not_found": "Tidak ada voucher dengan kode ini.",
+    "voucher_not_active": "Voucher ini sudah dipakai, dibatalkan, atau kedaluwarsa.",
+    "voucher_too_small": "Nilai voucher kurang dari jumlah ini.",
+    "voucher_code_clash": "Silakan coba lagi."
   },
   "appearance": {
     "open": "Tampilan",
@@ -417,7 +426,8 @@
       "planning": "Perencanaan",
       "transfers": "Transfer",
       "reports": "Laporan",
-      "data": "Data Anda"
+      "data": "Data Anda",
+      "loyalty": "Loyalitas"
     },
     "outletModules": {
       "help": "Nyalakan atau matikan modul per outlet. Modul yang butuh modul lain (misalnya penjualan butuh stok) ikut menyalakannya.",
@@ -433,7 +443,8 @@
         "kitchen": "Layar dapur",
         "finance": "Keuangan",
         "reports": "Laporan",
-        "notifications": "Notifikasi"
+        "notifications": "Notifikasi",
+        "loyalty": "Loyalitas"
       }
     },
     "tax": {
@@ -596,6 +607,15 @@
         "ready": "Siap ({{date}})",
         "failed": "Gagal ({{date}}): silakan coba lagi"
       }
+    },
+    "loyalty": {
+      "earn_per": "Penjualan bersih per poin",
+      "point_value": "Nilai satu poin",
+      "min_redeem_points": "Poin minimal untuk voucher",
+      "voucher_valid_days": "Voucher berlaku (hari, 0 = selamanya)",
+      "help": "Tamu mendapat satu poin untuk setiap jumlah penjualan bersih (sebelum servis dan pajak). Poin menjadi kode voucher yang dibayarkan di kasir dengan metode voucher.",
+      "method": "Voucher",
+      "addMethod": "Tambah metode bayar voucher"
     }
   },
   "catalog": {
@@ -1541,7 +1561,8 @@
       "refused": "Ditolak server ({{code}}). Masukkan lagi di kasir.",
       "leftOpen": "Pesanan {{number}} terbuka di server ({{problem}}). Selesaikan di pesanan terbuka.",
       "dismiss": "Tutup"
-    }
+    },
+    "voucherCode": "Kode voucher"
   },
   "tables": {
     "title": "Meja",
@@ -2057,6 +2078,9 @@
   "changelog": {
     "title": "Yang baru",
     "items": {
+      "2026-10-10h": [
+        "Loyalitas: tamu mendapat poin dari struk, menukarnya jadi kode voucher, dan membayar dengannya di kasir"
+      ],
       "2026-10-10g": [
         "Atur anggaran bulanan per outlet di halaman Keuangan dan bandingkan dengan penjualan dan biaya aktual"
       ],
@@ -2117,5 +2141,37 @@
       "expenses": "Biaya lain",
       "net_profit": "Laba bersih"
     }
+  },
+  "loyalty": {
+    "title": "Loyalitas",
+    "tabs": {
+      "guests": "Tamu",
+      "vouchers": "Voucher"
+    },
+    "find": "Nomor HP atau nama tamu",
+    "notFound": "Tamu tidak ditemukan. Tambahkan dengan nomor HP ini:",
+    "name": "Nama",
+    "consent": "Tamu setuju nama dan nomor HP-nya disimpan untuk poin",
+    "addGuest": "Tambah tamu",
+    "balance": "{{points}} poin (senilai {{value}})",
+    "points": "Poin yang dipakai (minimal {{min}})",
+    "worth": "Voucher senilai {{value}}",
+    "redeem": "Buat voucher",
+    "made": "Kode voucher: {{code}}",
+    "vouchers": "Voucher",
+    "until": "sampai {{date}}",
+    "kinds": {
+      "earn": "Didapat",
+      "redeem": "Ditukar voucher",
+      "reverse": "Ditarik (refund)",
+      "adjust": "Dikembalikan (voucher dibatalkan)"
+    },
+    "issue": "Beri voucher",
+    "amount": "Jumlah ({{currency}})",
+    "note": "Catatan (opsional)",
+    "issueButton": "Buat voucher",
+    "void": "Batalkan",
+    "give": "Beri poin loyalitas",
+    "earned": "{{points}} poin diberikan. Saldo: {{balance}}"
   }
 }

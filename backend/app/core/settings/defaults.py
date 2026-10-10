@@ -111,6 +111,12 @@ FALLBACK: dict[str, Any] = {
     },
     "transfers": {"price_mode": "cost", "markup_bp": 0},
     "reports": {"menu_popularity_pct": 70},
+    "loyalty": {
+        "earn_per": 10_000,
+        "point_value": 100,
+        "min_redeem_points": 100,
+        "voucher_valid_days": 90,
+    },
 }
 
 

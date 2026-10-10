@@ -7,6 +7,7 @@ import { errorMessage } from '../../lib/errors'
 import { formatMoney, intlLocale } from '../../lib/format'
 import { Cart } from './Cart'
 import { PayDialog } from './PayDialog'
+import { EarnPoints } from '../loyalty/EarnPoints'
 import { PrintButtons } from './PrintButtons'
 import { RefundDialog } from './RefundDialog'
 import { useOrder } from './posApi'
@@ -77,6 +78,9 @@ function PaidCard({
         ))}
       </ul>
       <PrintButtons orderId={order.id} currency={currency} />
+      {can.earn && order.status === 'paid' && order.document_id && (
+        <EarnPoints documentId={order.document_id} />
+      )}
       <Button onClick={onNext}>{t('pos.nextOrder')}</Button>
       {can.refund && <RefundArea order={order} methods={methods} money={money} />}
     </Card>

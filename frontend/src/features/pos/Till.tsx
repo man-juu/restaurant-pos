@@ -17,6 +17,7 @@ export interface TillRights {
   discount: boolean
   void: boolean
   refund: boolean
+  earn?: boolean // give loyalty points on the paid receipt
 }
 
 export interface TillProps {

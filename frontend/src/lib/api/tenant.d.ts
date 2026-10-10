@@ -2580,6 +2580,112 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/v1/loyalty/customers/{customer_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Customer Points */
+    get: operations['customer_points_api_v1_loyalty_customers__customer_id__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/loyalty/earn': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Earn
+     * @description Idempotent by receipt: asking twice gives the points once.
+     */
+    post: operations['earn_api_v1_loyalty_earn_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/loyalty/redeem': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Redeem */
+    post: operations['redeem_api_v1_loyalty_redeem_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/loyalty/vouchers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Vouchers */
+    get: operations['vouchers_api_v1_loyalty_vouchers_get']
+    put?: never
+    /** Issue */
+    post: operations['issue_api_v1_loyalty_vouchers_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/loyalty/vouchers/by-code/{code}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Voucher By Code */
+    get: operations['voucher_by_code_api_v1_loyalty_vouchers_by_code__code__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/v1/loyalty/vouchers/{voucher_id}/void': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Void */
+    post: operations['void_api_v1_loyalty_vouchers__voucher_id__void_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/v1/me/capabilities': {
     parameters: {
       query?: never
@@ -5034,6 +5140,7 @@ export interface components {
       catalog: components['schemas']['CatalogSettings']
       finance: components['schemas']['FinanceSettings']
       kitchen: components['schemas']['KitchenSettings']
+      loyalty: components['schemas']['LoyaltySettings']
       numbering: components['schemas']['NumberingSettings']
       payment_methods: components['schemas']['PaymentMethodSettings']
       planning: components['schemas']['PlanningSettings']
@@ -5182,6 +5289,24 @@ export interface components {
     AvailabilityIn: {
       /** Is Available */
       is_available: boolean
+    }
+    /** BalanceOut */
+    BalanceOut: {
+      /** Balance */
+      balance: number
+      /**
+       * Customer Id
+       * Format: uuid
+       */
+      customer_id: string
+      /** Entries */
+      entries: components['schemas']['EntryOut'][]
+      /** Min Redeem Points */
+      min_redeem_points: number
+      /** Point Value */
+      point_value: number
+      /** Vouchers */
+      vouchers: components['schemas']['VoucherOut'][]
     }
     /** BalanceSheet */
     BalanceSheet: {
@@ -6026,6 +6151,26 @@ export interface components {
       /** Unit Id */
       unit_id?: string | null
     }
+    /** EarnIn */
+    EarnIn: {
+      /**
+       * Customer Id
+       * Format: uuid
+       */
+      customer_id: string
+      /**
+       * Document Id
+       * Format: uuid
+       */
+      document_id: string
+    }
+    /** EarnOut */
+    EarnOut: {
+      /** Balance */
+      balance: number
+      /** Points */
+      points: number
+    }
     /** EffectivePrice */
     EffectivePrice: {
       /**
@@ -6059,6 +6204,27 @@ export interface components {
       qty: number | string
       /** Unit Price */
       unit_price?: number | null
+    }
+    /** EntryOut */
+    EntryOut: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Document Id */
+      document_id: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Kind */
+      kind: string
+      /** Points */
+      points: number
+      /** Voucher Id */
+      voucher_id: string | null
     }
     /** ExpenseCategoryIn */
     ExpenseCategoryIn: {
@@ -6994,6 +7160,33 @@ export interface components {
       email: string
       /** Password */
       password: string
+    }
+    /**
+     * LoyaltySettings
+     * @description FR-SAL-016: how guests earn points and what a point is worth when turned into a voucher.
+     *     Every number is the business's own choice.
+     */
+    LoyaltySettings: {
+      /**
+       * Earn Per
+       * @default 10000
+       */
+      earn_per: number
+      /**
+       * Min Redeem Points
+       * @default 100
+       */
+      min_redeem_points: number
+      /**
+       * Point Value
+       * @default 100
+       */
+      point_value: number
+      /**
+       * Voucher Valid Days
+       * @default 90
+       */
+      voucher_valid_days: number
     }
     /** MappingIn */
     MappingIn: {
@@ -8706,6 +8899,16 @@ export interface components {
     RecoveryCodesOut: {
       /** Recovery Codes */
       recovery_codes: string[]
+    }
+    /** RedeemIn */
+    RedeemIn: {
+      /**
+       * Customer Id
+       * Format: uuid
+       */
+      customer_id: string
+      /** Points */
+      points: number
     }
     /** RefundIn */
     RefundIn: {
@@ -10682,6 +10885,46 @@ export interface components {
     VoidIn: {
       /** Reason */
       reason: string
+    }
+    /** VoucherIn */
+    VoucherIn: {
+      /** Amount */
+      amount: number
+      /** Customer Id */
+      customer_id?: string | null
+      /** Expires On */
+      expires_on?: string | null
+      /** Note */
+      note?: string | null
+    }
+    /** VoucherOut */
+    VoucherOut: {
+      /** Amount */
+      amount: number
+      /** Code */
+      code: string
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Customer Id */
+      customer_id: string | null
+      /** Expires On */
+      expires_on: string | null
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string
+      /** Note */
+      note: string | null
+      /** Points */
+      points: number
+      /** Status */
+      status: string
+      /** Used Document Id */
+      used_document_id: string | null
     }
     /** WaitIn */
     WaitIn: {
@@ -16367,6 +16610,233 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  customer_points_api_v1_loyalty_customers__customer_id__get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        customer_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BalanceOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  earn_api_v1_loyalty_earn_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['EarnIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EarnOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  redeem_api_v1_loyalty_redeem_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RedeemIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VoucherOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  vouchers_api_v1_loyalty_vouchers_get: {
+    parameters: {
+      query?: {
+        status?: 'active' | 'used' | 'void'
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VoucherOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  issue_api_v1_loyalty_vouchers_post: {
+    parameters: {
+      query?: never
+      header?: {
+        'Idempotency-Key'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VoucherIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VoucherOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  voucher_by_code_api_v1_loyalty_vouchers_by_code__code__get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        code: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VoucherOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  void_api_v1_loyalty_vouchers__voucher_id__void_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        voucher_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VoucherOut']
+        }
       }
       /** @description Validation Error */
       422: {

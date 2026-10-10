@@ -180,6 +180,14 @@ Platform tables (not tenant-scoped): `admin_users`, `admin_roles`, `admin_sessio
 | `expenses` | number, outlet_id, account_id, category_id, spent_on, amount, payee, note, upload_id, status (posted, reversed) | Reversed, never deleted |
 | `money_transfers` | from_account_id, to_account_id, amount, moved_on, note | Append-only |
 | `platform_settlements` | tenant_id, channel_id, period, gross, commission, payout, status | |
+| `budgets` | tenant_id, outlet_id, month (first day), net_sales, cost_of_sales, labor, expenses, updated_by | One per outlet and month; saving replaces (FR-FIN-010) |
+
+### 2.9 Loyalty
+
+| Table | Key columns | Notes |
+| --- | --- | --- |
+| `loyalty_entries` | tenant_id, customer_id, kind (earn, redeem, reverse, adjust), points (signed), document_id, voucher_id, outlet_id | Append-only; balance is the sum. One earn and one reverse per sales document (FR-SAL-016) |
+| `vouchers` | tenant_id, code (unique), amount, customer_id, points, note, expires_on, status (active, used, void), used_document_id | Pays through a payment method of kind `voucher` with the code as reference |
 
 ## 3. Ledger rules (inventory)
 

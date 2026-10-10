@@ -113,6 +113,8 @@ Examples:
 | `finance.period.close` | Close an accounting period |
 | `finance.settlement.manage` | Record and reverse delivery-platform payouts (FR-FIN-007) |
 | `finance.budget.manage` | Set budgets per outlet and month (FR-FIN-010) |
+| `loyalty.points.view` / `earn` / `redeem` | See a guest's points; give points for a paid receipt; turn points into a voucher (manager, cashier; waiter view and earn) |
+| `loyalty.voucher.manage` | Issue vouchers by hand and void unused ones (manager) |
 | `sales.invoice.view` | See wholesale invoices and receivables aging (FR-SAL-011, FR-FIN-006) |
 | `sales.invoice.manage` | Create and void wholesale invoices; record customer payments |
 | `tenant.user.manage` | Invite, edit, deactivate users |

@@ -61,7 +61,8 @@
     "pos": "Cashier",
     "tables": "Tables",
     "kitchen": "Kitchen",
-    "finance": "Finance"
+    "finance": "Finance",
+    "loyalty": "Loyalty"
   },
   "shell": {
     "business": "Business",
@@ -360,7 +361,15 @@
     "announcement_not_found": "This announcement is no longer shown.",
     "unknown_tenant": "One of the business ids does not exist.",
     "push_endpoint_not_allowed": "This browser's push service is not supported.",
-    "mapping_not_found": "Save which columns hold what for this platform first."
+    "mapping_not_found": "Save which columns hold what for this platform first.",
+    "points_not_enough": "Not enough points.",
+    "points_below_minimum": "Too few points for a voucher.",
+    "points_already_given": "Points for this receipt went to another guest.",
+    "document_not_eligible": "Only paid till receipts earn points.",
+    "voucher_not_found": "No voucher with this code.",
+    "voucher_not_active": "This voucher is used, void or expired.",
+    "voucher_too_small": "The voucher is worth less than this amount.",
+    "voucher_code_clash": "Please try again."
   },
   "appearance": {
     "open": "Appearance",
@@ -417,7 +426,8 @@
       "planning": "Planning",
       "transfers": "Transfers",
       "reports": "Reports",
-      "data": "Your data"
+      "data": "Your data",
+      "loyalty": "Loyalty"
     },
     "outletModules": {
       "help": "Turn modules on or off per outlet. A module that needs another (for example sales needs stock) switches it on with it.",
@@ -433,7 +443,8 @@
         "kitchen": "Kitchen screen",
         "finance": "Finance",
         "reports": "Reports",
-        "notifications": "Notifications"
+        "notifications": "Notifications",
+        "loyalty": "Loyalty"
       }
     },
     "tax": {
@@ -596,6 +607,15 @@
         "ready": "Ready ({{date}})",
         "failed": "Failed ({{date}}): please try again"
       }
+    },
+    "loyalty": {
+      "earn_per": "Net sales per point",
+      "point_value": "Value of one point",
+      "min_redeem_points": "Fewest points for a voucher",
+      "voucher_valid_days": "Voucher valid for days (0 = no end)",
+      "help": "Guests earn a point for each amount of net sales (before service and tax). Points become a voucher code that pays at the till with the voucher payment method.",
+      "method": "Voucher",
+      "addMethod": "Add voucher payment method"
     }
   },
   "catalog": {
@@ -1541,7 +1561,8 @@
       "refused": "Not accepted by the server ({{code}}). Enter it again on the till.",
       "leftOpen": "Order {{number}} is open on the server ({{problem}}). Finish it in open orders.",
       "dismiss": "Dismiss"
-    }
+    },
+    "voucherCode": "Voucher code"
   },
   "tables": {
     "title": "Tables",
@@ -2057,6 +2078,9 @@
   "changelog": {
     "title": "What's new",
     "items": {
+      "2026-10-10h": [
+        "Loyalty: guests earn points on the paid receipt, turn them into voucher codes, and pay with them at the till"
+      ],
       "2026-10-10g": [
         "Set a monthly budget per outlet on the Finance page and compare it with actual sales and costs"
       ],
@@ -2117,5 +2141,37 @@
       "expenses": "Other expenses",
       "net_profit": "Net profit"
     }
+  },
+  "loyalty": {
+    "title": "Loyalty",
+    "tabs": {
+      "guests": "Guests",
+      "vouchers": "Vouchers"
+    },
+    "find": "Guest phone or name",
+    "notFound": "No guest found. Add them with this phone number:",
+    "name": "Name",
+    "consent": "The guest agrees that we keep their name and phone for points",
+    "addGuest": "Add guest",
+    "balance": "{{points}} points (worth {{value}})",
+    "points": "Points to use (at least {{min}})",
+    "worth": "Voucher worth {{value}}",
+    "redeem": "Make voucher",
+    "made": "Voucher code: {{code}}",
+    "vouchers": "Vouchers",
+    "until": "until {{date}}",
+    "kinds": {
+      "earn": "Earned",
+      "redeem": "Used for a voucher",
+      "reverse": "Taken back (refund)",
+      "adjust": "Returned (voucher voided)"
+    },
+    "issue": "Give a voucher",
+    "amount": "Amount ({{currency}})",
+    "note": "Note (optional)",
+    "issueButton": "Create voucher",
+    "void": "Void",
+    "give": "Give loyalty points",
+    "earned": "{{points}} points given. Balance: {{balance}}"
   }
 }
