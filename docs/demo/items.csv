@@ -1,0 +1,19 @@
+sku,type,name_en,name_id,base_unit,category,storage_type,shelf_life_days,is_stocked
+BULGOGI-150,ingredient,Beef bulgogi pack 150 g,Daging bulgogi pak 150 g,pcs,Central kitchen packs,frozen,90,yes
+SPICY-PORK-150,ingredient,Spicy pork pack 150 g,Babi pedas pak 150 g,pcs,Central kitchen packs,frozen,90,yes
+GOCHUJANG-50,ingredient,Gochujang sauce 50 ml,Saus gochujang 50 ml,pcs,Central kitchen packs,chilled,30,yes
+JAPCHAE-NOODLE,ingredient,Japchae noodles portion,Mi japchae porsi,pcs,Central kitchen packs,frozen,60,yes
+KIMCHI-SOUP-300,ingredient,Kimchi soup base 300 ml,Kuah sup kimchi 300 ml,pcs,Central kitchen packs,frozen,60,yes
+RICE,ingredient,Rice,Beras,kg,Local market,dry,,yes
+EGG,ingredient,Egg,Telur,pcs,Local market,chilled,14,yes
+ONION,ingredient,Onion,Bawang bombay,kg,Local market,dry,,yes
+COOKING-OIL,ingredient,Cooking oil,Minyak goreng,l,Local market,dry,,yes
+MILK,ingredient,Fresh milk,Susu segar,l,Local market,chilled,7,yes
+BOWL-750,ingredient,Takeaway bowl 750 ml,Mangkuk takeaway 750 ml,pcs,Packaging,dry,,yes
+LID-750,ingredient,Bowl lid 750 ml,Tutup mangkuk 750 ml,pcs,Packaging,dry,,yes
+SPOON,ingredient,Plastic spoon,Sendok plastik,pcs,Packaging,dry,,yes
+BULGOGI-BOWL,menu,Beef bulgogi rice bowl,Nasi mangkuk bulgogi sapi,pcs,Rice bowls,,,no
+SPICY-PORK-BOWL,menu,Spicy pork rice bowl,Nasi mangkuk babi pedas,pcs,Rice bowls,,,no
+JAPCHAE,menu,Japchae,Japchae,pcs,Noodles,,,no
+KIMCHI-JJIGAE,menu,Kimchi stew with rice,Sup kimchi dengan nasi,pcs,Soups,,,no
+EGG-TOPPING,menu,Fried egg add-on,Tambahan telur goreng,pcs,Add-ons,,,no

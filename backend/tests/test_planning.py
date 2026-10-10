@@ -1,0 +1,286 @@
+"""Slice 1j part 2: days of inventory (FR-INV-011), producible quantity (FR-INV-020),
+reorder suggestions by vendor (FR-INV-013) and the low-days alert (FR-INV-012)."""
+
+from collections.abc import Iterator
+from datetime import date, timedelta
+from decimal import Decimal
+from typing import Any
+
+import pytest
+from fastapi.testclient import TestClient
+
+from app.core.config import Settings
+from tests.factories import add_member, add_outlet, drop_tenant, seed_tenant
+from tests.test_alerts import scan
+from tests.test_catalog import units
+from tests.test_inventory import API, HASH, login, make_item
+from tests.test_purchasing import client as client
+from tests.test_purchasing import tenant_sql
+
+P = "/api/v1/purchasing"
+CAT = "/api/v1/catalog"
+
+
+@pytest.fixture
+def world() -> Iterator[dict[str, Any]]:
+    mods = ("inventory", "purchasing")
+    a, roles = seed_tenant("Alpha", modules=mods)
+    b, roles_b = seed_tenant("Beta", modules=mods)
+    shop = add_outlet(a, "Shop")
+    w: dict[str, Any] = {"a": a, "shop": shop}
+    w["manager_a"] = add_member(a, roles["manager"], HASH)[1]
+    w["kitchen_a"] = add_member(a, roles["kitchen"], HASH)[1]
+    w["manager_b"] = add_member(b, roles_b["manager"], HASH)[1]
+    yield w
+    drop_tenant(a)
+    drop_tenant(b)
+
+
+@pytest.fixture
+def stock(client: TestClient, world: dict[str, Any]) -> dict[str, Any]:
+    """Shop: 10 kg rice, 30 eggs. Fried rice (1 pcs) = 200 g rice + 2 eggs. Over the last
+    four weeks 7 kg rice was wasted, so the shop uses 250 g a day on average."""
+    h = login(client, world["manager_a"])
+    u = units(client)
+    dry = {"shelf_life_days": None, "storage_type": "dry"}
+    k: dict[str, Any] = {
+        "rice": make_item(client, h, "RICE", "g", **dry),
+        "egg": make_item(client, h, "EGG", "pcs", **dry),
+        "nasi": make_item(client, h, "NASI", "pcs", type="menu", **dry),
+        "u": u,
+    }
+    lines = [
+        {"component_item_id": k["rice"], "qty": "200", "unit_id": u["g"], "waste_pct": "0"},
+        {"component_item_id": k["egg"], "qty": "2", "unit_id": u["pcs"], "waste_pct": "0"},
+    ]
+    bom = client.post(f"{CAT}/items/{k['nasi']}/boms", json={"lines": lines}, headers=h).json()
+    client.post(f"{CAT}/boms/{bom['id']}/activate", json={"valid_from": "2026-01-01"}, headers=h)
+    start = (date.today() - timedelta(days=60)).isoformat()
+    opening = [
+        {"item_id": k["rice"], "qty": "17", "unit_id": u["kg"], "unit_cost": "14000"},
+        {"item_id": k["egg"], "qty": "30", "unit_id": u["pcs"], "unit_cost": "2200"},
+    ]
+    body = {"outlet_id": str(world["shop"]), "business_date": start, "lines": opening}
+    assert client.post(f"{API}/opening", json=body, headers=h).status_code == 201
+    for days_ago in range(1, 8):
+        waste = {
+            "outlet_id": str(world["shop"]),
+            "business_date": (date.today() - timedelta(days=days_ago)).isoformat(),
+            "reason_code": "spoilage",
+            "lines": [{"item_id": k["rice"], "qty": "1000", "unit_id": u["g"]}],
+        }
+        assert client.post(f"{API}/waste", json=waste, headers=h).status_code == 201
+    return k
+
+
+def test_fr_inv_011_days_left_on_the_stock_screen(
+    client: TestClient, world: dict[str, Any], stock: dict[str, Any]
+) -> None:
+    h = login(client, world["manager_a"])
+    rows = {
+        r["sku"]: r
+        for r in client.get(f"{API}/stock?outlet_id={world['shop']}", headers=h).json()["items"]
+    }
+    assert Decimal(rows["RICE"]["qty"]) == 10000
+    assert Decimal(rows["RICE"]["avg_daily_use"]) == 250  # 7 kg over 28 days
+    assert Decimal(rows["RICE"]["days_left"]) > 0
+    assert rows["EGG"]["days_left"] is None  # not used lately: no estimate
+
+
+def test_fr_inv_020_producible_with_limiting_ingredient(
+    client: TestClient, world: dict[str, Any], stock: dict[str, Any]
+) -> None:
+    h = login(client, world["kitchen_a"])
+    [row] = client.get(f"{API}/producible?outlet_id={world['shop']}", headers=h).json()
+    # Rice allows 50 plates, eggs only 15: eggs limit.
+    assert row["name"] and Decimal(row["can_make"]) == 15 and row["limiting_name"]
+
+
+def test_fr_inv_013_reorder_suggestions_by_vendor_to_draft_po(
+    client: TestClient, world: dict[str, Any], stock: dict[str, Any]
+) -> None:
+    h = login(client, world["manager_a"])
+    u = stock["u"]
+    cheap = client.post(f"{P}/vendors", json={"name": "Pasar Induk"}, headers=h).json()
+    usual = client.post(f"{P}/vendors", json={"name": "CV Beras"}, headers=h).json()
+    day = "2026-01-01"
+    rice_25 = {
+        "item_id": stock["rice"],
+        "pack_qty": "25",
+        "pack_unit_id": u["kg"],
+        "valid_from": day,
+    }
+    client.post(f"{P}/vendors/{cheap['id']}/items", json={**rice_25, "price": 300000}, headers=h)
+    preferred = {**rice_25, "price": 340000, "is_preferred": True}
+    assert (
+        client.post(f"{P}/vendors/{usual['id']}/items", json=preferred, headers=h).status_code
+        == 201
+    )
+    levels = {
+        "outlet_id": str(world["shop"]),
+        "levels": [
+            {"item_id": stock["rice"], "reorder_point": "12000", "max_qty": "40000"},
+            {"item_id": stock["egg"], "reorder_point": "40"},
+        ],
+    }
+    assert client.put(f"{API}/levels", json=levels, headers=h).status_code == 200
+    groups = client.get(f"{P}/reorder-suggestions?outlet_id={world['shop']}", headers=h).json()
+    by_vendor = {g["vendor_name"]: g for g in groups}
+    [rice] = by_vendor["CV Beras"]["lines"]  # preferred beats cheaper
+    assert Decimal(rice["suggested"]) == 30000  # up to the 40 kg maximum
+    assert Decimal(rice["order_qty"]) == 50 and rice["unit_price"] == 13600  # two 25 kg sacks
+    [egg] = by_vendor[None]["lines"]  # no vendor price: listed last, no pack
+    assert egg["order_qty"] is None and groups[-1]["vendor_id"] is None
+    po = {
+        "outlet_id": str(world["shop"]),
+        "vendor_id": usual["id"],
+        "order_date": day,
+        "lines": [
+            {
+                "item_id": rice["item_id"],
+                "qty": rice["order_qty"],
+                "unit_id": rice["order_unit_id"],
+                "unit_price": rice["unit_price"],
+            }
+        ],
+    }
+    assert client.post(f"{P}/orders", json=po, headers=h).status_code == 201
+    kitchen = login(client, world["kitchen_a"])  # cannot create orders: no suggestions either
+    assert (
+        client.get(
+            f"{P}/reorder-suggestions?outlet_id={world['shop']}", headers=kitchen
+        ).status_code
+        == 403
+    )
+
+
+def test_fr_inv_012_low_days_alert(
+    client: TestClient, world: dict[str, Any], stock: dict[str, Any], settings: Settings
+) -> None:
+    h = login(client, world["manager_a"])
+    # Owners change settings in the UI; here the stored setting is written directly.
+    tenant_sql(
+        world["a"],
+        "INSERT INTO tenant_settings (tenant_id, key, value) VALUES (:t, 'stock', :v) "
+        "ON CONFLICT (tenant_id, key) DO UPDATE SET value = EXCLUDED.value",
+        {"t": world["a"], "v": '{"low_days_alert": 60}'},
+    )
+    scan(settings, world["a"])
+    kinds = [n["kind"] for n in client.get("/api/v1/notifications", headers=h).json()]
+    assert "low_days_of_inventory" in kinds
+
+
+def test_fr_inv_012_large_count_difference_alerts_managers(
+    client: TestClient, world: dict[str, Any], stock: dict[str, Any]
+) -> None:
+    # The tenant alerts from Rp 100.000 (the Indonesian default is Rp 200.000).
+    tenant_sql(
+        world["a"],
+        "INSERT INTO tenant_settings (tenant_id, key, value) VALUES (:t, 'stock', :v) "
+        "ON CONFLICT (tenant_id, key) DO UPDATE SET value = EXCLUDED.value",
+        {"t": world["a"], "v": '{"count_variance_alert": 100000}'},
+    )
+    h = login(client, world["kitchen_a"])
+    body = {
+        "outlet_id": str(world["shop"]),
+        "business_date": date.today().isoformat(),
+        "count_type": "spot",
+        "item_ids": [stock["rice"]],
+    }
+    count = client.post(f"{API}/counts", json=body, headers=h).json()
+    line = {"item_id": stock["rice"], "counted_qty": "0"}
+    assert (
+        client.put(
+            f"{API}/counts/{count['id']}/lines", json={"lines": [line]}, headers=h
+        ).status_code
+        == 200
+    )
+    assert client.post(f"{API}/counts/{count['id']}/submit", headers=h).status_code == 200
+    m = login(client, world["manager_a"])
+    notes = client.get("/api/v1/notifications", headers=m).json()
+    # 10 kg rice at Rp 14 per g = Rp 140.000 missing: above the threshold.
+    [alert] = [n for n in notes if n["kind"] == "count_variance"]
+    assert alert["params"] == {"number": count["number"], "amount": 140000}
+
+
+def test_fr_cat_012_food_cost_alert_only_to_cost_viewers(
+    client: TestClient, world: dict[str, Any], stock: dict[str, Any], settings: Settings
+) -> None:
+    """Fried rice costs Rp 7.200 (200 g rice at Rp 14 + 2 eggs at Rp 2.200) and sells for
+    Rp 15.000 dine-in: about 48 % food cost, above the 35 % Indonesian default target."""
+    h = login(client, world["manager_a"])
+    channel = {"code": "dine_in", "name": "Dine-in", "kind": "dine_in"}
+    ch = client.post(f"{CAT}/channels", json=channel, headers=h).json()["id"]
+    price = {"channel_id": ch, "valid_from": "2026-01-01", "price": 15_000}
+    assert (
+        client.put(f"{CAT}/items/{stock['nasi']}/prices", json=price, headers=h).status_code == 200
+    )
+    # Routed to the kitchen role, which may not see costs: nobody is told.
+    kitchen_role = tenant_sql(
+        world["a"],
+        "SELECT id FROM roles WHERE template_key = 'kitchen' AND tenant_id = :t",
+        {"t": world["a"]},
+    )[0][0]
+    tenant_sql(
+        world["a"],
+        "INSERT INTO alert_rules (id, tenant_id, alert_type, recipient_role_id) "
+        "VALUES (gen_random_uuid(), :t, 'food_cost_above_target', :r)",
+        {"t": world["a"], "r": kitchen_role},
+    )
+    scan(settings, world["a"])
+    cook = login(client, world["kitchen_a"])
+    assert client.get("/api/v1/notifications", headers=cook).json() == []
+    # Without a rule the default recipients (managers) are told, with the cause.
+    tenant_sql(world["a"], "DELETE FROM alert_rules WHERE tenant_id = :t", {"t": world["a"]})
+    tenant_sql(
+        world["a"],
+        "UPDATE items SET target_food_cost_bp = 6000 WHERE id = :i",
+        {"i": stock["nasi"]},
+    )
+    scan(settings, world["a"])  # 48 % is under a 60 % target: the open alert resolves
+    tenant_sql(
+        world["a"],
+        "UPDATE items SET target_food_cost_bp = 3000 WHERE id = :i",
+        {"i": stock["nasi"]},
+    )
+    scan(settings, world["a"])
+    h = login(client, world["manager_a"])
+    [note] = [
+        n
+        for n in client.get("/api/v1/notifications", headers=h).json()
+        if n["kind"] == "food_cost_above_target"
+    ]
+    assert note["params"]["channel"] == "Dine-in" and note["params"]["target"] == "30.0"
+    assert float(note["params"]["pct"]) > 30 and note["params"]["cause"]
+
+
+def test_fr_rpt_004_fr_inv_015_stock_reports(
+    client: TestClient, world: dict[str, Any], stock: dict[str, Any]
+) -> None:
+    """The fixture wasted 7 kg rice over the last week; a count then finds 500 g less."""
+    h = login(client, world["kitchen_a"])
+    today = date.today().isoformat()
+    body = {
+        "outlet_id": str(world["shop"]),
+        "business_date": today,
+        "count_type": "spot",
+        "item_ids": [stock["rice"]],
+    }
+    count = client.post(f"{API}/counts", json=body, headers=h).json()
+    line = {"item_id": stock["rice"], "counted_qty": "9500"}
+    client.put(f"{API}/counts/{count['id']}/lines", json={"lines": [line]}, headers=h)
+    client.post(f"{API}/counts/{count['id']}/submit", headers=h)
+    m = login(client, world["manager_a"])
+    since = (date.today() - timedelta(days=30)).isoformat()
+    span = f"from={since}&to={today}"
+    waste = client.get(f"{API}/reports/waste?{span}", headers=m).json()
+    assert waste["rows"][0]["qty"] == "7000" and waste["rows"][0]["reason"] == "spoilage"
+    assert waste["totals"]["value"] == 7000 * 14
+    variance = client.get(f"{API}/reports/variance?{span}", headers=m).json()
+    [rice] = variance["rows"]
+    assert rice["count_difference"] == "-500" and rice["waste"] == "7000"
+    assert rice["variance_value"] == -500 * 14
+    moves = client.get(f"{API}/reports/movements?{span}&format=xlsx", headers=m)
+    assert moves.status_code == 200 and moves.content[:2] == b"PK"
+    k = login(client, world["kitchen_a"])  # the kitchen role has no report permission
+    assert client.get(f"{API}/reports/expiry?{span}", headers=k).status_code == 403

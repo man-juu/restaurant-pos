@@ -1,0 +1,63 @@
+"""Alembic environment. Migrations run as the owner role (MIGRATION_DATABASE_URL), never as
+the restricted app role, because only the owner may create tables and policies."""
+
+import asyncio
+
+from alembic import context
+from sqlalchemy.engine import Connection
+from sqlalchemy.ext.asyncio import create_async_engine
+
+import app.admin.models
+import app.core.ai.models
+import app.core.announcements.models
+import app.core.customers.models
+import app.core.exports.models
+import app.core.flags
+import app.core.identity.device_models
+import app.core.imports.models
+import app.core.notifications.models
+import app.core.notifications.push_models
+import app.core.settings.models
+import app.core.uploads.models
+import app.modules.catalog.models
+import app.modules.finance.gl_models
+import app.modules.finance.models
+import app.modules.finance.settlement_models
+import app.modules.inventory.doc_models
+import app.modules.inventory.location_models
+import app.modules.inventory.models
+import app.modules.kitchen.models
+import app.modules.loyalty.models
+import app.modules.production.models
+import app.modules.purchasing.ap_models
+import app.modules.purchasing.models
+import app.modules.sales.models
+import app.modules.sales.platform_import_models
+import app.modules.sales.wholesale_models
+import app.modules.tables.booking_models
+import app.modules.tables.models
+import app.modules.transfers.models
+import app.modules.transfers.standing_models  # noqa: F401 - module tables
+from app.core.config import get_settings
+from app.core.models import Base
+
+target_metadata = Base.metadata
+
+
+def _run(connection: Connection) -> None:
+    context.configure(connection=connection, target_metadata=target_metadata, compare_type=True)
+    with context.begin_transaction():
+        context.run_migrations()
+
+
+async def _run_async() -> None:
+    url = context.config.attributes.get("url") or str(get_settings().migration_url)
+    engine = create_async_engine(url)
+    async with engine.connect() as connection:
+        await connection.run_sync(_run)
+    await engine.dispose()
+
+
+if context.is_offline_mode():
+    raise SystemExit("Offline (--sql) migrations are not supported.")
+asyncio.run(_run_async())

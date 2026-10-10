@@ -1,0 +1,65 @@
+# Build a release and deploy it to staging (docs/07 section 7).
+# Trigger: push a tag like v0.1.0. Production is a separate, manual workflow (deploy-prod.yml):
+# running it is the approval step, which also works on a free private repository.
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write  # only this job may push images
+    steps:
+      - name: Validate tag (it is passed to a remote shell later)
+        env:
+          TAG: ${{ github.ref_name }}
+        run: echo "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: Only release commits that are on main (reviewed and CI-green)
+        run: git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+      - name: Build and push images
+        env:
+          TAG: ${{ github.ref_name }}
+          REGISTRY: ghcr.io/${{ github.repository }}
+        run: |
+          set -eu
+          REGISTRY=$(echo "$REGISTRY" | tr '[:upper:]' '[:lower:]')
+          docker build -t "$REGISTRY/api:$TAG" backend
+          docker build -t "$REGISTRY/web:$TAG" -f infra/web/Dockerfile .
+          docker build -t "$REGISTRY/backup:$TAG" infra/backup
+          for image in api web backup; do docker push "$REGISTRY/$image:$TAG"; done
+
+  staging:
+    needs: images
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: Deploy to staging
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}  # pinned host key: no trust-on-first-use
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -eu
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy && chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_deploy deploy-staging@"$HOST" "$TAG"
+      - name: OWASP ZAP baseline scan (passive, staging only)
+        env:
+          STAGING_URL: ${{ vars.STAGING_URL }}
+        run: |
+          docker run --rm -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t "$STAGING_URL" -I

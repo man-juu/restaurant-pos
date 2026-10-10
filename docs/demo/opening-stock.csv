@@ -1,0 +1,14 @@
+outlet,sku,qty,unit,unit_cost,lot_code,expiry_date
+Demo kitchen,BULGOGI-150,60,pcs,21000,CK-2610-01,2027-01-05
+Demo kitchen,SPICY-PORK-150,50,pcs,17000,CK-2610-02,2027-01-05
+Demo kitchen,GOCHUJANG-50,80,pcs,2500,CK-2610-03,2026-11-07
+Demo kitchen,JAPCHAE-NOODLE,40,pcs,6000,CK-2610-04,2026-12-07
+Demo kitchen,KIMCHI-SOUP-300,40,pcs,9000,CK-2610-05,2026-12-07
+Demo kitchen,RICE,25,kg,14000,,
+Demo kitchen,EGG,90,pcs,2200,,2026-10-21
+Demo kitchen,ONION,5,kg,22000,,
+Demo kitchen,COOKING-OIL,10,l,18000,,
+Demo kitchen,MILK,6,l,19000,,2026-10-14
+Demo kitchen,BOWL-750,500,pcs,1200,,
+Demo kitchen,LID-750,500,pcs,500,,
+Demo kitchen,SPOON,800,pcs,150,,
